@@ -173,7 +173,7 @@ func main() {
 	}
 
 	httpauth.HandleFunc(c, "/", rootHandler)
-	httpauth.Handle(c, "/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	httpauth.Handle(c, "/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static"))))
 	httpauth.HandleFunc(c, "/track/", libAPI.TrackHandler)
 	httpauth.HandleFunc(c, "/artwork/", libAPI.ArtworkHandler)
 	httpauth.Handle(c, "/socket", websocket.Handler(socketHandler(libAPI, albums, s)))
@@ -193,7 +193,7 @@ func main() {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
-	http.ServeFile(w, r, "tchaik.html")
+	http.ServeFile(w, r, "ui/tchaik.html")
 }
 
 func rewriteLocation(l string) string {
