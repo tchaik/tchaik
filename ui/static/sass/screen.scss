@@ -1,0 +1,781 @@
+@import "compass";
+@import "compass/css3/columns";
+@import "compass/css3/transition";
+@import "compass/css3/box-shadow";
+@import "compass/css3/user-interface";
+
+$base-blue: #369;
+$base-red: #936;
+$base-green: #693;
+$base-purple: #639;
+$base-lime-green: #396;
+$base-orange: #963;
+$base-history: #666;
+$base-yellow: #AA2;
+//$base-yellow: #AA4;
+
+$base-selected: $base-purple;
+
+$header-height: 50px;
+
+$light-blue: #00D9FF;
+
+@mixin webkit-scrollbar($container, $base-color) {
+   #{container} ::-webkit-scrollbar {
+       width: 10px;
+   }
+   #{container} ::-webkit-scrollbar-track {
+       background: lighten($base-color, 55); /*#FFF*/
+       -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.1);
+   }
+   #{container} ::-webkit-scrollbar-thumb {
+       background: lighten($base-color, 30); /*#CCC*/
+       -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2);
+   }
+   #{container} ::-webkit-scrollbar-thumb:hover {
+       background: lighten($base-color, 40); /*#AAA;*/
+   }
+   #{container} ::-webkit-scrollbar-thumb:active {
+       background: lighten($base-color, 20); /*#888;*/
+       -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
+   }
+}
+
+@mixin fade-in($property, $duration:150ms) {
+   @include transition-property($property);
+   @include transition-duration($duration);
+   @include transition-timing-function(ease-in);
+}
+
+@mixin disable-transitions {
+   @include transition-property(none);
+   @include transition-duration(0);
+   @include transition-timing-function(ease);
+}
+
+@mixin user-select($select) {
+  -webkit-user-select: $select;
+     -moz-user-select: $select;
+      -ms-user-select: $select; // IE10+
+          user-select: $select;
+}
+
+body {
+   font-family: 'Helvetica Neue', 'Helvetica', 'Open Sans', Arial, sans-serif;
+   border: 0;
+   padding: 0;
+   margin: 0;
+   background-color: #111;
+}
+
+a {
+   @include fade-in(color);
+}
+
+$left-column-width: 40px;
+$right-column-width: 350px;
+$header-height: 30px;
+
+div#header {
+  background-color: rgba(16,16,16,0.85);
+  position: fixed;
+  left: 0;
+  top: 0;
+  margin-top: 5px;
+
+  bottom: 0;
+  width: $left-column-width;
+
+  @media (max-width: 1000px) {
+    height: $header-height;
+    right: $right-column-width;
+    z-index: 10;
+    border-bottom: 1px solid #555;
+  }
+
+   h1 {
+      @include fade-in(color);
+      font-size: 24px;
+      font-weight: 600;
+      padding: 8px 12px 8px;
+      margin: 0;
+      float: left;
+      color: white;
+      text-transform: lowercase;
+   }
+
+   div.status {
+      @include fade-in(color);
+      float: right;
+      font-size: 24px;
+      padding: 4px;
+      margin: 8px;
+      font-weight: 500;
+
+      &.open {
+         color: lighten(#00BFFF, 10);
+      }
+      color: lighten(#FF00BF, 10);
+   }
+
+   span.item {
+     color: #bbb;
+     margin: 10px;
+     font-size: 11px;
+     float: left;
+
+     &.selected {
+       color: lighten($light-blue, 20);
+
+       &:hover {
+         color: lighten($light-blue, 20);
+       };
+     }
+
+     &:hover {
+       color: white;
+     };
+
+     span.glyphicon {
+       font-size: 20px;
+       display: block;
+     }
+   }
+}
+
+div#right-column {
+  background-color: #121314;
+  color: white;
+  position: fixed;
+  right: 0;
+  top:0;
+  bottom: 0;
+  width: $right-column-width;
+  text-align: center;
+
+   div.now-playing {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-flow: column;
+      flex-flow: column;
+      position: relative;
+      height: 100%;
+
+      div.controls {
+       span.glyphicon {
+         margin: 8px;
+         @include user-select(none);
+
+         &.glyphicon-step-forward, &.glyphicon-step-backward {
+           font-size: 16px;
+           line-height: 36px;
+           color: #666;
+           top: -8px;
+
+           &.enabled {
+             color: white;
+
+             &:hover {
+               color: lighten($light-blue, 10);
+             }
+           }
+         }
+
+         &.glyphicon-play, &.glyphicon-pause {
+           font-size: 40px;
+           margin-right: 4px;
+
+           &:hover {
+             color: lighten($light-blue, 10);
+           };
+         }
+       }
+     }
+
+     div.volume {
+       margin: 0 10px;
+       padding: 10px 0;
+       display: block;
+
+       span.glyphicon {
+         color: white;
+         margin-bottom: 10px;
+       }
+
+       & > span.bar {
+         background-color: #444;
+         height: 4px;
+         display: block;
+
+         & > span.current {
+           height: 4px;
+           display: block;
+           float: left;
+           background-color: $light-blue;
+         }
+
+         & > span.marker {
+           height: 10px;
+           display: block;
+           float: left;
+           background-color: #ddd;
+           margin-top: -3px;
+         }
+       }
+     }
+
+     div.now-playing-track {
+       padding-top: 10px;
+       span.image {
+         img {
+           display: none;
+           margin-bottom: 5px;
+
+           &.visible {
+             display: inline;
+             max-width: $right-column-width - 20px;
+           }
+         }
+       }
+
+       span.title {
+         display: block;
+         font-size: 14px;
+         font-weight: 400;
+         padding: 0 4px;
+
+         a.goto {
+           margin-left: 10px;
+           color: #999;
+
+           &:hover {
+             color: #eee;
+           }
+         }
+       }
+
+       div.attributes {
+         display: block;
+         font-size: 12px;
+         font-weight: normal;
+         color: #999;
+         line-height: 16px;
+         padding: 2px 4px;
+
+         span {
+           font-weight: 200;
+
+           &.bull {
+             margin-left: 2px;
+             margin-right: 2px;
+             color: #666;
+           }
+         }
+       }
+
+       span.times {
+         display: block;
+         font-size: 11px;
+         color: #666;
+
+         span.currentTime {
+           margin-left: 10px;
+           float: left;
+         }
+
+         span.remaining {
+           float: right;
+           margin-right: 10px;
+         }
+       }
+
+       span.playProgress {
+         margin: 0 10px;
+         padding: 10px 0;
+         display: block;
+
+         & > span.bar {
+           background-color: #444;
+           height: 5px;
+           display: block;
+
+           & > span.current {
+             height: 5px;
+             display: block;
+             float: left;
+             background-color: $light-blue;
+           }
+
+           & > span.buffered {
+             height: 5px;
+             display: block;
+             float: left;
+             background-color: #555;
+           }
+
+           & > span.marker {
+             height: 10px;
+             display: block;
+             float: left;
+             background-color: white;
+             margin-top: -5px;
+           }
+         }
+       }
+     }
+
+     div.playlist {
+       overflow: auto;
+       text-align: left;
+       -webkit-flex: 1;
+       flex: 1;
+
+       div.group {
+         font-size: 12px;
+
+         &:hover {
+           background-color: #222;
+         }
+
+         div.group {
+           padding-left: 10px;
+         }
+
+         div.name {
+           span.name {
+             font-weight: 600;
+           }
+           border: 1px solid #333;
+           padding: 5px;
+
+           img {
+             display: none;
+
+             &.visible {
+               max-height: 50px;
+               float: left;
+               margin-right: 6px;
+               display: block;
+             }
+           }
+         }
+
+         div.attributes {
+           color: #888;
+
+           span {
+             font-weight: 200;
+
+             &.bull {
+               margin-left: 2px;
+               margin-right: 2px;
+               color: #666;
+             }
+           }
+         }
+
+         span.info {
+           float: right;
+         }
+
+         span.glyphicon-remove {
+           &:hover {
+             color: #ddd;
+           }
+         }
+       }
+
+       span.glyphicon-remove {
+         float: right;
+         margin-left: 5px;
+         color: #333;
+
+         &:hover {
+           color: #ccc;
+         }
+       }
+
+       div.tracks {
+         text-align: left;
+         width: 100%;
+
+         ol {
+           margin: 0;
+           padding-left: 0px;
+           list-style: none;
+           counter-reset: li;
+
+           &.upper-roman li::before {
+             content: counter(li, upper-roman) ".";
+           }
+
+           li {
+             font-size: 11px;
+             line-height: 15px;
+             padding: 5px 10px 5px 5px;
+             border-bottom: 1px solid #333;
+             color: #bbb;
+
+             &::before {
+               content: counter(li) ".";
+               font-size: 11px;
+               padding: 0 10px 0 0;
+               text-align: right;
+               width: 25px;
+               display: inline-block;
+               color: #888;
+             }
+
+             &.current {
+                background-color: $light-blue;
+                color: #333;
+
+                span.duration {
+                  color: #444;
+                }
+
+                &:hover {
+                  background-color: $light-blue;
+
+                  &::before {
+                    background-color: $light-blue;
+                  }
+                }
+
+               &::before {
+                 color: #333;
+               }
+             }
+
+             &.is-playing {
+               &::before {
+                 font-family: 'Glyphicons Halflings';
+                 content: '\e038';
+                 font-size: 14px;
+                 line-height: 10px;
+                 vertical-align: -30%;
+               }
+             }
+
+             span.duration {
+               margin-left: 2px;
+               color: #666;
+             }
+
+             &:hover {
+               background-color: #333;
+
+               span.glyphicon-remove {
+                 color: #999;
+               }
+
+               span.duration {
+                 color: #999;
+               }
+
+               &::before {
+                 background-color: #333;
+               }
+             }
+
+             span.glyphicon-remove:hover {
+               color: #eee;
+             }
+           }
+         }
+       }
+     }
+   }
+}
+
+div#container {
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: $left-column-width;
+  right: $right-column-width;
+  background-color: #222;
+  border-right: 3px solid #333;
+
+  div.search-collection {
+    div#search {
+      position: fixed;
+      top: 0px;
+      right: $right-column-width;
+      left: $left-column-width;
+      height: 26px;
+      padding: 10px 0 10px 0;
+      background: #111;
+      z-index: 10;
+
+      input {
+        outline: none;
+        background-color: #333;
+        border: 1px solid #444;
+        color: #eee;
+        font-size: 16px;
+        font-weight: 200;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        padding: 5px 10px;
+        width: calc(100% - 25px);
+
+        &:active, &:focus {
+          border: 1px solid #666;
+        };
+      }
+    }
+
+    > div.collection {
+      margin-top: 46px;
+    }
+  }
+
+  div.covers {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: row;
+    align-content: center;
+    flex-flow: row wrap;
+
+    div.cover {
+      flex: 0 1 auto;
+      width: 200px;
+      height: 200px;
+      margin: 5px;
+      border-color: #666;
+      background-color: #555;
+      display: flex;
+
+      &:hover {
+        background-color: #777;
+      };
+
+      span.name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        align-self: flex-end;
+        margin: 4px;
+        font-size: 12px;
+        font-weight: 200;
+      }
+
+      img {
+        width: 200px;
+        height: 200px;
+      }
+    }
+  }
+
+  div.collection {
+    div.group {
+      display: block;
+      padding: 4px 10px 5px;
+      color: #ccc;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #333;
+        color: white;
+      };
+
+      &.untitled {
+        padding: 4px 0;
+      }
+
+      span {
+        font-size: 11px;
+      }
+
+      span.glyphicon {
+        font-weight: bold;
+      }
+
+      &>div.collection {
+        div.group.expanded {
+          border: 0px;
+        }
+      }
+
+      &.expanded {
+        @include fade-in(background-color);
+        background-color: #191919;
+        border-top: 1px solid #333;
+        border-bottom: 1px solid #333;
+
+        div.header span.name {
+          color: white;
+          font-weight: 500;
+          font-size: 14px;
+        }
+      }
+
+      div.header {
+        span.name {
+          font-weight: 600;
+          font-size: 13px;
+          cursor: pointer;
+        }
+
+        span.glyphicon {
+          padding-left: 10px;
+          color: #666;
+
+          &:hover {
+            color: white;
+          }
+        }
+
+        span.duration {
+          margin-left: 10px;
+          font-weight: normal;
+          color: #666;
+        }
+
+        div.attributes {
+          color: #888;
+          margin-top:2px;
+
+          span {
+            font-size: 13px;
+            font-weight: 200;
+
+            &.bull {
+              margin-left: 4px;
+              margin-right: 4px;
+              color: #666;
+            }
+          }
+        }
+
+        img {
+          display: none;
+
+          &.visible {
+            float: right;
+            display: block;
+            max-width: 250px;
+            padding: 10px;
+
+            @media (max-width: 1000px) {
+              max-width: 150px;
+            }
+
+            @media (min-width: 1250px) {
+              max-width: 350px;
+            }
+
+            @media (min-width: 1500px) {
+              max-width: 500px;
+            }
+          }
+        }
+      }
+
+      div.tracks {
+        ol {
+          margin: 4px 0;
+          padding: 0;
+          color: #777;
+          display: block;
+          list-style: none;
+          counter-reset: li;
+
+          &.upper-roman li::before {
+            content: counter(li, upper-roman) ".";
+          }
+
+          li {
+            padding: 5px 0;
+            font-size: 12px;
+            cursor: pointer;
+
+            &::before {
+              content: counter(li) ".";
+              counter-increment: li;
+              font-size: 12px;
+              padding: 0 10px 0 0;
+              text-align: right;
+              width: 25px;
+              display: inline-block;
+              color: #777;
+            }
+
+            span.name {
+              font-size: 12px;
+              color: #ccc;
+              font-weight: normal;
+            }
+
+            span.duration {
+              margin-left: 10px;
+              font-weight: normal;
+              color: #555;
+            }
+
+            span.controls {
+              display: none;
+
+              span.glyphicon {
+                padding-left: 10px;
+                color: #666;
+
+                &:hover {
+                  color: white;
+                }
+              }
+            }
+
+            &.current {
+              background-color: $light-blue;
+              span.name {
+                color: #333;
+              }
+
+              span.duration {
+                color: #333;
+              }
+
+              &::before {
+                font-family: 'Glyphicons Halflings';
+                content: '\e038';
+                color: #333;
+                font-size: 14px;
+                line-height: 10px;
+                vertical-align: -30%;
+              }
+            }
+
+            &:hover {
+              &.current {
+                background-color: #555;
+              }
+
+              span.name {
+                color: white;
+              }
+
+              span.duration {
+                color: #999;
+              }
+
+              span.controls {
+                display: inline;
+              }
+
+              &::before {
+                color: #aaa;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@include webkit-scrollbar(div#container, #333);

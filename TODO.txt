@@ -1,0 +1,29 @@
+TODO List
+=========
+
+Sound (move to WebAudio API)
+* Gapless playback (preload next track in playlist, WebAudio API).
+* Fix "clicking" on pause/volume (Chrome only, WebAudio API).
+* Fadeout on pause/stop (click on Chrome still persists, WebAudio API).
+
+Storage
+* Abstract out the storage access.
+* S3 storage and fetcher using encrytion (client side) - maybe just use camlistore for this?
+* Artwork pre-processing?
+* Identification of files (excluding metadata changes, so the actual sound data).
+
+Indexing
+* Improve search to order items correctly, could be React not properly rendering things.
+* Push auto-complete prefixes to the front-end
+* Remove "Composer: Piece name" prefixes (before the current prefix grouper).
+
+UI
+* Playlists
+  - be able to add individual items to playlists, and have consecutive groups merge
+  - remove items when played:
+    - mark played items as gray in groups
+    - until the whole group has been played and then remove?
+  - allow repeat on tracks and playlists
+  - save/load playlists
+  - "recent played" playlist
+  - Expand playlist viewer into a full column if there is the space (or add a main layout option)
