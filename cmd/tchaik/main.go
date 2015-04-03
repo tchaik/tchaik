@@ -56,13 +56,13 @@ var creds = httpauth.Creds(map[string]string{
 	"user": "password",
 })
 
-func readLibrary(itlXML, tchLib string) (index.Library, error) {
+func readLibrary() (index.Library, error) {
 	if itlXML == "" && tchLib == "" {
-		return nil, fmt.Errorf("must specify at least one library file (itlXML or tchLib)")
+		return nil, fmt.Errorf("must specify one library file (-itlXML or -lib)")
 	}
 
 	if itlXML != "" && tchLib != "" {
-		return nil, fmt.Errorf("must only specify one library file")
+		return nil, fmt.Errorf("must only specify one library file (-itlXML or -lib)")
 	}
 
 	var l index.Library
@@ -99,7 +99,7 @@ func readLibrary(itlXML, tchLib string) (index.Library, error) {
 
 func main() {
 	flag.Parse()
-	l, err := readLibrary(itlXML, tchLib)
+	l, err := readLibrary()
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 		os.Exit(1)
