@@ -39,9 +39,9 @@ var trimLocationPrefix, addLocationPrefix string
 func init() {
 	flag.BoolVar(&debug, "debug", false, "print debugging information")
 
-	flag.StringVar(&listenAddr, "http", "localhost:8080", "bind address to http listen")
-	flag.StringVar(&certFile, "cert", "", "path to an SSL certificate file.  Must also specify -key")
-	flag.StringVar(&keyFile, "key", "", "path to an SSL certificate key file.  Must also specify -cert")
+	flag.StringVar(&listenAddr, "listen", "localhost:8080", "bind address to http listen")
+	flag.StringVar(&certFile, "tls-cert", "", "path to a certificate file, must also specify -tls-key")
+	flag.StringVar(&keyFile, "tls-key", "", "path to a certificate key file, must also specify -tls-cert")
 
 	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
 	flag.StringVar(&tchJSON, "lib", "", "path to Tchaik library file")
