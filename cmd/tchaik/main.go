@@ -333,22 +333,17 @@ func (l *LibraryAPI) build(g index.Group, key index.Key) group {
 	return h
 }
 
-func (l *LibraryAPI) Fetch(c index.Collection, path []string) group {
+func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
 	var k index.Key
 	var g index.Group
 	g = c
-
-	if debug {
-		fmt.Printf("buildFromPath: %#v\n", path)
-	}
 
 	if len(path) > 0 {
 		k = index.Key(path[0])
 		g = c.Get(k)
 
 		if g == nil {
-			fmt.Printf("error: invalid path: '%#v' near '%v'\n", path, path[0])
-			return group{}
+			return group{}, fmt.Errorf("invalid path: near '%v'", path[0])
 		}
 
 		index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
@@ -370,15 +365,13 @@ func (l *LibraryAPI) Fetch(c index.Collection, path []string) group {
 			var ok bool
 			c, ok = g.(index.Collection)
 			if !ok {
-				fmt.Printf("error: group for path '%#v' is not a Collection\n", path)
-				return group{}
+				return group{}, fmt.Errorf("retrieved Group is not a Collection")
 			}
 			k = index.Key(p)
 			g = c.Get(k)
 
 			if g == nil {
-				fmt.Printf("error: invalid path: '%#v' near '%v'\n", path, path[1:][i])
-				return group{}
+				return group{}, fmt.Errorf("invalid path near '%v'", path[1:][i])
 			}
 
 			c, ok = g.(index.Collection)
@@ -386,19 +379,17 @@ func (l *LibraryAPI) Fetch(c index.Collection, path []string) group {
 				if i == len(path[1:])-1 {
 					break
 				}
-				fmt.Printf("error: retrieved group isn't a collection: %v (path component: %v)\n", path, p)
-				return group{}
+				return group{}, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
 			}
 		}
 		if g == nil {
-			fmt.Println("error: could not find group")
-			return group{}
+			return group{}, fmt.Errorf("could not find group")
 		}
 		g = index.FirstTrackAttr(index.StringAttr("TrackID"), g)
 	} else {
 		k = index.Key("Root")
 	}
-	return l.build(g, k)
+	return l.build(g, k), nil
 }
 
 // Websocket handling
@@ -494,6 +485,13 @@ func handleCollectionList(l LibraryAPI, x *Command, out chan<- interface{}) {
 		fmt.Printf("invalid path: %v\n", x.Path)
 		return
 	}
+
+	g, err := l.Fetch(l.root, x.Path[1:])
+	if err != nil {
+		fmt.Println("error in Fetch: %v (path: %#v)", err, x.Path[1:])
+		return
+	}
+
 	o := struct {
 		Action string
 		Data   interface{}
@@ -504,7 +502,7 @@ func handleCollectionList(l LibraryAPI, x *Command, out chan<- interface{}) {
 			Item group
 		}{
 			x.Path,
-			l.Fetch(l.root, x.Path[1:]),
+			g,
 		},
 	}
 	out <- o
