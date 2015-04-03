@@ -106,14 +106,14 @@ func main() {
 	}
 
 	fmt.Printf("Grouping into albums...")
-	albums := index.Collect(l, index.ByAttr(index.StringAttr("Album")))
+	root := index.Collect(l, index.ByAttr(index.StringAttr("Album")))
 	fmt.Println("done.")
 	fmt.Printf(" - sorting albums...")
-	index.SortKeysByGroupName(albums)
+	index.SortKeysByGroupName(root)
 	fmt.Println("done.")
 
 	fmt.Printf("Building search index...")
-	wi := index.BuildWordIndex(albums, []string{"Composer", "Artist", "Album", "Name"})
+	wi := index.BuildWordIndex(root, []string{"Composer", "Artist", "Album", "Name"})
 	s := index.FlatSearcher{index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10))}
 	fmt.Println("done.")
 
@@ -130,32 +130,40 @@ func main() {
 
 	libAPI := LibraryAPI{
 		Library:        l,
+		root:           root,
+		searcher:       s,
 		trackHandler:   http.FileServer(mediaFileSystem),
 		artworkHandler: http.FileServer(artworkFileSystem),
 	}
-
-	var c httpauth.Checker = httpauth.None{}
-	if auth {
-		c = creds
-	}
-
-	httpauth.HandleFunc(c, "/", rootHandler)
-	httpauth.Handle(c, "/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static"))))
-	httpauth.HandleFunc(c, "/track/", libAPI.TrackHandler)
-	httpauth.HandleFunc(c, "/artwork/", libAPI.ArtworkHandler)
-	httpauth.Handle(c, "/socket", websocket.Handler(socketHandler(libAPI, albums, s)))
+	m := buildServeMux(libAPI)
 
 	if certFile != "" && keyFile != "" {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
 		fmt.Println("Quit the server with CTRL-C.")
 
-		log.Fatal(http.ListenAndServeTLS(listenAddr, certFile, keyFile, nil))
+		log.Fatal(http.ListenAndServeTLS(listenAddr, certFile, keyFile, m))
 	}
 
 	fmt.Printf("Web server is running on http://%v\n", listenAddr)
 	fmt.Println("Quit the server with CTRL-C.")
 
-	log.Fatal(http.ListenAndServe(listenAddr, nil))
+	log.Fatal(http.ListenAndServe(listenAddr, m))
+}
+
+func buildServeMux(l LibraryAPI) *http.ServeMux {
+	var c httpauth.Checker = httpauth.None{}
+	if auth {
+		c = creds
+	}
+
+	m := http.NewServeMux()
+	w := httpauth.Wrapper{c}
+	m.HandleFunc("/", w.HandlerFunc(rootHandler))
+	m.Handle("/static/", w.Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static")))))
+	m.HandleFunc("/track/", w.HandlerFunc(l.TrackHandler))
+	m.HandleFunc("/artwork/", w.HandlerFunc(l.ArtworkHandler))
+	m.Handle("/socket", w.Handler(websocket.Handler(socketHandler(l))))
+	return m
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
@@ -182,6 +190,8 @@ func debugDumpRequest(r *http.Request) {
 type LibraryAPI struct {
 	index.Library
 
+	root           index.Collection
+	searcher       index.Searcher
 	trackHandler   http.Handler
 	artworkHandler http.Handler
 }
@@ -401,7 +411,7 @@ const (
 	SearchAction string = "SEARCH"
 )
 
-func socketHandler(l LibraryAPI, collection index.Collection, searcher index.Searcher) func(ws *websocket.Conn) {
+func socketHandler(l LibraryAPI) func(ws *websocket.Conn) {
 	return func(ws *websocket.Conn) {
 		s := socket{ws, make(chan struct{})}
 		out, in := make(chan interface{}), make(chan *Command)
@@ -454,9 +464,9 @@ func socketHandler(l LibraryAPI, collection index.Collection, searcher index.Sea
 				}
 				switch x.Action {
 				case FetchAction:
-					handleCollectionList(l, collection, x, out)
+					handleCollectionList(l, x, out)
 				case SearchAction:
-					handleSearch(searcher, x, out)
+					handleSearch(l.searcher, x, out)
 				default:
 					fmt.Printf("unknown command: %v", x.Action)
 				}
@@ -467,7 +477,7 @@ func socketHandler(l LibraryAPI, collection index.Collection, searcher index.Sea
 	}
 }
 
-func handleCollectionList(l LibraryAPI, c index.Collection, x *Command, out chan<- interface{}) {
+func handleCollectionList(l LibraryAPI, x *Command, out chan<- interface{}) {
 	if len(x.Path) < 1 {
 		fmt.Printf("invalid path: %v\n", x.Path)
 		return
@@ -482,7 +492,7 @@ func handleCollectionList(l LibraryAPI, c index.Collection, x *Command, out chan
 			Item group
 		}{
 			x.Path,
-			l.Fetch(c, x.Path[1:]),
+			l.Fetch(l.root, x.Path[1:]),
 		},
 	}
 	out <- o
