@@ -404,11 +404,6 @@ type Command struct {
 	Path   []string
 }
 
-type Response struct {
-	Tag  string
-	Data interface{}
-}
-
 const (
 	FetchAction  string = "FETCH"
 	SearchAction string = "SEARCH"
