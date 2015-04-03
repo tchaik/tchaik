@@ -100,6 +100,19 @@ func readLibrary() (index.Library, error) {
 	return l, nil
 }
 
+func buildRootCollection(l index.Library) index.Collection {
+	root := index.Collect(l, index.ByAttr(index.StringAttr("Album")))
+	index.SortKeysByGroupName(root)
+	return root
+}
+
+func buildSearchIndex(c index.Collection) index.Searcher {
+	wi := index.BuildWordIndex(c, []string{"Composer", "Artist", "Album", "Name"})
+	return index.FlatSearcher{
+		index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10)),
+	}
+}
+
 func main() {
 	flag.Parse()
 	l, err := readLibrary()
@@ -108,16 +121,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Grouping into albums...")
-	root := index.Collect(l, index.ByAttr(index.StringAttr("Album")))
-	fmt.Println("done.")
-	fmt.Printf(" - sorting albums...")
-	index.SortKeysByGroupName(root)
+	fmt.Printf("Building root collection...")
+	root := buildRootCollection(l)
 	fmt.Println("done.")
 
 	fmt.Printf("Building search index...")
-	wi := index.BuildWordIndex(root, []string{"Composer", "Artist", "Album", "Name"})
-	s := index.FlatSearcher{index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10))}
+	searcher := buildSearchIndex(root)
 	fmt.Println("done.")
 
 	mediaFileSystem, artworkFileSystem, err := cmdflag.Stores()
@@ -134,7 +143,7 @@ func main() {
 	libAPI := LibraryAPI{
 		Library:        l,
 		root:           root,
-		searcher:       s,
+		searcher:       searcher,
 		trackHandler:   http.FileServer(mediaFileSystem),
 		artworkHandler: http.FileServer(artworkFileSystem),
 	}
