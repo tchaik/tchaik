@@ -72,15 +72,17 @@ func readLibrary() (index.Library, error) {
 			return nil, fmt.Errorf("could not open iTunes library file: %v", err)
 		}
 
-		fmt.Printf("Parsing %v...\n", itlXML)
+		fmt.Printf("Parsing %v...", itlXML)
 		it, err := itl.ReadFromXML(f)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing iTunes library file: %v", err)
 		}
 		f.Close()
+		fmt.Println("done.")
 
-		fmt.Println("Building Tchaik Library...")
+		fmt.Printf("Building Tchaik Library...")
 		l = index.Convert(index.NewITunesLibrary(&it), "TrackID")
+		fmt.Println("done.")
 		return l, nil
 	}
 
@@ -94,6 +96,7 @@ func readLibrary() (index.Library, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error parsing Tchaik library file: %v\n", err)
 	}
+	fmt.Println("done.")
 	return l, nil
 }
 
