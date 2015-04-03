@@ -24,7 +24,7 @@ var mediaFileSystemCache, artworkFileSystemCache string
 
 func init() {
 	flag.StringVar(&localStore, "local-store", "/", "local media store, full local path /path/to/root")
-	flag.StringVar(&remoteStore, "remote-store", "/", "remote media store, tchstore server address <hostname>:<port>, or s3://<bucket>/path/to/root for S3")
+	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, or s3://<bucket>/path/to/root for S3")
 
 	flag.StringVar(&artworkFileSystemCache, "artwork-cache", "", "path to local artwork cache (content addressable)")
 	flag.StringVar(&mediaFileSystemCache, "media-cache", "", "path to local media cache")
