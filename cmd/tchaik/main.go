@@ -117,15 +117,20 @@ func main() {
 	s := index.FlatSearcher{index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10))}
 	fmt.Println("done.")
 
-	fileSystem, artworkFileSystem, err := cmdflag.Stores()
+	mediaFileSystem, artworkFileSystem, err := cmdflag.Stores()
 	if err != nil {
 		fmt.Println("error setting up stores:", err)
 		os.Exit(1)
 	}
 
+	if debug {
+		mediaFileSystem = store.LogFileSystem{"Media", mediaFileSystem}
+		artworkFileSystem = store.LogFileSystem{"Artwork", artworkFileSystem}
+	}
+
 	libAPI := LibraryAPI{
 		Library:        l,
-		trackHandler:   http.FileServer(store.LogFileSystem{"fileserver", fileSystem}),
+		trackHandler:   http.FileServer(mediaFileSystem),
 		artworkHandler: http.FileServer(artworkFileSystem),
 	}
 
