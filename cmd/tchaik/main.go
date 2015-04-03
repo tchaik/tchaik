@@ -43,8 +43,8 @@ func init() {
 	flag.StringVar(&certFile, "cert", "", "path to an SSL certificate file.  Must also specify -key")
 	flag.StringVar(&keyFile, "key", "", "path to an SSL certificate key file.  Must also specify -cert")
 
-	flag.StringVar(&xml, "xml", "", "path to iTunes Library XML file")
-	flag.StringVar(&tchJSON, "tchJSON", "", "path to Tchaik Library file")
+	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
+	flag.StringVar(&tchJSON, "lib", "", "path to Tchaik library file")
 
 	flag.BoolVar(&auth, "auth", false, "use basic HTTP authentication")
 
