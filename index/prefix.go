@@ -73,6 +73,25 @@ type item struct {
 	before, after int // the number of words shared
 }
 
+func buildItems(words [][]string) []item {
+	items := make([]item, len(words))
+	items[0] = item{
+		before: -1, // this will never be an option
+		after:  largestPrefixWords(words[0], words[1]),
+	}
+	for i := 1; i < len(words)-1; i++ {
+		items[i] = item{
+			before: items[i-1].after,
+			after:  largestPrefixWords(words[i], words[i+1]),
+		}
+	}
+	items[len(words)-1] = item{
+		before: items[len(words)-2].after,
+		after:  -1, // this will never be an option
+	}
+	return items
+}
+
 type ByPrefix string
 
 func (p ByPrefix) Collect(t Tracker) Collection {
@@ -95,31 +114,14 @@ func (p ByPrefix) Collect(t Tracker) Collection {
 		words[i] = splitAfterMultiple(t.GetString(field), prefixGroupSplit)
 	}
 
-	items := make([]item, len(tracks))
-	items[0] = item{
-		before: -1, // this will never be an option
-		after:  largestPrefixWords(words[0], words[1]),
-	}
-	for i := 1; i < len(words)-1; i++ {
-		items[i] = item{
-			before: items[i-1].after,
-			after:  largestPrefixWords(words[i], words[i+1]),
-		}
-	}
-	items[len(tracks)-1] = item{
-		before: items[len(tracks)-2].after,
-		after:  -1, // this will never be an option
-	}
+	items := buildItems(words)
 
 	var name string
 	var curr int
 	for i, item := range items {
-		if item.before >= item.after {
-			// on the current one, so fine...
-			if item.before == curr {
-				gg.add(name, tracks[i])
-				continue
-			}
+		if item.before >= item.after && item.before == curr {
+			gg.add(name, tracks[i])
+			continue
 		}
 
 		name = ""
