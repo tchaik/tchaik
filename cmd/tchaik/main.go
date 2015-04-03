@@ -27,7 +27,7 @@ import (
 )
 
 var debug bool
-var xml, tchJSON string
+var itlXML, tchLib string
 
 var listenAddr string
 var certFile, keyFile string
@@ -44,7 +44,7 @@ func init() {
 	flag.StringVar(&keyFile, "tls-key", "", "path to a certificate key file, must also specify -tls-cert")
 
 	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
-	flag.StringVar(&tchJSON, "lib", "", "path to Tchaik library file")
+	flag.StringVar(&tchLib, "lib", "", "path to Tchaik library file")
 
 	flag.BoolVar(&auth, "auth", false, "use basic HTTP authentication")
 
@@ -56,23 +56,23 @@ var creds = httpauth.Creds(map[string]string{
 	"user": "password",
 })
 
-func readLibrary(xml, tchJSON string) (index.Library, error) {
-	if xml == "" && tchJSON == "" {
-		return nil, fmt.Errorf("must specify at least one library file (xml or tchJSON)")
+func readLibrary(itlXML, tchLib string) (index.Library, error) {
+	if itlXML == "" && tchLib == "" {
+		return nil, fmt.Errorf("must specify at least one library file (itlXML or tchLib)")
 	}
 
-	if xml != "" && tchJSON != "" {
+	if itlXML != "" && tchLib != "" {
 		return nil, fmt.Errorf("must only specify one library file")
 	}
 
 	var l index.Library
-	if xml != "" {
-		f, err := os.Open(xml)
+	if itlXML != "" {
+		f, err := os.Open(itlXML)
 		if err != nil {
 			return nil, fmt.Errorf("could not open iTunes library file: %v", err)
 		}
 
-		fmt.Printf("Parsing %v...\n", xml)
+		fmt.Printf("Parsing %v...\n", itlXML)
 		it, err := itl.ReadFromXML(f)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing iTunes library file: %v", err)
@@ -84,12 +84,12 @@ func readLibrary(xml, tchJSON string) (index.Library, error) {
 		return l, nil
 	}
 
-	f, err := os.Open(tchJSON)
+	f, err := os.Open(tchLib)
 	if err != nil {
 		return nil, fmt.Errorf("could not open Tchaik library file: %v", err)
 	}
 
-	fmt.Printf("Parsing %v...", tchJSON)
+	fmt.Printf("Parsing %v...", tchLib)
 	l, err = index.ReadFrom(f)
 	if err != nil {
 		return nil, fmt.Errorf("error parsing Tchaik library file: %v\n", err)
@@ -99,7 +99,7 @@ func readLibrary(xml, tchJSON string) (index.Library, error) {
 
 func main() {
 	flag.Parse()
-	l, err := readLibrary(xml, tchJSON)
+	l, err := readLibrary(itlXML, tchLib)
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 		os.Exit(1)
