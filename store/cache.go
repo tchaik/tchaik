@@ -27,23 +27,23 @@ type RWFileSystem interface {
 	Wait() error
 }
 
-// Dir implements RWFileSystem by extending the behaviour of http.Dir to include a Create
+// dir implements RWFileSystem by extending the behaviour of http.Dir to include a Create
 // method which creates files under the root.
-type Dir struct {
+type dir struct {
 	http.FileSystem
 
 	root string
 }
 
-// NewDir creates a new RWFileSystem with the specified root (similar to http.Dir)
-func NewDir(root string) *Dir {
-	return &Dir{
+// Dir creates a new RWFileSystem with the specified root (similar to http.Dir)
+func Dir(root string) RWFileSystem {
+	return &dir{
 		http.Dir(root),
 		root,
 	}
 }
 
-func (d *Dir) absPath(path string) (string, error) {
+func (d *dir) absPath(path string) (string, error) {
 	cleanPath := filepath.Clean(d.root + "/" + path)
 	path, err := filepath.Abs(cleanPath)
 	if err != nil {
@@ -57,7 +57,7 @@ func (d *Dir) absPath(path string) (string, error) {
 }
 
 // Create a file rooted in the Dir file system.
-func (d *Dir) Create(path string) (io.WriteCloser, error) {
+func (d *dir) Create(path string) (io.WriteCloser, error) {
 	absPath, err := d.absPath(path)
 	if err != nil {
 		return nil, err
@@ -70,7 +70,7 @@ func (d *Dir) Create(path string) (io.WriteCloser, error) {
 }
 
 // Wait implements RWFileSystem.
-func (d *Dir) Wait() error { return nil }
+func (d *dir) Wait() error { return nil }
 
 // CachedFileSystem is an implemetation of http.FileServer which caches the results of
 // calls to src in a RWFileSystem.

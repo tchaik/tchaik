@@ -23,42 +23,33 @@ import (
 
 	"github.com/dhowden/tchaik/index"
 	"github.com/dhowden/tchaik/store"
-	"github.com/dhowden/tchaik/store/cafs"
+	"github.com/dhowden/tchaik/store/cmdflag"
 )
 
 var debug bool
 var xml, tchJSON string
-var listenAddr string
-var auth bool
-var certFile, keyFile string
-var trimLocationPrefix, addLocationPrefix string
 
-var localRoot, localCache string
-var localArtworkCache string
-var fileServerAddr string
-var fileServerChunkSize int
+var listenAddr string
+var certFile, keyFile string
+
+var auth bool
+
+var trimLocationPrefix, addLocationPrefix string
 
 func init() {
 	flag.BoolVar(&debug, "debug", false, "print debugging information")
 
+	flag.StringVar(&listenAddr, "http", "localhost:8080", "bind address to http listen")
+	flag.StringVar(&certFile, "cert", "", "path to an SSL certificate file.  Must also specify -key")
+	flag.StringVar(&keyFile, "key", "", "path to an SSL certificate key file.  Must also specify -cert")
+
 	flag.StringVar(&xml, "xml", "", "path to iTunes Library XML file")
 	flag.StringVar(&tchJSON, "tchJSON", "", "path to Tchaik Library file")
-	flag.StringVar(&listenAddr, "http", "localhost:8080", "bind address to http listen")
 
-	flag.BoolVar(&auth, "auth", true, "use basic HTTP authentication")
-
-	flag.StringVar(&certFile, "cert", "", "path to an SSL certificate file.  Must also specify key")
-	flag.StringVar(&keyFile, "key", "", "path to an SSL certificate key file.  Must also specify certificate")
+	flag.BoolVar(&auth, "auth", false, "use basic HTTP authentication")
 
 	flag.StringVar(&trimLocationPrefix, "trim", "", "trim the location prefix by the given string")
 	flag.StringVar(&addLocationPrefix, "prefix", "", "add the given prefix to location")
-
-	flag.StringVar(&localRoot, "local-root", "", "the local (readonly) root of the media filesystem")
-	flag.StringVar(&localCache, "local-cache", "", "the local (read/write cached) root of the media filesystem")
-	flag.StringVar(&localArtworkCache, "artwork-cache", "", "the local root of the artwork cache")
-
-	flag.StringVar(&fileServerAddr, "remote-url", "", "the url for the remote media filesystem")
-	flag.IntVar(&fileServerChunkSize, "remote-url-fetch-chunk-size", 32*1024, "chunk size of downloads from remote media filesystem")
 }
 
 var creds = httpauth.Creds(map[string]string{
@@ -126,39 +117,10 @@ func main() {
 	s := index.FlatSearcher{index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10))}
 	fmt.Println("done.")
 
-	var fileSystem http.FileSystem
-	if localRoot != "" {
-		fileSystem = store.MultiFileSystem(
-			http.Dir(localRoot), // first read from the local system, then from the remote, no caching.
-			store.NewRemoteChunkedFileSystem(
-				store.NewClient(fileServerAddr, ""),
-				int64(fileServerChunkSize),
-			),
-		)
-	} else {
-		// for the moment don't chunk this (assumed to be local)
-		fileSystem = store.NewFileSystem(store.NewClient(fileServerAddr, ""))
-	}
-
-	var artworkFileSystem http.FileSystem
-	if localArtworkCache != "" {
-		fs, err := cafs.New(store.NewDir(localArtworkCache))
-		if err != nil {
-			fmt.Printf("error initialising artwork cafs: %v\n", err)
-			os.Exit(1)
-		}
-		var errCh <-chan error
-		artworkFileSystem, errCh = store.NewCachedFileSystem(
-			&store.ArtworkFileSystem{fileSystem},
-			fs,
-		)
-		go func() {
-			for err := range errCh {
-				log.Println(err)
-			}
-		}()
-	} else {
-		artworkFileSystem = store.NewFileSystem(store.NewClient(fileServerAddr, "artwork"))
+	fileSystem, artworkFileSystem, err := cmdflag.Stores()
+	if err != nil {
+		fmt.Println("error setting up stores:", err)
+		os.Exit(1)
 	}
 
 	libAPI := LibraryAPI{
