@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// Package cmdflag unifies the configuration of stores using command line flags accross tools
-// in tchaik.
+// Package cmdflag unifies the configuration of stores using command line flags across
+// several tools.
 package cmdflag
 
 import (
