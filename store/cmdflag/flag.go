@@ -21,6 +21,7 @@ import (
 
 var localStore, remoteStore string
 var mediaFileSystemCache, artworkFileSystemCache string
+var trimPathPrefix, addPathPrefix string
 
 func init() {
 	flag.StringVar(&localStore, "local-store", "/", "local media store, full local path /path/to/root")
@@ -28,6 +29,9 @@ func init() {
 
 	flag.StringVar(&artworkFileSystemCache, "artwork-cache", "", "path to local artwork cache (content addressable)")
 	flag.StringVar(&mediaFileSystemCache, "media-cache", "", "path to local media cache")
+
+	flag.StringVar(&trimPathPrefix, "trim-path-prefix", "", "remove prefix from every path")
+	flag.StringVar(&addPathPrefix, "add-path-prefix", "", "add prefix to every path")
 }
 
 type stores struct {
@@ -131,6 +135,11 @@ func Stores() (media, artwork http.FileSystem, err error) {
 	err = buildArtworkCache(s)
 	if err != nil {
 		return nil, nil, err
+	}
+
+	if trimPathPrefix != "" || addPathPrefix != "" {
+		s.media = store.NewPathRewrite(s.media, trimPathPrefix, addPathPrefix)
+		s.artwork = store.NewPathRewrite(s.artwork, trimPathPrefix, addPathPrefix)
 	}
 
 	return s.media, s.artwork, nil

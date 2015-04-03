@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"os"
-	"strings"
 	"sync"
 
 	"golang.org/x/net/websocket"
@@ -34,8 +33,6 @@ var certFile, keyFile string
 
 var auth bool
 
-var trimLocationPrefix, addLocationPrefix string
-
 func init() {
 	flag.BoolVar(&debug, "debug", false, "print debugging information")
 
@@ -47,9 +44,6 @@ func init() {
 	flag.StringVar(&tchLib, "lib", "", "path to Tchaik library file")
 
 	flag.BoolVar(&auth, "auth", false, "use basic HTTP authentication")
-
-	flag.StringVar(&trimLocationPrefix, "trim-location-prefix", "", "trim the location prefix by the given string")
-	flag.StringVar(&addLocationPrefix, "add-location-prefix", "", "add the given prefix to location")
 }
 
 var creds = httpauth.Creds(map[string]string{
@@ -140,14 +134,16 @@ func main() {
 		artworkFileSystem = store.LogFileSystem{"Artwork", artworkFileSystem}
 	}
 
+	mediaFileSystem = &libraryFileSystem{mediaFileSystem, l}
+	artworkFileSystem = &libraryFileSystem{artworkFileSystem, l}
+
 	libAPI := LibraryAPI{
-		Library:        l,
-		root:           root,
-		searcher:       searcher,
-		trackHandler:   http.FileServer(mediaFileSystem),
-		artworkHandler: http.FileServer(artworkFileSystem),
+		Library:  l,
+		root:     root,
+		searcher: searcher,
 	}
-	m := buildServeMux(libAPI)
+
+	m := buildMainHandler(libAPI, mediaFileSystem, artworkFileSystem)
 
 	if certFile != "" && keyFile != "" {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
@@ -162,31 +158,24 @@ func main() {
 	log.Fatal(http.ListenAndServe(listenAddr, m))
 }
 
-func buildServeMux(l LibraryAPI) *http.ServeMux {
+func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.FileSystem) http.Handler {
 	var c httpauth.Checker = httpauth.None{}
 	if auth {
 		c = creds
 	}
 
-	m := http.NewServeMux()
-	w := httpauth.Wrapper{c}
-	m.HandleFunc("/", w.HandlerFunc(rootHandler))
-	m.Handle("/static/", w.Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static")))))
-	m.HandleFunc("/track/", w.HandlerFunc(l.TrackHandler))
-	m.HandleFunc("/artwork/", w.HandlerFunc(l.ArtworkHandler))
-	m.Handle("/socket", w.Handler(websocket.Handler(socketHandler(l))))
-	return m
+	w := httpauth.NewServeMux(c, http.NewServeMux())
+	w.HandleFunc("/", rootHandler)
+	w.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static"))))
+	w.Handle("/track/", http.StripPrefix("/track/", http.FileServer(mediaFileSystem)))
+	w.Handle("/artwork/", http.StripPrefix("/artwork/", http.FileServer(artworkFileSystem)))
+	w.Handle("/socket", websocket.Handler(socketHandler(l)))
+	return w
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
 	http.ServeFile(w, r, "ui/tchaik.html")
-}
-
-func rewriteLocation(l string) string {
-	l = strings.TrimPrefix(l, trimLocationPrefix)
-	l = addLocationPrefix + l
-	return l
 }
 
 func debugDumpRequest(r *http.Request) {
@@ -197,199 +186,6 @@ func debugDumpRequest(r *http.Request) {
 		}
 		fmt.Println(string(rb))
 	}
-}
-
-type LibraryAPI struct {
-	index.Library
-
-	root           index.Collection
-	searcher       index.Searcher
-	trackHandler   http.Handler
-	artworkHandler http.Handler
-}
-
-func (l *LibraryAPI) locationForRequest(r *http.Request, prefix string) (string, error) {
-	id := strings.TrimPrefix(r.URL.Path, prefix)
-	t, ok := l.Track(id)
-	if !ok {
-		return "", fmt.Errorf("could not find track: %v\n", id)
-	}
-
-	loc := t.GetString("Location")
-	if loc == "" {
-		return "", fmt.Errorf("invalid (empty) location for track: %v", id)
-	}
-	return rewriteLocation(loc), nil
-}
-
-func (l *LibraryAPI) TrackHandler(w http.ResponseWriter, r *http.Request) {
-	debugDumpRequest(r)
-
-	loc, err := l.locationForRequest(r, "/track/")
-	if err != nil {
-		fmt.Println(err)
-		http.NotFound(w, r)
-		return
-	}
-	r.URL.Path = loc
-	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
-	l.trackHandler.ServeHTTP(w, r)
-}
-
-func (l *LibraryAPI) ArtworkHandler(w http.ResponseWriter, r *http.Request) {
-	debugDumpRequest(r)
-
-	loc, err := l.locationForRequest(r, "/artwork/")
-	if err != nil {
-		fmt.Println(err)
-		http.NotFound(w, r)
-		return
-	}
-	r.URL.Path = loc
-	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
-	l.artworkHandler.ServeHTTP(w, r)
-}
-
-type group struct {
-	Name        string
-	Key         index.Key
-	TotalTime   interface{} `json:",omitempty"`
-	Artist      interface{} `json:",omitempty"`
-	AlbumArtist interface{} `json:",omitempty"`
-	Composer    interface{} `json:",omitempty"`
-	ListStyle   interface{} `json:",omitempty"`
-	TrackID     interface{} `json:",omitempty"`
-	Year        interface{} `json:",omitempty"`
-	Groups      []group     `json:",omitempty"`
-	Tracks      []track     `json:",omitempty"`
-}
-
-type track struct {
-	TrackID     string `json:",omitempty"`
-	Name        string `json:",omitempty"`
-	Album       string `json:",omitempty"`
-	Artist      string `json:",omitempty"`
-	AlbumArtist string `json:",omitempty"`
-	Composer    string `json:",omitempty"`
-	Year        int    `json:",omitempty"`
-	DiscNumber  int    `json:",omitempty"`
-	TotalTime   int    `json:",omitempty"`
-}
-
-func (l *LibraryAPI) build(g index.Group, key index.Key) group {
-	h := group{
-		Name:        g.Name(),
-		Key:         key,
-		TotalTime:   g.Field("TotalTime"),
-		Artist:      g.Field("Artist"),
-		AlbumArtist: g.Field("AlbumArtist"),
-		Composer:    g.Field("Composer"),
-		Year:        g.Field("Year"),
-		ListStyle:   g.Field("ListStyle"),
-		TrackID:     g.Field("TrackID"),
-	}
-
-	if c, ok := g.(index.Collection); ok {
-		for _, k := range c.Keys() {
-			sg := c.Get(k)
-			sg = index.FirstTrackAttr(index.StringAttr("TrackID"), sg)
-			h.Groups = append(h.Groups, group{
-				Name:    sg.Name(),
-				Key:     k,
-				TrackID: sg.Field("TrackID"),
-			})
-		}
-		return h
-	}
-
-	getString := func(t index.Track, field string) string {
-		if g.Field(field) != "" {
-			return ""
-		}
-		return t.GetString(field)
-	}
-
-	getInt := func(t index.Track, field string) int {
-		if g.Field(field) != 0 {
-			return 0
-		}
-		return t.GetInt(field)
-	}
-
-	for _, t := range g.Tracks() {
-		h.Tracks = append(h.Tracks, track{
-			TrackID:    t.GetString("TrackID"),
-			Name:       t.GetString("Name"),
-			TotalTime:  t.GetInt("TotalTime"),
-			DiscNumber: t.GetInt("DiscNumber"),
-			// Potentially common fields (don't want to re-transmit everything)
-			Album:       getString(t, "Album"),
-			Artist:      getString(t, "Artist"),
-			AlbumArtist: getString(t, "AlbumArtist"),
-			Composer:    getString(t, "Composer"),
-			Year:        getInt(t, "Year"),
-		})
-	}
-	return h
-}
-
-func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
-	var k index.Key
-	var g index.Group
-	g = c
-
-	if len(path) > 0 {
-		k = index.Key(path[0])
-		g = c.Get(k)
-
-		if g == nil {
-			return group{}, fmt.Errorf("invalid path: near '%v'", path[0])
-		}
-
-		index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
-		c = index.ByPrefix("Name").Collect(g)
-		c = index.SubTransform(c, index.TrimEnumPrefix)
-		g = c
-		g = index.SumGroupIntAttr("TotalTime", g)
-		commonFields := []index.Attr{
-			index.StringAttr("Album"),
-			index.StringAttr("Artist"),
-			index.StringAttr("AlbumArtist"),
-			index.StringAttr("Composer"),
-			index.IntAttr("Year"),
-		}
-		g = index.CommonGroupAttr(commonFields, g)
-		g = index.RemoveEmptyCollections(g)
-
-		for i, p := range path[1:] {
-			var ok bool
-			c, ok = g.(index.Collection)
-			if !ok {
-				return group{}, fmt.Errorf("retrieved Group is not a Collection")
-			}
-			k = index.Key(p)
-			g = c.Get(k)
-
-			if g == nil {
-				return group{}, fmt.Errorf("invalid path near '%v'", path[1:][i])
-			}
-
-			c, ok = g.(index.Collection)
-			if !ok {
-				if i == len(path[1:])-1 {
-					break
-				}
-				return group{}, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
-			}
-		}
-		if g == nil {
-			return group{}, fmt.Errorf("could not find group")
-		}
-		g = index.FirstTrackAttr(index.StringAttr("TrackID"), g)
-	} else {
-		k = index.Key("Root")
-	}
-	return l.build(g, k), nil
 }
 
 // Websocket handling
