@@ -48,8 +48,8 @@ func init() {
 
 	flag.BoolVar(&auth, "auth", false, "use basic HTTP authentication")
 
-	flag.StringVar(&trimLocationPrefix, "trim", "", "trim the location prefix by the given string")
-	flag.StringVar(&addLocationPrefix, "prefix", "", "add the given prefix to location")
+	flag.StringVar(&trimLocationPrefix, "trim-location-prefix", "", "trim the location prefix by the given string")
+	flag.StringVar(&addLocationPrefix, "add-location-prefix", "", "add the given prefix to location")
 }
 
 var creds = httpauth.Creds(map[string]string{
