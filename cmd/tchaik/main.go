@@ -344,8 +344,8 @@ func handleCollectionList(l LibraryAPI, x *Command, out chan<- interface{}) {
 	out <- o
 }
 
-func handleSearch(s index.Searcher, x *Command, out chan<- interface{}) {
-	paths := s.Search(x.Input)
+func handleSearch(l LibraryAPI, x *Command, out chan<- interface{}) {
+	paths := l.searcher.Search(x.Input)
 	o := struct {
 		Action string
 		Data   interface{}
