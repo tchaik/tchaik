@@ -176,3 +176,8 @@ func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
 	}
 	return build(g, k), nil
 }
+
+func (l *LibraryAPI) FileSystem(fs http.FileSystem) http.FileSystem {
+	return &libraryFileSystem{fs, l.Library}
+}
+

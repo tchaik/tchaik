@@ -137,14 +137,14 @@ func main() {
 		}
 	}
 
-	mediaFileSystem = &libraryFileSystem{mediaFileSystem, l}
-	artworkFileSystem = &libraryFileSystem{artworkFileSystem, l}
-
 	libAPI := LibraryAPI{
 		Library:  l,
 		root:     root,
 		searcher: searcher,
 	}
+
+	mediaFileSystem = libAPI.FileSystem(mediaFileSystem)
+	artworkFileSystem = libAPI.FileSystem(artworkFileSystem)
 
 	m := buildMainHandler(libAPI, mediaFileSystem, artworkFileSystem)
 
