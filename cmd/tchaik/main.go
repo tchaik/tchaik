@@ -103,7 +103,7 @@ func buildRootCollection(l index.Library) index.Collection {
 func buildSearchIndex(c index.Collection) index.Searcher {
 	wi := index.BuildWordIndex(c, []string{"Composer", "Artist", "Album", "Name"})
 	return index.FlatSearcher{
-		index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10)),
+		Searcher: index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10)),
 	}
 }
 
@@ -130,8 +130,14 @@ func main() {
 	}
 
 	if debug {
-		mediaFileSystem = store.LogFileSystem{"Media", mediaFileSystem}
-		artworkFileSystem = store.LogFileSystem{"Artwork", artworkFileSystem}
+		mediaFileSystem = store.LogFileSystem{
+			Name:      "Media",
+			FileSystem: mediaFileSystem,
+		}
+		artworkFileSystem = store.LogFileSystem{
+			Name:      "Artwork",
+			FileSystem: artworkFileSystem,
+		}
 	}
 
 	mediaFileSystem = &libraryFileSystem{mediaFileSystem, l}
