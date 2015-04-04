@@ -141,6 +141,5 @@ func Stores() (media, artwork http.FileSystem, err error) {
 		s.media = store.NewPathRewrite(s.media, trimPathPrefix, addPathPrefix)
 		s.artwork = store.NewPathRewrite(s.artwork, trimPathPrefix, addPathPrefix)
 	}
-
 	return s.media, s.artwork, nil
 }
