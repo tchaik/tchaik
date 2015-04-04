@@ -119,61 +119,58 @@ func build(g index.Group, key index.Key) group {
 }
 
 func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
-	var k index.Key
-	var g index.Group
-	g = c
+	if len(path) == 0 {
+		return build(c, index.Key("Root")), nil
+	}
 
-	if len(path) > 0 {
-		k = index.Key(path[0])
+	var g index.Group = c
+	k := index.Key(path[0])
+	g = c.Get(k)
+
+	if g == nil {
+		return group{}, fmt.Errorf("invalid path: near '%v'", path[0])
+	}
+
+	index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
+	c = index.ByPrefix("Name").Collect(g)
+	c = index.SubTransform(c, index.TrimEnumPrefix)
+	g = c
+	g = index.SumGroupIntAttr("TotalTime", g)
+	commonFields := []index.Attr{
+		index.StringAttr("Album"),
+		index.StringAttr("Artist"),
+		index.StringAttr("AlbumArtist"),
+		index.StringAttr("Composer"),
+		index.IntAttr("Year"),
+	}
+	g = index.CommonGroupAttr(commonFields, g)
+	g = index.RemoveEmptyCollections(g)
+
+	for i, p := range path[1:] {
+		var ok bool
+		c, ok = g.(index.Collection)
+		if !ok {
+			return group{}, fmt.Errorf("retrieved Group is not a Collection")
+		}
+		k = index.Key(p)
 		g = c.Get(k)
 
 		if g == nil {
-			return group{}, fmt.Errorf("invalid path: near '%v'", path[0])
+			return group{}, fmt.Errorf("invalid path near '%v'", path[1:][i])
 		}
 
-		index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
-		c = index.ByPrefix("Name").Collect(g)
-		c = index.SubTransform(c, index.TrimEnumPrefix)
-		g = c
-		g = index.SumGroupIntAttr("TotalTime", g)
-		commonFields := []index.Attr{
-			index.StringAttr("Album"),
-			index.StringAttr("Artist"),
-			index.StringAttr("AlbumArtist"),
-			index.StringAttr("Composer"),
-			index.IntAttr("Year"),
-		}
-		g = index.CommonGroupAttr(commonFields, g)
-		g = index.RemoveEmptyCollections(g)
-
-		for i, p := range path[1:] {
-			var ok bool
-			c, ok = g.(index.Collection)
-			if !ok {
-				return group{}, fmt.Errorf("retrieved Group is not a Collection")
+		if _, ok = g.(index.Collection); !ok {
+			if i == len(path[1:])-1 {
+				break
 			}
-			k = index.Key(p)
-			g = c.Get(k)
-
-			if g == nil {
-				return group{}, fmt.Errorf("invalid path near '%v'", path[1:][i])
-			}
-
-			c, ok = g.(index.Collection)
-			if !ok {
-				if i == len(path[1:])-1 {
-					break
-				}
-				return group{}, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
-			}
+			return group{}, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
 		}
-		if g == nil {
-			return group{}, fmt.Errorf("could not find group")
-		}
-		g = index.FirstTrackAttr(index.StringAttr("TrackID"), g)
-	} else {
-		k = index.Key("Root")
 	}
+	if g == nil {
+		return group{}, fmt.Errorf("could not find group")
+	}
+	g = index.FirstTrackAttr(index.StringAttr("TrackID"), g)
+
 	return build(g, k), nil
 }
 
