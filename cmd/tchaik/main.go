@@ -130,11 +130,11 @@ func main() {
 
 	if debug {
 		mediaFileSystem = store.LogFileSystem{
-			Name:      "Media",
+			Name:       "Media",
 			FileSystem: mediaFileSystem,
 		}
 		artworkFileSystem = store.LogFileSystem{
-			Name:      "Artwork",
+			Name:       "Artwork",
 			FileSystem: artworkFileSystem,
 		}
 	}
