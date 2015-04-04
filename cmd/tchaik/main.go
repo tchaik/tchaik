@@ -191,7 +191,16 @@ func debugDumpRequest(r *http.Request) {
 // Websocket handling
 type socket struct {
 	io.ReadWriter
-	done <-chan struct{}
+	done chan struct{}
+}
+
+func (s *socket) Close() {
+	select {
+	case <-s.done:
+		return
+	default:
+	}
+	close(s.done)
 }
 
 type Command struct {
@@ -209,27 +218,37 @@ func socketHandler(l LibraryAPI) func(ws *websocket.Conn) {
 	return func(ws *websocket.Conn) {
 		s := socket{ws, make(chan struct{})}
 		out, in := make(chan interface{}), make(chan *Command)
-		errc := make(chan error, 1)
+		errCh := make(chan error)
 
 		wg := &sync.WaitGroup{}
-		wg.Add(3)
+		wg.Add(2)
 
 		// Encode messages from process and encode to the client
 		enc := json.NewEncoder(s)
 		go func() {
 			defer wg.Done()
-			for x := range out {
-				if debug {
-					b, err := json.MarshalIndent(x, "", "  ")
-					if err != nil {
-						log.Fatal(err)
-					}
-					fmt.Println(string(b))
-				}
+			defer s.Close()
 
-				if err := enc.Encode(x); err != nil {
-					fmt.Printf("error sending %v: %v\n", x, err)
-					errc <- err
+			for {
+				select {
+				case x, ok := <-out:
+					if !ok {
+						return
+					}
+
+					if debug {
+						b, err := json.MarshalIndent(x, "", "  ")
+						if err != nil {
+							log.Fatal(err)
+						}
+						fmt.Println(string(b))
+					}
+
+					if err := enc.Encode(x); err != nil {
+						errCh <- fmt.Errorf("encode: %v", err)
+						return
+					}
+				case <-s.done:
 					return
 				}
 			}
@@ -238,12 +257,17 @@ func socketHandler(l LibraryAPI) func(ws *websocket.Conn) {
 		// Decode messages from the client and send them on the in channel
 		go func() {
 			defer wg.Done()
+			defer s.Close()
+
 			dec := json.NewDecoder(s)
 			for {
 				c := &Command{}
 				if err := dec.Decode(c); err != nil {
-					fmt.Println("decode:", err)
-					errc <- err
+					if err == io.EOF && debug {
+						fmt.Println("websocket closed")
+						return
+					}
+					errCh <- err
 					return
 				}
 				in <- c
@@ -251,18 +275,33 @@ func socketHandler(l LibraryAPI) func(ws *websocket.Conn) {
 		}()
 
 		go func() {
-			defer wg.Done()
 			for x := range in {
 				if debug {
-					fmt.Printf("Command Received: %#v\n", x)
+					fmt.Printf("command received: %#v\n", x)
 				}
 				switch x.Action {
 				case FetchAction:
 					handleCollectionList(l, x, out)
 				case SearchAction:
-					handleSearch(l.searcher, x, out)
+					handleSearch(l, x, out)
 				default:
 					fmt.Printf("unknown command: %v", x.Action)
+				}
+			}
+		}()
+
+		go func() {
+			wg.Wait()
+
+			close(in)
+			close(out)
+			close(errCh)
+		}()
+
+		go func() {
+			for err := range errCh {
+				if err != nil {
+					fmt.Printf("websocket handler: %v\n", err)
 				}
 			}
 		}()
