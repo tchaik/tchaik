@@ -5,14 +5,12 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"sync"
 
 	"golang.org/x/net/websocket"
 
@@ -183,22 +181,6 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "ui/tchaik.html")
 }
 
-
-// Websocket handling
-type socket struct {
-	io.ReadWriter
-	done chan struct{}
-}
-
-func (s *socket) Close() {
-	select {
-	case <-s.done:
-		return
-	default:
-	}
-	close(s.done)
-}
-
 type Command struct {
 	Action string
 	Input  string
@@ -212,136 +194,79 @@ const (
 
 func socketHandler(l LibraryAPI) func(ws *websocket.Conn) {
 	return func(ws *websocket.Conn) {
-		s := socket{ws, make(chan struct{})}
-		out, in := make(chan interface{}), make(chan *Command)
-		errCh := make(chan error)
+		defer ws.Close()
 
-		wg := &sync.WaitGroup{}
-		wg.Add(2)
-
-		// Encode messages from process and encode to the client
-		enc := json.NewEncoder(s)
-		go func() {
-			defer wg.Done()
-			defer s.Close()
-
-			for {
-				select {
-				case x, ok := <-out:
-					if !ok {
-						return
-					}
-
-					if debug {
-						b, err := json.MarshalIndent(x, "", "  ")
-						if err != nil {
-							log.Fatal(err)
-						}
-						fmt.Println(string(b))
-					}
-
-					if err := enc.Encode(x); err != nil {
-						errCh <- fmt.Errorf("encode: %v", err)
-						return
-					}
-				case <-s.done:
-					return
+		var err error
+		for {
+			var c Command
+			err = websocket.JSON.Receive(ws, &c)
+			if err != nil {
+				if err != io.EOF {
+					err = fmt.Errorf("receive: %v", err)
 				}
+				break
 			}
-		}()
 
-		// Decode messages from the client and send them on the in channel
-		go func() {
-			defer wg.Done()
-			defer s.Close()
-
-			dec := json.NewDecoder(s)
-			for {
-				c := &Command{}
-				if err := dec.Decode(c); err != nil {
-					if err == io.EOF && debug {
-						fmt.Println("websocket closed")
-						return
-					}
-					errCh <- err
-					return
-				}
-				in <- c
+			var resp interface{}
+			switch c.Action {
+			case FetchAction:
+				resp, err = handleCollectionList(l, c)
+			case SearchAction:
+				resp = handleSearch(l, c)
+			default:
+				err = fmt.Errorf("unknown action: %v", c.Action)
 			}
-		}()
 
-		go func() {
-			for x := range in {
-				if debug {
-					fmt.Printf("command received: %#v\n", x)
-				}
-				switch x.Action {
-				case FetchAction:
-					handleCollectionList(l, x, out)
-				case SearchAction:
-					handleSearch(l, x, out)
-				default:
-					fmt.Printf("unknown command: %v", x.Action)
-				}
+			if err != nil {
+				break
 			}
-		}()
 
-		go func() {
-			wg.Wait()
-
-			close(in)
-			close(out)
-			close(errCh)
-		}()
-
-		go func() {
-			for err := range errCh {
-				if err != nil {
-					fmt.Printf("websocket handler: %v\n", err)
+			err = websocket.JSON.Send(ws, resp)
+			if err != nil {
+				if err != io.EOF {
+					err = fmt.Errorf("send: %v", err)
 				}
+				break
 			}
-		}()
+		}
 
-		select {}
+		if err != nil && err != io.EOF {
+			fmt.Printf("socket error: %v", err)
+		}
 	}
 }
 
-func handleCollectionList(l LibraryAPI, x *Command, out chan<- interface{}) {
-	if len(x.Path) < 1 {
-		fmt.Printf("invalid path: %v\n", x.Path)
-		return
+func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
+	if len(c.Path) < 1 {
+		return nil, fmt.Errorf("invalid path: %v\n", c.Path)
 	}
 
-	g, err := l.Fetch(l.root, x.Path[1:])
+	g, err := l.Fetch(l.root, c.Path[1:])
 	if err != nil {
-		fmt.Printf("error in Fetch: %v (path: %#v)", err, x.Path[1:])
-		return
+		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, c.Path[1:])
 	}
 
-	o := struct {
+	return struct {
 		Action string
 		Data   interface{}
 	}{
-		x.Action,
+		c.Action,
 		struct {
 			Path []string
 			Item group
 		}{
-			x.Path,
+			c.Path,
 			g,
 		},
-	}
-	out <- o
+	}, nil
 }
 
-func handleSearch(l LibraryAPI, x *Command, out chan<- interface{}) {
-	paths := l.searcher.Search(x.Input)
-	o := struct {
+func handleSearch(l LibraryAPI, c Command) interface{} {
+	return struct {
 		Action string
 		Data   interface{}
 	}{
-		Action: x.Action,
-		Data:   paths,
+		Action: c.Action,
+		Data:   l.searcher.Search(c.Input),
 	}
-	out <- o
 }
