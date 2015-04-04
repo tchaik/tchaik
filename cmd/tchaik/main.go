@@ -11,7 +11,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"sync"
 
@@ -184,15 +183,6 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "ui/tchaik.html")
 }
 
-func debugDumpRequest(r *http.Request) {
-	if debug {
-		rb, err := httputil.DumpRequest(r, true)
-		if err != nil {
-			fmt.Println("could not dump request:", err)
-		}
-		fmt.Println(string(rb))
-	}
-}
 
 // Websocket handling
 type socket struct {
