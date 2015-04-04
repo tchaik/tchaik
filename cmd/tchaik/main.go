@@ -324,7 +324,7 @@ func handleCollectionList(l LibraryAPI, x *Command, out chan<- interface{}) {
 
 	g, err := l.Fetch(l.root, x.Path[1:])
 	if err != nil {
-		fmt.Println("error in Fetch: %v (path: %#v)", err, x.Path[1:])
+		fmt.Printf("error in Fetch: %v (path: %#v)", err, x.Path[1:])
 		return
 	}
 
