@@ -9,6 +9,8 @@ var PlaylistConstants = require('../constants/PlaylistConstants.js');
 
 var PlaylistStore = require('./PlaylistStore.js');
 
+var ControlApiConstants = require('../constants/ControlApiConstants.js');
+
 var CHANGE_EVENT = 'change';
 
 var defaultVolume = 0.75;
@@ -127,19 +129,72 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
 
 });
 
+function handlePrevAction() {
+  AppDispatcher.waitFor([
+    PlaylistStore.dispatchToken,
+  ]);
+  setCurrentTrack(PlaylistStore.getCurrentTrack());
+  NowPlayingStore.emitChange();
+}
+
+function handleNextAction() {
+  AppDispatcher.waitFor([
+    PlaylistStore.dispatchToken,
+  ]);
+  setCurrentTrack(PlaylistStore.getCurrentTrack());
+  NowPlayingStore.emitChange();
+}
+
 NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
+
+  if (source === 'SERVER_ACTION') {
+    if (action.actionType === ControlApiConstants.CTRL) {
+      switch (action.data) {
+
+        case ControlApiConstants.PLAY:
+          setPlaying(true);
+          NowPlayingStore.emitChange();
+          break;
+
+        case ControlApiConstants.PAUSE:
+          setPlaying(false);
+          NowPlayingStore.emitChange();
+          break;
+
+        case ControlApiConstants.NEXT:
+          handleNextAction();
+          break;
+
+        case ControlApiConstants.PREV:
+          handlePrevAction();
+          break;
+
+        default:
+          break;
+      }
+
+      if (action.data.Key) {
+        switch (action.data.Key) {
+          case "volume":
+            setVolume(action.data.Value);
+            NowPlayingStore.emitChange();
+            break;
+
+          default:
+            console.log("Unknown key:", action.data.Key);
+            break;
+        }
+      }
+    }
+  }
 
   if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
 
       case PlaylistConstants.PREV:
-        AppDispatcher.waitFor([
-          PlaylistStore.dispatchToken,
-        ]);
-        setCurrentTrack(PlaylistStore.getCurrentTrack());
-        NowPlayingStore.emitChange();
+        handlePrevAction();
         break;
 
       case NowPlayingConstants.ENDED:
@@ -148,11 +203,7 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         }
         /* falls through */
       case PlaylistConstants.NEXT:
-        AppDispatcher.waitFor([
-          PlaylistStore.dispatchToken,
-        ]);
-        setCurrentTrack(PlaylistStore.getCurrentTrack());
-        NowPlayingStore.emitChange();
+        handleNextAction();
         break;
 
       case NowPlayingConstants.SET_PLAYING:

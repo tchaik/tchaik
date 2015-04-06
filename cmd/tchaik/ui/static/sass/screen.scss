@@ -86,60 +86,55 @@ div#header {
   bottom: 0;
   width: $left-column-width;
 
-  @media (max-width: 1000px) {
-    height: $header-height;
-    right: $right-column-width;
-    z-index: 10;
-    border-bottom: 1px solid #555;
-  }
-
-   h1 {
-      @include fade-in(color);
-      font-size: 24px;
-      font-weight: 600;
-      padding: 8px 12px 8px;
-      margin: 0;
-      float: left;
-      color: white;
-      text-transform: lowercase;
-   }
-
-   div.status {
-      @include fade-in(color);
-      float: right;
-      font-size: 24px;
-      padding: 4px;
-      margin: 8px;
-      font-weight: 500;
-
-      &.open {
-         color: lighten(#00BFFF, 10);
-      }
-      color: lighten(#FF00BF, 10);
-   }
-
    span.item {
      color: #bbb;
-     margin: 10px;
+     padding: 10px;
      font-size: 11px;
      float: left;
-
-     &.selected {
-       color: lighten($light-blue, 20);
-
-       &:hover {
-         color: lighten($light-blue, 20);
-       };
-     }
-
-     &:hover {
-       color: white;
-     };
 
      span.glyphicon {
        font-size: 20px;
        display: block;
      }
+
+     &.toolbar {
+       &.selected {
+         color: lighten($light-blue, 20);
+
+         &:hover {
+           color: lighten($light-blue, 20);
+         };
+       }
+
+       &:hover {
+         color: white;
+       };
+     }
+
+     &.status {
+       &.open {
+          color: lighten(#00BFFF, 10);
+       }
+       color: lighten(#FF00BF, 10);
+     }
+
+     &.key {
+       &:hover {
+         color: white;
+       }
+
+       &.set {
+         color: white;
+         background-color: #444;
+       }
+     }
+   }
+
+   .bottom {
+     position: absolute;
+     bottom: 0;
+     left: 0;
+     padding-bottom: 5px;
    }
 }
 

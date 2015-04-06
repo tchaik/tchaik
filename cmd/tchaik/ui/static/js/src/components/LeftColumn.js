@@ -7,6 +7,7 @@ var classNames = require('classnames');
 
 var Icon = require('./Icon.js');
 var StatusView = require('./Status.js');
+var ApiKeyView = require('./ApiKey.js');
 
 var RootCollection = require('./Collection.js').RootCollection;
 var Search = require('./Search.js');
@@ -39,6 +40,7 @@ var ToolbarItem = React.createClass({
     var {...other} = this.props;
     var classes = {
       item: true,
+      toolbar: true,
       selected: this.state.selected,
     };
     return (
@@ -97,7 +99,10 @@ var LeftColumn = React.createClass({
           <ToolbarItem mode="All" icon="align-justify" title="All" />
           <ToolbarItem mode="Browse" icon="list" title="Albums" />
           <ToolbarItem mode="Covers" icon="th-large" title="Covers" />
-          <StatusView />
+          <div className="bottom">
+            <StatusView />
+            <ApiKeyView />
+          </div>
         </div>
         <div id="container">
           {container}
