@@ -27,6 +27,18 @@ function currentTime() {
   return parseFloat(t);
 }
 
+function setCurrentTrackSource(source) {
+  localStorage.setItem("currentTrackSource", source);
+}
+
+function currentTrackSource() {
+  var s = localStorage.getItem("currentTrackSource");
+  if (s === null) {
+    return null;
+  }
+  return s;
+}
+
 function setCurrentTrack(track) {
   setCurrentTime(0);
   localStorage.setItem("currentTrack", JSON.stringify(track));
@@ -91,6 +103,10 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
     return currentTrack();
   },
 
+  getCurrentSource: function() {
+    return currentTrackSource();
+  },
+
   emitChange: function(type) {
     this.emit(CHANGE_EVENT, type);
   },
@@ -127,6 +143,9 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         break;
 
       case NowPlayingConstants.ENDED:
+        if (action.source !== "playlist") {
+          break;
+        }
         /* falls through */
       case PlaylistConstants.NEXT:
         AppDispatcher.waitFor([
@@ -152,6 +171,7 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.SET_CURRENT_TRACK:
         setCurrentTrack(action.track);
+        setCurrentTrackSource(action.source);
         NowPlayingStore.emitChange();
         break;
 

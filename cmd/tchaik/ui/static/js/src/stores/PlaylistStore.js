@@ -387,9 +387,9 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
 
       case NowPlayingConstants.ENDED:
-        // TODO: is the finished track the current playlist item?
-        // if so, then NEXT!, otherwise, continue where we were -
-        // if we were anywhere...
+        if (action.source !== "playlist") {
+          break;
+        }
         /* falls through */
       case PlaylistConstants.NEXT:
         next();

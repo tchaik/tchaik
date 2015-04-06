@@ -52,7 +52,7 @@ var NowPlaying = React.createClass({
       break;
 
     case "ended":
-      NowPlayingActions.ended();
+      NowPlayingActions.ended(NowPlayingStore.getCurrentSource());
       break;
 
     case "timeupdate":

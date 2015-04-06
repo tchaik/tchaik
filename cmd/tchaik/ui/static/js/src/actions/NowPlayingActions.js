@@ -27,9 +27,10 @@ var NowPlayingActions = {
     });
   },
 
-  ended: function() {
+  ended: function(source) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.ENDED,
+      source: source,
     });
   },
 

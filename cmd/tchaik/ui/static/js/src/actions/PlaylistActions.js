@@ -45,6 +45,7 @@ var PlaylistActions = {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_CURRENT_TRACK,
       track: data,
+      source: "playlist",
     });
   },
 
