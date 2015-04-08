@@ -41,6 +41,7 @@ function onOpen() {
   _websocket.open = true;
   WebsocketApi.emitChange();
   _websocket.queue.map(WebsocketApi.send);
+  _websocket.queue = [];
 }
 
 function onClose() {
