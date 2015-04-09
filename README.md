@@ -1,4 +1,4 @@
-# Tchaik: Music organisation and streaming system
+# Music organisation and streaming system
 
 Tchaik is an open source music organisation and streaming system.
 
