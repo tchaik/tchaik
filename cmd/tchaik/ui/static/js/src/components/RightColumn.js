@@ -22,7 +22,6 @@ var RightColumn = React.createClass({
       <div className="now-playing">
         <NowPlaying />
         <Controls />
-        <Volume width={100} markerWidth={2} />
         <Playlist />
       </div>
     );
@@ -55,7 +54,7 @@ var Controls = React.createClass({
     return (
       <div className="controls">
         <Icon icon="step-backward" extraClasses={prevClasses} onClick={this._onBackward} />
-        <Icon icon={this.state.playing ? "pause" : "play"} onClick={this._togglePlayPause} />
+        <span><Icon icon={this.state.playing ? "pause" : "play"} onClick={this._togglePlayPause} /></span>
         <Icon icon="step-forward" extraClasses={nextClasses} onClick={this._onForward} />
       </div>
     );
@@ -121,90 +120,6 @@ var Controls = React.createClass({
     PlaylistActions.next();
   },
 
-});
-
-function _getOffsetLeft(elem) {
-  var offsetLeft = 0;
-  do {
-    if (!isNaN(elem.offsetLeft)) {
-        offsetLeft += elem.offsetLeft;
-    }
-  } while ((elem = elem.offsetParent));
-  return offsetLeft;
-}
-
-var Volume = React.createClass({
-  propTypes: {
-    width: React.PropTypes.number.isRequired,
-    markerWidth: React.PropTypes.number.isRequired,
-  },
-
-  getInitialState: function() {
-    return {volume: NowPlayingStore.getVolume()};
-  },
-
-  componentDidMount: function() {
-    NowPlayingStore.addChangeListener(this._onChange);
-  },
-
-  componentWillUnmount: function() {
-    NowPlayingStore.removeChangeListener(this._onChange);
-  },
-
-  render: function() {
-    var classSuffix;
-    if (this.state.volume === 0.00) {
-      classSuffix = 'off';
-    } else if (this.state.volume < 0.5) {
-      classSuffix = 'down';
-    } else {
-      classSuffix = 'up';
-    }
-
-    var w = parseInt(this.state.volume * this.props.width);
-    var overflow = (w + this.props.markerWidth) - this.props.width;
-    if (overflow > 0) {
-      w -= overflow;
-    }
-
-    return (
-      <div className="volume" onMouseDown={this._onMouseDown} onWheel={this._onWheel} style={{width: this.props.width}}>
-        <Icon icon={'volume-' + classSuffix} onMouseDown={this._toggleMute} />
-        <span className="bar">
-          <span className="current" style={{width: w}} />
-          <span className="marker" style={{width: this.props.markerWidth}} />
-        </span>
-      </div>
-    );
-  },
-
-  _toggleMute: function(evt) {
-    evt.stopPropagation();
-    var v = (this.state.volume === 0.00) ? 0.75 : 0.00;
-    NowPlayingActions.volume(v);
-  },
-
-  _onWheel: function(evt) {
-    evt.stopPropagation();
-    var v = this.state.volume + 0.05 * evt.deltaY;
-    if (v > 1.0) {
-      v = 1.0;
-    } else if (v < 0.00) {
-      v = 0.0;
-    }
-    NowPlayingActions.volume(v);
-  },
-
-  _onMouseDown: function(evt) {
-    var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
-    var width = evt.currentTarget.offsetWidth;
-
-    NowPlayingActions.volume(pos/width);
-  },
-
-  _onChange: function() {
-    this.setState({volume: NowPlayingStore.getVolume()});
-  },
 });
 
 module.exports = RightColumn;

@@ -9,9 +9,12 @@ var PlaylistConstants = require('../constants/PlaylistConstants.js');
 
 var PlaylistStore = require('./PlaylistStore.js');
 
+var ControlApiConstants = require('../constants/ControlApiConstants.js');
+
 var CHANGE_EVENT = 'change';
 
 var defaultVolume = 0.75;
+var defaultVolumeMute = false;
 
 var currentPlaying = null;
 
@@ -25,6 +28,18 @@ function currentTime() {
     return 0;
   }
   return parseFloat(t);
+}
+
+function setCurrentTrackSource(source) {
+  localStorage.setItem("currentTrackSource", source);
+}
+
+function currentTrackSource() {
+  var s = localStorage.getItem("currentTrackSource");
+  if (s === null) {
+    return null;
+  }
+  return s;
 }
 
 function setCurrentTrack(track) {
@@ -73,6 +88,19 @@ function volume() {
   return parseFloat(v);
 }
 
+function setVolumeMute(v) {
+  localStorage.setItem("volumeMute", v);
+}
+
+function volumeMute() {
+  var v = localStorage.getItem("volumeMute");
+  if (v === null) {
+    setVolumeMute(defaultVolumeMute);
+    return defaultVolumeMute;
+  }
+  return (v === "true");
+}
+
 var NowPlayingStore = assign({}, EventEmitter.prototype, {
 
   getCurrentTime: function() {
@@ -84,11 +112,19 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
   },
 
   getVolume: function() {
-    return volume();
+    return volumeMute() ? 0.0 : volume();
+  },
+
+  getVolumeMute: function() {
+    return volumeMute();
   },
 
   getCurrent: function() {
     return currentTrack();
+  },
+
+  getCurrentSource: function() {
+    return currentTrackSource();
   },
 
   emitChange: function(type) {
@@ -111,29 +147,89 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
 
 });
 
+function handlePrevAction() {
+  AppDispatcher.waitFor([
+    PlaylistStore.dispatchToken,
+  ]);
+  setCurrentTrack(PlaylistStore.getCurrentTrack());
+  NowPlayingStore.emitChange();
+}
+
+function handleNextAction() {
+  AppDispatcher.waitFor([
+    PlaylistStore.dispatchToken,
+  ]);
+  setCurrentTrack(PlaylistStore.getCurrentTrack());
+  NowPlayingStore.emitChange();
+}
+
 NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
+
+  if (source === 'SERVER_ACTION') {
+    if (action.actionType === ControlApiConstants.CTRL) {
+      switch (action.data) {
+
+        case ControlApiConstants.PLAY:
+          setPlaying(true);
+          NowPlayingStore.emitChange();
+          break;
+
+        case ControlApiConstants.PAUSE:
+          setPlaying(false);
+          NowPlayingStore.emitChange();
+          break;
+
+        case ControlApiConstants.NEXT:
+          handleNextAction();
+          break;
+
+        case ControlApiConstants.PREV:
+          handlePrevAction();
+          break;
+
+        default:
+          break;
+      }
+
+      if (action.data.Key) {
+        switch (action.data.Key) {
+          case "volume":
+            setVolume(action.data.Value);
+            if (action.data.Value > 0) {
+              setVolumeMute(false);
+            }
+            NowPlayingStore.emitChange();
+            break;
+
+          case "mute":
+            setVolumeMute(action.data.Value);
+            NowPlayingStore.emitChange();
+            break;
+
+          default:
+            console.log("Unknown key:", action.data.Key);
+            break;
+        }
+      }
+    }
+  }
 
   if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
 
       case PlaylistConstants.PREV:
-        AppDispatcher.waitFor([
-          PlaylistStore.dispatchToken,
-        ]);
-        setCurrentTrack(PlaylistStore.getCurrentTrack());
-        NowPlayingStore.emitChange();
+        handlePrevAction();
         break;
 
       case NowPlayingConstants.ENDED:
+        if (action.source !== "playlist") {
+          break;
+        }
         /* falls through */
       case PlaylistConstants.NEXT:
-        AppDispatcher.waitFor([
-          PlaylistStore.dispatchToken,
-        ]);
-        setCurrentTrack(PlaylistStore.getCurrentTrack());
-        NowPlayingStore.emitChange();
+        handleNextAction();
         break;
 
       case NowPlayingConstants.SET_PLAYING:
@@ -147,11 +243,25 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.SET_VOLUME:
         setVolume(action.volume);
+        if (action.volume > 0) {
+          setVolumeMute(false);
+        }
+        NowPlayingStore.emitChange();
+        break;
+
+      case NowPlayingConstants.SET_VOLUME_MUTE:
+        setVolumeMute(action.volumeMute);
+        NowPlayingStore.emitChange();
+        break;
+
+      case NowPlayingConstants.TOGGLE_VOLUME_MUTE:
+        setVolumeMute(!volumeMute());
         NowPlayingStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_CURRENT_TRACK:
         setCurrentTrack(action.track);
+        setCurrentTrackSource(action.source);
         NowPlayingStore.emitChange();
         break;
 

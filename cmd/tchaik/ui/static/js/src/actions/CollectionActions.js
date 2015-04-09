@@ -27,7 +27,8 @@ var CollectionActions = {
   setCurrentTrack: function(track) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_CURRENT_TRACK,
-      track: track
+      track: track,
+      source: "collection",
     });
   },
 

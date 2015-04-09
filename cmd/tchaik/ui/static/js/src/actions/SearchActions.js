@@ -10,8 +10,8 @@ var SearchActions = {
 
   search: function(input) {
     WebsocketApi.send({
-      input: input,
       action: SearchConstants.SEARCH,
+      data: input,
     });
 
     AppDispatcher.handleViewAction({

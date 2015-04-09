@@ -3,9 +3,14 @@
 var EventEmitter = require('eventemitter3').EventEmitter;
 var assign = require('object-assign');
 
+var AppDispatcher = require('../dispatcher/AppDispatcher.js');
+
 var WebsocketApiActions = require('../actions/WebsocketApiActions.js');
+var WebsocketApiConstants = require('../constants/WebsocketApiConstants.js');
 
 var CHANGE_EVENT = 'status';
+
+var _host = null;
 
 var _websocket = {
   open: false,
@@ -14,6 +19,10 @@ var _websocket = {
 };
 
 function init(host) {
+  if (_host === null) {
+    _host = host;
+  }
+
   try {
     _websocket.sock = new WebSocket(host);
   } catch (exception) {
@@ -21,7 +30,7 @@ function init(host) {
     console.log(exception);
     return;
   }
-  
+
   _websocket.sock.onmessage = onMessage;
   _websocket.sock.onerror = onError;
   _websocket.sock.onopen = onOpen;
@@ -41,6 +50,7 @@ function onOpen() {
   _websocket.open = true;
   WebsocketApi.emitChange();
   _websocket.queue.map(WebsocketApi.send);
+  _websocket.queue = [];
 }
 
 function onClose() {
@@ -63,7 +73,7 @@ var WebsocketApi = assign({}, EventEmitter.prototype, {
   emitChange: function() {
     this.emit(CHANGE_EVENT);
   },
-  
+
   send: function(action) {
     if (!_websocket.open) {
       _websocket.queue.push(action);
@@ -86,6 +96,21 @@ var WebsocketApi = assign({}, EventEmitter.prototype, {
     this.removeListener(CHANGE_EVENT, callback);
   }
 
+});
+
+WebsocketApi.dispatchToken = AppDispatcher.register(function(payload) {
+  var action = payload.action;
+  var source = payload.source;
+
+  if (source === 'VIEW_ACTION') {
+    switch (action.actionType) {
+      case WebsocketApiConstants.RECONNECT:
+        init(_host);
+        break;
+    }
+  }
+
+  return true;
 });
 
 module.exports = WebsocketApi;

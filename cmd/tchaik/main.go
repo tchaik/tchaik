@@ -7,12 +7,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
-
-	"golang.org/x/net/websocket"
 
 	"github.com/dhowden/httpauth"
 	"github.com/dhowden/itl"
@@ -141,6 +138,7 @@ func main() {
 		Library:  l,
 		root:     root,
 		searcher: searcher,
+		sessions: newSessions(),
 	}
 
 	mediaFileSystem = libAPI.FileSystem(mediaFileSystem)
@@ -172,101 +170,12 @@ func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.File
 	w.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static"))))
 	w.Handle("/track/", http.StripPrefix("/track/", http.FileServer(mediaFileSystem)))
 	w.Handle("/artwork/", http.StripPrefix("/artwork/", http.FileServer(artworkFileSystem)))
-	w.Handle("/socket", websocket.Handler(socketHandler(l)))
+	w.Handle("/socket", l.WebsocketHandler())
+	w.Handle("/api/ctrl/", http.StripPrefix("/api/ctrl/", ctrlHandler(l)))
 	return w
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
 	http.ServeFile(w, r, "ui/tchaik.html")
-}
-
-type Command struct {
-	Action string
-	Input  string
-	Path   []string
-}
-
-const (
-	FetchAction  string = "FETCH"
-	SearchAction string = "SEARCH"
-)
-
-func socketHandler(l LibraryAPI) func(ws *websocket.Conn) {
-	return func(ws *websocket.Conn) {
-		defer ws.Close()
-
-		var err error
-		for {
-			var c Command
-			err = websocket.JSON.Receive(ws, &c)
-			if err != nil {
-				if err != io.EOF {
-					err = fmt.Errorf("receive: %v", err)
-				}
-				break
-			}
-
-			var resp interface{}
-			switch c.Action {
-			case FetchAction:
-				resp, err = handleCollectionList(l, c)
-			case SearchAction:
-				resp = handleSearch(l, c)
-			default:
-				err = fmt.Errorf("unknown action: %v", c.Action)
-			}
-
-			if err != nil {
-				break
-			}
-
-			err = websocket.JSON.Send(ws, resp)
-			if err != nil {
-				if err != io.EOF {
-					err = fmt.Errorf("send: %v", err)
-				}
-				break
-			}
-		}
-
-		if err != nil && err != io.EOF {
-			fmt.Printf("socket error: %v", err)
-		}
-	}
-}
-
-func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
-	if len(c.Path) < 1 {
-		return nil, fmt.Errorf("invalid path: %v\n", c.Path)
-	}
-
-	g, err := l.Fetch(l.root, c.Path[1:])
-	if err != nil {
-		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, c.Path[1:])
-	}
-
-	return struct {
-		Action string
-		Data   interface{}
-	}{
-		c.Action,
-		struct {
-			Path []string
-			Item group
-		}{
-			c.Path,
-			g,
-		},
-	}, nil
-}
-
-func handleSearch(l LibraryAPI, c Command) interface{} {
-	return struct {
-		Action string
-		Data   interface{}
-	}{
-		Action: c.Action,
-		Data:   l.searcher.Search(c.Input),
-	}
 }
