@@ -1,17 +1,17 @@
 # Tchaik: Music organisation and streaming system
 
-Thaik is an open source music organisation and streaming system.
+Tchaik is an open source music organisation and streaming system.
+
+![Tchaik UI](https://s3-ap-southeast-2.amazonaws.com/dhowden-pictures/screenshot.jpg "Tchaik UI")
 
 # Getting up and running
 
 ### Requirements:
 
-* Go 1.4 (recent changes have only been tested on 1.4.2) http://dl.google.com/
+* Go 1.4 (recent changes have only been tested on 1.4.2)
 * NodeJS + NPM, SASS/Compass (for building the UI)
 
 ### Fetching the code
-
-Fetching the code:
 
     $ go get github.com/dhowden/tchaik
 
