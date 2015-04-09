@@ -25,7 +25,7 @@ Building the UI:
 
     $ cd ui  # from inside $TCH/cmd/tchaik
     $ npm install
-    $ NODE_ENV=development grunt browserify
+    $ NODE_ENV=development grunt
 
 Building the CSS:
 
