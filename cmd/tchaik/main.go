@@ -2,6 +2,19 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+/*
+tchaik creates a webserver which serves the web UI.
+
+It is assumed that tchaik is run relatively local to the user (i.e. serving pages to the local machine, or a local
+network).
+
+All configuration is done through command line parameters.
+
+A common use case is to begin by use using an existing iTunes Library file:
+
+  tchaik -itlXML /path/to/iTunesMusicLibrary.xml
+
+*/
 package main
 
 import (
