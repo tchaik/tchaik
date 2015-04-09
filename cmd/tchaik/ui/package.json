@@ -17,7 +17,7 @@
     "grunt-react": "^0.8.2",
     "keymirror": "^0.1.0",
     "object-assign": "^2.0.0",
-    "react": "~0.13.0",
+    "react": "^0.13.1",
     "reactify": "^0.17.0",
     "watchify": "^2.2.1"
   },
