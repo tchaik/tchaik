@@ -4,4 +4,3 @@ interim
 ui/static/.sass-cache
 ui/static/css
 node_modules
-.DS_Store
