@@ -41,6 +41,12 @@ var NowPlayingActions = {
     });
   },
 
+  toggleVolumeMute: function() {
+    AppDispatcher.handleViewAction({
+      actionType: NowPlayingConstants.TOGGLE_VOLUME_MUTE,
+    });
+  },
+
   playing: function(v) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_PLAYING,

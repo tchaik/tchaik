@@ -369,6 +369,21 @@ func ctrlHandler(l LibraryAPI) http.Handler {
 				Value: f,
 			}
 
+		case "mute":
+			v := r.Form.Get("value")
+			b, err := strconv.ParseBool(v)
+			if err != nil {
+				http.Error(w, "invalid bool value", http.StatusBadRequest)
+				return
+			}
+			data = struct {
+				Key   string
+				Value bool
+			}{
+				Key:   "mute",
+				Value: b,
+			}
+
 		// TODO: This isn't supported by the frontend.
 		case "time":
 			v := r.Form.Get("value")

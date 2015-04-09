@@ -77,7 +77,7 @@ $right-column-width: 350px;
 $header-height: 30px;
 
 div#header {
-  background-color: rgba(16,16,16,0.85);
+  background-color: #222;
   position: fixed;
   left: 0;
   top: 0;
@@ -87,9 +87,8 @@ div#header {
   width: $left-column-width;
 
    span.item {
-     color: #bbb;
-     padding: 10px;
-     font-size: 11px;
+     color: #999;
+     padding: 10px 10px 10px 11px;
      float: left;
 
      span.glyphicon {
@@ -99,10 +98,10 @@ div#header {
 
      &.toolbar {
        &.selected {
-         color: lighten($light-blue, 20);
+         color: lighten($light-blue, 15);
 
          &:hover {
-           color: lighten($light-blue, 20);
+           color: lighten($light-blue, 25);
          };
        }
 
@@ -112,10 +111,16 @@ div#header {
      }
 
      &.status {
-       &.open {
-          color: lighten(#00BFFF, 10);
+       &.closed {
+         background-color: lighten(#FF00BF, 10);
+         color: white;
+
+         &:hover {
+           background-color: white;
+           color: lighten(#FF00BF, 10);
+         };
        }
-       color: lighten(#FF00BF, 10);
+       color: lighten(#00FFBF, 10);
      }
 
      &.key {
@@ -125,7 +130,10 @@ div#header {
 
        &.set {
          color: white;
-         background-color: #444;
+
+         &:hover {
+           color: lighten($light-blue, 25);
+         };
        }
      }
    }
@@ -136,10 +144,48 @@ div#header {
      left: 0;
      padding-bottom: 5px;
    }
+
+   div.volume {
+     margin: 0;
+     padding-bottom: 10px;
+     display: block;
+
+     span.glyphicon {
+       color: #bbb;
+       padding: 10px 0;
+       margin-left: 12px;
+       font-size: 20px;
+
+       &:hover {
+         color: white;
+       }
+     }
+
+     & > span.bar {
+       background-color: $light-blue;
+
+       width: 4px;
+       margin-left: 19px;
+       display: block;
+
+       & > span.current {
+         width: 4px;
+         display: block;
+         background-color: #444;
+       }
+
+       & > span.marker {
+         width: 12px;
+         margin-left: -4px;
+         display: block;
+         background-color: #ddd;
+       }
+     }
+   }
 }
 
 div#right-column {
-  background-color: #121314;
+  background-color: #222;
   color: white;
   position: fixed;
   right: 0;
@@ -177,44 +223,17 @@ div#right-column {
          }
 
          &.glyphicon-play, &.glyphicon-pause {
-           font-size: 40px;
+           font-size: 34px;
            margin-right: 4px;
+           margin-top: 0px;
+           padding: 7px 6px 9px 10px;
+           border: 2px solid #666;
+           border-radius: 50%;
 
            &:hover {
              color: lighten($light-blue, 10);
+             border: 2px solid lighten($light-blue, 30);
            };
-         }
-       }
-     }
-
-     div.volume {
-       margin: 0 10px;
-       padding: 10px 0;
-       display: block;
-
-       span.glyphicon {
-         color: white;
-         margin-bottom: 10px;
-       }
-
-       & > span.bar {
-         background-color: #444;
-         height: 4px;
-         display: block;
-
-         & > span.current {
-           height: 4px;
-           display: block;
-           float: left;
-           background-color: $light-blue;
-         }
-
-         & > span.marker {
-           height: 10px;
-           display: block;
-           float: left;
-           background-color: #ddd;
-           margin-top: -3px;
          }
        }
      }
@@ -324,13 +343,10 @@ div#right-column {
        text-align: left;
        -webkit-flex: 1;
        flex: 1;
+       background-color: #1C1C1C;
 
        div.group {
          font-size: 12px;
-
-         &:hover {
-           background-color: #222;
-         }
 
          div.group {
            padding-left: 10px;
@@ -427,13 +443,19 @@ div#right-column {
 
                 span.duration {
                   color: #444;
+
+                  &:hover {
+                    color: #444;
+                  }
                 }
 
                 &:hover {
                   background-color: $light-blue;
+                  color: #333;
 
                   &::before {
                     background-color: $light-blue;
+                    color: #333;
                   }
                 }
 
@@ -459,6 +481,11 @@ div#right-column {
 
              &:hover {
                background-color: #333;
+               color: #eee;
+
+               &::before {
+                 color: #aaa;
+               }
 
                span.glyphicon-remove {
                  color: #999;
@@ -490,8 +517,8 @@ div#container {
   bottom: 0;
   left: $left-column-width;
   right: $right-column-width;
-  background-color: #222;
-  border-right: 3px solid #333;
+  background-color: #111;
+  border-right: 1px solid #333;
 
   div.search-collection {
     div#search {
@@ -501,7 +528,7 @@ div#container {
       left: $left-column-width;
       height: 26px;
       padding: 10px 0 10px 0;
-      background: #111;
+      background: #222;
       z-index: 10;
 
       input {
@@ -567,14 +594,13 @@ div#container {
   div.collection {
     div.group {
       display: block;
-      padding: 4px 10px 5px;
+      padding: 5px 10px 6px;
       color: #ccc;
-      border-top: 1px solid #333;
       border-bottom: 1px solid #333;
       cursor: pointer;
 
       &:hover {
-        background-color: #333;
+        background-color: #222;
         color: white;
       };
 
@@ -633,7 +659,7 @@ div#container {
 
         div.attributes {
           color: #888;
-          margin-top:2px;
+          margin-top:3px;
 
           span {
             font-size: 13px;

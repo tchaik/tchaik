@@ -140,7 +140,11 @@ var NowPlaying = React.createClass({
 
     NowPlayingStore.addChangeListener(this._onChange);
 
-    this.setVolume(NowPlayingStore.getVolume());
+    var volume = NowPlayingStore.getVolume();
+    if (NowPlayingStore.getVolumeMute()) {
+      volume = 0.0;
+    }
+    this.setVolume(volume);
   },
 
   componentWillUnmount: function() {
@@ -173,8 +177,9 @@ var NowPlaying = React.createClass({
       }
     }
 
-    if (this.volume() != NowPlayingStore.getVolume()) {
-      this.setVolume(NowPlayingStore.getVolume());
+    var volume = NowPlayingStore.getVolume();
+    if (this.volume() != volume) {
+      this.setVolume(volume);
     }
   },
 

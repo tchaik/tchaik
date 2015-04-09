@@ -14,6 +14,7 @@ var ControlApiConstants = require('../constants/ControlApiConstants.js');
 var CHANGE_EVENT = 'change';
 
 var defaultVolume = 0.75;
+var defaultVolumeMute = false;
 
 var currentPlaying = null;
 
@@ -87,6 +88,19 @@ function volume() {
   return parseFloat(v);
 }
 
+function setVolumeMute(v) {
+  localStorage.setItem("volumeMute", v);
+}
+
+function volumeMute() {
+  var v = localStorage.getItem("volumeMute");
+  if (v === null) {
+    setVolumeMute(defaultVolumeMute);
+    return defaultVolumeMute;
+  }
+  return (v === "true");
+}
+
 var NowPlayingStore = assign({}, EventEmitter.prototype, {
 
   getCurrentTime: function() {
@@ -98,7 +112,11 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
   },
 
   getVolume: function() {
-    return volume();
+    return volumeMute() ? 0.0 : volume();
+  },
+
+  getVolumeMute: function() {
+    return volumeMute();
   },
 
   getCurrent: function() {
@@ -179,6 +197,14 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         switch (action.data.Key) {
           case "volume":
             setVolume(action.data.Value);
+            if (action.data.Value > 0) {
+              setVolumeMute(false);
+            }
+            NowPlayingStore.emitChange();
+            break;
+
+          case "mute":
+            setVolumeMute(action.data.Value);
             NowPlayingStore.emitChange();
             break;
 
@@ -217,6 +243,19 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.SET_VOLUME:
         setVolume(action.volume);
+        if (action.volume > 0) {
+          setVolumeMute(false);
+        }
+        NowPlayingStore.emitChange();
+        break;
+
+      case NowPlayingConstants.SET_VOLUME_MUTE:
+        setVolumeMute(action.volumeMute);
+        NowPlayingStore.emitChange();
+        break;
+
+      case NowPlayingConstants.TOGGLE_VOLUME_MUTE:
+        setVolumeMute(!volumeMute());
         NowPlayingStore.emitChange();
         break;
 
