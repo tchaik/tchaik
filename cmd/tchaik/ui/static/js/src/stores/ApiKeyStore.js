@@ -4,6 +4,9 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('eventemitter3').EventEmitter;
 var assign = require('object-assign');
 
+var WebsocketApiConstants = require('../constants/WebsocketApiConstants.js');
+var WebsocketApi = require('../api/WebsocketApi.js');
+
 var ApiKeyConstants = require('../constants/ApiKeyConstants.js');
 
 var CHANGE_EVENT = 'change';
@@ -22,6 +25,13 @@ function key() {
   var k = localStorage.getItem("apiKey");
   _apiKey = (k) ? k : null;
   return _apiKey;
+}
+
+function sendKey(key) {
+  WebsocketApi.send({
+    action: "KEY",
+    data: key,
+  });
 }
 
 var ApiKeyStore = assign({}, EventEmitter.prototype, {
@@ -66,7 +76,14 @@ ApiKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case ApiKeyConstants.SET_KEY:
         setKey(action.key);
+        sendKey(action.key);
         ApiKeyStore.emitChange();
+        break;
+
+      case WebsocketApiConstants.RECONNECT:
+        if (ApiKeyStore.isKeySet()) {
+          sendKey(ApiKeyStore.getKey());
+        }
         break;
     }
   }

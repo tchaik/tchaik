@@ -6,6 +6,7 @@ var React = require('react/addons');
 var Icon = require('./Icon.js');
 
 var WebsocketApi = require('../api/WebsocketApi.js');
+var WebsocketApiActions = require('../actions/WebsocketApiActions.js');
 
 var classNames = require('classnames');
 
@@ -30,17 +31,23 @@ var StatusView = React.createClass({
     var classes = {
       'item': true,
       'status': true,
-      'open': this.state.open
+      'closed': !this.state.open
     };
-    var title = "Connection " + (this.state.open ? "open" : "closed");
+    var title = this.state.open ? "Online" : "Offline";
 
     return (
-      <span className={classNames(classes)}><Icon icon="flash" title={title} /></span>
+      <span className={classNames(classes)} onClick={this._onClick}>
+        <Icon icon="flash" title={title} />
+      </span>
     );
   },
 
   _onChange: function() {
     this.setState(getStatus());
+  },
+
+  _onClick: function() {
+    WebsocketApiActions.reconnect();
   }
 });
 

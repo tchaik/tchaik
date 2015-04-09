@@ -32,11 +32,11 @@ var ApiKeyView = React.createClass({
   },
 
   componentDidMount: function() {
-    ApiKeyStore.addChangeListener(this._onChange);
     var k = ApiKeyStore.getKey();
     if (k !== null) {
       ApiKeyActions.setKey(k);
     }
+    ApiKeyStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
@@ -49,9 +49,10 @@ var ApiKeyView = React.createClass({
       'key': true,
       'set': this.state.set,
     };
+    var title = this.state.set ? "API: Enabled" : "API: Disabled";
     return (
       <span className={classNames(classes)}>
-        <Icon icon="qrcode" onClick={this._onClick} />
+        <Icon icon="barcode" onClick={this._onClick} title={title} />
       </span>
     );
   },
