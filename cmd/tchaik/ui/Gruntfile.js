@@ -129,10 +129,10 @@ module.exports = function(grunt) {
         files: ['static/js/src/*.js', 'static/js/src/actions/*.js', 'static/js/src/stores/*.js', 'static/js/src/dispatcher/*.js', 'static/js/src/constants/*.js', 'static/js/src/api/*.js'],
         tasks: ['jshint:js', 'browserify'],
       },
-      // sass: {
-      //   files: ['static/sass/*.scss'],
-      //   tasks: ['compass']
-      // },
+      sass: {
+        files: ['static/sass/*.scss'],
+        tasks: ['compass']
+      },
       packagejson: {
         files: ['package.json'],
         tasks: ['jshint:packagejson']
