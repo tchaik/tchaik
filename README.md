@@ -29,8 +29,7 @@ Building the UI:
 
 Building the CSS:
 
-    $ cd static
-    $ compass compile
+    $ grunt compass
 
 Now you can start Tchaik:
 
