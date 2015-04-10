@@ -94,7 +94,13 @@ module.exports = function(grunt) {
     compass: {
       build: {
         options: {
-          config: 'static/config.rb'
+          httpPath: '/',
+          cssPath: 'static/css',
+          sassPath: 'static/sass',
+          imagesPath: 'static/img',
+          javascriptsPath: 'static/js',
+
+          noLineComments: true
         }
       }
     },
