@@ -195,40 +195,40 @@ function pathsEqual(p1, p2) {
   return isPathPrefix(p1, p2);
 }
 
-function _removeTracks(tracks, path) {
-  var i = 0;
-  while (i < tracks.length) {
-    if (isPathPrefix(tracks[i], path)) {
-      tracks.splice(i, 1);
-      continue;
-    }
-    i++;
-  }
-}
-
-function _removePaths(paths, data, path) {
-  var i = 0;
-  while (i < paths.length) {
-    if (isPathPrefix(paths[i], path)) {
-      delete data[CollectionStore.pathToKey(paths[i])];
-      paths.splice(i, 1);
-      continue;
-    }
-    i++;
-  }
-}
-
-function _removeItem(playlist, itemIndex) {
-  if (playlist.current !== null) {
-    var current = playlist.current;
-    if (current.item > itemIndex) {
-      current.item--;
-    }
-  }
-  playlist.items.splice(itemIndex, 1);
-}
-
 function remove(itemIndex, path) {
+  function _removeTracks(tracks, path) {
+    var i = 0;
+    while (i < tracks.length) {
+      if (isPathPrefix(tracks[i], path)) {
+        tracks.splice(i, 1);
+        continue;
+      }
+      i++;
+    }
+  }
+
+  function _removePaths(paths, data, path) {
+    var i = 0;
+    while (i < paths.length) {
+      if (isPathPrefix(paths[i], path)) {
+        delete data[CollectionStore.pathToKey(paths[i])];
+        paths.splice(i, 1);
+        continue;
+      }
+      i++;
+    }
+  }
+
+  function _removeItem(playlist, itemIndex) {
+    if (playlist.current !== null) {
+      var current = playlist.current;
+      if (current.item > itemIndex) {
+        current.item--;
+      }
+    }
+    playlist.items.splice(itemIndex, 1);
+  }
+
   var p = playlist();
   var item = p.items[itemIndex];
 
