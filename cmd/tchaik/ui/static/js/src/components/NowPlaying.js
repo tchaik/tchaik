@@ -88,7 +88,7 @@ var NowPlaying = React.createClass({
   },
 
   audioDOMNode: function() {
-    return this.refs.ref_audio.getDOMNode();
+    return React.findDOMNode(this.refs.ref_audio);
   },
 
   buffered: function() {

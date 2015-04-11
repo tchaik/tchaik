@@ -15,7 +15,7 @@ var Search = React.createClass({
     var input = SearchStore.getInput();
     if (input && input !== "") {
       SearchActions.search(input);
-      this.refs.input.getDOMNode().value = input;
+      React.findDOMNode(this.refs.input).value = input;
     }
   },
 
