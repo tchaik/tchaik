@@ -35,8 +35,13 @@ var Playlist = React.createClass({
   },
 
   render: function() {
+    var rootCount = {};
     var items = this.state.list.map(function(item, i) {
-      return <RootGroup path={item.root} key={""+i+item.root} itemIndex={i} />;
+      if (!rootCount[item.root]) {
+        rootCount[item.root] = 0;
+      }
+      rootCount[item.root]++;
+      return <RootGroup path={item.root} key={item.root+rootCount[item.root]} itemIndex={i} />;
     });
 
     return (
