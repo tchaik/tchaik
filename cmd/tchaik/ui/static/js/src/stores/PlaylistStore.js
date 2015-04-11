@@ -161,6 +161,21 @@ function canNext() {
   return false;
 }
 
+function getNext() {
+  var p = playlist();
+  var c = p.current;
+  if (c === null) {
+    return null;
+  }
+
+  var item = p.items[c.item];
+  var tracks = item.tracks;
+  if (c.track < (tracks.length - 1)) {
+    return trackForPath(item.root.concat(tracks[c.track+1]));
+  }
+  return null;
+}
+
 function isPathPrefix(path, prefix) {
   if (prefix.length > path.length) {
     return false;
@@ -263,15 +278,7 @@ function setCurrent(itemIndex, path) {
   setPlaylist(p);
 }
 
-function currentTrack() {
-  var p = playlist();
-  var c = p.current;
-
-  if (c === null) {
-    return null;
-  }
-
-  var path = c.path.slice(0);
+function trackForPath(path) {
   var i = path.pop();
   var t = CollectionStore.getCollection(path);
   if (t === null) {
@@ -290,6 +297,16 @@ function currentTrack() {
 
   console.log("Collection item did not have Tracks property");
   return null;
+}
+
+function currentTrack() {
+  var p = playlist();
+  var c = p.current;
+
+  if (c === null) {
+    return null;
+  }
+  return trackForPath(c.path.slice(0));
 }
 
 function append(path) {
@@ -345,6 +362,10 @@ var PlaylistStore = assign({}, EventEmitter.prototype, {
 
   canNext: function() {
     return canNext();
+  },
+
+  getNext: function() {
+    return getNext();
   },
 
   getItemKeys: function(index, path) {
