@@ -473,6 +473,16 @@ div#right-column {
                  line-height: 10px;
                  vertical-align: -30%;
                }
+
+               &:hover {
+                 &::before {
+                   font-family: 'Glyphicons Halflings';
+                   content: '\e038';
+                   font-size: 14px;
+                   line-height: 10px;
+                   vertical-align: -30%;
+                 }
+               }
              }
 
              span.duration {
@@ -485,7 +495,12 @@ div#right-column {
                color: #eee;
 
                &::before {
-                 color: #aaa;
+                 color: #ddd;
+                 font-family: 'Glyphicons Halflings';
+                 content: '\e072';
+                 font-size: 12px;
+                 line-height: 10px;
+                 vertical-align: -20%;
                }
 
                span.glyphicon-remove {
