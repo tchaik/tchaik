@@ -390,6 +390,7 @@ div#right-column {
          }
 
          span.glyphicon-remove {
+           color: #666;
            &:hover {
              color: #ddd;
            }
@@ -443,10 +444,6 @@ div#right-column {
 
                 span.duration {
                   color: #444;
-
-                  &:hover {
-                    color: #444;
-                  }
                 }
 
                 &:hover {
@@ -455,6 +452,10 @@ div#right-column {
 
                   &::before {
                     background-color: $light-blue;
+                    color: #333;
+                  }
+
+                  span.glyphicon-remove, span.duration {
                     color: #333;
                   }
                 }
