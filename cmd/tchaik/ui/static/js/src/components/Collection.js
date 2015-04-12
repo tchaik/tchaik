@@ -308,15 +308,20 @@ function isCurrent(trackId) {
   return false;
 }
 
+function getTrackState(trackID) {
+  return {
+    current: isCurrent(trackID),
+    playing: NowPlayingStore.getPlaying(),
+  };
+}
+
 var Track = React.createClass({
   propTypes: {
     path: React.PropTypes.array.isRequired,
   },
 
   getInitialState: function() {
-    return {
-      isCurrent: isCurrent(this.props.data.TrackID),
-    };
+    return getTrackState(this.props.data.TrackID);
   },
 
   componentDidMount: function() {
@@ -330,7 +335,8 @@ var Track = React.createClass({
   render: function() {
     var durationSecs = parseInt(this.props.data.TotalTime/1000);
     var liClasses = {
-      'current': this.state.isCurrent,
+      'current': this.state.current,
+      'playing': this.state.current && this.state.playing,
     };
     return (
       <li className={classNames(liClasses)} onClick={this._onClick}>
@@ -345,9 +351,7 @@ var Track = React.createClass({
   },
 
   _onChange: function() {
-    this.setState({
-      isCurrent: isCurrent(this.props.data.TrackID),
-    });
+    this.setState(getTrackState(this.props.data.TrackID));
   },
 
   _onClick: function(e) {

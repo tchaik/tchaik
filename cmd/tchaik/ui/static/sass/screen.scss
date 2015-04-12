@@ -751,7 +751,7 @@ div#container {
             span.duration {
               margin-left: 10px;
               font-weight: normal;
-              color: #555;
+              color: #666;
             }
 
             span.controls {
@@ -769,21 +769,22 @@ div#container {
 
             &.current {
               background-color: $light-blue;
-              span.name {
+              span.name, span.duration {
                 color: #333;
               }
 
-              span.duration {
+              &::before{
                 color: #333;
               }
 
-              &::before {
-                font-family: 'Glyphicons Halflings';
-                content: '\e038';
-                color: #333;
-                font-size: 14px;
-                line-height: 10px;
-                vertical-align: -30%;
+              &.playing {
+                &::before {
+                  font-family: 'Glyphicons Halflings';
+                  content: '\e038';
+                  font-size: 14px;
+                  line-height: 10px;
+                  vertical-align: -30%;
+                }
               }
             }
 
