@@ -15,10 +15,14 @@ var TimeFormatter = React.createClass({
 
   render: function() {
     var {time, ...others} = this.props;
-    var totalSeconds = parseInt(time);
+    if (isNaN(time)) {
+      return null;
+    }
+
     var timeText = "";
     var minsPad = 0;
 
+    var totalSeconds = parseInt(time);
     var hours = parseInt(totalSeconds / 3600);
     if (hours > 0) {
       timeText += hours + ":";
