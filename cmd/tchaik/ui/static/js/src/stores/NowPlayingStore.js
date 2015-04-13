@@ -12,6 +12,7 @@ var PlaylistStore = require('./PlaylistStore.js');
 var ControlApiConstants = require('../constants/ControlApiConstants.js');
 
 var CHANGE_EVENT = 'change';
+var CONTROL_EVENT = 'control';
 
 var defaultVolume = 0.75;
 var defaultVolumeMute = false;
@@ -131,6 +132,10 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
     this.emit(CHANGE_EVENT, type);
   },
 
+  emitControl: function(type, value) {
+    this.emit(CONTROL_EVENT, type, value);
+  },
+
   /**
    * @param {function} callback
    */
@@ -143,7 +148,21 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
    */
   removeChangeListener: function(callback) {
     this.removeListener(CHANGE_EVENT, callback);
-  }
+  },
+
+  /**
+   * @param {function} callback
+   */
+  addControlListener: function(callback) {
+    this.on(CONTROL_EVENT, callback);
+  },
+
+  /**
+   * @param {function} callback
+   */
+  removeControlListener: function(callback) {
+    this.removeListener(CONTROL_EVENT, callback);
+  },
 
 });
 
@@ -208,6 +227,10 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
             NowPlayingStore.emitChange();
             break;
 
+          case "time":
+            NowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.data.Value);
+            break;
+
           default:
             console.log("Unknown key:", action.data.Key);
             break;
@@ -237,8 +260,12 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         NowPlayingStore.emitChange();
         break;
 
-      case NowPlayingConstants.SET_CURRENT_TIME:
+      case NowPlayingConstants.STORE_CURRENT_TIME:
         setCurrentTime(action.currentTime);
+        break;
+
+      case NowPlayingConstants.SET_CURRENT_TIME:
+        NowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.currentTime);
         break;
 
       case NowPlayingConstants.SET_VOLUME:

@@ -15,15 +15,15 @@ var NowPlayingActions = {
 
   currentTime: function(time) {
     AppDispatcher.handleViewAction({
-      actionType: NowPlayingConstants.SET_CURRENT_TIME,
+      actionType: NowPlayingConstants.STORE_CURRENT_TIME,
       currentTime: time,
     });
   },
 
-  restartTrack: function() {
+  setCurrentTime: function(time) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_CURRENT_TIME,
-      currentTime: -1,
+      currentTime: time,
     });
   },
 

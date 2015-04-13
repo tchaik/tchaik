@@ -384,7 +384,6 @@ func ctrlHandler(l LibraryAPI) http.Handler {
 				Value: b,
 			}
 
-		// TODO: This isn't supported by the frontend.
 		case "time":
 			v := r.Form.Get("value")
 			f, err := strconv.ParseFloat(v, 32)

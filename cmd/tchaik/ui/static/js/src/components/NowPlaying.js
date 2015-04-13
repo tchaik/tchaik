@@ -11,6 +11,7 @@ var GroupAttributes = require('./GroupAttributes.js');
 
 var NowPlayingStore = require('../stores/NowPlayingStore.js');
 var NowPlayingActions = require('../actions/NowPlayingActions.js');
+var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
 
 
 var NowPlaying = React.createClass({
@@ -139,6 +140,7 @@ var NowPlaying = React.createClass({
     audioNode.addEventListener('loadstart', this.onPlayerEvent);
 
     NowPlayingStore.addChangeListener(this._onChange);
+    NowPlayingStore.addControlListener(this._onControl);
 
     var volume = NowPlayingStore.getVolume();
     if (NowPlayingStore.getVolumeMute()) {
@@ -159,6 +161,7 @@ var NowPlaying = React.createClass({
     audioNode.removeEventListener('loadstart', this.onPlayerEvent);
 
     NowPlayingStore.removeChangeListener(this._onChange);
+    NowPlayingStore.removeControlListener(this._onControl);
   },
 
   componentDidUpdate: function(prevProps, prevState) {
@@ -218,6 +221,14 @@ var NowPlaying = React.createClass({
       this.refs.now_playing.load();
     }.bind(this));
   },
+
+  _onControl: function(type, value) {
+    switch (type) {
+      case NowPlayingConstants.SET_CURRENT_TIME:
+        this.setCurrentTime(value);
+        break;
+    }
+  }
 });
 
 var TrackInfo = React.createClass({

@@ -8,6 +8,7 @@ module.exports = keyMirror({
   PAUSE: null,
   NEXT: null,
   PREV: null,
+  TIME: null,
   MUTE: null,
   VOLUP: null,
   VOLDOWN: null,

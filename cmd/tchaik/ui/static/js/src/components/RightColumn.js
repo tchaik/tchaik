@@ -108,7 +108,7 @@ var Controls = React.createClass({
     if (this._backButtonTimerRunning()) {
       PlaylistActions.prev();
     } else if (this.state.playing || NowPlayingStore.getCurrentTime() > 0) {
-      NowPlayingActions.restartTrack();
+      NowPlayingActions.setCurrentTime(0);
     } else {
       PlaylistActions.prev();
     }
