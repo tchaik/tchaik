@@ -1,18 +1,6 @@
-$base-blue: #369;
-$base-red: #936;
-$base-green: #693;
-$base-purple: #639;
-$base-lime-green: #396;
-$base-orange: #963;
-$base-history: #666;
-$base-yellow: #AA2;
-//$base-yellow: #AA4;
-
-$base-selected: $base-purple;
-
-$header-height: 50px;
-
 $light-blue: #00D9FF;
+$left-column-width: 40px;
+$right-column-width: 350px;
 
 @mixin webkit-scrollbar($container, $base-color) {
    #{container} ::-webkit-scrollbar {
@@ -86,10 +74,6 @@ body {
 a {
    @include fade-in(color);
 }
-
-$left-column-width: 40px;
-$right-column-width: 350px;
-$header-height: 30px;
 
 div#header {
   background-color: #222;
