@@ -206,6 +206,9 @@ func TrimEnumPrefix(g Group) Group {
 // another.
 type TransformFn func(Group) Group
 
+// Transform applies the TransformFn to the Group and returns the result.
+func Transform(g Group, fn TransformFn) Group { return fn(g) }
+
 // SubTransform recursively applies the TransformFn to each Group in the Collection.
 func SubTransform(c Collection, fn TransformFn) Collection {
 	m := make(map[Key]Group, len(c.Keys()))
