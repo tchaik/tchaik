@@ -205,7 +205,8 @@ var Group = React.createClass({
     );
   },
 
-  _onClickRemove: function() {
+  _onClickRemove: function(e) {
+    e.stopPropagation();
     PlaylistActions.remove(this.props.itemIndex, this.props.path);
   },
 
@@ -400,7 +401,7 @@ var Track = React.createClass({
     };
 
     return (
-      <li onMouseDown={this._onMouseDown} style={{'counterReset': "li "+ (this.props.index+1)}} className={classNames(style)}>
+      <li onClick={this._onClick} style={{'counterReset': "li "+ (this.props.index+1)}} className={classNames(style)}>
         <span id={"track_"+this.props.data.TrackID} className="name">{this.props.data.Name}</span>
         <span className="info">
           <Icon icon="remove" onClick={this._onClickRemove} />
@@ -410,7 +411,7 @@ var Track = React.createClass({
     );
   },
 
-  _onMouseDown: function() {
+  _onClick: function() {
     PlaylistActions.play(this.props.itemIndex, this.props.path, this.props.data);
   },
 
