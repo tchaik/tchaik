@@ -16,7 +16,7 @@ Tchaik is an open source music organisation and streaming system.  The backend i
 ### Requirements
 
 * Go 1.4 (recent changes have only been tested on 1.4.2).
-* NodeJS + NPM, SASS/Compass (for building the UI).
+* NodeJS, NPM and Grunt installed globally (for building the UI).
 * Recent version of Chrome/Firefox/Safari.
 
 ### Building

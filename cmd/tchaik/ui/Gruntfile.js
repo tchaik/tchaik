@@ -91,16 +91,14 @@ module.exports = function(grunt) {
       }
     },
 
-    compass: {
-      build: {
-        options: {
-          httpPath: '/',
-          cssPath: 'static/css',
-          sassPath: 'static/sass',
-          imagesPath: 'static/img',
-          javascriptsPath: 'static/js',
-
-          noLineComments: true
+    sass: {
+      options: {
+        sourceMap: true
+      },
+      dist: {
+        files: {
+          'static/css/screen.css': 'static/sass/screen.scss',
+          'static/css/glyphicons.css': 'static/sass/glyphicons.scss',
         }
       }
     },
@@ -131,7 +129,7 @@ module.exports = function(grunt) {
       },
       sass: {
         files: ['static/sass/*.scss'],
-        tasks: ['compass']
+        tasks: ['sass']
       },
       packagejson: {
         files: ['package.json'],
@@ -149,7 +147,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-uglify');
 
-  grunt.loadNpmTasks('grunt-contrib-compass');
+  grunt.loadNpmTasks('grunt-sass');
 
-  grunt.registerTask('default', ['browserify', 'compass']);
+  grunt.registerTask('default', ['browserify', 'sass']);
 };
