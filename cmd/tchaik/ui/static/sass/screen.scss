@@ -1,9 +1,3 @@
-@import "compass";
-@import "compass/css3/columns";
-@import "compass/css3/transition";
-@import "compass/css3/box-shadow";
-@import "compass/css3/user-interface";
-
 $base-blue: #369;
 $base-red: #936;
 $base-green: #693;
@@ -39,6 +33,27 @@ $light-blue: #00D9FF;
        background: lighten($base-color, 20); /*#888;*/
        -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
    }
+}
+
+@mixin transition-property($property) {
+  -moz-transition-property: $property;
+  -o-transition-property: $property;
+  -webkit-transition-property: $property;
+  transition-property: $property;
+}
+
+@mixin transition-duration($duration) {
+  -moz-transition-duration: $duration;
+  -o-transition-duration: $duration;
+  -webkit-transition-duration: $duration;
+  transition-duration: $duration;
+}
+
+@mixin transition-timing-function($fn) {
+  -moz-transition-timing-function: $fn;
+  -o-transition-timing-function: $fn;
+  -webkit-transition-timing-function: $fn;
+  transition-timing-function: $fn;
 }
 
 @mixin fade-in($property, $duration:150ms) {
