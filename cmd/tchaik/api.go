@@ -139,9 +139,8 @@ func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
 	}
 
 	index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
-	c = index.ByPrefix("Name").Collect(g)
-	c = index.SubTransform(c, index.TrimEnumPrefix)
-	g = c
+	c = index.Collect(g, index.ByPrefix("Name"))
+	g = index.SubTransform(c, index.TrimEnumPrefix)
 	g = index.SumGroupIntAttr("TotalTime", g)
 	commonFields := []index.Attr{
 		index.StringAttr("Album"),
