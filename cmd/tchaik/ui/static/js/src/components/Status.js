@@ -5,13 +5,13 @@ var React = require('react/addons');
 
 var Icon = require('./Icon.js');
 
-var WebsocketApi = require('../api/WebsocketApi.js');
-var WebsocketApiActions = require('../actions/WebsocketApiActions.js');
+var WebsocketAPI = require('../utils/WebsocketAPI.js');
+var WebsocketAPIActions = require('../actions/WebsocketAPIActions.js');
 
 var classNames = require('classnames');
 
 function getStatus() {
-  return WebsocketApi.getStatus();
+  return WebsocketAPI.getStatus();
 }
 
 var StatusView = React.createClass({
@@ -20,11 +20,11 @@ var StatusView = React.createClass({
   },
 
   componentDidMount: function() {
-    WebsocketApi.addChangeListener(this._onChange);
+    WebsocketAPI.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    WebsocketApi.removeChangeListener(this._onChange);
+    WebsocketAPI.removeChangeListener(this._onChange);
   },
 
   render: function() {
@@ -47,7 +47,7 @@ var StatusView = React.createClass({
   },
 
   _onClick: function() {
-    WebsocketApiActions.reconnect();
+    WebsocketAPIActions.reconnect();
   }
 });
 

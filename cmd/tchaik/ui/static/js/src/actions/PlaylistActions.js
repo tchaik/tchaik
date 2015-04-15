@@ -4,12 +4,12 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 var PlaylistConstants = require('../constants/PlaylistConstants.js');
 var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
-var WebsocketApi = require('../api/WebsocketApi.js');
+var WebsocketAPI = require('../utils/WebsocketAPI.js');
 
 var PlaylistActions = {
 
   fetch: function(path) {
-    WebsocketApi.send({
+    WebsocketAPI.send({
       path: path,
       action: PlaylistConstants.FETCH,
     });

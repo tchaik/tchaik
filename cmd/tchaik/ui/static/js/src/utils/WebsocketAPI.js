@@ -5,8 +5,8 @@ var assign = require('object-assign');
 
 var AppDispatcher = require('../dispatcher/AppDispatcher.js');
 
-var WebsocketApiActions = require('../actions/WebsocketApiActions.js');
-var WebsocketApiConstants = require('../constants/WebsocketApiConstants.js');
+var WebsocketAPIActions = require('../actions/WebsocketAPIActions.js');
+var WebsocketAPIConstants = require('../constants/WebsocketAPIConstants.js');
 
 var CHANGE_EVENT = 'status';
 
@@ -39,7 +39,7 @@ function init(host) {
 
 function onMessage(obj) {
   var msg = JSON.parse(obj.data);
-  WebsocketApiActions.dispatch(msg);
+  WebsocketAPIActions.dispatch(msg);
 }
 
 function onError(err) {
@@ -48,17 +48,17 @@ function onError(err) {
 
 function onOpen() {
   _websocket.open = true;
-  WebsocketApi.emitChange();
-  _websocket.queue.map(WebsocketApi.send);
+  WebsocketAPI.emitChange();
+  _websocket.queue.map(WebsocketAPI.send);
   _websocket.queue = [];
 }
 
 function onClose() {
   _websocket.open = false;
-  WebsocketApi.emitChange();
+  WebsocketAPI.emitChange();
 }
 
-var WebsocketApi = assign({}, EventEmitter.prototype, {
+var WebsocketAPI = assign({}, EventEmitter.prototype, {
 
   init: function(host) {
     init(host);
@@ -98,13 +98,13 @@ var WebsocketApi = assign({}, EventEmitter.prototype, {
 
 });
 
-WebsocketApi.dispatchToken = AppDispatcher.register(function(payload) {
+WebsocketAPI.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
   if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
-      case WebsocketApiConstants.RECONNECT:
+      case WebsocketAPIConstants.RECONNECT:
         init(_host);
         break;
     }
@@ -113,4 +113,4 @@ WebsocketApi.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = WebsocketApi;
+module.exports = WebsocketAPI;

@@ -62,7 +62,7 @@ module.exports = function(grunt) {
       },
       js: {
         files: {
-          src: ['static/js/src/*.js', 'static/js/src/actions/*.js', 'static/js/src/stores/*.js', 'static/js/src/dispatcher/*.js', 'static/js/src/constants/*.js', 'static/js/src/api/*.js']
+          src: ['static/js/src/*.js', 'static/js/src/actions/*.js', 'static/js/src/stores/*.js', 'static/js/src/dispatcher/*.js', 'static/js/src/constants/*.js', 'static/js/src/utils/*.js']
         },
         options: {
           esnext: true,
@@ -124,7 +124,7 @@ module.exports = function(grunt) {
         tasks: ['react', 'jshint:jsx', 'clean:interim', 'browserify'],
       },
       js: {
-        files: ['static/js/src/*.js', 'static/js/src/actions/*.js', 'static/js/src/stores/*.js', 'static/js/src/dispatcher/*.js', 'static/js/src/constants/*.js', 'static/js/src/api/*.js'],
+        files: ['static/js/src/*.js', 'static/js/src/actions/*.js', 'static/js/src/stores/*.js', 'static/js/src/dispatcher/*.js', 'static/js/src/constants/*.js', 'static/js/src/utils/*.js'],
         tasks: ['jshint:js', 'browserify'],
       },
       sass: {

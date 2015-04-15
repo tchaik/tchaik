@@ -4,8 +4,8 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('eventemitter3').EventEmitter;
 var assign = require('object-assign');
 
-var WebsocketApiConstants = require('../constants/WebsocketApiConstants.js');
-var WebsocketApi = require('../api/WebsocketApi.js');
+var WebsocketAPIConstants = require('../constants/WebsocketAPIConstants.js');
+var WebsocketAPI = require('../utils/WebsocketAPI.js');
 
 var ApiKeyConstants = require('../constants/ApiKeyConstants.js');
 
@@ -28,7 +28,7 @@ function key() {
 }
 
 function sendKey(key) {
-  WebsocketApi.send({
+  WebsocketAPI.send({
     action: "KEY",
     data: key,
   });
@@ -80,7 +80,7 @@ ApiKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
         ApiKeyStore.emitChange();
         break;
 
-      case WebsocketApiConstants.RECONNECT:
+      case WebsocketAPIConstants.RECONNECT:
         if (ApiKeyStore.isKeySet()) {
           sendKey(ApiKeyStore.getKey());
         }

@@ -2,7 +2,7 @@
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
-var WebsocketApi = require('../api/WebsocketApi.js');
+var WebsocketAPI = require('../utils/WebsocketAPI.js');
 
 var CollectionConstants = require('../constants/CollectionConstants.js');
 var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
@@ -10,7 +10,7 @@ var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
 var CollectionActions = {
 
   fetch: function(path) {
-    WebsocketApi.send({
+    WebsocketAPI.send({
       path: path,
       action: CollectionConstants.FETCH,
     });

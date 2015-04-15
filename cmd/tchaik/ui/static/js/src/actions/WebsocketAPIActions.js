@@ -2,9 +2,9 @@
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
-var WebsocketApiConstants = require('../constants/WebsocketApiConstants.js');
+var WebsocketAPIConstants = require('../constants/WebsocketAPIConstants.js');
 
-var WebsocketApiActions = {
+var WebsocketAPIActions = {
 
   dispatch: function(data) {
     AppDispatcher.handleServerAction({
@@ -15,10 +15,10 @@ var WebsocketApiActions = {
 
   reconnect: function() {
     AppDispatcher.handleViewAction({
-      actionType: WebsocketApiConstants.RECONNECT
+      actionType: WebsocketAPIConstants.RECONNECT
     });
   },
 
 };
 
-module.exports = WebsocketApiActions;
+module.exports = WebsocketAPIActions;

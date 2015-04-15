@@ -1,6 +1,6 @@
 'use strict';
 
-var WebsocketApi = require('../api/WebsocketApi.js');
+var WebsocketAPI = require('../utils/WebsocketAPI.js');
 
 var AppDispatcher = require('../dispatcher/AppDispatcher.js');
 
@@ -9,7 +9,7 @@ var SearchConstants = require('../constants/SearchConstants.js');
 var SearchActions = {
 
   search: function(input) {
-    WebsocketApi.send({
+    WebsocketAPI.send({
       action: SearchConstants.SEARCH,
       data: input,
     });
