@@ -7,12 +7,12 @@ var Icon = require('./Icon.js');
 
 var classNames = require('classnames');
 
-var ApiKeyStore = require('../stores/ApiKeyStore.js');
-var ApiKeyActions = require('../actions/ApiKeyActions.js');
+var CtrlKeyStore = require('../stores/CtrlKeyStore.js');
+var CtrlKeyActions = require('../actions/CtrlKeyActions.js');
 
 function getStatus() {
   return {
-    set: (ApiKeyStore.isKeySet()),
+    set: (CtrlKeyStore.isKeySet()),
   };
 }
 
@@ -26,21 +26,21 @@ function randomString(len)
   return res;
 }
 
-var ApiKeyView = React.createClass({
+var CtrlKeyView = React.createClass({
   getInitialState: function() {
     return getStatus();
   },
 
   componentDidMount: function() {
-    var k = ApiKeyStore.getKey();
+    var k = CtrlKeyStore.getKey();
     if (k !== null) {
-      ApiKeyActions.setKey(k);
+      CtrlKeyActions.setKey(k);
     }
-    ApiKeyStore.addChangeListener(this._onChange);
+    CtrlKeyStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    ApiKeyStore.removeChangeListener(this._onChange);
+    CtrlKeyStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
@@ -58,13 +58,13 @@ var ApiKeyView = React.createClass({
   },
 
   _onClick: function() {
-    var key = ApiKeyStore.getKey();
+    var key = CtrlKeyStore.getKey();
     if (key === null || key === "") {
       key = randomString(20);
     }
     key = prompt("Enter an API key", key);
     if (key !== null) {
-      ApiKeyActions.setKey(key);
+      CtrlKeyActions.setKey(key);
     }
   },
 
@@ -73,4 +73,4 @@ var ApiKeyView = React.createClass({
   }
 });
 
-module.exports = ApiKeyView;
+module.exports = CtrlKeyView;

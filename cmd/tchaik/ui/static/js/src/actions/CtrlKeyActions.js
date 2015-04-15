@@ -2,17 +2,17 @@
 
 var AppDispatcher = require('../dispatcher/AppDispatcher.js');
 
-var APIKeyConstants = require('../constants/APIKeyConstants.js');
+var ControlConstants = require('../constants/ControlConstants.js');
 
-var APIKeyActions = {
+var CtrlKeyActions = {
 
   setKey: function(key) {
     AppDispatcher.handleViewAction({
-      actionType: APIKeyConstants.SET_KEY,
+      actionType: ControlConstants.SET_KEY,
       key: key,
     });
   },
 
 };
 
-module.exports = APIKeyActions;
+module.exports = CtrlKeyActions;

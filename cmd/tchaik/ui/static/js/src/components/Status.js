@@ -6,7 +6,7 @@ var React = require('react/addons');
 var Icon = require('./Icon.js');
 
 var WebsocketAPI = require('../utils/WebsocketAPI.js');
-var WebsocketAPIActions = require('../actions/WebsocketAPIActions.js');
+var WebsocketActions = require('../actions/WebsocketActions.js');
 
 var classNames = require('classnames');
 
@@ -47,7 +47,7 @@ var StatusView = React.createClass({
   },
 
   _onClick: function() {
-    WebsocketAPIActions.reconnect();
+    WebsocketActions.reconnect();
   }
 });
 

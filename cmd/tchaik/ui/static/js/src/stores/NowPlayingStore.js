@@ -9,7 +9,7 @@ var PlaylistConstants = require('../constants/PlaylistConstants.js');
 
 var PlaylistStore = require('./PlaylistStore.js');
 
-var ControlApiConstants = require('../constants/ControlApiConstants.js');
+var CtrlConstants = require('../constants/ControlConstants.js');
 
 var CHANGE_EVENT = 'change';
 var CONTROL_EVENT = 'control';
@@ -187,24 +187,24 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   var source = payload.source;
 
   if (source === 'SERVER_ACTION') {
-    if (action.actionType === ControlApiConstants.CTRL) {
+    if (action.actionType === CtrlConstants.CTRL) {
       switch (action.data) {
 
-        case ControlApiConstants.PLAY:
+        case CtrlConstants.PLAY:
           setPlaying(true);
           NowPlayingStore.emitChange();
           break;
 
-        case ControlApiConstants.PAUSE:
+        case CtrlConstants.PAUSE:
           setPlaying(false);
           NowPlayingStore.emitChange();
           break;
 
-        case ControlApiConstants.NEXT:
+        case CtrlConstants.NEXT:
           handleNextAction();
           break;
 
-        case ControlApiConstants.PREV:
+        case CtrlConstants.PREV:
           handlePrevAction();
           break;
 

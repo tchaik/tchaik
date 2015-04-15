@@ -5,8 +5,8 @@ var assign = require('object-assign');
 
 var AppDispatcher = require('../dispatcher/AppDispatcher.js');
 
-var WebsocketAPIActions = require('../actions/WebsocketAPIActions.js');
-var WebsocketAPIConstants = require('../constants/WebsocketAPIConstants.js');
+var WebsocketActions = require('../actions/WebsocketActions.js');
+var WebsocketConstants = require('../constants/WebsocketConstants.js');
 
 var CHANGE_EVENT = 'status';
 
@@ -39,7 +39,7 @@ function init(host) {
 
 function onMessage(obj) {
   var msg = JSON.parse(obj.data);
-  WebsocketAPIActions.dispatch(msg);
+  WebsocketActions.dispatch(msg);
 }
 
 function onError(err) {
@@ -104,7 +104,7 @@ WebsocketAPI.dispatchToken = AppDispatcher.register(function(payload) {
 
   if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
-      case WebsocketAPIConstants.RECONNECT:
+      case WebsocketConstants.RECONNECT:
         init(_host);
         break;
     }

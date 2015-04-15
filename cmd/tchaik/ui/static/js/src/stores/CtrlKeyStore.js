@@ -4,10 +4,10 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('eventemitter3').EventEmitter;
 var assign = require('object-assign');
 
-var WebsocketAPIConstants = require('../constants/WebsocketAPIConstants.js');
+var WebsocketConstants = require('../constants/WebsocketConstants.js');
 var WebsocketAPI = require('../utils/WebsocketAPI.js');
 
-var ApiKeyConstants = require('../constants/ApiKeyConstants.js');
+var ControlConstants = require('../constants/ControlConstants.js');
 
 var CHANGE_EVENT = 'change';
 
@@ -34,7 +34,7 @@ function sendKey(key) {
   });
 }
 
-var ApiKeyStore = assign({}, EventEmitter.prototype, {
+var CtrlKeyStore = assign({}, EventEmitter.prototype, {
 
   isKeySet: function() {
     var k = key();
@@ -68,21 +68,21 @@ var ApiKeyStore = assign({}, EventEmitter.prototype, {
 
 });
 
-ApiKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
+CtrlKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
   if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
-      case ApiKeyConstants.SET_KEY:
+      case ControlConstants.SET_KEY:
         setKey(action.key);
         sendKey(action.key);
-        ApiKeyStore.emitChange();
+        CtrlKeyStore.emitChange();
         break;
 
-      case WebsocketAPIConstants.RECONNECT:
-        if (ApiKeyStore.isKeySet()) {
-          sendKey(ApiKeyStore.getKey());
+      case WebsocketConstants.RECONNECT:
+        if (CtrlKeyStore.isKeySet()) {
+          sendKey(CtrlKeyStore.getKey());
         }
         break;
     }
@@ -90,4 +90,4 @@ ApiKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = ApiKeyStore;
+module.exports = CtrlKeyStore;

@@ -12,4 +12,6 @@ module.exports = keyMirror({
   MUTE: null,
   VOLUP: null,
   VOLDOWN: null,
+
+  SET_KEY: null,
 });
