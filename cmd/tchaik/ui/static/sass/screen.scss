@@ -207,10 +207,10 @@ div#right-column {
          @include user-select(none);
 
          &.glyphicon-step-forward, &.glyphicon-step-backward {
-           font-size: 16px;
+           font-size: 20px;
            line-height: 36px;
            color: #666;
-           top: -8px;
+           top: -5px;
 
            &.enabled {
              color: white;
