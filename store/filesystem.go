@@ -6,6 +6,7 @@ package store
 
 import (
 	"bytes"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -36,7 +37,7 @@ func NewFileSystem(c Client) *fileSystem {
 // file is a basic representation of a remote file such that all operations (i.e.
 // seeking) will work correctly.
 type file struct {
-	*bytes.Reader
+	io.ReadSeeker
 	stat *fileInfo
 }
 
@@ -66,7 +67,7 @@ func (fs *fileSystem) Open(path string) (http.File, error) {
 	}
 
 	return &file{
-		Reader: bytes.NewReader(buf),
+		ReadSeeker: bytes.NewReader(buf),
 		stat: &fileInfo{
 			name:    rf.Name,
 			size:    rf.Size,

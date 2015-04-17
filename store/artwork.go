@@ -50,7 +50,7 @@ func (afs ArtworkFileSystem) Open(path string) (http.File, error) {
 	}
 
 	return &file{
-		Reader: bytes.NewReader(p.Data),
+		ReadSeeker: bytes.NewReader(p.Data),
 		stat: &fileInfo{
 			name:    name,
 			size:    int64(len(p.Data)),
