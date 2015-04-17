@@ -7,9 +7,16 @@ package store
 import (
 	"bytes"
 	"fmt"
+	"image"
+	"image/jpeg"
+	"image/png"
 	"net/http"
+	"path/filepath"
+	"strings"
 
+	ico "github.com/Kodeworks/golang-image-ico"
 	"github.com/dhowden/tag"
+	"github.com/nfnt/resize"
 )
 
 // ArtworkFileSystem wraps another FileSystem, reworking file system operations
@@ -54,6 +61,58 @@ func (afs ArtworkFileSystem) Open(path string) (http.File, error) {
 		stat: &fileInfo{
 			name:    name,
 			size:    int64(len(p.Data)),
+			modTime: stat.ModTime(),
+		},
+	}, nil
+}
+
+// FaviconFileSystem wraps another FileSystem assumed to contain only images.
+type FaviconFileSystem struct {
+	http.FileSystem
+}
+
+func (ffs FaviconFileSystem) Open(path string) (http.File, error) {
+	f, err := ffs.FileSystem.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	stat, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	filename := stat.Name()
+	ext := filepath.Ext(filename)
+	var img image.Image
+	switch ext {
+	case ".jpeg", ".jpg":
+		img, err = jpeg.Decode(f)
+	case ".png":
+		img, err = png.Decode(f)
+	default:
+		err = fmt.Errorf("unsupported favicon image source: %v", stat.Name())
+	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	img = resize.Thumbnail(48, 48, img, resize.NearestNeighbor)
+	buf := &bytes.Buffer{}
+	err = ico.Encode(buf, img)
+	if err != nil {
+		return nil, err
+	}
+
+	icoFilename := strings.TrimSuffix(filename, ext) + ".ico"
+
+	return &file{
+		ReadSeeker: bytes.NewReader(buf.Bytes()),
+		stat: &fileInfo{
+			name:    icoFilename,
+			size:    int64(buf.Len()),
 			modTime: stat.ModTime(),
 		},
 	}, nil
