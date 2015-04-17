@@ -26,7 +26,7 @@ import (
 	"github.com/dhowden/tchaik/index"
 )
 
-var fileExtensions = []string{".mp3", ".m4a"}
+var fileExtensions = []string{".mp3", ".m4a", ".flac"}
 
 // Library is an implementation of index.Library.
 type Library struct {
