@@ -37,7 +37,7 @@ var Covers = React.createClass({
   _onChange: function(path) {
     if (path === CollectionStore.pathToKey(["Root"])) {
       this.setState({
-        list: CollectionStore.getCollection(["Root"]).Groups,
+        list: CollectionStore.getCollection(["Root"]).Groups.slice(0, 30),
       });
     }
   },
