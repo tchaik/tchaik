@@ -177,15 +177,17 @@ var NowPlaying = React.createClass({
   render: function() {
     var trackID = "0";
     var source = null;
+    var trackInfo = null;
 
     if (this.state.track) {
       trackID = this.state.track.TrackID;
       source = <source src={"/track/"+trackID} />;
+      trackInfo = <TrackInfo />;
     }
 
     return (
       <div className="now-playing-track">
-        <TrackInfo />
+        {trackInfo}
         <audio id={"player_"+trackID} ref="ref_audio">
          {source}
         </audio>
