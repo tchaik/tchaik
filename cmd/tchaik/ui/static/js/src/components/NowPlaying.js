@@ -20,8 +20,6 @@ var NowPlaying = React.createClass({
       track: NowPlayingStore.getTrack(),
       playing: NowPlayingStore.getPlaying(),
       currentTime: NowPlayingStore.getTime(),
-      buffered: 0,
-      duration: 0,
     };
   },
 
