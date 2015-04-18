@@ -353,6 +353,12 @@ func ctrlHandler(l LibraryAPI) http.Handler {
 		case "play", "pause", "next", "prev":
 			data = strings.ToUpper(r.URL.Path)
 
+		case "toggle/play-pause":
+			data = "TOGGLE_PLAY_PAUSE"
+
+		case "toggle/mute":
+			data = "TOGGLE_MUTE"
+
 		case "volume":
 			v := r.Form.Get("value")
 			f, err := strconv.ParseFloat(v, 32)

@@ -208,6 +208,16 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           handlePrevAction();
           break;
 
+        case CtrlConstants.TOGGLE_PLAY_PAUSE:
+          setPlaying(!NowPlayingStore.getPlaying());
+          NowPlayingStore.emitChange();
+          break;
+
+        case CtrlConstants.TOGGLE_MUTE:
+          setVolumeMute(!volumeMute());
+          NowPlayingStore.emitChange();
+          break;
+
         default:
           break;
       }
