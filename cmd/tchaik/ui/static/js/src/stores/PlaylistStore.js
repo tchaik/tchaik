@@ -108,13 +108,13 @@ function buildPlaylistItem(root) {
 }
 
 function reset() {
-  var items = getPlaylistItems();
+  var item = getPlaylistItem(0);
   var current = null;
-  if (items.length > 0) {
+  if (item !== null) {
     current = {
       item: 0,
       track: 0,
-      path: items[0].tracks[0],
+      path: item.root.concat(item.tracks[0]),
     };
   }
   setPlaylistCurrent(current);
