@@ -71,7 +71,7 @@ var Controls = React.createClass({
     this.setState({playing: NowPlayingStore.getPlaying()});
 
     var favicon = document.querySelector("head link[rel=\"shortcut icon\"]");
-    var currentTrack = NowPlayingStore.getCurrent();
+    var currentTrack = NowPlayingStore.getTrack();
     if (currentTrack === null) {
       document.title = "tchaik";
       return;
@@ -112,7 +112,7 @@ var Controls = React.createClass({
   _onBackward: function() {
     if (this._backButtonTimerRunning()) {
       PlaylistActions.prev();
-    } else if (this.state.playing || NowPlayingStore.getCurrentTime() > 0) {
+    } else if (this.state.playing || NowPlayingStore.getTime() > 0) {
       NowPlayingActions.setCurrentTime(0);
     } else {
       PlaylistActions.prev();

@@ -362,7 +362,7 @@ function isPlaying(trackId) {
     return false;
   }
 
-  var t = NowPlayingStore.getCurrent();
+  var t = NowPlayingStore.getTrack();
   if (t) {
     return t.TrackID === trackId;
   }

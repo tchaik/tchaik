@@ -301,7 +301,7 @@ var TrackList = React.createClass({
 });
 
 function isCurrent(trackId) {
-  var t = NowPlayingStore.getCurrent();
+  var t = NowPlayingStore.getTrack();
   if (t) {
     return t.TrackID === trackId;
   }

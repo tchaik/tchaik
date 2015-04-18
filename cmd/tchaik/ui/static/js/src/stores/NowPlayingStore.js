@@ -19,6 +19,12 @@ var defaultVolumeMute = false;
 
 var currentPlaying = null;
 
+var _defaultTrackState = {
+  buffered: 0.0,
+  duration: 0.0,
+};
+var _trackState = _defaultTrackState;
+
 function setCurrentTime(time) {
   localStorage.setItem("currentTime", time);
 }
@@ -104,8 +110,16 @@ function volumeMute() {
 
 var NowPlayingStore = assign({}, EventEmitter.prototype, {
 
-  getCurrentTime: function() {
+  getTime: function() {
     return currentTime();
+  },
+
+  getBuffered: function() {
+    return _trackState.buffered;
+  },
+
+  getDuration: function() {
+    return _trackState.duration;
   },
 
   getPlaying: function() {
@@ -120,11 +134,11 @@ var NowPlayingStore = assign({}, EventEmitter.prototype, {
     return volumeMute();
   },
 
-  getCurrent: function() {
+  getTrack: function() {
     return currentTrack();
   },
 
-  getCurrentSource: function() {
+  getSource: function() {
     return currentTrackSource();
   },
 
@@ -252,6 +266,24 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
 
+      case NowPlayingConstants.RESET:
+        _trackState = {
+          buffered: 0,
+          duration: 0,
+        };
+        NowPlayingStore.emitChange();
+        break;
+
+      case NowPlayingConstants.SET_DURATION:
+        _trackState.duration = action.duration;
+        NowPlayingStore.emitChange();
+        break;
+
+      case NowPlayingConstants.SET_BUFFERED:
+        _trackState.buffered = action.buffered;
+        NowPlayingStore.emitChange();
+        break;
+
       case PlaylistConstants.PREV:
         handlePrevAction();
         break;
@@ -272,6 +304,7 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.STORE_CURRENT_TIME:
         setCurrentTime(action.currentTime);
+        NowPlayingStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_CURRENT_TIME:

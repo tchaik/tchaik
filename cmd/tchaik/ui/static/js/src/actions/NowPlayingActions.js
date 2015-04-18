@@ -6,10 +6,23 @@ var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
 
 var NowPlayingActions = {
 
-  remove: function(index) {
+  reset: function() {
     AppDispatcher.handleViewAction({
-      actionType: NowPlayingConstants.REMOVE,
-      index: index,
+      actionType:NowPlayingConstants.RESET,
+    });
+  },
+
+  setDuration: function(duration) {
+    AppDispatcher.handleViewAction({
+      actionType: NowPlayingConstants.SET_DURATION,
+      duration: duration
+    });
+  },
+
+  setBuffered: function(buffered) {
+    AppDispatcher.handleViewAction({
+      actionType: NowPlayingConstants.SET_BUFFERED,
+      buffered: buffered
     });
   },
 

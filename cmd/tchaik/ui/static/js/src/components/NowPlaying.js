@@ -17,9 +17,9 @@ var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
 var NowPlaying = React.createClass({
   getInitialState: function() {
     return {
-      track: NowPlayingStore.getCurrent(),
+      track: NowPlayingStore.getTrack(),
       playing: NowPlayingStore.getPlaying(),
-      currentTime: NowPlayingStore.getCurrentTime(),
+      currentTime: NowPlayingStore.getTime(),
       buffered: 0,
       duration: 0,
     };
@@ -36,49 +36,37 @@ var NowPlaying = React.createClass({
     case "progress":
       var range = this.buffered();
       if (range.length > 0) {
-        this.setState({
-          buffered: range.end(range.length-1),
-        });
+        NowPlayingActions.setBuffered(range.end(range.length-1));
       }
       break;
 
     case "play":
-      this.setState({playing: true});
       NowPlayingActions.playing(true);
       break;
 
     case "pause":
-      this.setState({playing: false});
       NowPlayingActions.playing(false);
       break;
 
     case "ended":
-      NowPlayingActions.ended(NowPlayingStore.getCurrentSource());
+      NowPlayingActions.ended(NowPlayingStore.getSource());
       break;
 
     case "timeupdate":
-      var t = this.currentTime();
-      this.setState({currentTime: t});
-      NowPlayingActions.currentTime(t);
+      NowPlayingActions.currentTime(this.currentTime());
       break;
 
     case "loadedmetadata":
-      this.setState({
-        duration: this.duration()
-      });
+      NowPlayingActions.setDuration(this.duration());
 
-      this.setCurrentTime(NowPlayingStore.getCurrentTime());
+      this.setCurrentTime(NowPlayingStore.getTime());
       if (this.state.playing) {
         this.play();
       }
       break;
 
     case "loadstart":
-      this.setState({
-        duration: 0,
-        currentTime: 0,
-        buffered: 0,
-      });
+      NowPlayingActions.reset();
       break;
 
     default:
@@ -187,23 +175,17 @@ var NowPlaying = React.createClass({
   },
 
   render: function() {
-    var trackInfo = null;
     var trackID = "0";
     var source = null;
 
     if (this.state.track) {
-      trackInfo = <TrackInfo track={this.state.track}
-                       currentTime={this.state.currentTime}
-                          duration={this.state.duration}
-                          buffered={this.state.buffered}
-                    setCurrentTime={this.setCurrentTime} />;
       trackID = this.state.track.TrackID;
       source = <source src={"/track/"+trackID} />;
     }
 
     return (
       <div className="now-playing-track">
-        {trackInfo}
+        <TrackInfo />
         <audio id={"player_"+trackID} ref="ref_audio">
          {source}
         </audio>
@@ -213,7 +195,7 @@ var NowPlaying = React.createClass({
 
   _onChange: function() {
     this.setState({
-      track: NowPlayingStore.getCurrent(),
+      track: NowPlayingStore.getTrack(),
       playing: NowPlayingStore.getPlaying(),
     });
 
@@ -231,67 +213,86 @@ var NowPlaying = React.createClass({
   }
 });
 
+function getTrackInfoState() {
+  return {
+    track: NowPlayingStore.getTrack(),
+    buffered: NowPlayingStore.getBuffered(),
+    duration: NowPlayingStore.getDuration(),
+    currentTime: NowPlayingStore.getTime(),
+  };
+}
+
 var TrackInfo = React.createClass({
   getInitialState: function() {
-    return {
-      showImage: false,
-      largeImage: true,
-    };
+    return getTrackInfoState();
   },
 
-  showImage: function() {
-    this.setState({showImage: true});
+  componentDidMount: function() {
+    NowPlayingStore.addChangeListener(this._onChange);
   },
 
-  onError: function() {
-    this.setState({showImage: false});
-  },
-
-  toggleLargeImage: function() {
-    this.setState({
-      largeImage: !this.state.largeImage,
-    });
+  componentWillUnmount: function() {
+    NowPlayingStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
-    var remainingTime = parseInt(this.props.duration) - parseInt(this.props.currentTime);
-
-    var imgClassSet = {
-      'visible': this.state.showImage,
-      'large': this.state.showImage && this.state.largeImage,
-    };
-
+    var track = this.state.track;
+    var fields = ['Album', 'Artist', 'Year'];
     var attributeArr = [];
-    if (this.props.track.Album) {
-      attributeArr.push(this.props.track.Album);
-    }
-
-    if (this.props.track.Artist) {
-      attributeArr.push(this.props.track.Artist);
-    }
-
-    if (this.props.track.Year) {
-      attributeArr.push(this.props.track.Year);
-    }
+    fields.forEach(function(f) {
+      if (track[f]) {
+        attributeArr.push(track[f]);
+      }
+    });
 
     var attributes = <GroupAttributes list={attributeArr} />;
-//        <span className="album">{this.props.track.Album}</span>
+    var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
+
     return (
       <div className="info">
-        <span className="image">
-          <img src={"/artwork/" + this.props.track.TrackID} key="img" className={classNames(imgClassSet)} onLoad={this.showImage} onError={this.onError} />
-        </span>
-        <span className="title">{this.props.track.Name}<a className="goto" href={"#track_"+this.props.track.TrackID}><Icon icon="share-alt" /></a></span>
+        <ArtworkImage path={"/artwork/" + track.TrackID} />
+        <span className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></span>
         {attributes}
 
-        <PlayProgress markerWidth={2} current={this.props.currentTime} duration={this.props.duration} buffered={this.props.buffered} setCurrentTime={this.props.setCurrentTime} />
+        <PlayProgress markerWidth={2} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
         <span className="times">
-          <TimeFormatter className="currentTime" time={this.props.currentTime} />
+          <TimeFormatter className="currentTime" time={this.state.currentTime} />
           <TimeFormatter className="remaining" time={remainingTime} />
         </span>
         <div style={{"clear": "both"}} />
       </div>
     );
+  },
+
+  _onChange: function() {
+    this.setState(getTrackInfoState());
+  }
+});
+
+var ArtworkImage = React.createClass({
+  getInitialState: function() {
+    return {
+      visible: false,
+    };
+  },
+
+  render: function() {
+    var classes = {
+      'visible': this.state.visible,
+    };
+    return (
+      <span className="image">
+        <img src={this.props.path} className={classNames(classes)} onLoad={this._onLoad} onError={this._onError} />
+      </span>
+    );
+  },
+
+  _onLoad: function() {
+    this.setState({visible: true});
+  },
+
+  _onError: function() {
+    this.setState({visible: false});
   },
 });
 
