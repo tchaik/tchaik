@@ -147,19 +147,14 @@ var Group = React.createClass({
       duration = <TimeFormatter className="duration" time={parseInt(this.state.common.totalTime/1000)} />;
     }
 
+    var common = this.state.common;
+    var fields = ['artist', 'composer', 'year'];
     var attributeArr = [];
-
-    if (this.state.common.artist) {
-      attributeArr.push(this.state.common.artist);
-    }
-
-    if (this.state.common.composer) {
-       attributeArr.push(this.state.common.composer);
-    }
-
-    if (this.state.common.year) {
-      attributeArr.push(this.state.common.year);
-    }
+    fields.forEach(function(f) {
+      if (common[f]) {
+        attributeArr.push(common[f]);
+      }
+    });
 
     var attributes = null;
     if (attributeArr.length > 0) {
