@@ -71,14 +71,13 @@ var Controls = React.createClass({
     this.setState({playing: NowPlayingStore.getPlaying()});
 
     var favicon = document.querySelector("head link[rel=\"shortcut icon\"]");
-    if (this.state.playing) {
-      var currentTrack = NowPlayingStore.getCurrent();
-      document.title = currentTrack.Name;
-      favicon.href = "/icon/" + currentTrack.TrackID;
+    var currentTrack = NowPlayingStore.getCurrent();
+    if (currentTrack === null) {
+      document.title = "tchaik";
       return;
     }
-    document.title = "tchaik";
-    favicon.href = null;
+    document.title = currentTrack.Name;
+    favicon.href = "/icon/" + currentTrack.TrackID;
   },
 
   _togglePlayPause: function() {
