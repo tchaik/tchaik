@@ -239,15 +239,14 @@ div#right-column {
 
      div.now-playing-track {
        padding-top: 10px;
-       span.image {
-         img {
-           display: none;
-           margin-bottom: 5px;
 
-           &.visible {
-             display: inline;
-             max-width: $right-column-width - 20px;
-           }
+       img.artwork {
+         display: none;
+         margin-bottom: 5px;
+
+         &.visible {
+           display: inline;
+           max-width: $right-column-width - 20px;
          }
        }
 

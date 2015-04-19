@@ -3,11 +3,10 @@
 
 var React = require('react/addons');
 
-var classNames = require('classnames');
-
 var Icon = require('./Icon.js');
 var TimeFormatter = require('./TimeFormatter.js');
 var GroupAttributes = require('./GroupAttributes.js');
+var ArtworkImage = require('./ArtworkImage.js');
 
 var NowPlayingStore = require('../stores/NowPlayingStore.js');
 var NowPlayingActions = require('../actions/NowPlayingActions.js');
@@ -267,33 +266,6 @@ var TrackInfo = React.createClass({
   _onChange: function() {
     this.setState(getTrackInfoState());
   }
-});
-
-var ArtworkImage = React.createClass({
-  getInitialState: function() {
-    return {
-      visible: false,
-    };
-  },
-
-  render: function() {
-    var classes = {
-      'visible': this.state.visible,
-    };
-    return (
-      <span className="image">
-        <img src={this.props.path} className={classNames(classes)} onLoad={this._onLoad} onError={this._onError} />
-      </span>
-    );
-  },
-
-  _onLoad: function() {
-    this.setState({visible: true});
-  },
-
-  _onError: function() {
-    this.setState({visible: false});
-  },
 });
 
 function _getOffsetLeft(elem) {

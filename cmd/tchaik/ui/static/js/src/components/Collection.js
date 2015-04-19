@@ -8,6 +8,7 @@ var classNames = require('classnames');
 var Icon = require('./Icon.js');
 var TimeFormatter = require('./TimeFormatter.js');
 var GroupAttributes = require('./GroupAttributes.js');
+var ArtworkImage = require('./ArtworkImage.js');
 
 var CollectionStore = require('../stores/CollectionStore.js');
 var CollectionActions = require('../actions/CollectionActions.js');
@@ -31,7 +32,6 @@ var Group = React.createClass({
     return {
       expanded: (this.props.depth !== 1) || CollectionStore.isExpanded(this.props.path),
       common: {},
-      showImage: false,
     };
   },
 
@@ -39,10 +39,6 @@ var Group = React.createClass({
     this.setState({
       common: c,
     });
-  },
-
-  showImage: function() {
-    this.setState({showImage: true});
   },
 
   render: function() {
@@ -96,12 +92,7 @@ var Group = React.createClass({
       );
 
       if (this.state.common.trackId && this.props.depth == 1) {
-        image = (
-          <img src={"/artwork/" + this.state.common.trackId}
-               key="img"
-               className={this.state.showImage === true ? "visible" : ""}
-               onLoad={this.showImage} />
-        );
+        image = <ArtworkImage path={"/artwork/" + this.state.common.trackId} />;
       }
     }
 
