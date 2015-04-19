@@ -129,22 +129,23 @@ var Group = React.createClass({
   },
 
   render: function() {
-    var content = null;
-    var play = null;
-    var nameDiv = null;
-    var image = null;
+    var groupClasses = {
+      'group': true,
+      'expanded': this.state.expanded
+    };
 
-    if (this.state.expanded) {
-      content = <GroupContent path={this.props.path} setCommon={this.setCommon} itemIndex={this.props.itemIndex} />;
+    var image = null;
+    if (this.state.common.TrackID) {
+      image = <ArtworkImage path={"/artwork/" + this.state.common.TrackID} />;
     }
 
     var duration = null;
-    if (this.state.common.totalTime) {
-      duration = <TimeFormatter className="duration" time={parseInt(this.state.common.totalTime/1000)} />;
+    if (this.state.common.TotalTime) {
+      duration = <TimeFormatter className="duration" time={parseInt(this.state.common.TotalTime/1000)} />;
     }
 
     var common = this.state.common;
-    var fields = ['artist', 'composer', 'year'];
+    var fields = ['Artist', 'Composer', 'Year'];
     var attributeArr = [];
     fields.forEach(function(f) {
       if (common[f]) {
@@ -154,40 +155,26 @@ var Group = React.createClass({
 
     var attributes = null;
     if (attributeArr.length > 0) {
-      attributes = <GroupAttributes list={attributeArr} key="attributes" />;
+      attributes = <GroupAttributes list={attributeArr} />;
     }
 
-    play = [
-      <span className="info" key="info">
-        <Icon icon="remove" key="remove" onClick={this._onClickRemove} />
-        <span className="controls" key="duration">{duration}</span>
-      </span>,
-      {attributes},
-      <div key="clear" style={{clear: 'both'}}/>,
-    ];
-
-    if (this.state.common.trackId) {
-      image = (
-        <ArtworkImage path={"/artwork/" + this.state.common.trackId} key="img" />
-      );
+    var content = null;
+    if (this.state.expanded) {
+      content = <GroupContent path={this.props.path} setCommon={this.setCommon} itemIndex={this.props.itemIndex} />;
     }
-
-    nameDiv = (
-      <div className="name" onClick={this._onClick}>
-        {image}
-        <span className="name">{this.props.item.Name === "" ? "" : this.props.item.Name}</span>
-        {play}
-      </div>
-    );
-
-    var groupClasses = {
-      'group': true,
-      'expanded': this.state.expanded
-    };
 
     return (
       <div className={classNames(groupClasses)}>
-        {nameDiv}
+        <div className="name" onClick={this._onClick}>
+          {image}
+          <span className="name">{this.props.item.Name === "" ? "" : this.props.item.Name}</span>
+          <span className="info">
+            <Icon icon="remove" onClick={this._onClickRemove} />
+            <span className="controls">{duration}</span>
+          </span>
+          {attributes}
+          <div key="clear" style={{clear: 'both'}}/>
+        </div>
         {content}
       </div>
     );
@@ -231,7 +218,6 @@ var GroupContent = React.createClass({
     }
 
     var pathKeys = PlaylistStore.getItemKeys(this.props.itemIndex, this.props.path);
-
     if (item.Groups) {
       return <GroupList path={this.props.path} list={item.Groups} itemIndex={this.props.itemIndex} keys={pathKeys.keys} />;
     }
@@ -243,36 +229,16 @@ var GroupContent = React.createClass({
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var empty = true;
-      if (item.TotalTime) {
-        common.totalTime = item.TotalTime;
-        empty = false;
-      }
+      var fields = ['TotalTime', 'Artist', 'Composer', 'TrackID', 'Year'];
+      fields.forEach(function(f) {
+        if (item[f]) {
+          common[f] = item[f];
+        }
+      });
 
-      if (item.Artist) {
-        common.artist = item.Artist;
-        empty = false;
-      }
-
-      if (item.TrackID) {
-        common.trackId = item.TrackID;
-        empty = false;
-      }
-
-      if (item.Year) {
-        common.year = item.Year;
-        empty = false;
-      }
-
-      if (item.Composer) {
-        common.composer = item.Composer;
-        empty = false;
-      }
-
-      if (!empty) {
+      if (Object.keys(common).length > 0) {
         this.props.setCommon(common);
       }
-
       this.setState({item: item});
     }
   }
