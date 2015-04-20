@@ -108,7 +108,7 @@ func (s *wordIndex) AddString(x string, p Path) {
 func (s *wordIndex) AddCollection(c Collection, p Path) {
 	for _, k := range c.Keys() {
 		np := make(Path, len(p), len(p)+1)
-		copy(p, np)
+		copy(np, p)
 		np = append(np, string(k))
 		s.AddGroup(c.Get(k), np)
 	}
