@@ -170,6 +170,29 @@ func SubCollect(c Collection, r Collector) Collection {
 	return nc
 }
 
+// WalkFn is the type of the function called for each Track visited by Walk.
+type WalkFn func(Track, []string)
+
+func walkCollection(c Collection, p []string, f WalkFn) {
+	for _, k := range c.Keys() {
+		g := c.Get(k)
+		np := make([]string, len(p)+1)
+		copy(np, p)
+		np[len(p)] = string(k)
+		Walk(g, np, f)
+	}
+}
+
+// Walk transverses the Group g and calls the WalkFn f on each Track.
+func Walk(g Group, path []string, f WalkFn) {
+	if gc, ok := g.(Collection); ok {
+		walkCollection(gc, path, f)
+		return
+	}
+	for _, t := range g.Tracks() {
+		f(t, path)
+	}
+}
 // ByAttr is a type which implements Collector, and groups elements by the value of
 // the attribute given by the underlying Attr instance.
 type ByAttr Attr
