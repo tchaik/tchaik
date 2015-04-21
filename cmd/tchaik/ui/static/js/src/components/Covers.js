@@ -3,6 +3,8 @@
 
 var React = require('react/addons');
 
+var ArtworkImage = require('./ArtworkImage.js');
+
 var CollectionStore = require('../stores/CollectionStore.js');
 var CollectionActions = require('../actions/CollectionActions.js');
 
@@ -53,7 +55,7 @@ var Cover = React.createClass({
   render: function() {
     return (
       <div className="cover">
-        <img src={"/artwork/"+this.props.item.TrackID} />
+        <ArtworkImage path={"/artwork/"+this.props.item.TrackID} />
       </div>
     );
   },
