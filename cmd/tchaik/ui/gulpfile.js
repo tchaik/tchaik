@@ -21,4 +21,8 @@ gulp.task('sass', function() {
                .pipe(gulp.dest(paths.sass.dest));
 });
 
+gulp.task('watch', function() {
+    gulp.watch(paths.sass.src, ['sass']);
+});
+
 gulp.task('default', []);
