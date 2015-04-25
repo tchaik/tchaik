@@ -16,11 +16,19 @@ import (
 
 // Path is type which represents a position in the index heirarchy.  Each level has a key, and so the path
 // is a slice of strings where each element is the key of some index element (group or track).
-type Path []string
+type Path []Key
 
 // Encode returns a string representation of the Path.
 func (p Path) Encode() string {
-	return strings.Join([]string(p), ">>")
+	s := ""
+	if len(p) == 0 {
+		return s
+	}
+	for _, k := range p[:len(p)-1] {
+		s += string(k) + ">>"
+	}
+	s += string(p[len(p)-1])
+	return s
 }
 
 // PathSlice is a wrapper type implementing sort.Interface (and index.Swapper)
@@ -109,7 +117,7 @@ func (s *wordIndex) AddCollection(c Collection, p Path) {
 	for _, k := range c.Keys() {
 		np := make(Path, len(p), len(p)+1)
 		copy(np, p)
-		np = append(np, string(k))
+		np = append(np, k)
 		s.AddGroup(c.Get(k), np)
 	}
 }
@@ -219,7 +227,7 @@ func BuildWordIndex(c Collection, fields []string) *wordIndex {
 		fields: fields,
 		words:  make(map[string][]Path),
 	}
-	wi.AddGroup(c, Path([]string{"Root"}))
+	wi.AddGroup(c, Path([]Key{"Root"}))
 	return wi
 }
 

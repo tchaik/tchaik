@@ -126,6 +126,10 @@ func main() {
 	root := buildRootCollection(l)
 	fmt.Println("done.")
 
+	fmt.Printf("Building artists filter...")
+	artists := index.Filter(root, "Artist")
+	fmt.Println("done.")
+
 	fmt.Printf("Building search index...")
 	searcher := buildSearchIndex(root)
 	fmt.Println("done.")
@@ -148,8 +152,13 @@ func main() {
 	}
 
 	libAPI := LibraryAPI{
-		Library:  l,
-		root:     root,
+		Library: l,
+		collections: map[string]index.Collection{
+			"Root": root,
+		},
+		filters: map[string][]index.FilterItem{
+			"Artist": artists,
+		},
 		searcher: searcher,
 		sessions: newSessions(),
 	}

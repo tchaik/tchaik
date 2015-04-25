@@ -10,8 +10,9 @@ var StatusView = require('./Status.js');
 var CtrlKeyView = require('./CtrlKey.js');
 
 var RootCollection = require('./Collection.js').RootCollection;
-var Search = require('./Search.js');
+var Search = require('./Search.js').Search;
 var Covers = require('./Covers.js');
+var Filter = require('./Filter.js');
 
 var LeftColumnStore = require('../stores/LeftColumnStore.js');
 var LeftColumnActions = require('../actions/LeftColumnActions.js');
@@ -87,6 +88,9 @@ var LeftColumn = React.createClass({
     case "All":
       container = <RootCollection />;
       break;
+    case "Artists":
+      container = <Filter name="Artist" />;
+      break;
     case "Search":
       container = <Search />;
       break;
@@ -100,7 +104,7 @@ var LeftColumn = React.createClass({
         <div id="header">
           <ToolbarItem mode="Search" icon="search" title="Search" />
           <ToolbarItem mode="All" icon="align-justify" title="All" />
-          <ToolbarItem mode="Browse" icon="list" title="Albums" />
+          <ToolbarItem mode="Artists" icon="list" title="Artists" />
           <ToolbarItem mode="Covers" icon="th-large" title="Covers" />
           <div className="bottom">
             <Volume height={100} markerHeight={2} />

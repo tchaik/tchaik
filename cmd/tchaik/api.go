@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -17,9 +18,10 @@ import (
 type LibraryAPI struct {
 	index.Library
 
-	root     index.Collection
-	searcher index.Searcher
-	sessions *sessions
+	collections map[string]index.Collection
+	filters     map[string][]index.FilterItem
+	searcher    index.Searcher
+	sessions    *sessions
 }
 
 type libraryFileSystem struct {
@@ -191,10 +193,12 @@ type Command struct {
 }
 
 const (
-	KeyAction    string = "KEY"
-	CtrlAction   string = "CTRL"
-	FetchAction  string = "FETCH"
-	SearchAction string = "SEARCH"
+	KeyAction         string = "KEY"
+	CtrlAction        string = "CTRL"
+	FetchAction       string = "FETCH"
+	SearchAction      string = "SEARCH"
+	FilterListAction  string = "FILTER_LIST"
+	FilterPathsAction string = "FILTER_PATHS"
 )
 
 var websocketSessions map[string]*websocket.Conn
@@ -221,6 +225,10 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 				resp, err = handleCollectionList(l, c)
 			case SearchAction:
 				resp = handleSearch(l, c)
+			case FilterListAction:
+				resp, err = handleFilterList(l, c)
+			case FilterPathsAction:
+				resp, err = handleFilterPaths(l, c)
 			case KeyAction:
 				handleKey(l, c, ws)
 			default:
@@ -299,7 +307,11 @@ func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
 		return nil, fmt.Errorf("invalid path: %v\n", c.Path)
 	}
 
-	g, err := l.Fetch(l.root, c.Path[1:])
+	root := l.collections[c.Path[0]]
+	if root == nil {
+		return nil, fmt.Errorf("unknown collection: %#v", c.Path[0])
+	}
+	g, err := l.Fetch(root, c.Path[1:])
 	if err != nil {
 		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, c.Path[1:])
 	}
@@ -315,6 +327,68 @@ func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
 		}{
 			c.Path,
 			g,
+		},
+	}, nil
+}
+
+func handleFilterList(l LibraryAPI, c Command) (interface{}, error) {
+	filterItems, ok := l.filters[c.Data]
+	if !ok {
+		return nil, fmt.Errorf("invalid filter name: %#v", c.Data)
+	}
+
+	filterNames := make([]string, len(filterItems))
+	for i, x := range filterItems {
+		filterNames[i] = x.Name()
+	}
+	return struct {
+		Action string
+		Data   interface{}
+	}{
+		Action: c.Action,
+		Data: struct {
+			Name  string
+			Items []string
+		}{
+			Name:  c.Data,
+			Items: filterNames,
+		},
+	}, nil
+}
+
+func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
+	filterItems, ok := l.filters[c.Data]
+	if !ok {
+		return nil, fmt.Errorf("invalid filter name: %#v", c.Data)
+	}
+
+	if len(c.Path) != 1 {
+		return nil, fmt.Errorf("invalid path: %#v", c.Path)
+	}
+	name := c.Path[0]
+
+	var item index.FilterItem
+	for _, x := range filterItems {
+		if x.Name() == name {
+			item = x
+			break
+		}
+	}
+	if item == nil {
+		return nil, fmt.Errorf("invalid filter item: %#v", name)
+	}
+
+	return struct {
+		Action string
+		Data   interface{}
+	}{
+		Action: c.Action,
+		Data: struct {
+			Path  []string
+			Paths []index.Path
+		}{
+			Path:  []string{c.Data, name},
+			Paths: item.Paths(),
 		},
 	}, nil
 }

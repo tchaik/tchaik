@@ -119,4 +119,5 @@ var RootGroup = React.createClass({
   },
 });
 
-module.exports = Search;
+module.exports.Search = Search;
+module.exports.RootGroup = RootGroup;

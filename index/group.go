@@ -6,7 +6,10 @@
 // playable items
 package index
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 // Key represents a unique value used to represent a group within a collection.
 type Key string
@@ -171,28 +174,70 @@ func SubCollect(c Collection, r Collector) Collection {
 }
 
 // WalkFn is the type of the function called for each Track visited by Walk.
-type WalkFn func(Track, []string)
+type WalkFn func(Track, Path)
 
-func walkCollection(c Collection, p []string, f WalkFn) {
+func walkCollection(c Collection, p Path, f WalkFn) {
 	for _, k := range c.Keys() {
 		g := c.Get(k)
-		np := make([]string, len(p)+1)
+		np := make(Path, len(p)+1)
 		copy(np, p)
-		np[len(p)] = string(k)
+		np[len(p)] = k
 		Walk(g, np, f)
 	}
 }
 
 // Walk transverses the Group g and calls the WalkFn f on each Track.
-func Walk(g Group, path []string, f WalkFn) {
+func Walk(g Group, p Path, f WalkFn) {
 	if gc, ok := g.(Collection); ok {
-		walkCollection(gc, path, f)
+		walkCollection(gc, p, f)
 		return
 	}
 	for _, t := range g.Tracks() {
-		f(t, path)
+		f(t, p)
 	}
 }
+
+type FilterItem interface {
+	Name() string
+	Fields() map[string]interface{}
+	Paths() []Path
+}
+
+type FilterItemSlice []FilterItem
+
+func (f FilterItemSlice) Len() int           { return len(f) }
+func (f FilterItemSlice) Swap(i, j int)      { f[i], f[j] = f[j], f[i] }
+func (f FilterItemSlice) Less(i, j int) bool { return f[i].Name() < f[j].Name() }
+type filterItem struct {
+	name   string
+	fields map[string]interface{}
+	paths  []Path
+}
+
+func (f *filterItem) Name() string                   { return f.name }
+func (f *filterItem) Fields() map[string]interface{} { return f.fields }
+func (f *filterItem) Paths() []Path                  { return f.paths }
+
+func Filter(c Collection, field string) []FilterItem { //map[string][][]string {
+	m := make(map[string][]Path)
+	walkfn := func(t Track, p Path) {
+		f := t.GetString(field)
+		m[f] = append(m[f], p)
+	}
+	Walk(c, Path([]Key{"Root"}), walkfn)
+
+	result := make([]FilterItem, 0, len(m))
+	for k, v := range m {
+		result = append(result, &filterItem{
+			name:   k,
+			fields: make(map[string]interface{}),
+			paths:  Union(v),
+		})
+	}
+	sort.Sort(FilterItemSlice(result))
+	return result
+}
+
 // ByAttr is a type which implements Collector, and groups elements by the value of
 // the attribute given by the underlying Attr instance.
 type ByAttr Attr
