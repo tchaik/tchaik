@@ -136,7 +136,7 @@ gulp.task('jshint:jsx', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['jshint'], function() {
   gulp.watch(paths.sass.src, ['sass']);
   bundle(true);
 });
