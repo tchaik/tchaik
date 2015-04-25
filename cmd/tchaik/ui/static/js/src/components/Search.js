@@ -37,12 +37,15 @@ var Search = React.createClass({
   },
 });
 
+function getResultsState() {
+  return {
+    results: SearchStore.getResults(),
+  };
+}
 
 var Results = React.createClass({
   getInitialState: function() {
-    return {
-      results: SearchStore.getResults(),
-    };
+    return getResultsState();
   },
 
   componentDidMount: function() {
@@ -65,9 +68,7 @@ var Results = React.createClass({
   },
 
   _onChange: function() {
-    this.setState({
-      results: SearchStore.getResults(),
-    });
+    this.setState(getResultsState());
   }
 });
 
