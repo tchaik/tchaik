@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var _ = require('lodash');
 
 var browserify = require('browserify');
+var browserSync = require('browser-sync').create();
 var buffer = require('vinyl-buffer');
 var envify = require('envify');
 var gutil = require('gulp-util');
@@ -46,7 +47,8 @@ gulp.task('sass', function() {
       paths.sass.dest,
       {sourceRoot: '/static/sass'}
     ))
-    .pipe(gulp.dest(paths.sass.dest));
+    .pipe(gulp.dest(paths.sass.dest))
+    .pipe(browserSync.reload({stream: true}));
 });
 
 function bundle(watch) {
@@ -77,6 +79,7 @@ function bundle(watch) {
         {sourceRoot: '/'}
       ))
       .pipe(gulp.dest(paths.js.dest))
+      .pipe(browserSync.reload({stream: true}))
       .pipe(notify({message: function() { gutil.log("Built JS"); }, onLast: true}));
 
     if (changedFiles) {
@@ -136,6 +139,13 @@ gulp.task('jshint:jsx', function() {
 gulp.task('watch', function() {
   gulp.watch(paths.sass.src, ['sass']);
   bundle(true);
+});
+
+gulp.task('serve', ['watch'], function() {
+  browserSync.init({
+    proxy: 'http://localhost:8080',
+    open: false // Don't automatically open the browser
+  });
 });
 
 gulp.task('default', ['sass', 'js', 'jshint:jsx']);
