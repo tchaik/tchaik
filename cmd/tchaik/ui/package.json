@@ -2,6 +2,7 @@
   "name": "tchaik",
   "version": "0.1.0",
   "devDependencies": {
+    "browser-sync": "^2.6.4",
     "browserify": "^9.0.8",
     "classnames": "^1.2.0",
     "envify": "~1.2.1",

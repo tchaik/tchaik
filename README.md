@@ -31,9 +31,9 @@ Building the UI:
     $ npm install
     $ NODE_ENV=development gulp
 
-Alternative, if you want the JS and CSS to be recompiled as you change the source files:
+Alternative, if you want the JS and CSS to be recompiled, and have the browser refreshed as you change the source files:
 
-    $ NODE_ENV=development gulp watch
+    $ WS_URL="ws://localhost:8080/socket" NODE_ENV=development gulp serve
 
 Now you can start Tchaik.  For the moment this means first moving to the cmd/tchaik directory:
 
