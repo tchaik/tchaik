@@ -77,4 +77,4 @@ gulp.task('watch', function() {
     bundle(true);
 });
 
-gulp.task('default', []);
+gulp.task('default', ['sass', 'js']);
