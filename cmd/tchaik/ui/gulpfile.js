@@ -5,9 +5,11 @@ var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var envify = require('envify');
 var gutil = require('gulp-util');
+var merge = require('merge-stream');
 var notify = require('gulp-notify');
 var jshint = require('gulp-jshint');
 var reactify = require('reactify');
+var react = require('gulp-react');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
 var sourcemaps = require('gulp-sourcemaps');
@@ -22,6 +24,17 @@ var paths = {
         entry: './static/js/src/app.js',
         bundleName: 'tchaik.js',
         dest: 'static/js/build'
+    },
+    jshint: {
+        src: [
+            'package.json',
+            'gulpfile.js',
+            'static/js/src/app.js',
+            'static/js/src/actions/*.js',
+            'static/js/src/stores/*.js',
+            'static/js/src/constants/*.js',
+            'static/js/src/utils/*.js'
+        ]
     }
 };
 
@@ -53,18 +66,27 @@ function bundle(watch) {
     bundler.transform(reactify);
     bundler.transform(envify);
 
-    rebundle = function() {
-        return bundler.bundle()
-            .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-            .pipe(source(paths.js.bundleName))
-            .pipe(buffer())
-            .pipe(sourcemaps.init({loadMaps: true}))
-            .pipe(sourcemaps.write(
-                './',
-                {sourceRoot: '/'}
-            ))
-            .pipe(gulp.dest(paths.js.dest))
-            .pipe(notify({message: function() { gutil.log("Built JS"); }, onLast: true}));
+    rebundle = function(changedFiles) {
+        var compileStream = bundler.bundle()
+              .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+              .pipe(source(paths.js.bundleName))
+              .pipe(buffer())
+              .pipe(sourcemaps.init({loadMaps: true}))
+              .pipe(sourcemaps.write(
+                  './',
+                  {sourceRoot: '/'}
+              ))
+              .pipe(gulp.dest(paths.js.dest))
+              .pipe(notify({message: function() { gutil.log("Built JS"); }, onLast: true}));
+
+        if (changedFiles) {
+            var lintStream = gulp.src(changedFiles)
+            .pipe(react())
+            .pipe(jshint(jshintConfig))
+            .pipe(jshint.reporter('jshint-stylish'));
+            return merge(lintStream, compileStream);
+        }
+        return compileStream;
     };
 
     bundler.on('update', rebundle);
@@ -75,8 +97,26 @@ gulp.task('js', function() {
     return bundle(false);
 });
 
+var jshintConfig = {
+    esnext: true,
+    browser: true,
+    devel: true,
+    curly: true,
+    undef: true,
+    unused: true,
+    node: true,
+    newcap: false,
+};
+
+gulp.task('jshint', function() {
+    gulp.src(paths.jshint.src)
+        .on('error',gutil.log.bind(gutil, 'JSHint Error'))
+        .pipe(jshint(jshintConfig))
+        .pipe(jshint.reporter('jshint-stylish'));
+});
+
 gulp.task('jshint:jsx', function() {
-    return gulp.src(['static/js/src/**/*.js'])
+    return gulp.src(['static/js/src/components/*.js'])
                .pipe(jshint({
                    linter: require('jshint-jsx').JSXHINT,
                    esnext: true,
