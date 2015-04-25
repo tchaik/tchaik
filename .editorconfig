@@ -11,11 +11,11 @@ indent_size = 2
 
 [*.scss]
 indent_style = space
-indent_size = 3
+indent_size = 2
 
 [*.go]
 indent_style = tab
-indent_size = 4
+indent_size = 3
 
 [*.md]
 trim_trailing_whitespace = false
