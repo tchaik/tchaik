@@ -5,6 +5,7 @@ var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var envify = require('envify');
 var gutil = require('gulp-util');
+var jshint = require('gulp-jshint');
 var reactify = require('reactify');
 var sass = require('gulp-sass');
 var source = require('vinyl-source-stream');
@@ -72,9 +73,27 @@ gulp.task('js', function() {
     return bundle(false);
 });
 
+gulp.task('jshint:jsx', function() {
+    return gulp.src(['static/js/src/**/*.js'])
+               .pipe(jshint({
+                   linter: require('jshint-jsx').JSXHINT,
+                   esnext: true,
+                   browser: true,
+                   devel: true,
+                   jquery: true,
+                   curly: true,
+                   undef: true,
+                   unused: true,
+                   node: true,
+                   newcap: false
+               }))
+               .pipe(jshint.reporter('jshint-stylish'))
+               .pipe(jshint.reporter('fail'));
+});
+
 gulp.task('watch', function() {
     gulp.watch(paths.sass.src, ['sass']);
     bundle(true);
 });
 
-gulp.task('default', ['sass', 'js']);
+gulp.task('default', ['sass', 'js', 'jshint:jsx']);
