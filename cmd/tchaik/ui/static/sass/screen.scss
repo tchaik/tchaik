@@ -3,24 +3,24 @@ $left-column-width: 40px;
 $right-column-width: 350px;
 
 @mixin webkit-scrollbar($container, $base-color) {
-   #{container} ::-webkit-scrollbar {
-       width: 10px;
-   }
-   #{container} ::-webkit-scrollbar-track {
-       background: lighten($base-color, 55); /*#FFF*/
-       -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.1);
-   }
-   #{container} ::-webkit-scrollbar-thumb {
-       background: lighten($base-color, 30); /*#CCC*/
-       -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2);
-   }
-   #{container} ::-webkit-scrollbar-thumb:hover {
-       background: lighten($base-color, 40); /*#AAA;*/
-   }
-   #{container} ::-webkit-scrollbar-thumb:active {
-       background: lighten($base-color, 20); /*#888;*/
-       -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
-   }
+  #{container} ::-webkit-scrollbar {
+    width: 10px;
+  }
+  #{container} ::-webkit-scrollbar-track {
+    background: lighten($base-color, 55); /*#FFF*/
+    -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.1);
+  }
+  #{container} ::-webkit-scrollbar-thumb {
+    background: lighten($base-color, 30); /*#CCC*/
+    -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2);
+  }
+  #{container} ::-webkit-scrollbar-thumb:hover {
+    background: lighten($base-color, 40); /*#AAA;*/
+  }
+  #{container} ::-webkit-scrollbar-thumb:active {
+    background: lighten($base-color, 20); /*#888;*/
+    -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
+  }
 }
 
 @mixin transition-property($property) {
@@ -45,15 +45,15 @@ $right-column-width: 350px;
 }
 
 @mixin fade-in($property, $duration:150ms) {
-   @include transition-property($property);
-   @include transition-duration($duration);
-   @include transition-timing-function(ease-in);
+  @include transition-property($property);
+  @include transition-duration($duration);
+  @include transition-timing-function(ease-in);
 }
 
 @mixin disable-transitions {
-   @include transition-property(none);
-   @include transition-duration(0);
-   @include transition-timing-function(ease);
+  @include transition-property(none);
+  @include transition-duration(0);
+  @include transition-timing-function(ease);
 }
 
 @mixin user-select($select) {
@@ -64,15 +64,15 @@ $right-column-width: 350px;
 }
 
 body {
-   font-family: 'Helvetica Neue', 'Helvetica', 'Open Sans', Arial, sans-serif;
-   border: 0;
-   padding: 0;
-   margin: 0;
-   background-color: #111;
+  font-family: 'Helvetica Neue', 'Helvetica', 'Open Sans', Arial, sans-serif;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background-color: #111;
 }
 
 a {
-   @include fade-in(color);
+  @include fade-in(color);
 }
 
 div#header {
@@ -85,102 +85,102 @@ div#header {
   bottom: 0;
   width: $left-column-width;
 
-   span.item {
-     color: #999;
-     padding: 10px 10px 10px 11px;
-     float: left;
+  span.item {
+    color: #999;
+    padding: 10px 10px 10px 11px;
+    float: left;
 
-     span.glyphicon {
-       font-size: 20px;
-       display: block;
-     }
+    span.glyphicon {
+      font-size: 20px;
+      display: block;
+    }
 
-     &.toolbar {
-       &.selected {
-         color: lighten($light-blue, 15);
+    &.toolbar {
+      &.selected {
+        color: lighten($light-blue, 15);
 
-         &:hover {
-           color: lighten($light-blue, 25);
-         };
-       }
+        &:hover {
+          color: lighten($light-blue, 25);
+        };
+      }
 
-       &:hover {
-         color: white;
-       };
-     }
+      &:hover {
+        color: white;
+      };
+    }
 
-     &.status {
-       &.closed {
-         background-color: lighten(#FF00BF, 10);
-         color: white;
+    &.status {
+      &.closed {
+        background-color: lighten(#FF00BF, 10);
+        color: white;
 
-         &:hover {
-           background-color: white;
-           color: lighten(#FF00BF, 10);
-         };
-       }
-       color: lighten(#00FFBF, 10);
-     }
+        &:hover {
+          background-color: white;
+          color: lighten(#FF00BF, 10);
+        };
+      }
+      color: lighten(#00FFBF, 10);
+    }
 
-     &.key {
-       &:hover {
-         color: white;
-       }
+    &.key {
+      &:hover {
+        color: white;
+      }
 
-       &.set {
-         color: white;
+      &.set {
+        color: white;
 
-         &:hover {
-           color: lighten($light-blue, 25);
-         };
-       }
-     }
-   }
+        &:hover {
+          color: lighten($light-blue, 25);
+        };
+      }
+    }
+  }
 
-   .bottom {
-     position: absolute;
-     bottom: 0;
-     left: 0;
-     padding-bottom: 5px;
-   }
+  .bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 5px;
+  }
 
-   div.volume {
-     margin: 0;
-     padding-bottom: 10px;
-     display: block;
+  div.volume {
+    margin: 0;
+    padding-bottom: 10px;
+    display: block;
 
-     span.glyphicon {
-       color: #bbb;
-       padding: 10px 0;
-       margin-left: 12px;
-       font-size: 20px;
+    span.glyphicon {
+      color: #bbb;
+      padding: 10px 0;
+      margin-left: 12px;
+      font-size: 20px;
 
-       &:hover {
-         color: white;
-       }
-     }
+      &:hover {
+        color: white;
+      }
+    }
 
-     & > span.bar {
-       background-color: $light-blue;
+    & > span.bar {
+      background-color: $light-blue;
 
-       width: 4px;
-       margin-left: 19px;
-       display: block;
+      width: 4px;
+      margin-left: 19px;
+      display: block;
 
-       & > span.current {
-         width: 4px;
-         display: block;
-         background-color: #444;
-       }
+      & > span.current {
+        width: 4px;
+        display: block;
+        background-color: #444;
+      }
 
-       & > span.marker {
-         width: 12px;
-         margin-left: -4px;
-         display: block;
-         background-color: #ddd;
-       }
-     }
-   }
+      & > span.marker {
+        width: 12px;
+        margin-left: -4px;
+        display: block;
+        background-color: #ddd;
+      }
+    }
+  }
 }
 
 div#right-column {
@@ -193,335 +193,335 @@ div#right-column {
   width: $right-column-width;
   text-align: center;
 
-   div.now-playing {
-      display: -webkit-flex;
-      display: flex;
-      -webkit-flex-flow: column;
-      flex-flow: column;
-      position: relative;
-      height: 100%;
+  div.now-playing {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-flow: column;
+    flex-flow: column;
+    position: relative;
+    height: 100%;
 
-      div.controls {
-       span.glyphicon {
-         margin: 8px;
-         @include user-select(none);
+    div.controls {
+      span.glyphicon {
+        margin: 8px;
+        @include user-select(none);
 
-         &.glyphicon-step-forward, &.glyphicon-step-backward {
-           font-size: 20px;
-           line-height: 36px;
-           color: #666;
-           top: -5px;
+        &.glyphicon-step-forward, &.glyphicon-step-backward {
+          font-size: 20px;
+          line-height: 36px;
+          color: #666;
+          top: -5px;
 
-           &.enabled {
-             color: white;
+          &.enabled {
+            color: white;
 
-             &:hover {
-               color: lighten($light-blue, 10);
-             }
-           }
-         }
+            &:hover {
+              color: lighten($light-blue, 10);
+            }
+          }
+        }
 
-         &.glyphicon-play, &.glyphicon-pause {
-           font-size: 34px;
-           margin-right: 4px;
-           margin-top: 0px;
-           padding: 7px 6px 9px 10px;
-           border: 2px solid #666;
-           border-radius: 50%;
+        &.glyphicon-play, &.glyphicon-pause {
+          font-size: 34px;
+          margin-right: 4px;
+          margin-top: 0px;
+          padding: 7px 6px 9px 10px;
+          border: 2px solid #666;
+          border-radius: 50%;
 
-           &:hover {
-             color: lighten($light-blue, 10);
-             border: 2px solid lighten($light-blue, 30);
-           };
-         }
-       }
-     }
+          &:hover {
+            color: lighten($light-blue, 10);
+            border: 2px solid lighten($light-blue, 30);
+          };
+        }
+      }
+    }
 
-     div.now-playing-track {
-       padding-top: 10px;
+    div.now-playing-track {
+      padding-top: 10px;
 
-       img.artwork {
-         display: none;
-         margin-bottom: 5px;
+      img.artwork {
+        display: none;
+        margin-bottom: 5px;
 
-         &.visible {
-           display: inline;
-           max-width: $right-column-width - 20px;
-         }
-       }
+        &.visible {
+          display: inline;
+          max-width: $right-column-width - 20px;
+        }
+      }
 
-       span.title {
-         display: block;
-         font-size: 14px;
-         font-weight: 400;
-         padding: 0 4px;
+      span.title {
+        display: block;
+        font-size: 14px;
+        font-weight: 400;
+        padding: 0 4px;
 
-         a.goto {
-           margin-left: 10px;
-           color: #999;
+        a.goto {
+          margin-left: 10px;
+          color: #999;
 
-           &:hover {
-             color: #eee;
-           }
-         }
-       }
+          &:hover {
+            color: #eee;
+          }
+        }
+      }
 
-       div.attributes {
-         display: block;
-         font-size: 12px;
-         font-weight: normal;
-         color: #999;
-         line-height: 16px;
-         padding: 2px 4px;
+      div.attributes {
+        display: block;
+        font-size: 12px;
+        font-weight: normal;
+        color: #999;
+        line-height: 16px;
+        padding: 2px 4px;
 
-         span {
-           font-weight: 200;
+        span {
+          font-weight: 200;
 
-           &.bull {
-             margin-left: 2px;
-             margin-right: 2px;
-             color: #666;
-           }
-         }
-       }
+          &.bull {
+            margin-left: 2px;
+            margin-right: 2px;
+            color: #666;
+          }
+        }
+      }
 
-       span.times {
-         display: block;
-         font-size: 11px;
-         color: #666;
+      span.times {
+        display: block;
+        font-size: 11px;
+        color: #666;
 
-         span.currentTime {
-           margin-left: 10px;
-           float: left;
-         }
+        span.currentTime {
+          margin-left: 10px;
+          float: left;
+        }
 
-         span.remaining {
-           float: right;
-           margin-right: 10px;
-         }
-       }
+        span.remaining {
+          float: right;
+          margin-right: 10px;
+        }
+      }
 
-       span.playProgress {
-         margin: 0 10px;
-         padding: 10px 0;
-         display: block;
+      span.playProgress {
+        margin: 0 10px;
+        padding: 10px 0;
+        display: block;
 
-         & > span.bar {
-           background-color: #444;
-           height: 5px;
-           display: block;
+        & > span.bar {
+          background-color: #444;
+          height: 5px;
+          display: block;
 
-           & > span.current {
-             height: 5px;
-             display: block;
-             float: left;
-             background-color: $light-blue;
-           }
+          & > span.current {
+            height: 5px;
+            display: block;
+            float: left;
+            background-color: $light-blue;
+          }
 
-           & > span.buffered {
-             height: 5px;
-             display: block;
-             float: left;
-             background-color: #555;
-           }
+          & > span.buffered {
+            height: 5px;
+            display: block;
+            float: left;
+            background-color: #555;
+          }
 
-           & > span.marker {
-             height: 10px;
-             display: block;
-             float: left;
-             background-color: white;
-             margin-top: -5px;
-           }
-         }
-       }
-     }
+          & > span.marker {
+            height: 10px;
+            display: block;
+            float: left;
+            background-color: white;
+            margin-top: -5px;
+          }
+        }
+      }
+    }
 
-     div.playlist {
-       overflow: auto;
-       text-align: left;
-       -webkit-flex: 1;
-       flex: 1;
-       background-color: #1C1C1C;
+    div.playlist {
+      overflow: auto;
+      text-align: left;
+      -webkit-flex: 1;
+      flex: 1;
+      background-color: #1C1C1C;
 
-       div.group {
-         font-size: 12px;
+      div.group {
+        font-size: 12px;
 
-         div.group {
-           padding-left: 10px;
-         }
+        div.group {
+          padding-left: 10px;
+        }
 
-         div.name {
-           span.name {
-             font-weight: 600;
-           }
-           border: 1px solid #333;
-           padding: 5px;
+        div.name {
+          span.name {
+            font-weight: 600;
+          }
+          border: 1px solid #333;
+          padding: 5px;
 
-           img {
-             display: none;
+          img {
+            display: none;
 
-             &.visible {
-               max-height: 50px;
-               float: left;
-               margin-right: 6px;
-               display: block;
-             }
-           }
-         }
+            &.visible {
+              max-height: 50px;
+              float: left;
+              margin-right: 6px;
+              display: block;
+            }
+          }
+        }
 
-         div.attributes {
-           color: #888;
+        div.attributes {
+          color: #888;
 
-           span {
-             font-weight: 200;
+          span {
+            font-weight: 200;
 
-             &.bull {
-               margin-left: 2px;
-               margin-right: 2px;
-               color: #666;
-             }
-           }
-         }
+            &.bull {
+              margin-left: 2px;
+              margin-right: 2px;
+              color: #666;
+            }
+          }
+        }
 
-         span.info {
-           float: right;
-         }
+        span.info {
+          float: right;
+        }
 
-         span.glyphicon-remove {
-           color: #666;
-           &:hover {
-             color: #ddd;
-           }
-         }
-       }
+        span.glyphicon-remove {
+          color: #666;
+          &:hover {
+            color: #ddd;
+          }
+        }
+      }
 
-       span.glyphicon-remove {
-         float: right;
-         margin-left: 5px;
-         color: #333;
+      span.glyphicon-remove {
+        float: right;
+        margin-left: 5px;
+        color: #333;
 
-         &:hover {
-           color: #ccc;
-         }
-       }
+        &:hover {
+          color: #ccc;
+        }
+      }
 
-       div.tracks {
-         text-align: left;
-         width: 100%;
+      div.tracks {
+        text-align: left;
+        width: 100%;
 
-         ol {
-           margin: 0;
-           padding-left: 0px;
-           list-style: none;
-           counter-reset: li;
+        ol {
+          margin: 0;
+          padding-left: 0px;
+          list-style: none;
+          counter-reset: li;
 
-           &.upper-roman li::before {
-             content: counter(li, upper-roman) ".";
-           }
+          &.upper-roman li::before {
+            content: counter(li, upper-roman) ".";
+          }
 
-           li {
-             font-size: 11px;
-             line-height: 15px;
-             padding: 5px 10px 5px 5px;
-             border-bottom: 1px solid #333;
-             color: #bbb;
+          li {
+            font-size: 11px;
+            line-height: 15px;
+            padding: 5px 10px 5px 5px;
+            border-bottom: 1px solid #333;
+            color: #bbb;
 
-             &::before {
-               content: counter(li) ".";
-               font-size: 11px;
-               padding: 0 10px 0 0;
-               text-align: right;
-               width: 25px;
-               display: inline-block;
-               color: #888;
-             }
+            &::before {
+              content: counter(li) ".";
+              font-size: 11px;
+              padding: 0 10px 0 0;
+              text-align: right;
+              width: 25px;
+              display: inline-block;
+              color: #888;
+            }
 
-             &.current {
-                background-color: $light-blue;
-                color: #333;
+            &.current {
+               background-color: $light-blue;
+               color: #333;
 
-                span.duration {
-                  color: #444;
-                }
-
-                &:hover {
-                  background-color: $light-blue;
-                  color: #333;
-
-                  &::before {
-                    background-color: $light-blue;
-                    color: #333;
-                  }
-
-                  span.glyphicon-remove, span.duration {
-                    color: #333;
-                  }
-                }
-
-               &::before {
-                 color: #333;
-               }
-             }
-
-             &.is-playing {
-               &::before {
-                 font-family: 'Glyphicons Halflings';
-                 content: '\e038';
-                 font-size: 14px;
-                 line-height: 10px;
-                 vertical-align: -30%;
+               span.duration {
+                 color: #444;
                }
 
                &:hover {
+                 background-color: $light-blue;
+                 color: #333;
+
                  &::before {
-                   font-family: 'Glyphicons Halflings';
-                   content: '\e038';
-                   font-size: 14px;
-                   line-height: 10px;
-                   vertical-align: -30%;
+                   background-color: $light-blue;
+                   color: #333;
+                 }
+
+                 span.glyphicon-remove, span.duration {
+                   color: #333;
                  }
                }
-             }
 
-             span.duration {
-               margin-left: 2px;
-               color: #666;
-             }
+              &::before {
+                color: #333;
+              }
+            }
 
-             &:hover {
-               background-color: #333;
-               color: #eee;
+            &.is-playing {
+              &::before {
+                font-family: 'Glyphicons Halflings';
+                content: '\e038';
+                font-size: 14px;
+                line-height: 10px;
+                vertical-align: -30%;
+              }
 
-               &::before {
-                 color: #ddd;
-                 font-family: 'Glyphicons Halflings';
-                 content: '\e072';
-                 font-size: 12px;
-                 line-height: 10px;
-                 vertical-align: -20%;
-               }
+              &:hover {
+                &::before {
+                  font-family: 'Glyphicons Halflings';
+                  content: '\e038';
+                  font-size: 14px;
+                  line-height: 10px;
+                  vertical-align: -30%;
+                }
+              }
+            }
 
-               span.glyphicon-remove {
-                 color: #999;
-               }
+            span.duration {
+              margin-left: 2px;
+              color: #666;
+            }
 
-               span.duration {
-                 color: #999;
-               }
+            &:hover {
+              background-color: #333;
+              color: #eee;
 
-               &::before {
-                 background-color: #333;
-               }
-             }
+              &::before {
+                color: #ddd;
+                font-family: 'Glyphicons Halflings';
+                content: '\e072';
+                font-size: 12px;
+                line-height: 10px;
+                vertical-align: -20%;
+              }
 
-             span.glyphicon-remove:hover {
-               color: #eee;
-             }
-           }
-         }
-       }
-     }
-   }
+              span.glyphicon-remove {
+                color: #999;
+              }
+
+              span.duration {
+                color: #999;
+              }
+
+              &::before {
+                background-color: #333;
+              }
+            }
+
+            span.glyphicon-remove:hover {
+              color: #eee;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 div#container {
@@ -558,7 +558,7 @@ div#container {
 
         &:active, &:focus {
           border: 1px solid #666;
-        };
+        }
       }
     }
 
