@@ -16,7 +16,7 @@ Tchaik is an open source music organisation and streaming system.  The backend i
 ### Requirements
 
 * Go 1.4 (recent changes have only been tested on 1.4.2).
-* NodeJS, NPM and Grunt installed globally (for building the UI).
+* NodeJS, NPM and Gulp installed globally (for building the UI).
 * Recent version of Chrome/Firefox/Safari.
 
 ### Building
@@ -29,11 +29,11 @@ Building the UI:
 
     $ cd $GOPATH/src/github.com/dhowden/tchaik/cmd/tchaik/ui
     $ npm install
-    $ NODE_ENV=development grunt
+    $ NODE_ENV=development gulp
 
 Alternative, if you want the JS and CSS to be recompiled as you change the source files:
 
-    $ NODE_ENV=development grunt watch
+    $ NODE_ENV=development gulp watch
 
 Now you can start Tchaik.  For the moment this means first moving to the cmd/tchaik directory:
 
