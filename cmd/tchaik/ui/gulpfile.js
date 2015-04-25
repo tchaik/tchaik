@@ -64,7 +64,7 @@ function bundle(watch) {
                 {sourceRoot: '/'}
             ))
             .pipe(gulp.dest(paths.js.dest))
-            .pipe(notify("Built JS"));
+            .pipe(notify({message: function() { gutil.log("Built JS"); }, onLast: true}));
     };
 
     bundler.on('update', rebundle);
