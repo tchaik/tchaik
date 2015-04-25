@@ -2,7 +2,8 @@ var gulp = require('gulp');
 var _ = require('lodash');
 
 var browserify = require('browserify');
-var envify = require('envify')
+var buffer = require('vinyl-buffer');
+var envify = require('envify');
 var gutil = require('gulp-util');
 var reactify = require('reactify');
 var sass = require('gulp-sass');
@@ -51,10 +52,16 @@ function bundle(watch) {
     bundler.transform(envify);
 
     rebundle = function() {
-        var stream = bundler.bundle();
-        stream.on('error', gutil.log.bind(gutil, 'Browserify Error'));
-        stream = stream.pipe(source(paths.js.bundleName));
-        return stream.pipe(gulp.dest(paths.js.dest));
+        return bundler.bundle()
+            .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+            .pipe(source(paths.js.bundleName))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({loadMaps: true}))
+            .pipe(sourcemaps.write(
+                './',
+                {sourceRoot: '/'}
+            ))
+            .pipe(gulp.dest(paths.js.dest));
     };
 
     bundler.on('update', rebundle);
