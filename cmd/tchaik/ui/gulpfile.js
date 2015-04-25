@@ -5,6 +5,7 @@ var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
 var envify = require('envify');
 var gutil = require('gulp-util');
+var notify = require('gulp-notify');
 var jshint = require('gulp-jshint');
 var reactify = require('reactify');
 var sass = require('gulp-sass');
@@ -62,7 +63,8 @@ function bundle(watch) {
                 './',
                 {sourceRoot: '/'}
             ))
-            .pipe(gulp.dest(paths.js.dest));
+            .pipe(gulp.dest(paths.js.dest))
+            .pipe(notify("Built JS"));
     };
 
     bundler.on('update', rebundle);
