@@ -58,24 +58,19 @@ var Group = React.createClass({
         );
       }
 
+      var common = this.state.common;
       var duration = null;
-      if (this.state.common.totalTime) {
-        duration = <TimeFormatter className="duration" time={parseInt(this.state.common.totalTime/1000)} />;
+      if (this.state.common.TotalTime) {
+        duration = <TimeFormatter className="duration" time={parseInt(common.TotalTime/1000)} />;
       }
 
       var attributeArr = [];
-
-      if (this.state.common.artist) {
-        attributeArr.push(this.state.common.artist);
-      }
-
-      if (this.state.common.composer) {
-         attributeArr.push(this.state.common.composer);
-      }
-
-      if (this.state.common.year) {
-        attributeArr.push(this.state.common.year);
-      }
+      var fields = ['Artist', 'Composer', 'Year'];
+      fields.forEach(function(f) {
+        if (common[f]) {
+          attributeArr.push(common[f]);
+        }
+      });
 
       var attributes = null;
       if (attributeArr.length > 0) {
@@ -91,12 +86,12 @@ var Group = React.createClass({
         </span>
       );
 
-      if (this.state.common.trackId && this.props.depth == 1) {
-        image = <ArtworkImage path={"/artwork/" + this.state.common.trackId} />;
+      if (this.state.common.TrackID && this.props.depth == 1) {
+        image = <ArtworkImage path={"/artwork/" + common.TrackID} />;
       }
     }
 
-    // FIXME: this is to get around the "everthing else" group which has no name
+    // FIXME: this is to get around the "everything else" group which has no name
     // (and can't be closed)
     var itemName = this.props.item.Name;
     if (this.props.depth === 1 && itemName === "") {
@@ -189,36 +184,16 @@ var GroupContent = React.createClass({
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var empty = true;
-      if (item.TotalTime) {
-        common.totalTime = item.TotalTime;
-        empty = false;
-      }
+      var fields = ['TotalTime', 'Artist', 'TrackID', 'Composer', 'Year'];
+      fields.forEach(function(f) {
+        if (item[f]) {
+          common[f] = item[f];
+        }
+      });
 
-      if (item.Artist) {
-        common.artist = item.Artist;
-        empty = false;
-      }
-
-      if (item.TrackID) {
-        common.trackId = item.TrackID;
-        empty = false;
-      }
-
-      if (item.Year) {
-        common.year = item.Year;
-        empty = false;
-      }
-
-      if (item.Composer) {
-        common.composer = item.Composer;
-        empty = false;
-      }
-
-      if (!empty) {
+      if (Object.keys(common).length > 0 && this.props.setCommon) {
         this.props.setCommon(common);
       }
-
       this.setState({item: item});
     }
   }
