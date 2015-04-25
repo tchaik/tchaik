@@ -17,7 +17,11 @@ var NowPlayingStore = require('../stores/NowPlayingStore.js');
 
 var RootCollection = React.createClass({
   render: function() {
-    return <GroupContent path={["Root"]} depth={0} />;
+    var path = ["Root"];
+    if (this.props.path) {
+      path = this.props.path;
+    }
+    return <GroupContent path={path} depth={0} />;
   }
 });
 
