@@ -43,7 +43,6 @@ RecentStore.dispatchToken = AppDispatcher.register(function(payload) {
   if (source === 'SERVER_ACTION') {
     switch (action.actionType) {
       case RecentConstants.FETCH_RECENT:
-        console.log(action);
         _recentPaths = action.data;
         RecentStore.emitChange();
         break;
