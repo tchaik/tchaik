@@ -218,7 +218,7 @@ func (f *filterItem) Name() string                   { return f.name }
 func (f *filterItem) Fields() map[string]interface{} { return f.fields }
 func (f *filterItem) Paths() []Path                  { return f.paths }
 
-func Filter(c Collection, field string) []FilterItem { //map[string][][]string {
+func Filter(c Collection, field string) []FilterItem {
 	m := make(map[string][]Path)
 	walkfn := func(t Track, p Path) {
 		f := t.GetString(field)
