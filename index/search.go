@@ -342,9 +342,6 @@ func Union(l ...[]Path) []Path {
 	if len(l) == 0 {
 		return []Path{}
 	}
-	if len(l) == 1 {
-		return l[0]
-	}
 
 	done := make(map[string]bool)
 	res := make([]Path, 0)
