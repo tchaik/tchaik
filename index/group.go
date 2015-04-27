@@ -238,6 +238,44 @@ func Filter(c Collection, field string) []FilterItem { //map[string][][]string {
 	return result
 }
 
+type trackPath struct {
+	t Track
+	p Path
+}
+
+type trackPathSorter struct {
+	tp []trackPath
+	fn LessFn
+}
+
+func (tps trackPathSorter) Len() int           { return len(tps.tp) }
+func (tps trackPathSorter) Swap(i, j int)      { tps.tp[i], tps.tp[j] = tps.tp[j], tps.tp[i] }
+func (tps trackPathSorter) Less(i, j int) bool { return tps.fn(tps.tp[i].t, tps.tp[j].t) }
+
+func Recent(c Collection, n int) []Path {
+	var trackPaths []trackPath
+	walkfn := func(t Track, p Path) {
+		trackPaths = append(trackPaths, trackPath{t, p})
+	}
+	Walk(c, Path([]Key{"Root"}), walkfn)
+
+	sort.Sort(sort.Reverse(trackPathSorter{trackPaths, SortByTime("DateAdded")}))
+
+	dedup := make(map[string]bool)
+	result := make([]Path, 0, n)
+	for _, tp := range trackPaths {
+		e := tp.p.Encode()
+		if !dedup[e] {
+			dedup[e] = true
+			result = append(result, tp.p)
+		}
+		if len(result) == n {
+			break
+		}
+	}
+	return result
+}
+
 // ByAttr is a type which implements Collector, and groups elements by the value of
 // the attribute given by the underlying Attr instance.
 type ByAttr Attr

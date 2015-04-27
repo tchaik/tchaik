@@ -19,6 +19,7 @@ type LibraryAPI struct {
 
 	collections map[string]index.Collection
 	filters     map[string][]index.FilterItem
+	recent      []index.Path
 	searcher    index.Searcher
 	sessions    *sessions
 }
@@ -198,6 +199,7 @@ const (
 	SearchAction      string = "SEARCH"
 	FilterListAction  string = "FILTER_LIST"
 	FilterPathsAction string = "FILTER_PATHS"
+	FetchRecentAction string = "FETCH_RECENT"
 )
 
 var websocketSessions map[string]*websocket.Conn
@@ -230,6 +232,8 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 				resp, err = handleFilterPaths(l, c)
 			case KeyAction:
 				handleKey(l, c, ws)
+			case FetchRecentAction:
+				resp = handleFetchRecent(l, c)
 			default:
 				err = fmt.Errorf("unknown action: %v", c.Action)
 			}
@@ -390,6 +394,16 @@ func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
 			Paths: item.Paths(),
 		},
 	}, nil
+}
+
+func handleFetchRecent(l LibraryAPI, c Command) interface{} {
+	return struct {
+		Action string
+		Data   interface{}
+	}{
+		Action: c.Action,
+		Data:   l.recent,
+	}
 }
 
 func handleSearch(l LibraryAPI, c Command) interface{} {

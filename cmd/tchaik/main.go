@@ -130,6 +130,10 @@ func main() {
 	artists := index.Filter(root, "Artist")
 	fmt.Println("done.")
 
+	fmt.Printf("Building recent index...")
+	recent := index.Recent(root, 150)
+	fmt.Println("done.")
+
 	fmt.Printf("Building search index...")
 	searcher := buildSearchIndex(root)
 	fmt.Println("done.")
@@ -159,6 +163,7 @@ func main() {
 		filters: map[string][]index.FilterItem{
 			"Artist": artists,
 		},
+		recent:   recent,
 		searcher: searcher,
 		sessions: newSessions(),
 	}
