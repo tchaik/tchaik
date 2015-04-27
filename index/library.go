@@ -187,7 +187,7 @@ func (t *track) GetInt(name string) int {
 		}
 		return n
 	}
-	panic(fmt.Sprintf("unknown type '%T' for field '%v'", name, name))
+	panic(fmt.Sprintf("unknown type '%T' for field '%v'", x, name))
 }
 
 // GetTime implements Track.
