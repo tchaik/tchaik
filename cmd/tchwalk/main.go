@@ -21,6 +21,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/dhowden/tag"
 	"github.com/dhowden/tchaik/index"
@@ -90,6 +91,9 @@ func (m *Track) GetInt(name string) int {
 	}
 	return 0
 }
+
+// TODO: Implement something more meaningful here.
+func (m *Track) GetTime(string) time.Time { return time.Time{} }
 
 func validExtension(path string) bool {
 	ext := strings.ToLower(filepath.Ext(filepath.Base(path)))
