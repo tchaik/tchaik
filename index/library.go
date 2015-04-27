@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 )
 
 // Library represents the tchaik music library.  Currently we don't have anything
@@ -30,6 +31,8 @@ type Track interface {
 	GetString(string) string
 	// GetInt returns the int attribute with given name.
 	GetInt(string) int
+	// GetTime returns the time attribute with given name.
+	GetTime(string) time.Time
 }
 
 var trackStringFields = []string{
@@ -51,6 +54,11 @@ var trackIntFields = []string{
 	"DiscCount",
 }
 
+var trackTimeFields = []string{
+	"DateAdded",
+	"DateModified",
+}
+
 // Convert reads all the data exported by the Library and writes into the standard
 // tchaik Library implementation.
 // NB: The identifier field is set to be the value of TrackID on every track, regardless
@@ -67,6 +75,9 @@ func Convert(l Library, id string) *library {
 		}
 		for _, f := range trackIntFields {
 			m[f] = t.GetInt(f)
+		}
+		for _, f := range trackTimeFields {
+			m[f] = t.GetTime(f)
 		}
 
 		identifier := t.GetString(id)
@@ -177,4 +188,19 @@ func (t *track) GetInt(name string) int {
 		return n
 	}
 	panic(fmt.Sprintf("unknown type '%T' for field '%v'", name, name))
+}
+
+// GetTime implements Track.
+func (t *track) GetTime(name string) time.Time {
+	x, ok := t.flds[name]
+	if !ok {
+		panic(fmt.Sprintf("unknown time field '%v'", name))
+	}
+	if x == nil {
+		panic(fmt.Sprintf("<nil> time field '%v'", name))
+	}
+	if x, ok := x.(time.Time); ok {
+		return x
+	}
+	panic(fmt.Sprintf("unknown type '%T' for field '%v'", x, name))
 }

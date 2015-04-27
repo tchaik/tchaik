@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/dhowden/itl"
 )
@@ -139,4 +140,15 @@ func (t *itlTrack) GetInt(name string) int {
 	v := reflect.ValueOf(t)
 	f := v.FieldByName(name)
 	return int(f.Int())
+}
+
+// GetTime fetches the given time field in the Track, panics if field doesn't exist.
+func (t *itlTrack) GetTime(name string) time.Time {
+	switch name {
+	case "DateAdded":
+		return t.DateAdded
+	case "DateModified":
+		return t.DateModified
+	}
+	panic(fmt.Sprintf("field '%v' is not a time value", name))
 }
