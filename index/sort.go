@@ -39,6 +39,13 @@ func SortByInt(field string) LessFn {
 	}
 }
 
+// SortByTime returns a LessFn which orders Tracks using the GetTime Attr on the given field.
+func SortByTime(field string) LessFn {
+	return func(s, t Track) bool {
+		return s.GetTime(field).Before(t.GetTime(field))
+	}
+}
+
 // MultiSort creates a LessFn for tracks using the given LessFns.
 func MultiSort(fns ...LessFn) LessFn {
 	return func(s, t Track) bool {
