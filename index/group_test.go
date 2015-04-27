@@ -7,6 +7,7 @@ package index
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 type testTrack struct {
@@ -44,6 +45,10 @@ func (f testTrack) GetInt(k string) int {
 
 func (f testTrack) GetBool(k string) bool {
 	return false
+}
+
+func (f testTrack) GetTime(string) time.Time {
+	return time.Time{}
 }
 
 type testTracker []testTrack
