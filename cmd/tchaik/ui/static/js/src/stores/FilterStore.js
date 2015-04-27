@@ -5,7 +5,6 @@ var EventEmitter = require('eventemitter3').EventEmitter;
 var assign = require('object-assign');
 
 var FilterConstants = require('../constants/FilterConstants.js');
-var FilterActions = require('../actions/FilterActions.js');
 
 var CHANGE_EVENT = 'change';
 
