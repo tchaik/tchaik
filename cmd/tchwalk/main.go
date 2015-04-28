@@ -51,6 +51,7 @@ func (l *Library) Tracks() []index.Track {
 type Track struct {
 	tag.Metadata
 	Location string
+	ModTime  time.Time
 }
 
 func (m *Track) GetString(name string) string {
@@ -92,8 +93,15 @@ func (m *Track) GetInt(name string) int {
 	return 0
 }
 
-// TODO: Implement something more meaningful here.
-func (m *Track) GetTime(string) time.Time { return time.Time{} }
+func (m *Track) GetTime(name string) time.Time {
+	switch name {
+	case "DateModified":
+		return m.ModTime
+	case "DateAdded":
+		break
+	}
+	return time.Time{}
+}
 
 func validExtension(path string) bool {
 	ext := strings.ToLower(filepath.Ext(filepath.Base(path)))
@@ -174,8 +182,14 @@ func processPath(path string) (*Track, error) {
 		return nil, err
 	}
 
+	fileInfo, err := f.Stat()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Track{
 		Metadata: m,
 		Location: path,
+		ModTime:  fileInfo.ModTime(),
 	}, nil
 }
