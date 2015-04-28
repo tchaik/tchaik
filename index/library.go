@@ -94,13 +94,13 @@ func Convert(l Library, id string) *library {
 // library is the default internal implementation Library which acts as the data
 // source for all media tracks.
 type library struct {
-	Trks map[string]*track // NB: Exported so that we can easily encode
+	trks map[string]*track
 }
 
 // Tracks implements Library.
 func (l *library) Tracks() []Track {
-	tracks := make([]Track, 0, len(l.Trks))
-	for _, t := range l.Trks {
+	tracks := make([]Track, 0, len(l.trks))
+	for _, t := range l.trks {
 		tracks = append(tracks, t)
 	}
 	return tracks
@@ -108,8 +108,17 @@ func (l *library) Tracks() []Track {
 
 // Track implements Library.
 func (l *library) Track(id string) (Track, bool) {
-	t, ok := l.Trks[id]
+	t, ok := l.trks[id]
 	return t, ok
+}
+
+func (l *library) MarshalJSON() ([]byte, error) {
+	return json.Marshal(l.trks)
+}
+
+func (l *library) UnmarshalJSON(b []byte) error {
+	l.trks = make(map[string]*track)
+	return json.Unmarshal(b, &l.trks)
 }
 
 // WriteTo writes the Library data to the writer, currently using gzipped-JSON.
