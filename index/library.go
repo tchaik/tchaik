@@ -147,7 +147,28 @@ func (t *track) MarshalJSON() ([]byte, error) {
 
 func (t *track) UnmarshalJSON(b []byte) error {
 	t.flds = make(map[string]interface{})
-	return json.Unmarshal(b, &t.flds)
+	err := json.Unmarshal(b, &t.flds)
+	if err != nil {
+		return err
+	}
+
+	// TODO: need to move away from using map[string]interface{} to avoid this
+	// nonsense.
+	for _, f := range trackTimeFields {
+		if x, ok := t.flds[f]; ok {
+			xs, ok := x.(string)
+			if !ok {
+				return fmt.Errorf("expected field '%v' to be of type string, got '%T'", f, x)
+			}
+			nt := &time.Time{}
+			err := nt.UnmarshalJSON([]byte(`"` + xs + `"`))
+			if err != nil {
+				return err
+			}
+			t.flds[f] = *nt
+		}
+	}
+	return nil
 }
 
 // GetString implements Track.
