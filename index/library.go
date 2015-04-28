@@ -202,5 +202,5 @@ func (t *track) GetTime(name string) time.Time {
 	if x, ok := x.(time.Time); ok {
 		return x
 	}
-	panic(fmt.Sprintf("unknown type '%T' for field '%v'", x, name))
+	panic(fmt.Sprintf("field '%v': expected time.Time, got '%T'", name, x))
 }
