@@ -13,6 +13,8 @@ var Playlist = require('./Playlist.js');
 var PlaylistStore = require('../stores/PlaylistStore.js');
 var PlaylistActions = require('../actions/PlaylistActions.js');
 
+var PlayingStatusStore = require('../stores/PlayingStatusStore.js');
+
 var BACKWARD_TIMEOUT = 2000;
 
 var RightColumn = React.createClass({
@@ -112,7 +114,7 @@ var Controls = React.createClass({
   _onBackward: function() {
     if (this._backButtonTimerRunning()) {
       PlaylistActions.prev();
-    } else if (this.state.playing || NowPlayingStore.getTime() > 0) {
+    } else if (this.state.playing || PlayingStatusStore.getTime() > 0) {
       NowPlayingActions.setCurrentTime(0);
     } else {
       PlaylistActions.prev();

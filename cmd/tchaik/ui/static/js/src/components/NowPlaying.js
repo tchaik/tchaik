@@ -12,13 +12,15 @@ var NowPlayingStore = require('../stores/NowPlayingStore.js');
 var NowPlayingActions = require('../actions/NowPlayingActions.js');
 var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
 
+var PlayingStatusStore = require('../stores/PlayingStatusStore.js');
+
 
 var NowPlaying = React.createClass({
   getInitialState: function() {
     return {
       track: NowPlayingStore.getTrack(),
       playing: NowPlayingStore.getPlaying(),
-      currentTime: NowPlayingStore.getTime(),
+      currentTime: PlayingStatusStore.getTime(),
     };
   },
 
@@ -56,7 +58,7 @@ var NowPlaying = React.createClass({
     case "loadedmetadata":
       NowPlayingActions.setDuration(this.duration());
 
-      this.setCurrentTime(NowPlayingStore.getTime());
+      this.setCurrentTime(PlayingStatusStore.getTime());
       if (this.state.playing) {
         this.play();
       }
@@ -215,9 +217,9 @@ var NowPlaying = React.createClass({
 function getTrackInfoState() {
   return {
     track: NowPlayingStore.getTrack(),
-    buffered: NowPlayingStore.getBuffered(),
-    duration: NowPlayingStore.getDuration(),
-    currentTime: NowPlayingStore.getTime(),
+    buffered: PlayingStatusStore.getBuffered(),
+    duration: PlayingStatusStore.getDuration(),
+    currentTime: PlayingStatusStore.getTime(),
   };
 }
 
@@ -228,10 +230,12 @@ var TrackInfo = React.createClass({
 
   componentDidMount: function() {
     NowPlayingStore.addChangeListener(this._onChange);
+    PlayingStatusStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
     NowPlayingStore.removeChangeListener(this._onChange);
+    PlayingStatusStore.removeChangeListener(this._onChange);
   },
 
   render: function() {

@@ -19,24 +19,6 @@ var defaultVolumeMute = false;
 
 var currentPlaying = null;
 
-var _defaultTrackState = {
-  buffered: 0.0,
-  duration: 0.0,
-};
-var _trackState = _defaultTrackState;
-
-function setCurrentTime(time) {
-  localStorage.setItem("currentTime", time);
-}
-
-function currentTime() {
-  var t = localStorage.getItem("currentTime");
-  if (t === null) {
-    return 0;
-  }
-  return parseFloat(t);
-}
-
 function setCurrentTrackSource(source) {
   localStorage.setItem("currentTrackSource", source);
 }
@@ -50,7 +32,6 @@ function currentTrackSource() {
 }
 
 function setCurrentTrack(track) {
-  setCurrentTime(0);
   localStorage.setItem("currentTrack", JSON.stringify(track));
 }
 
@@ -109,18 +90,6 @@ function volumeMute() {
 }
 
 var NowPlayingStore = assign({}, EventEmitter.prototype, {
-
-  getTime: function() {
-    return currentTime();
-  },
-
-  getBuffered: function() {
-    return _trackState.buffered;
-  },
-
-  getDuration: function() {
-    return _trackState.duration;
-  },
 
   getPlaying: function() {
     return playing();
@@ -266,24 +235,6 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
 
-      case NowPlayingConstants.RESET:
-        _trackState = {
-          buffered: 0,
-          duration: 0,
-        };
-        NowPlayingStore.emitChange();
-        break;
-
-      case NowPlayingConstants.SET_DURATION:
-        _trackState.duration = action.duration;
-        NowPlayingStore.emitChange();
-        break;
-
-      case NowPlayingConstants.SET_BUFFERED:
-        _trackState.buffered = action.buffered;
-        NowPlayingStore.emitChange();
-        break;
-
       case PlaylistConstants.PREV:
         handlePrevAction();
         break;
@@ -299,11 +250,6 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.SET_PLAYING:
         setPlaying(action.playing);
-        NowPlayingStore.emitChange();
-        break;
-
-      case NowPlayingConstants.STORE_CURRENT_TIME:
-        setCurrentTime(action.currentTime);
         NowPlayingStore.emitChange();
         break;
 
