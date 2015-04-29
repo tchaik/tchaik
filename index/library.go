@@ -147,7 +147,7 @@ func ReadFrom(r io.Reader) (Library, error) {
 
 // track is the default implementation of the Track interface.
 type track struct {
-	flds map[string]interface{} // NB: Exported so that we can easily encode.
+	flds map[string]interface{}
 }
 
 func (t *track) MarshalJSON() ([]byte, error) {
