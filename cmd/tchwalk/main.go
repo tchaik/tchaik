@@ -98,7 +98,7 @@ func (m *Track) GetTime(name string) time.Time {
 	case "DateModified":
 		return m.ModTime
 	case "DateAdded":
-		break
+		// TODO: Implement a sensible default for this!
 	}
 	return time.Time{}
 }
