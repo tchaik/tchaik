@@ -428,8 +428,15 @@ func ctrlHandler(l LibraryAPI) http.Handler {
 			http.Error(w, "error parsing parameters", http.StatusInternalServerError)
 			return
 		}
-		k := r.Form.Get("key")
-		ws := l.sessions.get(k)
+
+		var key string
+		_, ok := r.Form["key"]
+		if ok {
+			key = r.Form.Get("key")
+		} else {
+			key = r.Header.Get("X-Apikey")
+		}
+		ws := l.sessions.get(key)
 		if ws == nil {
 			http.Error(w, "invalid session key", http.StatusBadRequest)
 			return
