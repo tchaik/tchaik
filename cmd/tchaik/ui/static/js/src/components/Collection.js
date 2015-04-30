@@ -102,11 +102,16 @@ var Group = React.createClass({
       itemName = "Misc";
     }
 
+    var albumArtist = null;
+    if (this.props.depth === 1 && this.props.item.AlbumArtist !== "") {
+      albumArtist = <span className="group-album-artist">{this.props.item.AlbumArtist}</span>;
+    }
+
     if (itemName !== "") {
       headerDiv = (
         <div className="header">
           {image}
-          <span className="name" onClick={this._onClickName}>{itemName}</span>
+          <span className="name" onClick={this._onClickName}>{itemName}</span>{albumArtist}
           {play}
         </div>
       );

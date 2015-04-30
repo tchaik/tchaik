@@ -70,6 +70,19 @@ type track struct {
 	TotalTime   int    `json:",omitempty"`
 }
 
+func buildCollection(h group, c index.Collection) group {
+	for _, k := range c.Keys() {
+		g := c.Get(k)
+		g = index.FirstTrackAttr(index.StringAttr("AlbumArtist"), g)
+		h.Groups = append(h.Groups, group{
+			Name:        g.Name(),
+			Key:         k,
+			AlbumArtist: fmt.Sprintf("%v", g.Field("AlbumArtist")),
+		})
+	}
+	return h
+}
+
 func build(g index.Group, key index.Key) group {
 	h := group{
 		Name:        g.Name(),
@@ -77,23 +90,15 @@ func build(g index.Group, key index.Key) group {
 		TotalTime:   g.Field("TotalTime"),
 		Artist:      g.Field("Artist"),
 		AlbumArtist: g.Field("AlbumArtist"),
-		Composer:    g.Field("Composer"),
-		Year:        g.Field("Year"),
-		ListStyle:   g.Field("ListStyle"),
-		TrackID:     g.Field("TrackID"),
+		// AlbumArtist: fmt.Sprintf("%v", g.Field("AlbumArtist")),
+		Composer:  g.Field("Composer"),
+		Year:      g.Field("Year"),
+		ListStyle: g.Field("ListStyle"),
+		TrackID:   g.Field("TrackID"),
 	}
 
 	if c, ok := g.(index.Collection); ok {
-		for _, k := range c.Keys() {
-			sg := c.Get(k)
-			sg = index.FirstTrackAttr(index.StringAttr("TrackID"), sg)
-			h.Groups = append(h.Groups, group{
-				Name:    sg.Name(),
-				Key:     k,
-				TrackID: sg.Field("TrackID"),
-			})
-		}
-		return h
+		return buildCollection(h, c)
 	}
 
 	getString := func(t index.Track, field string) string {

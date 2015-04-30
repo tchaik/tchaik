@@ -766,6 +766,12 @@ div#container {
       &:hover {
         background-color: #222;
         color: white;
+
+        div.header {
+          span.group-album-artist {
+            color: #ccc;
+          }
+        }
       };
 
       &.untitled {
@@ -792,10 +798,16 @@ div#container {
         border-top: 1px solid #333;
         border-bottom: 1px solid #333;
 
-        div.header span.name {
-          color: white;
-          font-weight: 500;
-          font-size: 14px;
+        div.header {
+          span.name {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+          }
+
+          span.group-album-artist {
+            display: none;
+          }
         }
       }
 
@@ -804,6 +816,13 @@ div#container {
           font-weight: 600;
           font-size: 13px;
           cursor: pointer;
+        }
+
+        span.group-album-artist {
+          margin-left: 10px;
+          font-size: 13px;
+          font-weight: 600;
+          color: #777;
         }
 
         span.glyphicon {
