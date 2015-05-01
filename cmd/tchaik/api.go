@@ -77,7 +77,7 @@ func buildCollection(h group, c index.Collection) group {
 		h.Groups = append(h.Groups, group{
 			Name:        g.Name(),
 			Key:         k,
-			AlbumArtist: fmt.Sprintf("%v", g.Field("AlbumArtist")),
+			AlbumArtist: g.Field("AlbumArtist"),
 		})
 	}
 	return h
