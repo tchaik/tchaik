@@ -180,18 +180,26 @@ func main() {
 	log.Fatal(http.ListenAndServe(listenAddr, m))
 }
 
+type fsServeMux struct {
+	httpauth.ServeMux
+}
+
+func (fsm *fsServeMux) HandleFileSystem(pattern string, fs http.FileSystem) {
+	fsm.ServeMux.Handle(pattern, http.StripPrefix(pattern, http.FileServer(fs)))
+}
+
 func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.FileSystem) http.Handler {
 	var c httpauth.Checker = httpauth.None{}
 	if auth {
 		c = creds
 	}
 
-	w := httpauth.NewServeMux(c, http.NewServeMux())
+	w := fsServeMux{httpauth.NewServeMux(c, http.NewServeMux())}
 	w.HandleFunc("/", rootHandler)
-	w.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static"))))
-	w.Handle("/track/", http.StripPrefix("/track/", http.FileServer(mediaFileSystem)))
-	w.Handle("/artwork/", http.StripPrefix("/artwork/", http.FileServer(artworkFileSystem)))
-	w.Handle("/icon/", http.StripPrefix("/icon/", http.FileServer(store.FaviconFileSystem(artworkFileSystem))))
+	w.HandleFileSystem("/static/", http.Dir("ui/static"))
+	w.HandleFileSystem("/track/", mediaFileSystem)
+	w.HandleFileSystem("/artwork/", artworkFileSystem)
+	w.HandleFileSystem("/icon/", store.FaviconFileSystem(artworkFileSystem))
 	w.Handle("/socket", l.WebsocketHandler())
 	w.Handle("/api/ctrl/", http.StripPrefix("/api/ctrl/", ctrlHandler(l)))
 	return w
