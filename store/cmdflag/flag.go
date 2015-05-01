@@ -74,10 +74,11 @@ func buildLocalStore(s *stores) {
 			s.media = fs
 		}
 
+		afs := store.ArtworkFileSystem(fs)
 		if s.artwork != nil {
-			s.artwork = store.MultiFileSystem(store.ArtworkFileSystem(fs), s.artwork)
+			s.artwork = store.MultiFileSystem(afs, s.artwork)
 		} else {
-			s.artwork = store.ArtworkFileSystem(fs)
+			s.artwork = afs
 		}
 	}
 }
