@@ -208,6 +208,7 @@ type FilterItemSlice []FilterItem
 func (f FilterItemSlice) Len() int           { return len(f) }
 func (f FilterItemSlice) Swap(i, j int)      { f[i], f[j] = f[j], f[i] }
 func (f FilterItemSlice) Less(i, j int) bool { return f[i].Name() < f[j].Name() }
+
 type filterItem struct {
 	name   string
 	fields map[string]interface{}

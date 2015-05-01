@@ -8,7 +8,7 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-func getFileCreationTime(path string) (time.Time) {
+func getFileCreationTime(path string) time.Time {
 	stat := unix.Stat_t{}
 	unix.Lstat(path, &stat)
 

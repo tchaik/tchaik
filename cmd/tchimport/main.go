@@ -18,8 +18,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/dhowden/tchaik/index"
 	"github.com/dhowden/itl"
+	"github.com/dhowden/tchaik/index"
 )
 
 var itlXML string
