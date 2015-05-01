@@ -68,8 +68,13 @@ var Group = React.createClass({
         duration = <TimeFormatter className="duration" time={parseInt(common.TotalTime/1000)} />;
       }
 
+      // NB: To avoid duplications, ignore AlbumArtist if we have a common Artist
+      if (common['AlbumArtist'] && common['Artist']) {
+        delete common['AlbumArtist'];
+      }
+
       var attributeArr = [];
-      var fields = ['Artist', 'Composer', 'Year'];
+      var fields = ['AlbumArtist', 'Artist', 'Composer', 'Year'];
       fields.forEach(function(f) {
         if (common[f]) {
           attributeArr.push(common[f]);
@@ -193,7 +198,7 @@ var GroupContent = React.createClass({
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var fields = ['TotalTime', 'Artist', 'TrackID', 'Composer', 'Year'];
+      var fields = ['TotalTime', 'AlbumArtist', 'Artist', 'TrackID', 'Composer', 'Year'];
       fields.forEach(function(f) {
         if (item[f]) {
           common[f] = item[f];
