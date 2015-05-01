@@ -82,7 +82,7 @@ func sumGroupIntAttr(field string, g Group) Group {
 }
 
 // CommonGroupAttr recurses through the Group and assigns fields on SubCollects
-// which are common amoungst their children (Groups or Tracks).
+// which are common amoungst their children (Groups or Tracks).  If there is no
 func CommonGroupAttr(attrs []Attr, g Group) Group {
 	if c, ok := g.(Collection); ok {
 		return commonCollectionTrackAttr(attrs, c)
@@ -91,19 +91,15 @@ func CommonGroupAttr(attrs []Attr, g Group) Group {
 }
 
 func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
-	nc := subCol{
-		Collection: c,
-		grps:       make(map[Key]Group, len(c.Keys())),
-		flds:       make(map[string]interface{}),
-	}
-
+	grps := make(map[Key]Group, len(c.Keys()))
 	flds := make(map[string]interface{}, len(attrs))
+
 	keys := c.Keys()
 	if len(keys) > 0 {
 		k0 := keys[0]
 		g0 := c.Get(k0)
 		g0 = CommonGroupAttr(attrs, g0)
-		nc.grps[k0] = g0
+		grps[k0] = g0
 
 		for _, a := range attrs {
 			flds[a.Field()] = g0.Field(a.Field())
@@ -113,19 +109,31 @@ func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
 			for _, k := range keys[1:] {
 				g1 := c.Get(k)
 				g1 = CommonGroupAttr(attrs, g1)
-				nc.grps[k] = g1
+				grps[k] = g1
 
 				for _, a := range attrs {
-					v := g1.Field(a.Field())
-					if flds[a.Field()] != v {
-						flds[a.Field()] = a.Empty()
+					f := a.Field()
+					v := g1.Field(f)
+					if flds[f] != v {
+						flds[f] = a.Empty()
 					}
 				}
 			}
 		}
 	}
-	nc.flds = flds
-	return nc
+
+	for _, a := range attrs {
+		f := a.Field()
+		if v, ok := flds[f]; ok && v == a.Empty() {
+			delete(flds, f)
+		}
+	}
+
+	return subCol{
+		Collection: c,
+		grps:       grps,
+		flds:       flds,
+	}
 }
 
 func commonGroupTrackAttr(attrs []Attr, g Group) Group {
@@ -148,6 +156,13 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 					}
 				}
 			}
+		}
+	}
+
+	for _, a := range attrs {
+		f := a.Field()
+		if v, ok := flds[f]; ok && v == a.Empty() {
+			delete(flds, f)
 		}
 	}
 
@@ -275,8 +290,12 @@ func FirstTrackAttr(attr Attr, g Group) Group {
 		return g
 	}
 
+	v := attr.fn(t)
+	if v == attr.Empty() {
+		return g
+	}
 	m := map[string]interface{}{
-		attr.field: attr.fn(t),
+		attr.field: v,
 	}
 	return fieldsGroup(m, g)
 }

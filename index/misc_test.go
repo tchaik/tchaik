@@ -151,7 +151,7 @@ func TestCommonGroupAttr(t *testing.T) {
 		fields []Attr
 		out    []interface{}
 	}{
-		// One group with one track, empty common string field
+		// One group with one track, unset common field
 		{
 			in: group{
 				name: "Group One",
@@ -162,10 +162,10 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{StringAttr("Artist")},
-			out:    []interface{}{""},
+			out:    []interface{}{nil},
 		},
 
-		// One group with one track, empty common int field
+		// One group with one track, unset common int field
 		{
 			in: group{
 				name: "Group One",
@@ -176,10 +176,10 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{IntAttr("Year")},
-			out:    []interface{}{0},
+			out:    []interface{}{nil},
 		},
 
-		// One group with one track, empty common string and int fields
+		// One group with one track, unset common (string) and (int) fields
 		{
 			in: group{
 				name: "Group One",
@@ -190,7 +190,7 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{StringAttr("Artist"), IntAttr("Year")},
-			out:    []interface{}{"", 0},
+			out:    []interface{}{nil, nil},
 		},
 
 		// One group with two tracks, empty first string & int fields
@@ -209,7 +209,7 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{StringAttr("Artist"), IntAttr("Year")},
-			out:    []interface{}{"", 0},
+			out:    []interface{}{nil, nil},
 		},
 
 		// One group with two tracks, empty first field
@@ -227,7 +227,7 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{IntAttr("Year")},
-			out:    []interface{}{0},
+			out:    []interface{}{nil},
 		},
 
 		// One group with one track, common string/int fields
@@ -281,7 +281,7 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{StringAttr("Artist"), StringAttr("Composer")},
-			out:    []interface{}{"", "Composer One"},
+			out:    []interface{}{nil, "Composer One"},
 		},
 
 		// One collection, one group, one track
@@ -302,7 +302,7 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{StringAttr("Artist"), StringAttr("Composer")},
-			out:    []interface{}{"Artist One", ""},
+			out:    []interface{}{"Artist One", nil},
 		},
 
 		// One collection, three groups, many tracks!
@@ -365,7 +365,7 @@ func TestCommonGroupAttr(t *testing.T) {
 				},
 			},
 			fields: []Attr{StringAttr("Artist"), IntAttr("Year")},
-			out:    []interface{}{"Artist One", 0},
+			out:    []interface{}{"Artist One", nil},
 		},
 	}
 
@@ -415,7 +415,7 @@ func TestFirstTrackAttr(t *testing.T) {
 				},
 			},
 			field: StringAttr("Artist"),
-			out:   "",
+			out:   nil,
 		},
 
 		// One collection, one group, one track
@@ -465,7 +465,7 @@ func TestFirstTrackAttr(t *testing.T) {
 				},
 			},
 			field: IntAttr("Duration"),
-			out:   0,
+			out:   nil,
 		},
 
 		// One collection, one group, one track
