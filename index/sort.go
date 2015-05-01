@@ -67,18 +67,27 @@ type Swaper interface {
 	Swap(i, j int)
 }
 
-// ParallelSort is a type allows for a Swapper implementation to be reordered in parallel
+// ParallelSort combines a sort.Interface implementation with a Swaper, and performs the same
+// swap operations to w as they are applied to s.
+func ParallelSort(s sort.Interface, w Swaper) sort.Interface {
+	return &parallelSort{
+		Interface: s,
+		sw:        w,
+	}
+}
+
+// parallelSort is a type allows for a Swapper implementation to be reordered in parallel
 // to an implementation of sort.Interface.
-type ParallelSort struct {
+type parallelSort struct {
 	sort.Interface
-	S2 Swaper
+	sw Swaper
 }
 
 // Swap implements Swapper (and sort.Interface) so that swaps are done on both the
 // sort.Interface and Swapper.
-func (p *ParallelSort) Swap(i, j int) {
+func (p *parallelSort) Swap(i, j int) {
 	p.Interface.Swap(i, j)
-	p.S2.Swap(i, j)
+	p.sw.Swap(i, j)
 }
 
 // KeySlice attaches the methods of Swaper to []Key
@@ -107,5 +116,5 @@ func names(c Collection) []string {
 // SortNames sorts the names of the given collection (in place).  In particular, this assumes that
 // g.Names() returns the actual internal representation of the listing.
 func SortKeysByGroupName(c Collection) {
-	sort.Sort(&ParallelSort{sort.StringSlice(names(c)), keySlice(c.Keys())})
+	sort.Sort(ParallelSort(sort.StringSlice(names(c)), keySlice(c.Keys())))
 }

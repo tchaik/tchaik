@@ -19,16 +19,22 @@ import (
 	"github.com/nfnt/resize"
 )
 
-// ArtworkFileSystem wraps another FileSystem, reworking file system operations
+// ArtworkFileSystem wraps a http.FileSystem, reworking file system operations
 // to refer to artwork from the underlying file.
-type ArtworkFileSystem struct {
+func ArtworkFileSystem(fs http.FileSystem) http.FileSystem {
+	return artworkFileSystem{
+		FileSystem: fs,
+	}
+}
+
+type artworkFileSystem struct {
 	http.FileSystem
 }
 
 // Open the given file and return an http.File which contains the artwork, and hence
 // the Name() of the returned file will have an extention for the artwork, not the
 // media file.
-func (afs ArtworkFileSystem) Open(path string) (http.File, error) {
+func (afs artworkFileSystem) Open(path string) (http.File, error) {
 	f, err := afs.FileSystem.Open(path)
 	if err != nil {
 		return nil, err
@@ -66,12 +72,18 @@ func (afs ArtworkFileSystem) Open(path string) (http.File, error) {
 	}, nil
 }
 
-// FaviconFileSystem wraps another FileSystem assumed to contain only images.
-type FaviconFileSystem struct {
+// FaviconFileSystem wraps another FileSystem assumed to contain only images, which then
+func FaviconFileSystem(fs http.FileSystem) http.FileSystem {
+	return faviconFileSystem{
+		FileSystem: fs,
+	}
+}
+
+type faviconFileSystem struct {
 	http.FileSystem
 }
 
-func (ffs FaviconFileSystem) Open(path string) (http.File, error) {
+func (ffs faviconFileSystem) Open(path string) (http.File, error) {
 	f, err := ffs.FileSystem.Open(path)
 	if err != nil {
 		return nil, err

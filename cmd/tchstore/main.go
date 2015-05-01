@@ -57,8 +57,8 @@ func main() {
 	}
 
 	if debug {
-		mediaFileSystem = store.LogFileSystem{"Media", mediaFileSystem}
-		artworkFileSystem = store.LogFileSystem{"Artwork", artworkFileSystem}
+		mediaFileSystem = store.LogFileSystem("Media", mediaFileSystem)
+		artworkFileSystem = store.LogFileSystem("Artwork", artworkFileSystem)
 	}
 
 	s := store.NewServer(listen)

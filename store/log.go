@@ -10,35 +10,50 @@ import (
 	"net/http"
 )
 
-// LogFileSystem is a wrapper around an http.FileSystem which logs requests
+// LogFileSystem returns a wrapper around an http.FileSystem which logs calls
 // to Open.
-type LogFileSystem struct {
-	Name string
-	http.FileSystem
+func LogFileSystem(prefix string, fs http.FileSystem) http.FileSystem {
+	return logFileSystem{
+		FileSystem: fs,
+		prefix:     prefix,
+	}
 }
 
-func (l LogFileSystem) Open(path string) (http.File, error) {
+type logFileSystem struct {
+	http.FileSystem
+	prefix string
+}
+
+func (l logFileSystem) Open(path string) (http.File, error) {
 	f, err := l.FileSystem.Open(path)
 	if err != nil {
-		log.Printf("%v open error: %v (%v)", l.Name, path, err)
+		log.Printf("%v open error: %v (%v)", l.prefix, path, err)
 		return nil, err
 	}
-	log.Printf("%v open: %v", l.Name, path)
+	log.Printf("%v open: %v", l.prefix, path)
 	return f, err
 }
 
-// LogRWFileSystem is a wrapper around a RWFileSystem which logs requests
-// calls to Open and Create.
-type LogRWFileSystem struct {
-	RWFileSystem
+// LogRWFileSystem returns a wrapper around a RWFileSystem which logs calls
+// to Open and Create.
+func LogRWFileSystem(prefix string, fs RWFileSystem) RWFileSystem {
+	return logRWFileSystem{
+		RWFileSystem: fs,
+		prefix:       prefix,
+	}
 }
 
-func (l LogRWFileSystem) Open(path string) (http.File, error) {
-	log.Printf("Open: %v", path)
+type logRWFileSystem struct {
+	RWFileSystem
+	prefix string
+}
+
+func (l logRWFileSystem) Open(path string) (http.File, error) {
+	log.Printf("%v open: %v", l.prefix, path)
 	return l.RWFileSystem.Open(path)
 }
 
-func (l LogRWFileSystem) Create(path string) (io.WriteCloser, error) {
-	log.Printf("Create: %v", path)
+func (l logRWFileSystem) Create(path string) (io.WriteCloser, error) {
+	log.Printf("%v create: %v", l.prefix, path)
 	return l.RWFileSystem.Create(path)
 }

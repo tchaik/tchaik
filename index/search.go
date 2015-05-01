@@ -333,7 +333,7 @@ func OrderedIntersection(paths ...[]Path) []Path {
 		count = append(count, countKeyPath{v, k})
 	}
 
-	sort.Sort(&ParallelSort{sort.Reverse(countKeyPathSlice(count)), PathSlice(result)})
+	sort.Sort(ParallelSort(sort.Reverse(countKeyPathSlice(count)), PathSlice(result)))
 	return result
 }
 

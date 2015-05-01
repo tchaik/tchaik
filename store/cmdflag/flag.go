@@ -75,9 +75,9 @@ func buildLocalStore(s *stores) {
 		}
 
 		if s.artwork != nil {
-			s.artwork = store.MultiFileSystem(store.ArtworkFileSystem{fs}, s.artwork)
+			s.artwork = store.MultiFileSystem(store.ArtworkFileSystem(fs), s.artwork)
 		} else {
-			s.artwork = store.ArtworkFileSystem{fs}
+			s.artwork = store.ArtworkFileSystem(fs)
 		}
 	}
 }

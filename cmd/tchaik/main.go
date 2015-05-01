@@ -145,14 +145,8 @@ func main() {
 	}
 
 	if debug {
-		mediaFileSystem = store.LogFileSystem{
-			Name:       "Media",
-			FileSystem: mediaFileSystem,
-		}
-		artworkFileSystem = store.LogFileSystem{
-			Name:       "Artwork",
-			FileSystem: artworkFileSystem,
-		}
+		mediaFileSystem = store.LogFileSystem("Media", mediaFileSystem)
+		artworkFileSystem = store.LogFileSystem("Artwork", artworkFileSystem)
 	}
 
 	libAPI := LibraryAPI{
@@ -197,7 +191,7 @@ func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.File
 	w.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("ui/static"))))
 	w.Handle("/track/", http.StripPrefix("/track/", http.FileServer(mediaFileSystem)))
 	w.Handle("/artwork/", http.StripPrefix("/artwork/", http.FileServer(artworkFileSystem)))
-	w.Handle("/icon/", http.StripPrefix("/icon/", http.FileServer(store.FaviconFileSystem{artworkFileSystem})))
+	w.Handle("/icon/", http.StripPrefix("/icon/", http.FileServer(store.FaviconFileSystem(artworkFileSystem))))
 	w.Handle("/socket", l.WebsocketHandler())
 	w.Handle("/api/ctrl/", http.StripPrefix("/api/ctrl/", ctrlHandler(l)))
 	return w
