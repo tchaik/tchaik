@@ -4,12 +4,18 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 
 var WebsocketAPI = require('../utils/WebsocketAPI.js');
 
+var CollectionStore = require('../stores/CollectionStore.js');
+
 var CollectionConstants = require('../constants/CollectionConstants.js');
 var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
 
 var CollectionActions = {
 
   fetch: function(path) {
+    if (CollectionStore.getCollection(path)) {
+      CollectionStore.emitChange(path);
+      return;
+    }
     WebsocketAPI.send({
       path: path,
       action: CollectionConstants.FETCH,
