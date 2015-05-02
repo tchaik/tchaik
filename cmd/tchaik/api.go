@@ -22,6 +22,7 @@ type LibraryAPI struct {
 	recent      []index.Path
 	searcher    index.Searcher
 	sessions    *sessions
+	rooms       *rooms
 }
 
 type libraryFileSystem struct {
@@ -199,6 +200,7 @@ type Command struct {
 
 const (
 	KeyAction         string = "KEY"
+	RoomAction        string = "ROOM"
 	CtrlAction        string = "CTRL"
 	FetchAction       string = "FETCH"
 	SearchAction      string = "SEARCH"
@@ -237,6 +239,8 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 				resp, err = handleFilterPaths(l, c)
 			case KeyAction:
 				handleKey(l, c, ws)
+			case RoomAction:
+				handleRoom(l, c, ws)
 			case FetchRecentAction:
 				resp = handleFetchRecent(l, c)
 			default:
@@ -308,6 +312,16 @@ func handleKey(l LibraryAPI, c Command, ws *websocket.Conn) {
 	}
 	l.sessions.add(c.Data, ws)
 	return
+}
+
+func handleRoom(l LibraryAPI, c Command, ws *websocket.Conn) {
+	l.rooms.remove(ws)
+
+	if c.Data == "" {
+		return
+	}
+
+	l.rooms.join(c.Data, ws)
 }
 
 func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
