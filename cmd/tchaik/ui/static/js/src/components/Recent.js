@@ -3,8 +3,6 @@
 
 var React = require('react/addons');
 
-var classNames = require('classnames');
-
 var RecentStore = require('../stores/RecentStore.js');
 var RecentActions = require('../actions/RecentActions.js');
 

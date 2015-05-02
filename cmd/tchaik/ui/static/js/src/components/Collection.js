@@ -69,8 +69,8 @@ var Group = React.createClass({
       }
 
       // NB: To avoid duplications, ignore AlbumArtist if we have a common Artist
-      if (common['AlbumArtist'] && common['Artist']) {
-        delete common['AlbumArtist'];
+      if (common.AlbumArtist && common.Artist) {
+        delete common.AlbumArtist;
       }
 
       var attributeArr = [];
