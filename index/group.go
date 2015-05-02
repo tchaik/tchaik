@@ -7,6 +7,7 @@
 package index
 
 import (
+	"crypto/sha1"
 	"fmt"
 	"sort"
 )
@@ -97,7 +98,8 @@ func (c *col) addTrack(n string, k Key, t Track) {
 
 // add adds the track t to the collection, using the name n as the key.
 func (c *col) add(n string, t Track) {
-	c.addTrack(n, Key(n), t)
+	k := Key(fmt.Sprintf("%x", sha1.Sum([]byte(n)))[:5])
+	c.addTrack(n, k, t)
 }
 
 // collectionTracks iterates over all the tracks in all the groups of the collection to construct a
