@@ -292,9 +292,9 @@ var PlayProgress = React.createClass({
 
   render: function() {
     var wpc = (this.props.current / this.props.duration) * 100;
-    var w = "calc("+wpc+"% - " + this.props.markerWidth + "px)";
+    var w = "calc("+Math.min(wpc, 100.0)+"% - " + this.props.markerWidth + "px)";
     var bpc = (this.props.buffered / this.props.duration) * 100 - wpc;
-    var b = "calc("+bpc+"% - " + this.props.markerWidth + "px)";
+    var b = "calc("+Math.min(bpc, 100.0)+"% - " + this.props.markerWidth + "px)";
 
     return (
       <span className="playProgress" onMouseDown={this._onMouseDown} onWheel={this._onWheel}>
