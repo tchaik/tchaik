@@ -26,6 +26,63 @@ type Player interface {
 	SetTime(float64) error
 }
 
+type multiPlayer struct {
+	players []Player
+}
+
+// MultiPlayer returns a player that will apply calls to all provided Players
+// in sequence.  If an error is returning by a Player then it is returned
+// immediately.
+func MultiPlayer(players ...Player) Player {
+	return multiPlayer{
+		players: players,
+	}
+}
+
+type cmdFn func(Player) error
+
+func (m multiPlayer) applyCmdFn(fn cmdFn) error {
+	for _, p := range m.players {
+		err := fn(p)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+type setFloatFn func(Player, float64) error
+
+func (m multiPlayer) applySetFloatFn(fn setFloatFn, f float64) error {
+	for _, p := range m.players {
+		err := fn(p, f)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (m multiPlayer) Play() error            { return m.applyCmdFn(Player.Play) }
+func (m multiPlayer) Pause() error           { return m.applyCmdFn(Player.Pause) }
+func (m multiPlayer) NextTrack() error       { return m.applyCmdFn(Player.NextTrack) }
+func (m multiPlayer) PreviousTrack() error   { return m.applyCmdFn(Player.PreviousTrack) }
+func (m multiPlayer) TogglePlayPause() error { return m.applyCmdFn(Player.TogglePlayPause) }
+func (m multiPlayer) ToggleMute() error      { return m.applyCmdFn(Player.ToggleMute) }
+
+func (m multiPlayer) SetVolume(f float64) error { return m.applySetFloatFn(Player.SetVolume, f) }
+func (m multiPlayer) SetTime(f float64) error   { return m.applySetFloatFn(Player.SetTime, f) }
+
+func (m multiPlayer) SetMute(b bool) error {
+	for _, p := range m.players {
+		err := p.SetMute(b)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Validated wraps a player with validation checks for value-setting methods.
 func ValidatedPlayer(p Player) Player {
 	return validator{
