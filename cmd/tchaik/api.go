@@ -428,6 +428,33 @@ func ctrlHandler(l LibraryAPI) http.Handler {
 			http.Error(w, "error parsing parameters", http.StatusInternalServerError)
 			return
 		}
+
+		if r.URL.Path == "register" {
+			k := r.Form.Get("key")
+			if p := l.players.get(k); p != nil {
+				http.Error(w, "player key already exists", http.StatusBadRequest)
+				return
+			}
+
+			v := r.Form["player-key"]
+			if v == nil {
+				http.Error(w, "no player keys specified", http.StatusBadRequest)
+				return
+			}
+
+			var players []Player
+			for _, pk := range v {
+				p := l.players.get(pk)
+				if p == nil {
+					http.Error(w, fmt.Sprintf("invalid player key: %v", pk), http.StatusBadRequest)
+					return
+				}
+				players = append(players, p)
+			}
+			l.players.add(k, MultiPlayer(players...))
+			return
+		}
+
 		k := r.Form.Get("key")
 		p := l.players.get(k)
 		if p == nil {
@@ -436,6 +463,9 @@ func ctrlHandler(l LibraryAPI) http.Handler {
 		}
 
 		switch r.URL.Path {
+		case "unregister":
+			l.players.remove(k)
+
 		case "play":
 			err = p.Play()
 
