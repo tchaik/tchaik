@@ -201,7 +201,7 @@ func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.File
 	w.HandleFileSystem("/artwork/", artworkFileSystem)
 	w.HandleFileSystem("/icon/", store.FaviconFileSystem(artworkFileSystem))
 	w.Handle("/socket", l.WebsocketHandler())
-	w.Handle("/api/ctrl/", http.StripPrefix("/api/ctrl/", ctrlHandler(l)))
+	w.Handle("/api/players/", http.StripPrefix("/api/players/", playersHandler(l)))
 	return w
 }
 

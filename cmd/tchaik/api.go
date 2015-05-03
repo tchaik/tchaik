@@ -1,11 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 	"sync"
 
@@ -415,116 +415,142 @@ func handleSearch(l LibraryAPI, c Command) interface{} {
 	}
 }
 
-func ctrlHandler(l LibraryAPI) http.Handler {
+func createPlayer(l LibraryAPI, w http.ResponseWriter, r *http.Request) {
+	dec := json.NewDecoder(r.Body)
+	defer r.Body.Close()
+
+	postData := struct {
+		Key        string
+		PlayerKeys []string
+	}{}
+	err := dec.Decode(&postData)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error parsing JSON: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	if p := l.players.get(postData.Key); p != nil {
+		http.Error(w, "player key already exists", http.StatusBadRequest)
+		return
+	}
+
+	if postData.PlayerKeys == nil || len(postData.PlayerKeys) == 0 {
+		http.Error(w, "no player keys specified", http.StatusBadRequest)
+		return
+	}
+
+	var players []Player
+	for _, pk := range postData.PlayerKeys {
+		p := l.players.get(pk)
+		if p == nil {
+			http.Error(w, fmt.Sprintf("invalid player key: %v", pk), http.StatusBadRequest)
+			return
+		}
+		players = append(players, p)
+	}
+	l.players.add(postData.Key, MultiPlayer(players...))
+	w.WriteHeader(http.StatusCreated)
+}
+
+func playerAction(p Player, w http.ResponseWriter, r *http.Request) {
+	dec := json.NewDecoder(r.Body)
+	defer r.Body.Close()
+
+	putData := struct {
+		Action string
+		Value  interface{}
+	}{}
+	err := dec.Decode(&putData)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error parsing JSON: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	switch putData.Action {
+	case "play":
+		err = p.Play()
+
+	case "pause":
+		err = p.Pause()
+
+	case "next":
+		err = p.NextTrack()
+
+	case "prev":
+		err = p.PreviousTrack()
+
+	case "togglePlayPause":
+		err = p.TogglePlayPause()
+
+	case "toggleMute":
+		err = p.ToggleMute()
+
+	case "setVolume":
+		f, ok := putData.Value.(float64)
+		if !ok {
+			err = InvalidValueError("invalid volume value: expected float")
+			break
+		}
+		err = p.SetVolume(f)
+
+	case "setMute":
+		b, ok := putData.Value.(bool)
+		if !ok {
+			err = InvalidValueError("invalid mute value: expected boolean")
+			break
+		}
+		err = p.SetMute(b)
+
+	case "setTime":
+		f, ok := putData.Value.(float64)
+		if !ok {
+			err = InvalidValueError("invalid time value: expected float")
+			break
+		}
+		err = p.SetTime(f)
+
+	default:
+		err = InvalidValueError("invalid action")
+		return
+	}
+
+	if err != nil {
+		if err, ok := err.(InvalidValueError); ok {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		http.Error(w, fmt.Sprintf("error sending player command: %v", err), http.StatusInternalServerError)
+	}
+}
+
+func playersHandler(l LibraryAPI) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != "PUT" {
-			http.Error(w, "invalid request method", http.StatusBadRequest)
+		if r.URL.Path == "/" && r.Method == "POST" {
+			createPlayer(l, w, r)
 			return
 		}
 
-		var err error
-		err = r.ParseForm()
-		if err != nil {
-			http.Error(w, "error parsing parameters", http.StatusInternalServerError)
+		paths := strings.Split(r.URL.Path, "/")
+
+		if len(paths) != 1 {
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 			return
 		}
 
-		if r.URL.Path == "register" {
-			k := r.Form.Get("key")
-			if p := l.players.get(k); p != nil {
-				http.Error(w, "player key already exists", http.StatusBadRequest)
-				return
-			}
-
-			v := r.Form["player-key"]
-			if v == nil {
-				http.Error(w, "no player keys specified", http.StatusBadRequest)
-				return
-			}
-
-			var players []Player
-			for _, pk := range v {
-				p := l.players.get(pk)
-				if p == nil {
-					http.Error(w, fmt.Sprintf("invalid player key: %v", pk), http.StatusBadRequest)
-					return
-				}
-				players = append(players, p)
-			}
-			l.players.add(k, MultiPlayer(players...))
-			return
-		}
-
-		k := r.Form.Get("key")
-		p := l.players.get(k)
+		p := l.players.get(paths[0])
 		if p == nil {
 			http.Error(w, "invalid player key", http.StatusBadRequest)
 			return
 		}
 
-		switch r.URL.Path {
-		case "unregister":
-			l.players.remove(k)
-
-		case "play":
-			err = p.Play()
-
-		case "pause":
-			err = p.Pause()
-
-		case "next":
-			err = p.NextTrack()
-
-		case "prev":
-			err = p.PreviousTrack()
-
-		case "toggle/play-pause":
-			err = p.TogglePlayPause()
-
-		case "toggle/mute":
-			err = p.ToggleMute()
-
-		case "volume":
-			v := r.Form.Get("value")
-			var f float64
-			f, err = strconv.ParseFloat(v, 64)
-			if err != nil {
-				http.Error(w, "invalid volume value: expected float", http.StatusBadRequest)
-				return
-			}
-			err = p.SetVolume(f)
-
-		case "mute":
-			v := r.Form.Get("value")
-			var b bool
-			b, err = strconv.ParseBool(v)
-			if err != nil {
-				http.Error(w, "invalid mute value: expected boolean", http.StatusBadRequest)
-				return
-			}
-			err = p.SetMute(b)
-
-		case "time":
-			v := r.Form.Get("value")
-			var f float64
-			f, err = strconv.ParseFloat(v, 32)
-			if err != nil {
-				http.Error(w, "invalid time value: expected float", http.StatusBadRequest)
-				return
-			}
-			err = p.SetTime(f)
-
-		default:
-			http.NotFound(w, r)
+		if r.Method == "DELETE" {
+			l.players.remove(paths[0])
+			w.WriteHeader(http.StatusNoContent)
 			return
 		}
 
-		if err != nil {
-			if err, ok := err.(InvalidValueError); ok {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-			http.Error(w, fmt.Sprintf("error sending player command: %v", err), http.StatusInternalServerError)
+		if r.Method == "PUT" {
+			playerAction(p, w, r)
 		}
 	})
 }
