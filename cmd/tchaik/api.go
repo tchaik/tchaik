@@ -21,7 +21,7 @@ type LibraryAPI struct {
 	filters     map[string][]index.FilterItem
 	recent      []index.Path
 	searcher    index.Searcher
-	sessions    *sessions
+	players     *players
 }
 
 type libraryFileSystem struct {
@@ -207,12 +207,12 @@ const (
 	FetchRecentAction string = "FETCH_RECENT"
 )
 
-var websocketSessions map[string]*websocket.Conn
-
 func (l LibraryAPI) WebsocketHandler() http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
-		defer l.sessions.remove(ws)
+
+		var key string
+		defer l.players.remove(key)
 
 		var err error
 		for {
@@ -236,7 +236,7 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 			case FilterPathsAction:
 				resp, err = handleFilterPaths(l, c)
 			case KeyAction:
-				handleKey(l, c, ws)
+				key = handleKey(l, c, ws, key)
 			case FetchRecentAction:
 				resp = handleFetchRecent(l, c)
 			default:
@@ -266,48 +266,42 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 	})
 }
 
-type sessions struct {
+type players struct {
 	sync.RWMutex
-	m map[string]*websocket.Conn
+	m map[string]Player
 }
 
-func newSessions() *sessions {
-	return &sessions{m: make(map[string]*websocket.Conn)}
+func newPlayers() *players {
+	return &players{m: make(map[string]Player)}
 }
 
-func (s *sessions) add(id string, ws *websocket.Conn) {
+func (s *players) add(id string, p Player) {
 	s.Lock()
 	defer s.Unlock()
 
-	s.m[id] = ws
+	s.m[id] = p
 }
 
-func (s *sessions) remove(ws *websocket.Conn) {
+func (s *players) remove(key string) {
 	s.Lock()
 	defer s.Unlock()
 
-	for k, v := range s.m {
-		if v == ws {
-			delete(s.m, k)
-			return
-		}
-	}
+	delete(s.m, key)
 }
 
-func (s *sessions) get(id string) *websocket.Conn {
+func (s *players) get(id string) Player {
 	s.RLock()
 	defer s.RUnlock()
 
 	return s.m[id]
 }
 
-func handleKey(l LibraryAPI, c Command, ws *websocket.Conn) {
-	l.sessions.remove(ws)
-	if c.Data == "" {
-		return
+func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) string {
+	l.players.remove(key)
+	if c.Data != "" {
+		l.players.add(c.Data, ValidatedPlayer(websocketPlayer{ws}))
 	}
-	l.sessions.add(c.Data, ws)
-	return
+	return c.Data
 }
 
 func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
@@ -428,90 +422,79 @@ func ctrlHandler(l LibraryAPI) http.Handler {
 			return
 		}
 
-		err := r.ParseForm()
+		var err error
+		err = r.ParseForm()
 		if err != nil {
 			http.Error(w, "error parsing parameters", http.StatusInternalServerError)
 			return
 		}
 		k := r.Form.Get("key")
-		ws := l.sessions.get(k)
-		if ws == nil {
-			http.Error(w, "invalid session key", http.StatusBadRequest)
+		p := l.players.get(k)
+		if p == nil {
+			http.Error(w, "invalid player key", http.StatusBadRequest)
 			return
 		}
 
-		var data interface{}
 		switch r.URL.Path {
-		case "play", "pause", "next", "prev":
-			data = strings.ToUpper(r.URL.Path)
+		case "play":
+			err = p.Play()
+
+		case "pause":
+			err = p.Pause()
+
+		case "next":
+			err = p.NextTrack()
+
+		case "prev":
+			err = p.PreviousTrack()
 
 		case "toggle/play-pause":
-			data = "TOGGLE_PLAY_PAUSE"
+			err = p.TogglePlayPause()
 
 		case "toggle/mute":
-			data = "TOGGLE_MUTE"
+			err = p.ToggleMute()
 
 		case "volume":
 			v := r.Form.Get("value")
-			f, err := strconv.ParseFloat(v, 32)
-			if err != nil || f > 1.0 || f < 0.0 {
-				http.Error(w, "invalid volume value (expected float between 0.0 and 1.0)", http.StatusBadRequest)
+			var f float64
+			f, err = strconv.ParseFloat(v, 64)
+			if err != nil {
+				http.Error(w, "invalid volume value: expected float", http.StatusBadRequest)
 				return
 			}
-			data = struct {
-				Key   string
-				Value float64
-			}{
-				Key:   "volume",
-				Value: f,
-			}
+			err = p.SetVolume(f)
 
 		case "mute":
 			v := r.Form.Get("value")
-			b, err := strconv.ParseBool(v)
+			var b bool
+			b, err = strconv.ParseBool(v)
 			if err != nil {
-				http.Error(w, "invalid bool value", http.StatusBadRequest)
+				http.Error(w, "invalid mute value: expected boolean", http.StatusBadRequest)
 				return
 			}
-			data = struct {
-				Key   string
-				Value bool
-			}{
-				Key:   "mute",
-				Value: b,
-			}
+			err = p.SetMute(b)
 
 		case "time":
 			v := r.Form.Get("value")
-			f, err := strconv.ParseFloat(v, 32)
-			if err != nil || f < 0.0 {
-				http.Error(w, "invalid time value (expected float greater than 0.0)", http.StatusBadRequest)
+			var f float64
+			f, err = strconv.ParseFloat(v, 32)
+			if err != nil {
+				http.Error(w, "invalid time value: expected float", http.StatusBadRequest)
 				return
 			}
-			data = struct {
-				Key   string
-				Value float64
-			}{
-				Key:   "time",
-				Value: f,
-			}
+			err = p.SetTime(f)
 
 		default:
 			http.NotFound(w, r)
 			return
 		}
 
-		err = websocket.JSON.Send(ws, struct {
-			Action string
-			Data   interface{}
-		}{
-			Action: CtrlAction,
-			Data:   data,
-		})
 		if err != nil {
-			http.Error(w, fmt.Sprintf("error sending command: %v", err), http.StatusInternalServerError)
-			return
+			if err, ok := err.(InvalidValueError); ok {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			http.Error(w, fmt.Sprintf("error sending player command: %v", err), http.StatusInternalServerError)
 		}
-		return
 	})
 }

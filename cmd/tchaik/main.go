@@ -159,7 +159,7 @@ func main() {
 		},
 		recent:   recent,
 		searcher: searcher,
-		sessions: newSessions(),
+		players:  newPlayers(),
 	}
 
 	mediaFileSystem = libAPI.FileSystem(mediaFileSystem)
