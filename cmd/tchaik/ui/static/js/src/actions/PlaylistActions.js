@@ -10,7 +10,7 @@ var PlaylistActions = {
 
   fetch: function(path) {
     WebsocketAPI.send({
-      path: path,
+      data: {'path': path},
       action: PlaylistConstants.FETCH,
     });
   },

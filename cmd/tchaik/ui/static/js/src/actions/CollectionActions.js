@@ -17,7 +17,7 @@ var CollectionActions = {
       return;
     }
     WebsocketAPI.send({
-      path: path,
+      data: {'path': path},
       action: CollectionConstants.FETCH,
     });
   },

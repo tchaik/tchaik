@@ -193,8 +193,7 @@ func (l *LibraryAPI) FileSystem(fs http.FileSystem) http.FileSystem {
 
 type Command struct {
 	Action string
-	Data   string
-	Path   []string
+	Data   interface{}
 }
 
 const (
@@ -202,6 +201,7 @@ const (
 	CtrlAction        string = "CTRL"
 	FetchAction       string = "FETCH"
 	SearchAction      string = "SEARCH"
+	PlayerAction      string = "PLAYER"
 	FilterListAction  string = "FILTER_LIST"
 	FilterPathsAction string = "FILTER_PATHS"
 	FetchRecentAction string = "FETCH_RECENT"
@@ -230,13 +230,15 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 			case FetchAction:
 				resp, err = handleCollectionList(l, c)
 			case SearchAction:
-				resp = handleSearch(l, c)
+				resp, err = handleSearch(l, c)
 			case FilterListAction:
 				resp, err = handleFilterList(l, c)
 			case FilterPathsAction:
 				resp, err = handleFilterPaths(l, c)
 			case KeyAction:
-				key = handleKey(l, c, ws, key)
+				key, err = handleKey(l, c, ws, key)
+			case PlayerAction:
+				err = handlePlayer(l, c)
 			case FetchRecentAction:
 				resp = handleFetchRecent(l, c)
 			default:
@@ -296,26 +298,67 @@ func (s *players) get(id string) Player {
 	return s.m[id]
 }
 
-func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) string {
-	l.players.remove(key)
-	if c.Data != "" {
-		l.players.add(c.Data, ValidatedPlayer(websocketPlayer{ws}))
+func handlePlayer(l LibraryAPI, c Command) error {
+	return nil
+}
+
+func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) (string, error) {
+	key, ok := c.Data.(string)
+	if !ok {
+		return "", fmt.Errorf("data property should be a 'string', got '%T'", c.Data)
 	}
-	return c.Data
+
+	l.players.remove(key)
+	if key != "" {
+		l.players.add(key, ValidatedPlayer(websocketPlayer{ws}))
+	}
+	return key, nil
+}
+
+func extractPath(data map[string]interface{}) ([]string, error) {
+	rawPath, ok := data["path"]
+	if !ok {
+		return nil, fmt.Errorf("expected 'path' in data map")
+	}
+
+	rawPathSlice, ok := rawPath.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("expected path to be a list of strings, got '%T'", rawPath)
+	}
+
+	path := make([]string, len(rawPathSlice))
+	for i, x := range rawPathSlice {
+		s, ok := x.(string)
+		if !ok {
+			return nil, fmt.Errorf("expected path component to be a 'string', got '%T'", x)
+		}
+		path[i] = s
+	}
+	return path, nil
 }
 
 func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
-	if len(c.Path) < 1 {
-		return nil, fmt.Errorf("invalid path: %v\n", c.Path)
+	data, ok := c.Data.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("data property should be a 'map[string]interface{}', got '%T'", c.Data)
 	}
 
-	root := l.collections[c.Path[0]]
-	if root == nil {
-		return nil, fmt.Errorf("unknown collection: %#v", c.Path[0])
-	}
-	g, err := l.Fetch(root, c.Path[1:])
+	path, err := extractPath(data)
 	if err != nil {
-		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, c.Path[1:])
+		return nil, err
+	}
+
+	if len(path) < 1 {
+		return nil, fmt.Errorf("invalid path: %v\n", path)
+	}
+
+	root := l.collections[path[0]]
+	if root == nil {
+		return nil, fmt.Errorf("unknown collection: %#v", path[0])
+	}
+	g, err := l.Fetch(root, path[1:])
+	if err != nil {
+		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, path[1:])
 	}
 
 	return struct {
@@ -327,16 +370,21 @@ func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
 			Path []string
 			Item group
 		}{
-			c.Path,
+			path,
 			g,
 		},
 	}, nil
 }
 
 func handleFilterList(l LibraryAPI, c Command) (interface{}, error) {
-	filterItems, ok := l.filters[c.Data]
+	filterName, ok := c.Data.(string)
 	if !ok {
-		return nil, fmt.Errorf("invalid filter name: %#v", c.Data)
+		return nil, fmt.Errorf("expected data to be a 'string', got '%T'", c.Data)
+	}
+
+	filterItems, ok := l.filters[filterName]
+	if !ok {
+		return nil, fmt.Errorf("invalid filter name: %#v", filterName)
 	}
 
 	filterNames := make([]string, len(filterItems))
@@ -352,22 +400,42 @@ func handleFilterList(l LibraryAPI, c Command) (interface{}, error) {
 			Name  string
 			Items []string
 		}{
-			Name:  c.Data,
+			Name:  filterName,
 			Items: filterNames,
 		},
 	}, nil
 }
 
 func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
-	filterItems, ok := l.filters[c.Data]
+	data, ok := c.Data.(map[string]interface{})
 	if !ok {
-		return nil, fmt.Errorf("invalid filter name: %#v", c.Data)
+		return nil, fmt.Errorf("data property should be a 'map[string]interface{}', got '%T'", c.Data)
 	}
 
-	if len(c.Path) != 1 {
-		return nil, fmt.Errorf("invalid path: %#v", c.Path)
+	path, err := extractPath(data)
+	if err != nil {
+		return nil, err
 	}
-	name := c.Path[0]
+
+	rawName, ok := data["name"]
+	if !ok {
+		return nil, fmt.Errorf("data map should contain a filter 'name' field")
+	}
+
+	filterName, ok := rawName.(string)
+	if !ok {
+		return nil, fmt.Errorf("expected filer 'name' to be a 'string', got '%T'", filterName)
+	}
+
+	filterItems, ok := l.filters[filterName]
+	if !ok {
+		return nil, fmt.Errorf("invalid filter name: %#v", filterName)
+	}
+
+	if len(path) != 1 {
+		return nil, fmt.Errorf("invalid path: %#v", path)
+	}
+	name := path[0]
 
 	var item index.FilterItem
 	for _, x := range filterItems {
@@ -389,7 +457,7 @@ func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
 			Path  []string
 			Paths []index.Path
 		}{
-			Path:  []string{c.Data, name},
+			Path:  []string{filterName, name},
 			Paths: item.Paths(),
 		},
 	}, nil
@@ -405,14 +473,19 @@ func handleFetchRecent(l LibraryAPI, c Command) interface{} {
 	}
 }
 
-func handleSearch(l LibraryAPI, c Command) interface{} {
+func handleSearch(l LibraryAPI, c Command) (interface{}, error) {
+	input, ok := c.Data.(string)
+	if !ok {
+		return nil, fmt.Errorf("expected 'data' to be a 'string', got '%T'", c.Data)
+	}
+
 	return struct {
 		Action string
 		Data   interface{}
 	}{
 		Action: c.Action,
-		Data:   l.searcher.Search(c.Data),
-	}
+		Data:   l.searcher.Search(input),
+	}, nil
 }
 
 func createPlayer(l LibraryAPI, w http.ResponseWriter, r *http.Request) {

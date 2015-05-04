@@ -17,8 +17,10 @@ var FilterActions = {
 
   fetchPaths: function(name, itemName) {
     WebsocketAPI.send({
-      data: name,
-      path: [itemName],
+      data: {
+        'name': name,
+        'path': [itemName]
+      },
       action: FilterConstants.FILTER_PATHS,
     });
   },
