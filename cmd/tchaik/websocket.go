@@ -17,7 +17,68 @@ import (
 
 type Command struct {
 	Action string
-	Data   interface{}
+	Data   map[string]interface{}
+}
+
+func (c Command) getString(f string) (string, error) {
+	raw, ok := c.Data[f]
+	if !ok {
+		return "", fmt.Errorf("expected '%s' in data map", f)
+	}
+
+	value, ok := raw.(string)
+	if !ok {
+		return "", fmt.Errorf("expected '%s' to be of type 'string', got '%T'", raw)
+	}
+	return value, nil
+}
+
+func (c Command) getFloat(f string) (float64, error) {
+	raw, ok := c.Data[f]
+	if !ok {
+		return 0.0, fmt.Errorf("expected '%s' in data map", f)
+	}
+
+	value, ok := raw.(float64)
+	if !ok {
+		return 0.0, fmt.Errorf("expected '%s' to be of type 'float64', got '%T'", raw)
+	}
+	return value, nil
+}
+
+func (c Command) getBool(f string) (bool, error) {
+	raw, ok := c.Data[f]
+	if !ok {
+		return false, fmt.Errorf("expected '%s' in data map", f)
+	}
+
+	value, ok := raw.(bool)
+	if !ok {
+		return false, fmt.Errorf("expected '%s' to be of type 'bool', got '%T'", raw)
+	}
+	return value, nil
+}
+
+func (c Command) getStringSlice(f string) ([]string, error) {
+	raw, ok := c.Data[f]
+	if !ok {
+		return nil, fmt.Errorf("expected '%s' in data map", f)
+	}
+
+	rawSlice, ok := raw.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("expected '%s' to be a list of strings, got '%T'", f, raw)
+	}
+
+	result := make([]string, len(rawSlice))
+	for i, x := range rawSlice {
+		s, ok := x.(string)
+		if !ok {
+			return nil, fmt.Errorf("expected '%s' to contain objects of type 'string', got '%T'", f, x)
+		}
+		result[i] = s
+	}
+	return result, nil
 }
 
 const (
@@ -93,13 +154,69 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 }
 
 func handlePlayer(l LibraryAPI, c Command) error {
-	return nil
+	key, err := c.getString("key")
+	if err != nil {
+		return err
+	}
+
+	p := l.players.get(key)
+	if p == nil {
+		return fmt.Errorf("invalid player key: %v", key)
+	}
+
+	action, err := c.getString("action")
+	if err != nil {
+		return err
+	}
+
+	switch action {
+	case "PLAY":
+		err = p.Play()
+
+	case "PAUSE":
+		err = p.Pause()
+
+	case "NEXT":
+		err = p.NextTrack()
+
+	case "PREV":
+		err = p.PreviousTrack()
+
+	case "TOGGLE_PLAY_PAUSE":
+		err = p.TogglePlayPause()
+
+	case "TOGGLE_MUTE":
+		err = p.ToggleMute()
+
+	case "SET_VOLUME":
+		var f float64
+		f, err = c.getFloat("value")
+		if err == nil {
+			err = p.SetVolume(f)
+		}
+
+	case "SET_MUTE":
+		var b bool
+		b, err = c.getBool("value")
+		if err == nil {
+			err = p.SetMute(b)
+		}
+
+	case "SET_TIME":
+		var f float64
+		f, err = c.getFloat("value")
+		if err == nil {
+			err = p.SetTime(f)
+		}
+	}
+
+	return err
 }
 
 func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) (string, error) {
-	key, ok := c.Data.(string)
-	if !ok {
-		return "", fmt.Errorf("data property should be a 'string', got '%T'", c.Data)
+	key, err := c.getString("key")
+	if err != nil {
+		return "", err
 	}
 
 	l.players.remove(key)
@@ -109,35 +226,8 @@ func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) (string,
 	return key, nil
 }
 
-func extractPath(data map[string]interface{}) ([]string, error) {
-	rawPath, ok := data["path"]
-	if !ok {
-		return nil, fmt.Errorf("expected 'path' in data map")
-	}
-
-	rawPathSlice, ok := rawPath.([]interface{})
-	if !ok {
-		return nil, fmt.Errorf("expected path to be a list of strings, got '%T'", rawPath)
-	}
-
-	path := make([]string, len(rawPathSlice))
-	for i, x := range rawPathSlice {
-		s, ok := x.(string)
-		if !ok {
-			return nil, fmt.Errorf("expected path component to be a 'string', got '%T'", x)
-		}
-		path[i] = s
-	}
-	return path, nil
-}
-
 func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
-	data, ok := c.Data.(map[string]interface{})
-	if !ok {
-		return nil, fmt.Errorf("data property should be a 'map[string]interface{}', got '%T'", c.Data)
-	}
-
-	path, err := extractPath(data)
+	path, err := c.getStringSlice("path")
 	if err != nil {
 		return nil, err
 	}
@@ -171,9 +261,9 @@ func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
 }
 
 func handleFilterList(l LibraryAPI, c Command) (interface{}, error) {
-	filterName, ok := c.Data.(string)
-	if !ok {
-		return nil, fmt.Errorf("expected data to be a 'string', got '%T'", c.Data)
+	filterName, err := c.getString("name")
+	if err != nil {
+		return nil, err
 	}
 
 	filterItems, ok := l.filters[filterName]
@@ -201,24 +291,14 @@ func handleFilterList(l LibraryAPI, c Command) (interface{}, error) {
 }
 
 func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
-	data, ok := c.Data.(map[string]interface{})
-	if !ok {
-		return nil, fmt.Errorf("data property should be a 'map[string]interface{}', got '%T'", c.Data)
-	}
-
-	path, err := extractPath(data)
+	path, err := c.getStringSlice("path")
 	if err != nil {
 		return nil, err
 	}
 
-	rawName, ok := data["name"]
-	if !ok {
-		return nil, fmt.Errorf("data map should contain a filter 'name' field")
-	}
-
-	filterName, ok := rawName.(string)
-	if !ok {
-		return nil, fmt.Errorf("expected filer 'name' to be a 'string', got '%T'", filterName)
+	filterName, err := c.getString("name")
+	if err != nil {
+		return nil, err
 	}
 
 	filterItems, ok := l.filters[filterName]
@@ -268,9 +348,9 @@ func handleFetchRecent(l LibraryAPI, c Command) interface{} {
 }
 
 func handleSearch(l LibraryAPI, c Command) (interface{}, error) {
-	input, ok := c.Data.(string)
-	if !ok {
-		return nil, fmt.Errorf("expected 'data' to be a 'string', got '%T'", c.Data)
+	input, err := c.getString("input")
+	if err != nil {
+		return nil, err
 	}
 
 	return struct {

@@ -16,7 +16,7 @@ var CollectionActions = {
       CollectionStore.emitChange(path);
       return;
     }
-    WebsocketAPI.send(CollectionConstants.FETCH, {'path': path});
+    WebsocketAPI.send(CollectionConstants.FETCH, {path: path});
   },
 
   expandPath: function(path, expand) {

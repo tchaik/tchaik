@@ -9,7 +9,7 @@ var SearchConstants = require('../constants/SearchConstants.js');
 var SearchActions = {
 
   search: function(input) {
-    WebsocketAPI.send(SearchConstants.SEARCH, input);
+    WebsocketAPI.send(SearchConstants.SEARCH, {input: input});
 
     AppDispatcher.handleViewAction({
       actionType: SearchConstants.SEARCH,

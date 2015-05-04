@@ -28,7 +28,7 @@ function key() {
 }
 
 function sendKey(key) {
-  WebsocketAPI.send("KEY", key);
+  WebsocketAPI.send("KEY", {key: key});
 }
 
 var CtrlKeyStore = assign({}, EventEmitter.prototype, {
