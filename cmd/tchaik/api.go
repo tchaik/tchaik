@@ -7,11 +7,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"sync"
 
-	"git.freelancer.com/go/log"
 	"github.com/dhowden/tchaik/index"
 )
 
