@@ -28,7 +28,7 @@ func (c Command) getString(f string) (string, error) {
 
 	value, ok := raw.(string)
 	if !ok {
-		return "", fmt.Errorf("expected '%s' to be of type 'string', got '%T'", raw)
+		return "", fmt.Errorf("expected '%s' to be of type 'string', got '%T'", f, raw)
 	}
 	return value, nil
 }
@@ -41,7 +41,7 @@ func (c Command) getFloat(f string) (float64, error) {
 
 	value, ok := raw.(float64)
 	if !ok {
-		return 0.0, fmt.Errorf("expected '%s' to be of type 'float64', got '%T'", raw)
+		return 0.0, fmt.Errorf("expected '%s' to be of type 'float64', got '%T'", f, raw)
 	}
 	return value, nil
 }
@@ -54,7 +54,7 @@ func (c Command) getBool(f string) (bool, error) {
 
 	value, ok := raw.(bool)
 	if !ok {
-		return false, fmt.Errorf("expected '%s' to be of type 'bool', got '%T'", raw)
+		return false, fmt.Errorf("expected '%s' to be of type 'bool', got '%T'", f, raw)
 	}
 	return value, nil
 }
