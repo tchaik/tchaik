@@ -91,11 +91,10 @@ func build(g index.Group, key index.Key) group {
 		TotalTime:   g.Field("TotalTime"),
 		Artist:      g.Field("Artist"),
 		AlbumArtist: g.Field("AlbumArtist"),
-		// AlbumArtist: fmt.Sprintf("%v", g.Field("AlbumArtist")),
-		Composer:  g.Field("Composer"),
-		Year:      g.Field("Year"),
-		ListStyle: g.Field("ListStyle"),
-		TrackID:   g.Field("TrackID"),
+		Composer:    g.Field("Composer"),
+		Year:        g.Field("Year"),
+		ListStyle:   g.Field("ListStyle"),
+		TrackID:     g.Field("TrackID"),
 	}
 
 	if c, ok := g.(index.Collection); ok {
