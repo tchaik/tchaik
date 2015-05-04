@@ -333,7 +333,7 @@ func playerView(p Player, w http.ResponseWriter, t *http.Request) {
 	enc := json.NewEncoder(w)
 	err := enc.Encode(p)
 	if err != nil {
-		log.Errorf("error encoding player data: %v", err)
+		log.Printf("error encoding player data: %v", err)
 		return
 	}
 }
