@@ -221,7 +221,7 @@ func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) (string,
 
 	l.players.remove(key)
 	if key != "" {
-		l.players.add(key, ValidatedPlayer(websocketPlayer{ws}))
+		l.players.add(ValidatedPlayer(WebsocketPlayer(key, ws)))
 	}
 	return key, nil
 }

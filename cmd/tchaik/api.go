@@ -11,6 +11,7 @@ import (
 	"strings"
 	"sync"
 
+	"git.freelancer.com/go/log"
 	"github.com/dhowden/tchaik/index"
 )
 
@@ -200,11 +201,11 @@ func newPlayers() *players {
 	return &players{m: make(map[string]Player)}
 }
 
-func (s *players) add(id string, p Player) {
+func (s *players) add(p Player) {
 	s.Lock()
 	defer s.Unlock()
 
-	s.m[id] = p
+	s.m[p.Key()] = p
 }
 
 func (s *players) remove(key string) {
@@ -214,11 +215,11 @@ func (s *players) remove(key string) {
 	delete(s.m, key)
 }
 
-func (s *players) get(id string) Player {
+func (s *players) get(key string) Player {
 	s.RLock()
 	defer s.RUnlock()
 
-	return s.m[id]
+	return s.m[key]
 }
 
 func createPlayer(l LibraryAPI, w http.ResponseWriter, r *http.Request) {
@@ -254,7 +255,7 @@ func createPlayer(l LibraryAPI, w http.ResponseWriter, r *http.Request) {
 		}
 		players = append(players, p)
 	}
-	l.players.add(postData.Key, MultiPlayer(players...))
+	l.players.add(MultiPlayer(postData.Key, players...))
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -329,6 +330,15 @@ func playerAction(p Player, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func playerView(p Player, w http.ResponseWriter, t *http.Request) {
+	enc := json.NewEncoder(w)
+	err := enc.Encode(p)
+	if err != nil {
+		log.Error("error encoding player data: %v", err)
+		return
+	}
+}
+
 func playersHandler(l LibraryAPI) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "" && r.Method == "POST" {
@@ -349,14 +359,17 @@ func playersHandler(l LibraryAPI) http.Handler {
 			return
 		}
 
-		if r.Method == "DELETE" {
+		switch r.Method {
+		case "DELETE":
 			l.players.remove(paths[0])
 			w.WriteHeader(http.StatusNoContent)
 			return
-		}
 
-		if r.Method == "PUT" {
+		case "PUT":
 			playerAction(p, w, r)
+
+		case "GET":
+			playerView(p, w, r)
 		}
 	})
 }

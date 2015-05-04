@@ -4,10 +4,17 @@
 
 package main
 
-import "golang.org/x/net/websocket"
+import (
+	"encoding/json"
+
+	"golang.org/x/net/websocket"
+)
 
 // Player is an interface which defines methods for controlling a player.
 type Player interface {
+	// Key returns a unique identifier for this Player.
+	Key() string
+
 	// Play the current track.
 	Play() error
 	// Pause the current track.
@@ -31,14 +38,16 @@ type Player interface {
 }
 
 type multiPlayer struct {
+	key     string
 	players []Player
 }
 
 // MultiPlayer returns a player that will apply calls to all provided Players
 // in sequence.  If an error is returning by a Player then it is returned
 // immediately.
-func MultiPlayer(players ...Player) Player {
+func MultiPlayer(key string, players ...Player) Player {
 	return multiPlayer{
+		key:     key,
 		players: players,
 	}
 }
@@ -67,6 +76,8 @@ func (m multiPlayer) applySetFloatFn(fn setFloatFn, f float64) error {
 	return nil
 }
 
+func (m multiPlayer) Key() string { return m.key }
+
 func (m multiPlayer) Play() error            { return m.applyCmdFn(Player.Play) }
 func (m multiPlayer) Pause() error           { return m.applyCmdFn(Player.Pause) }
 func (m multiPlayer) NextTrack() error       { return m.applyCmdFn(Player.NextTrack) }
@@ -85,6 +96,22 @@ func (m multiPlayer) SetMute(b bool) error {
 		}
 	}
 	return nil
+}
+
+func (m multiPlayer) MarshalJSON() ([]byte, error) {
+	playerKeys := make([]string, len(m.players))
+	for i, p := range m.players {
+		playerKeys[i] = p.Key()
+	}
+
+	rep := struct {
+		Key        string   `json:"key"`
+		PlayerKeys []string `json:"playerKeys"`
+	}{
+		m.key,
+		playerKeys,
+	}
+	return json.Marshal(rep)
 }
 
 // Validated wraps a player with validation checks for value-setting methods.
@@ -120,8 +147,23 @@ func (v validatedPlayer) SetTime(f float64) error {
 	return v.Player.SetTime(f)
 }
 
+func (v validatedPlayer) MarshalJSON() ([]byte, error) {
+	if m, ok := v.Player.(json.Marshaler); ok {
+		return m.MarshalJSON()
+	}
+	return nil, nil
+}
+
+func WebsocketPlayer(key string, ws *websocket.Conn) Player {
+	return &websocketPlayer{
+		Conn: ws,
+		key:  key,
+	}
+}
+
 type websocketPlayer struct {
 	*websocket.Conn
+	key string
 }
 
 func (w *websocketPlayer) sendCtrlAction(data interface{}) error {
@@ -144,6 +186,8 @@ func (w *websocketPlayer) sendCtrlValue(key string, value interface{}) error {
 	})
 }
 
+func (w websocketPlayer) Key() string { return w.key }
+
 func (w websocketPlayer) Play() error            { return w.sendCtrlAction("PLAY") }
 func (w websocketPlayer) Pause() error           { return w.sendCtrlAction("PAUSE") }
 func (w websocketPlayer) NextTrack() error       { return w.sendCtrlAction("NEXT") }
@@ -154,3 +198,12 @@ func (w websocketPlayer) ToggleMute() error      { return w.sendCtrlAction("TOGG
 func (w websocketPlayer) SetMute(b bool) error      { return w.sendCtrlValue("mute", b) }
 func (w websocketPlayer) SetVolume(f float64) error { return w.sendCtrlValue("volume", f) }
 func (w websocketPlayer) SetTime(f float64) error   { return w.sendCtrlValue("time", f) }
+
+func (w websocketPlayer) MarshalJSON() ([]byte, error) {
+	rep := struct {
+		Key string `json:"key"`
+	}{
+		Key: w.key,
+	}
+	return json.Marshal(rep)
+}
