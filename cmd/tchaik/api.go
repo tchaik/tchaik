@@ -525,7 +525,7 @@ func playerAction(p Player, w http.ResponseWriter, r *http.Request) {
 
 func playersHandler(l LibraryAPI) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/" && r.Method == "POST" {
+		if r.URL.Path == "" && r.Method == "POST" {
 			createPlayer(l, w, r)
 			return
 		}
