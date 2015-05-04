@@ -89,12 +89,12 @@ func (m multiPlayer) SetMute(b bool) error {
 
 // Validated wraps a player with validation checks for value-setting methods.
 func ValidatedPlayer(p Player) Player {
-	return validator{
+	return validatedPlayer{
 		Player: p,
 	}
 }
 
-type validator struct {
+type validatedPlayer struct {
 	Player
 }
 
@@ -105,7 +105,7 @@ type InvalidValueError string
 func (v InvalidValueError) Error() string { return string(v) }
 
 // SetVolume implements Player.
-func (v validator) SetVolume(f float64) error {
+func (v validatedPlayer) SetVolume(f float64) error {
 	if f < 0.0 || f > 1.0 {
 		return InvalidValueError("invalid volume value: must be between 0.0 and 1.0")
 	}
@@ -113,7 +113,7 @@ func (v validator) SetVolume(f float64) error {
 }
 
 // SetTime implements Player.
-func (v validator) SetTime(f float64) error {
+func (v validatedPlayer) SetTime(f float64) error {
 	if f < 0.0 {
 		return InvalidValueError("invalid time value: must be greater than 0.0")
 	}
