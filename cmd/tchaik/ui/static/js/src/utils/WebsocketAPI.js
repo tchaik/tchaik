@@ -56,7 +56,7 @@ function onOpen() {
   _websocket.open = true;
   WebsocketAPI.emitChange();
   _websocket.queue.map(function(payload) {
-    WebsocketAPI.send(payload.action, payload.data)
+    WebsocketAPI.send(payload.action, payload.data);
   });
   _websocket.queue = [];
 }
