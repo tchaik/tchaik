@@ -31,7 +31,7 @@ function sendKey(key) {
   WebsocketAPI.send("KEY", {key: key});
 }
 
-var CtrlKeyStore = assign({}, EventEmitter.prototype, {
+var PlayerKeyStore = assign({}, EventEmitter.prototype, {
 
   isKeySet: function() {
     var k = key();
@@ -65,7 +65,7 @@ var CtrlKeyStore = assign({}, EventEmitter.prototype, {
 
 });
 
-CtrlKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
+PlayerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -74,12 +74,12 @@ CtrlKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
       case ControlConstants.SET_KEY:
         setKey(action.key);
         sendKey(action.key);
-        CtrlKeyStore.emitChange();
+        PlayerKeyStore.emitChange();
         break;
 
       case WebsocketConstants.RECONNECT:
-        if (CtrlKeyStore.isKeySet()) {
-          sendKey(CtrlKeyStore.getKey());
+        if (PlayerKeyStore.isKeySet()) {
+          sendKey(PlayerKeyStore.getKey());
         }
         break;
     }
@@ -87,4 +87,4 @@ CtrlKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = CtrlKeyStore;
+module.exports = PlayerKeyStore;

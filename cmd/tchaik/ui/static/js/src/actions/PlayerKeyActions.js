@@ -4,7 +4,7 @@ var AppDispatcher = require('../dispatcher/AppDispatcher.js');
 
 var ControlConstants = require('../constants/ControlConstants.js');
 
-var CtrlKeyActions = {
+var PlayerKeyActions = {
 
   setKey: function(key) {
     AppDispatcher.handleViewAction({
@@ -15,4 +15,4 @@ var CtrlKeyActions = {
 
 };
 
-module.exports = CtrlKeyActions;
+module.exports = PlayerKeyActions;

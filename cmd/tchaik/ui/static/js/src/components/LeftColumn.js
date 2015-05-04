@@ -7,7 +7,7 @@ var classNames = require('classnames');
 
 var Icon = require('./Icon.js');
 var StatusView = require('./Status.js');
-var CtrlKeyView = require('./CtrlKey.js');
+var PlayerKeyView = require('./PlayerKey.js');
 
 var RootCollection = require('./Collection.js').RootCollection;
 var Search = require('./Search.js').Search;
@@ -114,7 +114,7 @@ var LeftColumn = React.createClass({
           <div className="bottom">
             <Volume height={100} markerHeight={2} />
             <StatusView />
-            <CtrlKeyView />
+            <PlayerKeyView />
           </div>
         </div>
         <div id="container">
