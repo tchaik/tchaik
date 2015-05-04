@@ -1,17 +1,3 @@
-// Copyright 2015, David Howden
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-/*
-tchwalk is a tool which transverses a directory tree and reads all supported audio files
-(.mp3 and m4a - ID3.v1,2.{2,3,4} and ID4) and uses the metadata to create a Tchaik library.
-
-Only tracks which have readable metadata will be added to the library.  Any errors are
-logged to stdout.
-
-As no other unique identifying data is know, the SHA1 sum of the file path is used as the
-track's TrackID.
-*/
 package main
 
 import (
@@ -135,40 +121,6 @@ func walk(root string) <-chan string {
 		close(ch)
 	}()
 	return ch
-}
-
-func main() {
-	if len(os.Args) != 3 {
-		fmt.Printf("usage: %v [root-directory] [outputfile]\n", os.Args[0])
-		os.Exit(1)
-	}
-
-	tracks := make(map[string]*Track)
-	files := walk(os.Args[1])
-	for path := range files {
-		if validExtension(path) {
-			track, err := processPath(path)
-			if err != nil {
-				log.Printf("error processing '%v': %v\n", path, err)
-				continue
-			}
-			tracks[path] = track
-		}
-	}
-
-	l := &Library{
-		tracks: tracks,
-	}
-	tchLibrary := index.Convert(l, "TrackID")
-
-	f, err := os.Create(os.Args[2])
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	defer f.Close()
-
-	index.WriteTo(tchLibrary, f)
 }
 
 func processPath(path string) (*Track, error) {

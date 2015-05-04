@@ -3,18 +3,26 @@
 // license that can be found in the LICENSE file.
 
 /*
-tchimport is a tool which converts iTunes Libraries (plist XML) into a Tchaik libraries.
+tchimport is a tool which builds Tchaik Libraries (metadata indexes) from iTunes Library XML files or
+alternatively by reading metadata from audio files within a directory tree.
 
-This is particularly useful if you have a large iTunes Library file and don't want to have
-it all loaded into memory.  The Tchaik library has a much smaller set of data attributes
-stored for each track, and the serialised form is gzipped JSON rather than plist.
+Importing large iTunes XML Library files is recommended: the Tchaik library has a much smaller set of data attributes
+for each track (so a much smaller memory footprint).
 
-  tchimport -xml <itunes-library> -out <output-file>
+  tchimport -itlXML <itunes-library> -out lib.tch
+
+Alternatively you can specify a path which will be transversed. All supported audio files within this path
+(.mp3, .m4a, .flac - ID3.v1,2.{2,3,4}, MP4 and FLAC) will be scanned for metadata. Only tracks which have readable
+metadata will be added to the library.  Any errors are logged to stdout. As no other unique identifying data is know,
+the SHA1 sum of the file path is used as the TrackID.
+
+  tchimport -path <directory-path> -out lib.tch
 */
 package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -22,39 +30,34 @@ import (
 	"github.com/dhowden/tchaik/index"
 )
 
-var itlXML string
-var out string
-
-func init() {
-	flag.StringVar(&itlXML, "xml", "", "iTunes Music Library XML file")
-	flag.StringVar(&out, "out", "data.tch", "output file (Tchaik library binary format)")
-}
-
 func main() {
+	itlXML := flag.String("itlXML", "", "iTunes Music Library XML file")
+	path := flag.String("path", "", "directory path containing audio files")
+	out := flag.String("out", "data.tch", "output file (Tchaik library binary format)")
+
 	flag.Parse()
 
-	if itlXML == "" || out == "" {
-		flag.Usage()
+	if *itlXML != "" && *path != "" || *itlXML == "" && *path == "" {
+		fmt.Println("must specify either 'itlXML' or 'path'")
 		os.Exit(1)
 	}
 
-	f, err := os.Open(itlXML)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	defer f.Close()
-
-	l, err := itl.ReadFromXML(f)
-	if err != nil {
-		log.Println(err)
+	if *out == "" {
+		fmt.Println("must specify 'out'")
 		os.Exit(1)
 	}
 
-	itl := index.NewITunesLibrary(&l)
-	nl := index.Convert(itl, "TrackID")
+	var l index.Library
 
-	nf, err := os.Create(out)
+	switch {
+	case *itlXML != "":
+		l = importXML(*itlXML)
+	case *path != "":
+		l = importPath(*path)
+	}
+	nl := index.Convert(l, "TrackID")
+
+	nf, err := os.Create(*out)
 	if err != nil {
 		log.Println(err)
 		os.Exit(1)
@@ -63,7 +66,43 @@ func main() {
 
 	err = index.WriteTo(nl, nf)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		os.Exit(1)
+	}
+}
+
+func importXML(itlXML string) index.Library {
+	f, err := os.Open(itlXML)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer f.Close()
+
+	l, err := itl.ReadFromXML(f)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	return index.NewITunesLibrary(&l)
+}
+
+func importPath(path string) index.Library {
+	tracks := make(map[string]*Track)
+	files := walk(path)
+	for p := range files {
+		if validExtension(p) {
+			track, err := processPath(p)
+			if err != nil {
+				log.Printf("error processing '%v': %v\n", p, err)
+				continue
+			}
+			tracks[p] = track
+		}
+	}
+
+	return &Library{
+		tracks: tracks,
 	}
 }
