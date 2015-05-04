@@ -42,13 +42,18 @@ var Filter = React.createClass({
             setCurrent={this.setCurrent} />;
     }.bind(this));
 
+    var results = null;
+    if (this.state.current !== null) {
+      results = <Results filterName={this.props.name} itemName={this.state.current} />;
+    }
+
     return (
       <div className="filter">
         <div className="sidebar">
           <ul>{items}</ul>
         </div>
         <div className="collection">
-          <Results filterName={this.props.name} itemName={this.state.current} />
+          {results}
         </div>
       </div>
     );
