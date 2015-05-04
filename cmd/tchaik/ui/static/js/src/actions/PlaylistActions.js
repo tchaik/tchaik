@@ -9,10 +9,7 @@ var WebsocketAPI = require('../utils/WebsocketAPI.js');
 var PlaylistActions = {
 
   fetch: function(path) {
-    WebsocketAPI.send({
-      data: {'path': path},
-      action: PlaylistConstants.FETCH,
-    });
+    WebsocketAPI.send(PlaylistConstants.FETCH, {'path': path});
   },
 
   remove: function(itemIndex, path) {

@@ -9,19 +9,13 @@ var FilterConstants = require('../constants/FilterConstants.js');
 var FilterActions = {
 
   fetchList: function(name) {
-    WebsocketAPI.send({
-      data: name,
-      action: FilterConstants.FILTER_LIST,
-    });
+    WebsocketAPI.send(FilterConstants.FILTER_LIST, name);
   },
 
   fetchPaths: function(name, itemName) {
-    WebsocketAPI.send({
-      data: {
-        'name': name,
-        'path': [itemName]
-      },
-      action: FilterConstants.FILTER_PATHS,
+    WebsocketAPI.send(FilterConstants.FILTER_PATHS, {
+      'name': name,
+      'path': [itemName]
     });
   },
 

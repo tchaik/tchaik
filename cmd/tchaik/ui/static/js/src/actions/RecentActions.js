@@ -7,9 +7,7 @@ var RecentConstants = require('../constants/RecentConstants.js');
 var RecentActions = {
 
   fetch: function() {
-    WebsocketAPI.send({
-      action: RecentConstants.FETCH_RECENT,
-    });
+    WebsocketAPI.send(RecentConstants.FETCH_RECENT);
   },
 
 };

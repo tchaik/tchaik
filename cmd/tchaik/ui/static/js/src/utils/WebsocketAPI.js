@@ -55,7 +55,9 @@ function onError(err) {
 function onOpen() {
   _websocket.open = true;
   WebsocketAPI.emitChange();
-  _websocket.queue.map(WebsocketAPI.send);
+  _websocket.queue.map(function(payload) {
+    WebsocketAPI.send(payload.action, payload.data)
+  });
   _websocket.queue = [];
 }
 
@@ -80,12 +82,16 @@ var WebsocketAPI = assign({}, EventEmitter.prototype, {
     this.emit(CHANGE_EVENT);
   },
 
-  send: function(action) {
+  send: function(action, data) {
+    var payload = {
+      action: action,
+      data: data
+    };
     if (!_websocket.open) {
-      _websocket.queue.push(action);
+      _websocket.queue.push(payload);
       return;
     }
-    _websocket.sock.send(JSON.stringify(action));
+    _websocket.sock.send(JSON.stringify(payload));
   },
 
   /**
