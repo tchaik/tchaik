@@ -4,6 +4,6 @@ package main
 
 import "time"
 
-func getFileCreationTime(string) time.Time {
-	return time.Time{}
+func getCreatedTime(string) (time.Time, error) {
+	return time.Time{}, nil
 }

@@ -36,9 +36,9 @@ func (l *Library) Tracks() []index.Track {
 // Track is a wrapper around tag.Metadata which implements index.Track
 type Track struct {
 	tag.Metadata
-	Location     string
-	ModTime      time.Time
-	CreationTime time.Time
+	Location    string
+	ModTime     time.Time
+	CreatedTime time.Time
 }
 
 func (m *Track) GetString(name string) string {
@@ -85,7 +85,7 @@ func (m *Track) GetTime(name string) time.Time {
 	case "DateModified":
 		return m.ModTime
 	case "DateAdded":
-		return m.CreationTime
+		return m.CreatedTime
 	}
 	return time.Time{}
 }
@@ -140,10 +140,15 @@ func processPath(path string) (*Track, error) {
 		return nil, err
 	}
 
+	createdTime, err := getCreatedTime(path)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Track{
-		Metadata:     m,
-		Location:     path,
-		ModTime:      fileInfo.ModTime(),
-		CreationTime: getFileCreationTime(path),
+		Metadata:    m,
+		Location:    path,
+		ModTime:     fileInfo.ModTime(),
+		CreatedTime: createdTime,
 	}, nil
 }

@@ -8,9 +8,11 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-func getFileCreationTime(path string) time.Time {
+func getCreatedTime(path string) (time.Time, error) {
 	stat := unix.Stat_t{}
-	unix.Lstat(path, &stat)
-
+	err := unix.Lstat(path, &stat)
+	if err != nil {
+		return err
+	}
 	return time.Unix(stat.Ctim.Sec, stat.Ctim.Nsec)
 }
