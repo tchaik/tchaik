@@ -4,10 +4,10 @@ go:
   - 1.4
   - tip
 
-before_install:
-    - npm install gulp
 install:
+    - npm install gulp
     - make deps
+
 script:
     - make lint
     - make test
