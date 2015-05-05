@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var _ = require('lodash');
 
 var browserify = require('browserify');
 var browserSync = require('browser-sync').create();
