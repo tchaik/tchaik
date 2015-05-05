@@ -4,5 +4,10 @@ go:
   - 1.4
   - tip
 
+before_install:
+    - npm install gulp
+
 script:
-    - './scripts/verify-gofmt.sh cmd index store'
+    - make lint
+    - make test
+    - make build
