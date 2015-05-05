@@ -6,7 +6,8 @@ go:
 
 before_install:
     - npm install gulp
-
+install:
+    - make deps
 script:
     - make lint
     - make test

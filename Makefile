@@ -1,6 +1,7 @@
 GO := go
 GOBUILD := $(GO) build
 GOFMT := $(GO) fmt
+GOGET:= $(GO) get
 GOINSTALL := $(GO) install
 GOTEST := $(GO) test
 
@@ -32,13 +33,15 @@ build: $(BUILD_LIST)
 install: $(INSTALL_LIST)
 fmt: $(FMT_LIST)
 
-uideps:
-	cd cmd/tchaik/ui; npm install
-ui: uideps
+ui:
 	cd cmd/tchaik/ui; gulp
 
-uilint: uideps
+uilint:
 	cd cmd/tchaik/ui; gulp lint
+
+deps:
+	$(GOGET) -t ./...
+	cd cmd/tchaik/ui; npm install
 
 test: gotest
 lint: golint uilint
