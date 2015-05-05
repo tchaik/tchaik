@@ -149,3 +149,4 @@ gulp.task('serve', ['watch'], function() {
 });
 
 gulp.task('default', ['sass', 'js', 'jshint:jsx']);
+gulp.task('lint', ['jshint', 'jshint:jsx']);
