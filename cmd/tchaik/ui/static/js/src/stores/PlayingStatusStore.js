@@ -9,8 +9,6 @@ var PlaylistConstants = require('../constants/PlaylistConstants.js');
 
 var NowPlayingStore = require('../stores/NowPlayingStore.js');
 
-// var CtrlConstants = require('../constants/ControlConstants.js');
-
 var CHANGE_EVENT = 'change';
 
 var _defaultTrackState = {
