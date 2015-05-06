@@ -14,9 +14,6 @@ var CtrlConstants = require('../constants/ControlConstants.js');
 var CHANGE_EVENT = 'change';
 var CONTROL_EVENT = 'control';
 
-var defaultVolume = 0.75;
-var defaultVolumeMute = false;
-
 var currentPlaying = null;
 
 function setCurrentTrackSource(source) {
@@ -63,44 +60,11 @@ function currentTrack() {
   return JSON.parse(c);
 }
 
-function setVolume(v) {
-  localStorage.setItem("volume", v);
-}
-
-function volume() {
-  var v = localStorage.getItem("volume");
-  if (v === null) {
-    setVolume(defaultVolume);
-    return defaultVolume;
-  }
-  return parseFloat(v);
-}
-
-function setVolumeMute(v) {
-  localStorage.setItem("volumeMute", v);
-}
-
-function volumeMute() {
-  var v = localStorage.getItem("volumeMute");
-  if (v === null) {
-    setVolumeMute(defaultVolumeMute);
-    return defaultVolumeMute;
-  }
-  return (v === "true");
-}
 
 var NowPlayingStore = assign({}, EventEmitter.prototype, {
 
   getPlaying: function() {
     return playing();
-  },
-
-  getVolume: function() {
-    return volumeMute() ? 0.0 : volume();
-  },
-
-  getVolumeMute: function() {
-    return volumeMute();
   },
 
   getTrack: function() {
@@ -196,29 +160,12 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           NowPlayingStore.emitChange();
           break;
 
-        case CtrlConstants.TOGGLE_MUTE:
-          setVolumeMute(!volumeMute());
-          NowPlayingStore.emitChange();
-          break;
-
         default:
           break;
       }
 
       if (action.data.Key) {
         switch (action.data.Key) {
-          case "volume":
-            setVolume(action.data.Value);
-            if (action.data.Value > 0) {
-              setVolumeMute(false);
-            }
-            NowPlayingStore.emitChange();
-            break;
-
-          case "mute":
-            setVolumeMute(action.data.Value);
-            NowPlayingStore.emitChange();
-            break;
 
           case "time":
             NowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.data.Value);
@@ -255,24 +202,6 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.SET_CURRENT_TIME:
         NowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.currentTime);
-        break;
-
-      case NowPlayingConstants.SET_VOLUME:
-        setVolume(action.volume);
-        if (action.volume > 0) {
-          setVolumeMute(false);
-        }
-        NowPlayingStore.emitChange();
-        break;
-
-      case NowPlayingConstants.SET_VOLUME_MUTE:
-        setVolumeMute(action.volumeMute);
-        NowPlayingStore.emitChange();
-        break;
-
-      case NowPlayingConstants.TOGGLE_VOLUME_MUTE:
-        setVolumeMute(!volumeMute());
-        NowPlayingStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_CURRENT_TRACK:

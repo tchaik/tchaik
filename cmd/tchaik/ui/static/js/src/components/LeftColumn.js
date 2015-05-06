@@ -18,8 +18,8 @@ var Recent = require('./Recent.js');
 var LeftColumnStore = require('../stores/LeftColumnStore.js');
 var LeftColumnActions = require('../actions/LeftColumnActions.js');
 
-var NowPlayingStore = require('../stores/NowPlayingStore.js');
-var NowPlayingActions = require('../actions/NowPlayingActions.js');
+var VolumeStore = require('../stores/VolumeStore.js');
+var VolumeActions = require('../actions/VolumeActions.js');
 
 
 function getToolBarItemState(mode) {
@@ -141,7 +141,7 @@ function _getOffsetTop(elem) {
 
 function getVolumeStatus() {
   return {
-    volume: NowPlayingStore.getVolume(),
+    volume: VolumeStore.getVolume(),
   };
 }
 
@@ -156,11 +156,11 @@ var Volume = React.createClass({
   },
 
   componentDidMount: function() {
-    NowPlayingStore.addChangeListener(this._onChange);
+    VolumeStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    NowPlayingStore.removeChangeListener(this._onChange);
+    VolumeStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
@@ -188,7 +188,7 @@ var Volume = React.createClass({
 
   _toggleMute: function(evt) {
     evt.stopPropagation();
-    NowPlayingActions.toggleVolumeMute();
+    VolumeActions.toggleVolumeMute();
   },
 
   _onWheel: function(evt) {
@@ -199,13 +199,13 @@ var Volume = React.createClass({
     } else if (v < 0.00) {
       v = 0.0;
     }
-    NowPlayingActions.volume(v);
+    VolumeActions.volume(v);
   },
 
   _onMouseDown: function(evt) {
     var pos = evt.pageY - _getOffsetTop(evt.currentTarget);
     var height = evt.currentTarget.offsetHeight;
-    NowPlayingActions.volume(1 - pos/height);
+    VolumeActions.volume(1 - pos/height);
   },
 
   _onChange: function() {

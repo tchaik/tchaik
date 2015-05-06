@@ -6,6 +6,8 @@ var NowPlayingStore = require('../stores/NowPlayingStore.js');
 
 var PlayingStatusStore = require('../stores/PlayingStatusStore.js');
 
+var VolumeStore = require('../stores/VolumeStore.js');
+
 var _audio = new Audio();
 var _src = null;
 var _playing = false;
@@ -67,8 +69,10 @@ function init() {
 
   NowPlayingStore.addChangeListener(update);
   NowPlayingStore.addControlListener(_onNowPlayingControl);
+  VolumeStore.addChangeListener(_onVolumeChange);
 
   update();
+  _onVolumeChange();
 }
 
 function onPlayerEvent(evt) {
@@ -150,8 +154,11 @@ function update() {
       pause();
     }
   }
+}
 
-  var v = NowPlayingStore.getVolume();
+function _onVolumeChange() {
+  console.log("volumne change");
+  var v = VolumeStore.getVolume();
   if (volume() !== v) {
     setVolume(v);
   }
