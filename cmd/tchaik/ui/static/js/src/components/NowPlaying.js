@@ -13,18 +13,7 @@ var NowPlayingActions = require('../actions/NowPlayingActions.js');
 
 var PlayingStatusStore = require('../stores/PlayingStatusStore.js');
 
-
-var NowPlaying = React.createClass({
-  render: function() {
-    return (
-      <div className="now-playing-track">
-        <TrackInfo />
-      </div>
-    );
-  },
-});
-
-function getTrackInfoState() {
+function getNowPlayingState() {
   return {
     track: NowPlayingStore.getTrack(),
     buffered: PlayingStatusStore.getBuffered(),
@@ -33,9 +22,9 @@ function getTrackInfoState() {
   };
 }
 
-var TrackInfo = React.createClass({
+var NowPlaying = React.createClass({
   getInitialState: function() {
-    return getTrackInfoState();
+    return getNowPlayingState();
   },
 
   componentDidMount: function() {
@@ -50,6 +39,10 @@ var TrackInfo = React.createClass({
 
   render: function() {
     var track = this.state.track;
+    if (track === null) {
+      return null;
+    }
+
     var fields = ['Album', 'Artist', 'Year'];
     var attributeArr = [];
     fields.forEach(function(f) {
@@ -62,7 +55,7 @@ var TrackInfo = React.createClass({
     var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
 
     return (
-      <div className="info">
+      <div className="now-playing-track">
         <ArtworkImage path={"/artwork/" + track.TrackID} />
         <span className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></span>
         {attributes}
@@ -78,7 +71,7 @@ var TrackInfo = React.createClass({
   },
 
   _onChange: function() {
-    this.setState(getTrackInfoState());
+    this.setState(getNowPlayingState());
   }
 });
 
