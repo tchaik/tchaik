@@ -68,7 +68,7 @@ function init() {
   NowPlayingStore.addChangeListener(update);
   NowPlayingStore.addControlListener(_onNowPlayingControl);
 
-  update(true);
+  update();
 }
 
 function onPlayerEvent(evt) {
@@ -127,7 +127,7 @@ function _onNowPlayingControl(type, value) {
   }
 }
 
-function update(startup) {
+function update() {
   var track = NowPlayingStore.getTrack();
   if (track) {
     var source = "/track/"+track.TrackID;
