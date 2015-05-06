@@ -157,7 +157,6 @@ function update() {
 }
 
 function _onVolumeChange() {
-  console.log("volumne change");
   var v = VolumeStore.getVolume();
   if (volume() !== v) {
     setVolume(v);
