@@ -23,6 +23,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/dhowden/httpauth"
 	"github.com/dhowden/itl"
@@ -36,6 +37,7 @@ var debug bool
 var itlXML, tchLib string
 
 var listenAddr string
+var staticDir string
 var certFile, keyFile string
 
 var auth bool
@@ -49,6 +51,8 @@ func init() {
 
 	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
 	flag.StringVar(&tchLib, "lib", "", "path to Tchaik library file")
+
+	flag.StringVar(&staticDir, "static-dir", "ui/static", "Path to the static asset directory")
 
 	flag.BoolVar(&auth, "auth", false, "use basic HTTP authentication")
 }
@@ -196,7 +200,7 @@ func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.File
 
 	w := fsServeMux{httpauth.NewServeMux(c, http.NewServeMux())}
 	w.HandleFunc("/", rootHandler)
-	w.HandleFileSystem("/static/", http.Dir("ui/static"))
+	w.HandleFileSystem("/static/", http.Dir(staticDir))
 	w.HandleFileSystem("/track/", mediaFileSystem)
 	w.HandleFileSystem("/artwork/", artworkFileSystem)
 	w.HandleFileSystem("/icon/", store.FaviconFileSystem(artworkFileSystem))
@@ -207,5 +211,5 @@ func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.File
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
-	http.ServeFile(w, r, "ui/tchaik.html")
+	http.ServeFile(w, r, path.Join(staticDir, "index.html"))
 }
