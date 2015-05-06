@@ -3,6 +3,7 @@
 var React = require('react/addons');
 
 var WebsocketAPI = require('./utils/WebsocketAPI.js');
+var AudioAPI = require('./utils/AudioAPI.js');
 
 var LeftColumn = require('./components/LeftColumn.js');
 var RightColumn = require('./components/RightColumn.js');
@@ -13,6 +14,8 @@ if (window.location.protocol === "https:") {
   protocol = "wss://";
 }
 WebsocketAPI.init(protocol + socketAddr + "/socket");
+
+AudioAPI.init();
 
 var LeftColumn = React.createFactory(LeftColumn);
 React.render(
