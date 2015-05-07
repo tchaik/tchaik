@@ -11,20 +11,20 @@ var ControlConstants = require('../constants/ControlConstants.js');
 
 var CHANGE_EVENT = 'change';
 
-var _apiKey = null;
+var _playerKey = null;
 
 function setKey(k) {
-  _apiKey = k;
-  localStorage.setItem("apiKey", k);
+  _playerKey = k;
+  localStorage.setItem("playerKey", k);
 }
 
 function key() {
-  if (_apiKey !== null) {
-    return _apiKey;
+  if (_playerKey !== null) {
+    return _playerKey;
   }
-  var k = localStorage.getItem("apiKey");
-  _apiKey = (k) ? k : null;
-  return _apiKey;
+  var k = localStorage.getItem("playerKey");
+  _playerKey = (k) ? k : null;
+  return _playerKey;
 }
 
 function sendKey(key) {
