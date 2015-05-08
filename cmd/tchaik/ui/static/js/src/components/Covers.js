@@ -46,8 +46,18 @@ var Covers = React.createClass({
 });
 
 var Cover = React.createClass({
+  componentDidMount: function() {
+    CollectionStore.addChangeListener(this._onChange);
+    CollectionActions.fetch(this.props.path);
+  },
+
+  componentWillUnmount: function() {
+    CollectionStore.removeChangeListener(this._onChange);
+  },
+
   getInitialState: function() {
     return {
+      item: this.props.item,
       expanded: false,
     };
   },
@@ -55,9 +65,18 @@ var Cover = React.createClass({
   render: function() {
     return (
       <div className="cover">
-        <ArtworkImage path={"/artwork/"+this.props.item.TrackID} />
+        <ArtworkImage path={"/artwork/"+this.state.item.TrackID} />
       </div>
     );
+  },
+
+  _onChange: function(keyPath) {
+    if (keyPath == CollectionStore.pathToKey(this.props.path)) {
+      var item = CollectionStore.getCollection(this.props.path);
+      this.setState({
+        item: item,
+      });
+    }
   },
 });
 
