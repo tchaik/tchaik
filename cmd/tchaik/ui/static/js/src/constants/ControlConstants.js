@@ -17,4 +17,5 @@ module.exports = keyMirror({
   TOGGLE_MUTE: null,
 
   SET_KEY: null,
+  SET_PUSH_KEY: null,
 });

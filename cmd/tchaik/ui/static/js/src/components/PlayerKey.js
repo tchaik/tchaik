@@ -12,18 +12,8 @@ var PlayerKeyActions = require('../actions/PlayerKeyActions.js');
 
 function getStatus() {
   return {
-    set: (PlayerKeyStore.isKeySet()),
+    set: PlayerKeyStore.isKeySet(),
   };
-}
-
-function randomString(len)
-{
-  var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var res = "";
-  for (var i = 0; i < len; i++) {
-    res += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-  }
-  return res;
 }
 
 var PlayerKeyView = React.createClass({
@@ -49,23 +39,12 @@ var PlayerKeyView = React.createClass({
       'key': true,
       'set': this.state.set,
     };
-    var title = this.state.set ? "API: Enabled" : "API: Disabled";
+    var title = this.state.set ? "Player Key: Set" : "";
     return (
       <span className={classNames(classes)}>
-        <Icon icon="barcode" onClick={this._onClick} title={title} />
+        <Icon icon="transfer" title={title} />
       </span>
     );
-  },
-
-  _onClick: function() {
-    var key = PlayerKeyStore.getKey();
-    if (key === null || key === "") {
-      key = randomString(20);
-    }
-    key = prompt("Enter an API key", key);
-    if (key !== null) {
-      PlayerKeyActions.setKey(key);
-    }
   },
 
   _onChange: function() {

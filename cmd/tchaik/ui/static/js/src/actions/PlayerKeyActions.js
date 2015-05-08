@@ -13,6 +13,13 @@ var PlayerKeyActions = {
     });
   },
 
+  setPushKey: function(key) {
+    AppDispatcher.handleViewAction({
+      actionType: ControlConstants.SET_PUSH_KEY,
+      key: key,
+    });
+  },
+
 };
 
 module.exports = PlayerKeyActions;

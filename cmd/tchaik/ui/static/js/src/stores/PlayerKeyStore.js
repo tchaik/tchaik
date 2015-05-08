@@ -12,6 +12,7 @@ var ControlConstants = require('../constants/ControlConstants.js');
 var CHANGE_EVENT = 'change';
 
 var _playerKey = null;
+var _pushKey = null;
 
 function setKey(k) {
   _playerKey = k;
@@ -23,13 +24,28 @@ function key() {
     return _playerKey;
   }
   var k = localStorage.getItem("playerKey");
-  _playerKey = (k) ? k : null;
+  _playerKey = (k) ? k : "";
   return _playerKey;
 }
 
 function sendKey(key) {
   WebsocketAPI.send("KEY", {key: key});
 }
+
+function setPushKey(k) {
+  _pushKey = k;
+  localStorage.setItem("pushKey", k);
+}
+
+function pushKey() {
+  if (_pushKey !== null) {
+    return _pushKey;
+  }
+  var k = localStorage.getItem("pushKey");
+  _pushKey = (k) ? k : "";
+  return _pushKey;
+}
+
 
 var PlayerKeyStore = assign({}, EventEmitter.prototype, {
 
@@ -43,6 +59,18 @@ var PlayerKeyStore = assign({}, EventEmitter.prototype, {
 
   getKey: function() {
     return key();
+  },
+
+  isPushKeySet: function() {
+    var k = pushKey();
+    if (k === null || k === "") {
+      return false;
+    }
+    return true;
+  },
+
+  getPushKey: function() {
+    return pushKey();
   },
 
   emitChange: function() {
@@ -74,6 +102,11 @@ PlayerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
       case ControlConstants.SET_KEY:
         setKey(action.key);
         sendKey(action.key);
+        PlayerKeyStore.emitChange();
+        break;
+
+      case ControlConstants.SET_PUSH_KEY:
+        setPushKey(action.key);
         PlayerKeyStore.emitChange();
         break;
 

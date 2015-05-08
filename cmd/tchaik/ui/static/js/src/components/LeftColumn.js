@@ -14,6 +14,7 @@ var Search = require('./Search.js').Search;
 var Covers = require('./Covers.js');
 var Filter = require('./Filter.js');
 var Recent = require('./Recent.js');
+var Settings = require('./Settings.js');
 
 var LeftColumnStore = require('../stores/LeftColumnStore.js');
 var LeftColumnActions = require('../actions/LeftColumnActions.js');
@@ -101,6 +102,8 @@ var LeftColumn = React.createClass({
     case "Recent":
       container = <Recent />;
       break;
+    case "Settings":
+      container = <Settings />;
     }
 
     return (
@@ -111,6 +114,7 @@ var LeftColumn = React.createClass({
           <ToolbarItem mode="Artists" icon="list" title="Artists" />
           <ToolbarItem mode="Covers" icon="th-large" title="Covers" />
           <ToolbarItem mode="Recent" icon="time" title="Recently Added" />
+          <ToolbarItem mode="Settings" icon="cog" title="Settings" />
           <div className="bottom">
             <Volume height={100} markerHeight={2} />
             <StatusView />
