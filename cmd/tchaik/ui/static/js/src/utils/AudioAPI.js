@@ -139,9 +139,7 @@ function update() {
     if (orig !== source) {
       setSrc(source);
       load();
-      if (orig !== null) {
-        play();
-      }
+      play();
     }
   }
 
