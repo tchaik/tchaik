@@ -221,6 +221,40 @@ func (s *players) get(key string) Player {
 	return s.m[key]
 }
 
+func (s *players) list() []string {
+	s.RLock()
+	defer s.RUnlock()
+
+	keys := make([]string, 0, len(s.m))
+	for k := range s.m {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (s *players) MarshalJSON() ([]byte, error) {
+	keys := s.list()
+	return json.Marshal(struct {
+		Keys []string `json:"keys"`
+	}{
+		Keys: keys,
+	})
+}
+
+func playersGet(l LibraryAPI, w http.ResponseWriter, r *http.Request) {
+	b, err := json.Marshal(l.players)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error encoding JSON: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Add("Content-Type", "application/json")
+	_, err = w.Write(b)
+	if err != nil {
+		log.Printf("error writing response: %v", err)
+	}
+}
+
 func createPlayer(l LibraryAPI, w http.ResponseWriter, r *http.Request) {
 	dec := json.NewDecoder(r.Body)
 	defer r.Body.Close()
@@ -340,13 +374,17 @@ func playerView(p Player, w http.ResponseWriter, t *http.Request) {
 
 func playersHandler(l LibraryAPI) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "" && r.Method == "POST" {
-			createPlayer(l, w, r)
+		if r.URL.Path == "" {
+			switch r.Method {
+			case "GET":
+				playersGet(l, w, r)
+			case "POST":
+				createPlayer(l, w, r)
+			}
 			return
 		}
 
 		paths := strings.Split(r.URL.Path, "/")
-
 		if len(paths) != 1 {
 			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 			return

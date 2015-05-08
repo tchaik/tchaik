@@ -16,6 +16,8 @@ module.exports = keyMirror({
   TOGGLE_PLAY_PAUSE: null,
   TOGGLE_MUTE: null,
 
+  LIST: null,
+
   SET_KEY: null,
   SET_PUSH_KEY: null,
 });

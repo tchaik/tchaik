@@ -123,7 +123,7 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 			case KeyAction:
 				key, err = handleKey(l, c, ws, key)
 			case PlayerAction:
-				err = handlePlayer(l, c)
+				resp, err = handlePlayer(l, c)
 			case FetchRecentAction:
 				resp = handleFetchRecent(l, c)
 			default:
@@ -153,20 +153,30 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 	})
 }
 
-func handlePlayer(l LibraryAPI, c Command) error {
+func handlePlayer(l LibraryAPI, c Command) (interface{}, error) {
+	action, err := c.getString("action")
+	if err != nil {
+		return nil, err
+	}
+
+	if action == "LIST" {
+		return struct {
+			Action string
+			Data   interface{}
+		}{
+			Action: c.Action,
+			Data:   l.players.list(),
+		}, nil
+	}
+
 	key, err := c.getString("key")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	p := l.players.get(key)
 	if p == nil {
-		return fmt.Errorf("invalid player key: %v", key)
-	}
-
-	action, err := c.getString("action")
-	if err != nil {
-		return err
+		return nil, fmt.Errorf("invalid player key: %v", key)
 	}
 
 	switch action {
@@ -210,7 +220,7 @@ func handlePlayer(l LibraryAPI, c Command) error {
 		}
 	}
 
-	return err
+	return nil, err
 }
 
 func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) (string, error) {
