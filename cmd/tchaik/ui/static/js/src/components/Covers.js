@@ -4,6 +4,7 @@
 var React = require('react/addons');
 
 var ArtworkImage = require('./ArtworkImage.js');
+var Icon = require('./Icon.js');
 
 var CollectionStore = require('../stores/CollectionStore.js');
 var CollectionActions = require('../actions/CollectionActions.js');
@@ -65,6 +66,10 @@ var Cover = React.createClass({
     return (
       <div className="cover">
         <ArtworkImage path={"/artwork/"+this.state.item.TrackID} />
+          <span className="controls">
+            <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
+            <Icon icon="list" title="Queue" onClick={this._onQueue} />
+          </span>
       </div>
     );
   },
@@ -76,6 +81,16 @@ var Cover = React.createClass({
         item: item,
       });
     }
+  },
+
+  _onPlayNow: function(e) {
+    e.stopPropagation();
+    CollectionActions.playNow(this.props.path);
+  },
+
+  _onQueue: function(e) {
+    e.stopPropagation();
+    CollectionActions.appendToPlaylist(this.props.path);
   },
 });
 
