@@ -30,19 +30,24 @@ import (
 	"github.com/dhowden/tchaik/index/itl"
 )
 
-func main() {
-	itlXML := flag.String("itlXML", "", "iTunes Music Library XML file")
-	path := flag.String("path", "", "directory path containing audio files")
-	out := flag.String("out", "data.tch", "output file (Tchaik library binary format)")
+var itlXML, path string
+var out string
 
+func init() {
+	flag.StringVar(&itlXML, "itlXML", "", "iTunes Music Library XML file")
+	flag.StringVar(&path, "path", "", "directory path containing audio files")
+	flag.StringVar(&out, "out", "data.tch", "output file (Tchaik library binary format)")
+}
+
+func main() {
 	flag.Parse()
 
-	if *itlXML != "" && *path != "" || *itlXML == "" && *path == "" {
+	if itlXML != "" && path != "" || itlXML == "" && path == "" {
 		fmt.Println("must specify either 'itlXML' or 'path'")
 		os.Exit(1)
 	}
 
-	if *out == "" {
+	if out == "" {
 		fmt.Println("must specify 'out'")
 		os.Exit(1)
 	}
@@ -50,10 +55,10 @@ func main() {
 	var l index.Library
 	var err error
 	switch {
-	case *itlXML != "":
-		l, err = importXML(*itlXML)
-	case *path != "":
-		l = importPath(*path)
+	case itlXML != "":
+		l, err = importXML(itlXML)
+	case path != "":
+		l = importPath(path)
 	}
 
 	if err != nil {
@@ -61,20 +66,20 @@ func main() {
 		os.Exit(1)
 	}
 
-	nl := index.Convert(l, "TrackID")
-
-	nf, err := os.Create(*out)
-	if err != nil {
-		log.Println(err)
-		os.Exit(1)
-	}
-	defer nf.Close()
-
-	err = index.WriteTo(nl, nf)
+	err = writeLibrary(index.Convert(l, "TrackID"))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+}
+
+func writeLibrary(l index.Library) error {
+	f, err := os.Create(out)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	return index.WriteTo(l, f)
 }
 
 func importXML(itlXML string) (index.Library, error) {
