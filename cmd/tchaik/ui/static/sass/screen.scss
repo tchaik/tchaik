@@ -219,7 +219,7 @@ div#right-column {
 
           &:hover {
             color: lighten($light-blue, 10);
-            border: 2px solid lighten($light-blue, 30);
+            border-color: lighten($light-blue, 30);
           };
         }
       }
@@ -254,9 +254,7 @@ div#right-column {
       }
 
       div.attributes {
-        display: block;
         font-size: 12px;
-        font-weight: normal;
         color: #999;
         line-height: 16px;
         padding: 2px 4px;
@@ -265,8 +263,7 @@ div#right-column {
           font-weight: 200;
 
           &.bull {
-            margin-left: 2px;
-            margin-right: 2px;
+            margin: 0 4px;
             color: #666;
           }
         }
@@ -956,8 +953,7 @@ div#container {
             font-weight: 200;
 
             &.bull {
-              margin-left: 4px;
-              margin-right: 4px;
+              margin: 0 4px;
               color: #666;
             }
           }
