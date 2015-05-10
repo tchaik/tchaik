@@ -181,10 +181,10 @@ var Volume = React.createClass({
     var h = this.props.height - parseInt(volume * this.props.height);
     return (
       <div className="volume" onWheel={this._onWheel} >
-        <span className="bar" onMouseOver={this._onMouseOver} onMouseDown={this._onMouseDown} style={{height: this.props.height}}>
-          <span className="current" style={{height: h}} />
-          <span className="marker" style={{height: this.props.markerHeight}} />
-        </span>
+        <div className="bar" onMouseOver={this._onMouseOver} onMouseDown={this._onMouseDown} style={{height: this.props.height}}>
+          <div className="current" style={{height: h}} />
+          <div className="marker" style={{height: this.props.markerHeight}} />
+        </div>
         <Icon icon={'volume-' + classSuffix} onMouseDown={this._toggleMute} />
       </div>
     );

@@ -65,14 +65,14 @@ var NowPlaying = React.createClass({
     return (
       <div className={className}>
         <ArtworkImage path={"/artwork/" + track.TrackID} />
-        <span className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></span>
+        <div className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
         {attributes}
 
         <PlayProgress markerWidth={2} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
-        <span className="times">
+        <div className="times">
           <TimeFormatter className="currentTime" time={this.state.currentTime} />
           <TimeFormatter className="remaining" time={remainingTime} />
-        </span>
+        </div>
         <div style={{"clear": "both"}} />
       </div>
     );
@@ -108,13 +108,13 @@ var PlayProgress = React.createClass({
     var b = "calc("+Math.min(bpc, 100.0)+"% - " + this.props.markerWidth + "px)";
 
     return (
-      <span className="playProgress" onMouseDown={this._onMouseDown} onWheel={this._onWheel}>
-        <span className="bar">
-          <span className="current" style={{width: w}} />
-          <span className="marker" style={{width: this.props.markerWidth}} />
-          <span className="buffered" style={{width: b}} />
-        </span>
-      </span>
+      <div className="playProgress" onMouseDown={this._onMouseDown} onWheel={this._onWheel}>
+        <div className="bar">
+          <div className="current" style={{width: w}} />
+          <div className="marker" style={{width: this.props.markerWidth}} />
+          <div className="buffered" style={{width: b}} />
+        </div>
+      </div>
     );
   },
 

@@ -140,7 +140,6 @@ div#header {
   div.volume {
     margin: 0;
     padding-bottom: 10px;
-    display: block;
 
     span.glyphicon {
       color: #bbb;
@@ -153,23 +152,19 @@ div#header {
       }
     }
 
-    & > span.bar {
+    & > div.bar {
       background-color: $light-blue;
-
       width: 4px;
       margin-left: 19px;
-      display: block;
 
-      & > span.current {
+      & > div.current {
         width: 4px;
-        display: block;
         background-color: #444;
       }
 
-      & > span.marker {
+      & > div.marker {
         width: 12px;
         margin-left: -4px;
-        display: block;
         background-color: #ddd;
       }
     }
@@ -243,8 +238,7 @@ div#right-column {
         }
       }
 
-      span.title {
-        display: block;
+      div.title {
         font-size: 14px;
         font-weight: 400;
         padding: 0 4px;
@@ -278,8 +272,7 @@ div#right-column {
         }
       }
 
-      span.times {
-        display: block;
+      div.times {
         font-size: 11px;
         color: #666;
 
@@ -294,33 +287,28 @@ div#right-column {
         }
       }
 
-      span.playProgress {
+      div.playProgress {
         margin: 0 10px;
         padding: 10px 0;
-        display: block;
 
-        & > span.bar {
+        & > div.bar {
           background-color: #444;
           height: 5px;
-          display: block;
 
-          & > span.current {
+          & > div.current {
             height: 5px;
-            display: block;
             float: left;
             background-color: $light-blue;
           }
 
-          & > span.buffered {
+          & > div.buffered {
             height: 5px;
-            display: block;
             float: left;
             background-color: #555;
           }
 
-          & > span.marker {
+          & > div.marker {
             height: 10px;
-            display: block;
             float: left;
             background-color: white;
             margin-top: -5px;
@@ -329,7 +317,7 @@ div#right-column {
       }
 
       &.error {
-        span.title::before {
+        div.title::before {
           content: "Track Error";
           background-color: #f69;
           color: #333;
@@ -339,26 +327,23 @@ div#right-column {
           border-radius: 2px;
         }
 
-        span.times {
+        div.times {
           color: #936;
         }
 
-        span.playProgress {
-          & > span.bar {
+        div.playProgress {
+          & > div.bar {
             background-color: #936;
 
-            & > span.current {
-              height: 5px;
-              display: block;
-              float: left;
-              background-color: $light-blue;
-            }
-
-            & > span.buffered {
+            & > div.current {
               background-color: #936;
             }
 
-            & > span.marker {
+            & > div.buffered {
+              background-color: #936;
+            }
+
+            & > div.marker {
               background-color: #f69;
             }
           }
