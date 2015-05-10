@@ -26,9 +26,9 @@ import (
 	"path"
 
 	"github.com/dhowden/httpauth"
-	"github.com/dhowden/itl"
 
 	"github.com/dhowden/tchaik/index"
+	"github.com/dhowden/tchaik/index/itl"
 	"github.com/dhowden/tchaik/store"
 	"github.com/dhowden/tchaik/store/cmdflag"
 )
@@ -74,19 +74,16 @@ func readLibrary() (index.Library, error) {
 	if itlXML != "" {
 		f, err := os.Open(itlXML)
 		if err != nil {
-			return nil, fmt.Errorf("could not open iTunes library file: %v", err)
+			return nil, fmt.Errorf("could open iTunes library file: %v", err)
 		}
-
-		fmt.Printf("Parsing %v...", itlXML)
-		it, err := itl.ReadFromXML(f)
+		defer f.Close()
+		il, err := itl.ReadFrom(f)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing iTunes library file: %v", err)
 		}
-		f.Close()
-		fmt.Println("done.")
 
 		fmt.Printf("Building Tchaik Library...")
-		l = index.Convert(index.NewITunesLibrary(&it), "TrackID")
+		l = index.Convert(il, "TrackID")
 		fmt.Println("done.")
 		return l, nil
 	}
@@ -95,6 +92,7 @@ func readLibrary() (index.Library, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not open Tchaik library file: %v", err)
 	}
+	defer f.Close()
 
 	fmt.Printf("Parsing %v...", tchLib)
 	l, err = index.ReadFrom(f)

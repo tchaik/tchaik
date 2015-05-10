@@ -26,8 +26,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/dhowden/itl"
 	"github.com/dhowden/tchaik/index"
+	"github.com/dhowden/tchaik/index/itl"
 )
 
 func main() {
@@ -48,13 +48,19 @@ func main() {
 	}
 
 	var l index.Library
-
+	var err error
 	switch {
 	case *itlXML != "":
-		l = importXML(*itlXML)
+		l, err = importXML(*itlXML)
 	case *path != "":
 		l = importPath(*path)
 	}
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
 	nl := index.Convert(l, "TrackID")
 
 	nf, err := os.Create(*out)
@@ -71,21 +77,18 @@ func main() {
 	}
 }
 
-func importXML(itlXML string) index.Library {
+func importXML(itlXML string) (index.Library, error) {
 	f, err := os.Open(itlXML)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return nil, err
 	}
 	defer f.Close()
 
-	l, err := itl.ReadFromXML(f)
+	l, err := itl.ReadFrom(f)
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return nil, err
 	}
-
-	return index.NewITunesLibrary(&l)
+	return l, nil
 }
 
 func importPath(path string) index.Library {

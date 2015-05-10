@@ -2,33 +2,39 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package index
+package itl
 
 import (
 	"fmt"
 	"html"
+	"io"
 	"net/url"
 	"reflect"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/dhowden/itl"
+	rawitl "github.com/dhowden/itl"
+	"github.com/dhowden/tchaik/index"
 )
 
-// NewITunesLibrary wraps an itl.Library so that it implements the
-// Library interface.
-func NewITunesLibrary(l *itl.Library) Library {
-	return &itlLibrary{l}
+// ReadFrom creates a Tchaik Library implementation from an iTunes Music Library passed through
+// an io.Reader.
+func ReadFrom(r io.Reader) (index.Library, error) {
+	l, err := rawitl.ReadFromXML(r)
+	if err != nil {
+		return nil, err
+	}
+	return &itlLibrary{&l}, nil
 }
 
 type itlLibrary struct {
-	*itl.Library
+	*rawitl.Library
 }
 
 // Implements Library.
-func (l *itlLibrary) Tracks() []Track {
-	tracks := make([]Track, 0, len(l.Library.Tracks))
+func (l *itlLibrary) Tracks() []index.Track {
+	tracks := make([]index.Track, 0, len(l.Library.Tracks))
 	for _, t := range l.Library.Tracks {
 		if strings.HasSuffix(t.Kind, "audio file") {
 			x := t
@@ -39,7 +45,7 @@ func (l *itlLibrary) Tracks() []Track {
 }
 
 // Implements Library.
-func (l *itlLibrary) Track(id string) (Track, bool) {
+func (l *itlLibrary) Track(id string) (index.Track, bool) {
 	t, ok := l.Library.Tracks[id]
 	if ok {
 		return &itlTrack{&t}, true
@@ -47,9 +53,9 @@ func (l *itlLibrary) Track(id string) (Track, bool) {
 	return nil, false
 }
 
-// itlTrack is a wrapper type which implements Track for an itl.Track.
+// itlTrack is a wrapper type which implements Track for an rawitl.Track.
 type itlTrack struct {
-	*itl.Track
+	*rawitl.Track
 }
 
 func decodeLocation(l string) (string, error) {
