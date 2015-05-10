@@ -78,6 +78,7 @@ function init() {
 function onPlayerEvent(evt) {
   switch (evt.type) {
   case "error":
+    NowPlayingActions.setError(evt.srcElement.error);
     console.log("Error received from Audio component:");
     console.error(evt);
     break;
