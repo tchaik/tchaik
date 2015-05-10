@@ -11,4 +11,5 @@ module.exports = keyMirror({
   SET_CURRENT_TRACK: null,
   SET_PLAYING: null,
   ENDED: null,
+  SET_ERROR: null,
 });

@@ -12,6 +12,13 @@ var NowPlayingActions = {
     });
   },
 
+  setError: function(err) {
+    AppDispatcher.handleViewAction({
+      actionType:NowPlayingConstants.SET_ERROR,
+      error: err,
+    });
+  },
+
   setDuration: function(duration) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_DURATION,

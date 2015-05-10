@@ -327,6 +327,43 @@ div#right-column {
           }
         }
       }
+
+      &.error {
+        span.title::before {
+          content: "Track Error";
+          background-color: #f69;
+          color: #333;
+          padding: 1px 4px;
+          margin: 2px 5px;
+          font-size: 10pt;
+          border-radius: 2px;
+        }
+
+        span.times {
+          color: #936;
+        }
+
+        span.playProgress {
+          & > span.bar {
+            background-color: #936;
+
+            & > span.current {
+              height: 5px;
+              display: block;
+              float: left;
+              background-color: $light-blue;
+            }
+
+            & > span.buffered {
+              background-color: #936;
+            }
+
+            & > span.marker {
+              background-color: #f69;
+            }
+          }
+        }
+      }
     }
 
     div.playlist {

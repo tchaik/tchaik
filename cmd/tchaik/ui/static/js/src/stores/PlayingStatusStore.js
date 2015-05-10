@@ -14,6 +14,7 @@ var CHANGE_EVENT = 'change';
 var _defaultTrackState = {
   buffered: 0.0,
   duration: 0.0,
+  error: null,
 };
 var _trackState = _defaultTrackState;
 
@@ -50,6 +51,10 @@ var PlayingStatusStore = assign({}, EventEmitter.prototype, {
 
   getDuration: function() {
     return _trackState.duration;
+  },
+
+  getError: function() {
+    return _trackState.error;
   },
 
   emitChange: function(type) {
@@ -103,7 +108,13 @@ PlayingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
         _trackState = {
           buffered: 0,
           duration: 0,
+          error: null,
         };
+        PlayingStatusStore.emitChange();
+        break;
+
+      case NowPlayingConstants.SET_ERROR:
+        _trackState.error = action.error;
         PlayingStatusStore.emitChange();
         break;
 

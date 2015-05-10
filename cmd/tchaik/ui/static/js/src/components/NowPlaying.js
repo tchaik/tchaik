@@ -3,6 +3,8 @@
 
 var React = require('react/addons');
 
+var classNames = require('classnames');
+
 var Icon = require('./Icon.js');
 var TimeFormatter = require('./TimeFormatter.js');
 var GroupAttributes = require('./GroupAttributes.js');
@@ -19,6 +21,7 @@ function getNowPlayingState() {
     buffered: PlayingStatusStore.getBuffered(),
     duration: PlayingStatusStore.getDuration(),
     currentTime: PlayingStatusStore.getTime(),
+    error: PlayingStatusStore.getError(),
   };
 }
 
@@ -54,8 +57,13 @@ var NowPlaying = React.createClass({
     var attributes = <GroupAttributes list={attributeArr} />;
     var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
 
+    var className = classNames({
+      'now-playing-track': true,
+      'error': (this.state.error !== null),
+    });
+
     return (
-      <div className="now-playing-track">
+      <div className={className}>
         <ArtworkImage path={"/artwork/" + track.TrackID} />
         <span className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></span>
         {attributes}
