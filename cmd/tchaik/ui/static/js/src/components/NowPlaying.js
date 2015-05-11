@@ -119,9 +119,12 @@ var PlayProgress = React.createClass({
   },
 
   _onMouseDown: function(evt) {
-    var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
-    var width = evt.currentTarget.offsetWidth;
-    this.props.setCurrentTime((pos / width) * this.props.duration);
+    // Only proceed on left mouse button clicks.
+    if (evt.button === 0) {
+      var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
+      var width = evt.currentTarget.offsetWidth;
+      this.props.setCurrentTime((pos / width) * this.props.duration);
+    }
   },
 
   _onWheel: function(evt) {
