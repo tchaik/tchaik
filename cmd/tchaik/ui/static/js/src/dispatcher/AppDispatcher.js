@@ -1,29 +1,28 @@
 'use strict';
 
-var Dispatcher = require('flux').Dispatcher;
-var assign = require('object-assign');
+import {Dispatcher as Dispatcher} from 'flux';
 
-var AppDispatcher = assign(new Dispatcher(), {
+class AppDispatcher extends Dispatcher {
 
   /**
    * A bridge function between the views and the dispatcher, marking the action
    * as a view action.  Another variant here could be handleServerAction.
    * @param  {object} action The data coming from the view.
    */
-  handleViewAction: function(action) {
+  handleViewAction(action) {
     this.dispatch({
       source: 'VIEW_ACTION',
       action: action
     });
-  },
+  }
 
-  handleServerAction: function(action) {
+  handleServerAction(action) {
     this.dispatch({
       source: 'SERVER_ACTION',
       action: action
     });
   }
 
-});
+}
 
-module.exports = AppDispatcher;
+export default new AppDispatcher();
