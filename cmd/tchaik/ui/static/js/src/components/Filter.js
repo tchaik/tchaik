@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 var React = require('react/addons');
@@ -24,7 +23,7 @@ var Filter = React.createClass({
     FilterStore.addChangeListener(this._onChange);
     FilterActions.fetchList(this.props.name);
   },
-  
+
   componentWillUnmount: function() {
     FilterStore.removeChangeListener(this._onChange);
   },
@@ -101,7 +100,7 @@ var Results = React.createClass({
       </div>
     );
   },
-  
+
   _onChange: function() {
     this.setState({
       items: FilterStore.getPaths(this.props.filterName, FilterStore.getCurrentItem(this.props.filterName)),
