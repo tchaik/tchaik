@@ -7,7 +7,7 @@ div#right-column {
   position: fixed;
   right: 0;
   top:0;
-  bottom: 0;
+  bottom: $bottom-row-height;
   width: $right-column-width;
   text-align: center;
 

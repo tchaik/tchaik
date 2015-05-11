@@ -4,7 +4,7 @@ div#container {
   overflow: auto;
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom: $bottom-row-height;
   left: $left-column-width;
   right: $right-column-width;
   background-color: #111;

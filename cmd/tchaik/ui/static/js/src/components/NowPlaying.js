@@ -64,15 +64,16 @@ var NowPlaying = React.createClass({
     return (
       <div className={className}>
         <ArtworkImage path={"/artwork/" + track.TrackID} />
-        <div className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
-        {attributes}
+        <div className="track-info">
+          <div className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
+          {attributes}
 
-        <PlayProgress markerWidth={2} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
-        <div className="times">
-          <TimeFormatter className="currentTime" time={this.state.currentTime} />
-          <TimeFormatter className="remaining" time={remainingTime} />
+          <PlayProgress markerWidth={2} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
+          <div className="times">
+            <TimeFormatter className="currentTime" time={this.state.currentTime} />
+            <TimeFormatter className="remaining" time={remainingTime} />
+          </div>
         </div>
-        <div style={{"clear": "both"}} />
       </div>
     );
   },
