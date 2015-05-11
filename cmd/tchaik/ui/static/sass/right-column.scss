@@ -1,0 +1,367 @@
+@import './variables.scss';
+@import './mixins.scss';
+
+div#right-column {
+  background-color: $light-background;
+  color: white;
+  position: fixed;
+  right: 0;
+  top:0;
+  bottom: 0;
+  width: $right-column-width;
+  text-align: center;
+
+  div.now-playing {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-flow: column;
+    flex-flow: column;
+    position: relative;
+    height: 100%;
+
+    div.controls {
+      span.glyphicon {
+        margin: 8px;
+        @include user-select(none);
+
+        &.glyphicon-step-forward, &.glyphicon-step-backward {
+          font-size: 20px;
+          line-height: 36px;
+          color: #666;
+          top: -5px;
+
+          &.enabled {
+            color: white;
+
+            &:hover {
+              color: lighten($light-blue, 10);
+            }
+          }
+        }
+
+        &.glyphicon-play, &.glyphicon-pause {
+          font-size: 34px;
+          margin-right: 4px;
+          margin-top: 0px;
+          padding: 7px 6px 9px 10px;
+          border: 2px solid #666;
+          border-radius: 50%;
+
+          &:hover {
+            color: lighten($light-blue, 10);
+            border-color: lighten($light-blue, 30);
+          };
+        }
+      }
+    }
+
+    div.now-playing-track {
+      padding-top: 10px;
+
+      img.artwork {
+        display: none;
+        margin-bottom: 5px;
+
+        &.visible {
+          display: inline;
+          max-width: $right-column-width - 20px;
+        }
+      }
+
+      div.title {
+        font-size: 14px;
+        font-weight: 400;
+        padding: 0 4px;
+
+        a.goto {
+          margin-left: 10px;
+          color: #999;
+
+          &:hover {
+            color: #eee;
+          }
+        }
+      }
+
+      div.attributes {
+        font-size: 12px;
+        color: #999;
+        line-height: 16px;
+        padding: 2px 4px;
+
+        span {
+          font-weight: 200;
+
+          &.bull {
+            margin: 0 4px;
+            color: #666;
+          }
+        }
+      }
+
+      div.times {
+        font-size: 11px;
+        color: #666;
+
+        span.currentTime {
+          margin-left: 10px;
+          float: left;
+        }
+
+        span.remaining {
+          float: right;
+          margin-right: 10px;
+        }
+      }
+
+      div.playProgress {
+        margin: 0 10px;
+        padding: 10px 0;
+
+        & > div.bar {
+          background-color: #444;
+          height: 5px;
+
+          & > div.current {
+            height: 5px;
+            float: left;
+            background-color: $light-blue;
+          }
+
+          & > div.buffered {
+            height: 5px;
+            float: left;
+            background-color: #555;
+          }
+
+          & > div.marker {
+            height: 10px;
+            float: left;
+            background-color: white;
+            margin-top: -5px;
+          }
+        }
+      }
+
+      &.error {
+        div.title::before {
+          content: "Track Error";
+          background-color: #f69;
+          color: #333;
+          padding: 1px 4px;
+          margin: 2px 5px;
+          font-size: 10pt;
+          border-radius: 2px;
+        }
+
+        div.times {
+          color: #936;
+        }
+
+        div.playProgress {
+          & > div.bar {
+            background-color: #936;
+
+            & > div.current {
+              background-color: #936;
+            }
+
+            & > div.buffered {
+              background-color: #936;
+            }
+
+            & > div.marker {
+              background-color: #f69;
+            }
+          }
+        }
+      }
+    }
+
+    div.playlist {
+      overflow: auto;
+      text-align: left;
+      -webkit-flex: 1;
+      flex: 1;
+      background-color: #1C1C1C;
+
+      div.group {
+        font-size: 12px;
+
+        div.group {
+          padding-left: 10px;
+        }
+
+        div.name {
+          span.name {
+            font-weight: 600;
+          }
+          border: 1px solid #333;
+          padding: 5px;
+
+          img {
+            display: none;
+
+            &.visible {
+              max-height: 50px;
+              float: left;
+              margin-right: 6px;
+              display: block;
+            }
+          }
+        }
+
+        div.attributes {
+          color: #888;
+
+          span {
+            font-weight: 200;
+
+            &.bull {
+              margin-left: 2px;
+              margin-right: 2px;
+              color: #666;
+            }
+          }
+        }
+
+        span.info {
+          float: right;
+        }
+
+        span.glyphicon-remove {
+          color: #666;
+          &:hover {
+            color: #ddd;
+          }
+        }
+      }
+
+      span.glyphicon-remove {
+        float: right;
+        margin-left: 5px;
+        color: #333;
+
+        &:hover {
+          color: #ccc;
+        }
+      }
+
+      div.tracks {
+        text-align: left;
+        width: 100%;
+
+        ol {
+          margin: 0;
+          padding-left: 0px;
+          list-style: none;
+          counter-reset: li;
+
+          &.upper-roman li::before {
+            content: counter(li, upper-roman) ".";
+          }
+
+          li {
+            font-size: 11px;
+            line-height: 15px;
+            padding: 5px 10px 5px 5px;
+            border-bottom: 1px solid #333;
+            color: #bbb;
+
+            &::before {
+              content: counter(li) ".";
+              font-size: 11px;
+              padding: 0 10px 0 0;
+              text-align: right;
+              width: 25px;
+              display: inline-block;
+              color: #888;
+            }
+
+            &.current {
+               background-color: $light-blue;
+               color: #333;
+
+               span.duration {
+                 color: #444;
+               }
+
+               &:hover {
+                 background-color: $light-blue;
+                 color: #333;
+
+                 &::before {
+                   background-color: $light-blue;
+                   color: #333;
+                 }
+
+                 span.glyphicon-remove, span.duration {
+                   color: #333;
+                 }
+               }
+
+              &::before {
+                color: #333;
+              }
+            }
+
+            &.is-playing {
+              &::before {
+                font-family: 'Glyphicons Halflings';
+                content: '\e038';
+                font-size: 14px;
+                line-height: 10px;
+                vertical-align: -30%;
+              }
+
+              &:hover {
+                &::before {
+                  font-family: 'Glyphicons Halflings';
+                  content: '\e038';
+                  font-size: 14px;
+                  line-height: 10px;
+                  vertical-align: -30%;
+                }
+              }
+            }
+
+            span.duration {
+              margin-left: 2px;
+              color: #666;
+            }
+
+            &:hover {
+              background-color: #333;
+              color: #eee;
+
+              &::before {
+                color: #ddd;
+                font-family: 'Glyphicons Halflings';
+                content: '\e072';
+                font-size: 12px;
+                line-height: 10px;
+                vertical-align: -20%;
+              }
+
+              span.glyphicon-remove {
+                color: #999;
+              }
+
+              span.duration {
+                color: #999;
+              }
+
+              &::before {
+                background-color: #333;
+              }
+            }
+
+            span.glyphicon-remove:hover {
+              color: #eee;
+            }
+          }
+        }
+      }
+    }
+  }
+}

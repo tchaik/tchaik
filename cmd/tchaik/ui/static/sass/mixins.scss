@@ -1,0 +1,60 @@
+@mixin webkit-scrollbar($container, $base-color) {
+  #{container} ::-webkit-scrollbar {
+    width: 10px;
+  }
+  #{container} ::-webkit-scrollbar-track {
+    background: lighten($base-color, 55); /*#FFF*/
+    -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.1);
+  }
+  #{container} ::-webkit-scrollbar-thumb {
+    background: lighten($base-color, 30); /*#CCC*/
+    -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.2);
+  }
+  #{container} ::-webkit-scrollbar-thumb:hover {
+    background: lighten($base-color, 40); /*#AAA;*/
+  }
+  #{container} ::-webkit-scrollbar-thumb:active {
+    background: lighten($base-color, 20); /*#888;*/
+    -webkit-box-shadow: inset 1px 1px 2px rgba(255,255,255,0.3);
+  }
+}
+
+@mixin transition-property($property) {
+  -moz-transition-property: $property;
+  -o-transition-property: $property;
+  -webkit-transition-property: $property;
+  transition-property: $property;
+}
+
+@mixin transition-duration($duration) {
+  -moz-transition-duration: $duration;
+  -o-transition-duration: $duration;
+  -webkit-transition-duration: $duration;
+  transition-duration: $duration;
+}
+
+@mixin transition-timing-function($fn) {
+  -moz-transition-timing-function: $fn;
+  -o-transition-timing-function: $fn;
+  -webkit-transition-timing-function: $fn;
+  transition-timing-function: $fn;
+}
+
+@mixin fade-in($property, $duration:150ms) {
+  @include transition-property($property);
+  @include transition-duration($duration);
+  @include transition-timing-function(ease-in);
+}
+
+@mixin disable-transitions {
+  @include transition-property(none);
+  @include transition-duration(0);
+  @include transition-timing-function(ease);
+}
+
+@mixin user-select($select) {
+  -webkit-user-select: $select;
+     -moz-user-select: $select;
+      -ms-user-select: $select; // IE10+
+          user-select: $select;
+}

@@ -1,0 +1,97 @@
+@import './variables.scss';
+@import './mixins.scss';
+
+div#header {
+  background-color: $light-background;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding-top: 5px;
+
+  bottom: 0;
+  width: $left-column-width;
+
+  span.item {
+    color: #999;
+    padding: 10px 10px 10px 11px;
+    float: left;
+
+    span.glyphicon {
+      font-size: 20px;
+      display: block;
+    }
+
+    &.toolbar {
+      &.selected {
+        color: lighten($light-blue, 15);
+
+        &:hover {
+          color: lighten($light-blue, 25);
+        };
+      }
+
+      &:hover {
+        color: white;
+      };
+    }
+
+    &.status {
+      &.closed {
+        background-color: lighten(#FF00BF, 10);
+        color: white;
+
+        &:hover {
+          background-color: white;
+          color: lighten(#FF00BF, 10);
+        };
+      }
+      color: lighten(#00FFBF, 10);
+    }
+
+    &.key {
+      &.set {
+        color: white;
+      }
+    }
+  }
+
+  .bottom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 5px;
+  }
+
+  div.volume {
+    margin: 0;
+    padding-bottom: 10px;
+
+    span.glyphicon {
+      color: #bbb;
+      padding: 10px 0;
+      margin-left: 12px;
+      font-size: 20px;
+
+      &:hover {
+        color: white;
+      }
+    }
+
+    & > div.bar {
+      background-color: $light-blue;
+      width: 4px;
+      margin-left: 19px;
+
+      & > div.current {
+        width: 4px;
+        background-color: #444;
+      }
+
+      & > div.marker {
+        width: 12px;
+        margin-left: -4px;
+        background-color: #ddd;
+      }
+    }
+  }
+}

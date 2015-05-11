@@ -1,0 +1,18 @@
+@import './variables.scss';
+
+div#container {
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: $left-column-width;
+  right: $right-column-width;
+  background-color: #111;
+  border-right: 1px solid #333;
+
+  @import './components/collection.scss';
+  @import './components/covers.scss';
+  @import './components/filter.scss';
+  @import './components/search.scss';
+  @import './components/settings.scss';
+}
