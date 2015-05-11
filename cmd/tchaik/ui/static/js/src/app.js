@@ -1,5 +1,8 @@
 'use strict';
 
+require('../../sass/screen.scss');
+require('../../sass/glyphicons.scss');
+
 var React = require('react/addons');
 
 var WebsocketAPI = require('./utils/WebsocketAPI.js');
