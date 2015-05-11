@@ -7,9 +7,9 @@ module.exports = {
   },
 
   output: {
-    path: 'static/js/build',
+    path: 'static/js/build/',
     pathInfo: true,
-    publicPath: '/static/js/build',
+    publicPath: '/static/js/build/',
     filename: 'tchaik.js'
   },
 
