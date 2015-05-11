@@ -23,12 +23,6 @@ function init(host) {
     _host = host;
   }
 
-  // Set the WS_URL environment variable while using 'gulp serve' to have the
-  // websocket requests point to the right port.
-  if (process.env.WS_URL) {
-    host = process.env.WS_URL;
-  }
-
   try {
     _websocket.sock = new WebSocket(host);
   } catch (exception) {

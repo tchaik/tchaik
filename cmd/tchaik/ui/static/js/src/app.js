@@ -1,5 +1,8 @@
 'use strict';
 
+require('../../sass/screen.scss');
+require('../../sass/glyphicons.scss');
+
 var React = require('react/addons');
 
 var WebsocketAPI = require('./utils/WebsocketAPI.js');
@@ -9,11 +12,17 @@ var LeftColumn = require('./components/LeftColumn.js');
 var RightColumn = require('./components/RightColumn.js');
 
 var socketAddr = document.location.host;
+
 var protocol = "ws://";
 if (window.location.protocol === "https:") {
   protocol = "wss://";
 }
-WebsocketAPI.init(protocol + socketAddr + "/socket");
+
+var websocketUrl = `${protocol}${socketAddr}/socket`;
+if (process.env.WS_URL) {
+  websocketUrl = process.env.WS_URL;
+}
+WebsocketAPI.init(websocketUrl);
 
 AudioAPI.init();
 

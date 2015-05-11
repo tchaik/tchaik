@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 'use strict';
 
 var React = require('react/addons');
@@ -25,7 +24,7 @@ var Recent = React.createClass({
     RecentStore.addChangeListener(this._onChange);
     RecentActions.fetch();
   },
-  
+
   componentWillUnmount: function() {
     RecentStore.removeChangeListener(this._onChange);
   },

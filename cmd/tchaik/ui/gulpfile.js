@@ -1,19 +1,10 @@
 var gulp = require('gulp');
 
-var browserify = require('browserify');
-var browserSync = require('browser-sync').create();
-var buffer = require('vinyl-buffer');
-var envify = require('envify');
+var _ = require('lodash');
 var gutil = require('gulp-util');
-var merge = require('merge-stream');
-var notify = require('gulp-notify');
 var jshint = require('gulp-jshint');
-var reactify = require('reactify');
-var react = require('gulp-react');
-var sass = require('gulp-sass');
-var source = require('vinyl-source-stream');
-var sourcemaps = require('gulp-sourcemaps');
-var watchify = require('watchify');
+var webpack = require('webpack');
+var webpackDevServer = require('webpack-dev-server');
 
 var paths = {
   sass: {
@@ -38,65 +29,17 @@ var paths = {
   }
 };
 
-gulp.task('sass', function() {
-  return gulp.src(paths.sass.src)
-    .pipe(sourcemaps.init())
-    .pipe(sass())
-    .pipe(sourcemaps.write(
-      paths.sass.dest,
-      {sourceRoot: '/static/sass'}
-    ))
-    .pipe(gulp.dest(paths.sass.dest))
-    .pipe(browserSync.reload({stream: true}));
-});
-
-function bundle(watch) {
-  var bundler, rebundle;
-
-  bundler = browserify(paths.js.entry, {
-    debug: true,
-    cache: {},
-    packageCache: {},
-    fullPaths: !watch
-  });
-
-  if (watch) {
-    bundler = watchify(bundler);
-  }
-
-  bundler.transform(reactify);
-  bundler.transform(envify);
-
-  rebundle = function(changedFiles) {
-    var compileStream = bundler.bundle()
-      .on('error', gutil.log.bind(gutil, 'Browserify Error'))
-      .pipe(source(paths.js.bundleName))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({loadMaps: true}))
-      .pipe(sourcemaps.write(
-        './',
-        {sourceRoot: '/'}
-      ))
-      .pipe(gulp.dest(paths.js.dest))
-      .pipe(browserSync.reload({stream: true}))
-      .pipe(notify({message: function() { gutil.log("Built JS"); }, onLast: true}));
-
-    if (changedFiles) {
-      var lintStream = gulp.src(changedFiles)
-        .pipe(react())
-        .pipe(jshint(jshintConfig))
-        .pipe(jshint.reporter('jshint-stylish'));
-      return merge(lintStream, compileStream);
+gulp.task('webpack', function(done) {
+  webpack(
+    require('./webpack.config.js'),
+    function(err, stats) {
+      if(err) throw new gutil.PluginError("webpack", err);
+      gutil.log("[webpack]", stats.toString({
+        // output options
+      }));
+      done();
     }
-    return compileStream;
-  };
-
-  bundler.on('update', rebundle);
-  return rebundle();
-}
-
-gulp.task('js', function() {
-  return bundle(false);
+  );
 });
 
 var jshintConfig = {
@@ -135,17 +78,31 @@ gulp.task('jshint:jsx', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('watch', ['jshint'], function() {
-  gulp.watch(paths.sass.src, ['sass']);
-  bundle(true);
-});
+gulp.task('serve', function() {
+  var webpackConfig = require('./webpack.config.js');
+  // Webpack requires an absolute path for the dev server
+  webpackConfig.output.path = '/';
 
-gulp.task('serve', ['watch'], function() {
-  browserSync.init({
-    proxy: 'http://localhost:8080',
-    open: false // Don't automatically open the browser
+  // Load the hot module replacement library
+  webpackConfig.entry.app.unshift('webpack/hot/dev-server');
+  // Load and configure the dev-server client.
+  webpackConfig.entry.app.unshift('webpack-dev-server/client?http://localhost:3000');
+
+  // Load the hot module replacement server plugin
+  webpackConfig.plugins.push(new webpack.HotModuleReplacementPlugin());
+
+  var compiler = webpack(webpackConfig);
+  var server = new webpackDevServer(compiler, {
+    publicPath: '/static/js/build/',
+    hot: true,
+    stats: { colors: true },
+    proxy: {
+      '*': 'http://localhost:8080'
+    }
   });
+
+  server.listen(3000);
 });
 
-gulp.task('default', ['sass', 'js', 'jshint:jsx']);
+gulp.task('default', ['webpack', 'jshint:jsx']);
 gulp.task('lint', ['jshint', 'jshint:jsx']);
