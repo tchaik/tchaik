@@ -104,5 +104,5 @@ gulp.task('serve', function() {
   server.listen(3000);
 });
 
-gulp.task('default', ['js', 'jshint:jsx']);
+gulp.task('default', ['webpack', 'jshint:jsx']);
 gulp.task('lint', ['jshint', 'jshint:jsx']);
