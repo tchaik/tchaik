@@ -1,13 +1,14 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var Icon = require('./Icon.js');
+import Icon from './Icon.js';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var PlayerKeyStore = require('../stores/PlayerKeyStore.js');
-var PlayerKeyActions = require('../actions/PlayerKeyActions.js');
+import PlayerKeyStore from '../stores/PlayerKeyStore.js';
+import PlayerKeyActions from '../actions/PlayerKeyActions.js';
+
 
 function getStatus() {
   return {
@@ -15,24 +16,27 @@ function getStatus() {
   };
 }
 
-var PlayerKeyView = React.createClass({
-  getInitialState: function() {
-    return getStatus();
-  },
+export default class PlayerKeyView extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getStatus();
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     var k = PlayerKeyStore.getKey();
     if (k !== null) {
       PlayerKeyActions.setKey(k);
     }
     PlayerKeyStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     PlayerKeyStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var classes = {
       'item': true,
       'key': true,
@@ -44,11 +48,9 @@ var PlayerKeyView = React.createClass({
         <Icon icon="transfer" title={title} />
       </span>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getStatus());
   }
-});
-
-module.exports = PlayerKeyView;
+}
