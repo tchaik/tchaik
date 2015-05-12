@@ -18,17 +18,15 @@ function _getOffsetTop(elem) {
   return offsetTop;
 }
 
-function getVolumeStatus() {
-  return {
-    volume: VolumeStore.getVolume(),
-  };
+function getVolumeState() {
+  return {volume: VolumeStore.getVolume()};
 }
 
 export default class Volume extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getVolumeStatus();
+    this.state = getVolumeState();
     this._onChange = this._onChange.bind(this);
     this._onWheel = this._onWheel.bind(this);
   }
@@ -87,7 +85,7 @@ export default class Volume extends React.Component {
   }
 
   _onChange() {
-    this.setState(getVolumeStatus());
+    this.setState(getVolumeState());
   }
 }
 
