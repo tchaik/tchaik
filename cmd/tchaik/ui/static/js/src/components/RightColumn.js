@@ -1,19 +1,15 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var Playlist = require('./Playlist.js');
+import Playlist from './Playlist.js';
 
-var RightColumn = React.createClass({
-
-  render: function() {
+export default class RightColumn extends React.Component {
+  render() {
     return (
       <div className="now-playing">
         <Playlist />
       </div>
     );
-  },
-
-});
-
-module.exports = RightColumn;
+  }
+}
