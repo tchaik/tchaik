@@ -1,17 +1,20 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var ArtworkImage = React.createClass({
-  getInitialState: function() {
-    return {
-      visible: false,
-    };
-  },
 
-  render: function() {
+class ArtworkImage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {visible: false};
+
+    this._onLoad = this._onLoad.bind(this);
+    this._onError = this._onError.bind(this);
+  }
+
+  render() {
     var classes = {
       'visible': this.state.visible,
       'artwork': true,
@@ -19,15 +22,15 @@ var ArtworkImage = React.createClass({
     return (
       <img src={this.props.path} className={classNames(classes)} onLoad={this._onLoad} onError={this._onError} />
     );
-  },
+  }
 
-  _onLoad: function() {
+  _onLoad() {
     this.setState({visible: true});
-  },
+  }
 
-  _onError: function() {
+  _onError() {
     this.setState({visible: false});
-  },
-});
+  }
+}
 
-module.exports = ArtworkImage;
+export default ArtworkImage;
