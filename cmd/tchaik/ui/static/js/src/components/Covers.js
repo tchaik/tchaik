@@ -1,30 +1,32 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var ArtworkImage = require('./ArtworkImage.js');
-var Icon = require('./Icon.js');
+import ArtworkImage from './ArtworkImage.js';
+import Icon from './Icon.js';
 
-var CollectionStore = require('../stores/CollectionStore.js');
-var CollectionActions = require('../actions/CollectionActions.js');
+import CollectionStore from '../stores/CollectionStore.js';
+import CollectionActions from '../actions/CollectionActions.js';
 
-var Covers = React.createClass({
-  getInitialState: function() {
-    return {
-      list: [],
-    };
-  },
 
-  componentDidMount: function() {
+export default class Covers extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {list: []};
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     CollectionStore.addChangeListener(this._onChange);
     CollectionActions.fetch(["Root"]);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     CollectionStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var covers = this.state.list.map(function(item) {
       return <Cover path={["Root"].concat(item.Key)} key={item.Key} item={item} />;
     });
@@ -34,63 +36,62 @@ var Covers = React.createClass({
         {covers}
       </div>
     );
-  },
+  }
 
-  _onChange: function(path) {
+  _onChange(path) {
     if (path === CollectionStore.pathToKey(["Root"])) {
       this.setState({
         list: CollectionStore.getCollection(["Root"]).Groups.slice(0, 30),
       });
     }
-  },
-});
+  }
+}
 
-var Cover = React.createClass({
-  componentDidMount: function() {
+
+class Cover extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {item: this.props.item};
+    this._onChange = this._onChange.bind(this);
+    this._onPlayNow = this._onPlayNow.bind(this);
+    this._onQueue = this._onQueue.bind(this);
+  }
+
+  componentDidMount() {
     CollectionStore.addChangeListener(this._onChange);
     CollectionActions.fetch(this.props.path);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     CollectionStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  getInitialState: function() {
-    return {
-      item: this.props.item,
-    };
-  },
-
-  render: function() {
+  render() {
     return (
       <div className="cover">
         <ArtworkImage path={"/artwork/"+this.state.item.TrackID} />
-          <span className="controls">
-            <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
-            <Icon icon="list" title="Queue" onClick={this._onQueue} />
-          </span>
+        <span className="controls">
+          <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
+          <Icon icon="list" title="Queue" onClick={this._onQueue} />
+        </span>
       </div>
     );
-  },
+  }
 
-  _onChange: function(keyPath) {
+  _onChange(keyPath) {
     if (keyPath == CollectionStore.pathToKey(this.props.path)) {
-      var item = CollectionStore.getCollection(this.props.path);
-      this.setState({
-        item: item,
-      });
+      this.setState({item: CollectionStore.getCollection(this.props.path)});
     }
-  },
+  }
 
-  _onPlayNow: function(e) {
+  _onPlayNow(e) {
     e.stopPropagation();
     CollectionActions.playNow(this.props.path);
-  },
+  }
 
-  _onQueue: function(e) {
+  _onQueue(e) {
     e.stopPropagation();
     CollectionActions.appendToPlaylist(this.props.path);
-  },
-});
-
-module.exports = Covers;
+  }
+}
