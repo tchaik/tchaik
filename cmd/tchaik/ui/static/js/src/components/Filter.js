@@ -1,39 +1,41 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var FilterStore = require('../stores/FilterStore.js');
-var FilterActions = require('../actions/FilterActions.js');
+import FilterStore from '../stores/FilterStore.js';
+import FilterActions from '../actions/FilterActions.js';
 
-var CollectionStore = require('../stores/CollectionStore.js');
+import CollectionStore from '../stores/CollectionStore.js';
 
-var RootGroup = require('./Search.js').RootGroup;
+import {RootGroup as RootGroup} from './Search.js';
 
-var Filter = React.createClass({
-  getInitialState: function() {
-    return {
-      items: [],
-      current: null,
-    };
-  },
 
-  componentDidMount: function() {
+export default class Filter extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {items: [], current: null};
+    this.setCurrent = this.setCurrent.bind(this);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     FilterStore.addChangeListener(this._onChange);
     FilterActions.fetchList(this.props.name);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     FilterStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  setCurrent: function(itemName) {
+  setCurrent(itemName) {
     FilterActions.setItem(this.props.name, itemName);
     FilterActions.fetchPaths(this.props.name, itemName);
-  },
+  }
 
-  render: function() {
+  render() {
     var items = this.state.items.map(function(item) {
       return <Item item={item}
                    key={item}
@@ -56,41 +58,52 @@ var Filter = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState({
       items: FilterStore.getItems(this.props.name),
       current: FilterStore.getCurrentItem(this.props.name),
     });
   }
-});
+}
 
-var Item = React.createClass({
-  render: function() {
+
+class Item extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._onClick = this._onClick.bind(this);
+  }
+
+  render() {
     return <li onClick={this._onClick} className={classNames({'selected':this.props.current})}>{this.props.item}</li>;
-  },
+  }
 
-  _onClick: function() {
+  _onClick() {
     this.props.setCurrent(this.props.item);
   }
-});
+}
 
-var Results = React.createClass({
-  getInitialState: function() {
-    return {items:[]};
-  },
 
-  componentDidMount: function() {
+class Results extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {items:[]};
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     FilterStore.addChangeListener(this._onChange);
     FilterActions.fetchPaths(this.props.filterName, this.props.itemName);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     FilterStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var list = this.state.items.map(function(path) {
       return <RootGroup path={path} key={CollectionStore.pathToKey(path)} />;
     });
@@ -99,13 +112,11 @@ var Results = React.createClass({
         {list}
       </div>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState({
       items: FilterStore.getPaths(this.props.filterName, FilterStore.getCurrentItem(this.props.filterName)),
     });
   }
-});
-
-module.exports = Filter;
+}
