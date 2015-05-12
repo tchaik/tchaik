@@ -1,32 +1,37 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var Icon = require('./Icon.js');
+import Icon from './Icon.js';
 
-var WebsocketAPI = require('../utils/WebsocketAPI.js');
-var WebsocketActions = require('../actions/WebsocketActions.js');
+import WebsocketAPI from '../utils/WebsocketAPI.js';
+import WebsocketActions from '../actions/WebsocketActions.js';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
+
 
 function getStatus() {
   return WebsocketAPI.getStatus();
 }
 
-var StatusView = React.createClass({
-  getInitialState: function() {
-    return getStatus();
-  },
+class StatusView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = getStatus();
 
-  componentDidMount: function() {
+    this._onChange = this._onChange.bind(this);
+    this._onClick = this._onClick.bind(this);
+  }
+
+  componentDidMount() {
     WebsocketAPI.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     WebsocketAPI.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var classes = {
       'item': true,
       'status': true,
@@ -39,15 +44,15 @@ var StatusView = React.createClass({
         <Icon icon="flash" title={title} />
       </span>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getStatus());
-  },
+  }
 
-  _onClick: function() {
+  _onClick() {
     WebsocketActions.reconnect();
   }
-});
+}
 
-module.exports = StatusView;
+export default StatusView;
