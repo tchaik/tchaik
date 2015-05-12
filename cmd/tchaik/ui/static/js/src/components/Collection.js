@@ -28,7 +28,7 @@ export class RootCollection extends React.Component {
 
 export class Group extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       expanded: (this.props.depth !== 1) || CollectionStore.isExpanded(this.props.path),

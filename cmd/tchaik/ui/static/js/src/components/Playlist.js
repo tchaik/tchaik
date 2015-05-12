@@ -245,7 +245,7 @@ class GroupContent extends React.Component {
 GroupContent.propTypes = {
   path: React.PropTypes.array.isRequired,
   itemIndex: React.PropTypes.number.isRequired,
-}
+};
 
 
 class GroupList extends React.Component {
@@ -301,7 +301,7 @@ TrackList.propTypes = {
   list: React.PropTypes.array.isRequired,
   keys: React.PropTypes.array.isRequired,
   listStyle: React.PropTypes.string.isRequired,
-}
+};
 
 
 function pathsEqual(p1, p2) {
