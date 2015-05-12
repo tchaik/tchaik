@@ -5,6 +5,8 @@ require('../../sass/glyphicons.scss');
 
 var React = require('react/addons');
 
+require('babel-core/polyfill');
+
 var WebsocketAPI = require('./utils/WebsocketAPI.js');
 var AudioAPI = require('./utils/AudioAPI.js');
 
