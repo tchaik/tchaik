@@ -1,9 +1,9 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var GroupAttributes = React.createClass({
-  render: function() {
+class GroupAttributes extends React.Component {
+  render() {
     var list = this.props.list.map(function(attr) {
       return [
         <span>{attr}</span>,
@@ -18,6 +18,6 @@ var GroupAttributes = React.createClass({
       </div>
     );
   }
-});
+}
 
-module.exports = GroupAttributes;
+export default GroupAttributes;
