@@ -20,7 +20,6 @@ export default class StatusView extends React.Component {
     this.state = getStatus();
 
     this._onChange = this._onChange.bind(this);
-    this._onClick = this._onClick.bind(this);
   }
 
   componentDidMount() {
