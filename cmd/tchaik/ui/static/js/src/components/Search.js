@@ -1,24 +1,25 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var SearchStore = require('../stores/SearchStore.js');
-var SearchActions = require('../actions/SearchActions.js');
+import SearchStore from '../stores/SearchStore.js';
+import SearchActions from '../actions/SearchActions.js';
 
-var Group = require('./Collection.js').Group;
-var CollectionStore = require('../stores/CollectionStore.js');
-var CollectionActions = require('../actions/CollectionActions.js');
+import {Group as Group} from './Collection.js';
+import CollectionStore from '../stores/CollectionStore.js';
+import CollectionActions from '../actions/CollectionActions.js';
 
-var Search = React.createClass({
-  componentDidMount: function() {
+
+export class Search extends React.Component {
+  componentDidMount() {
     var input = SearchStore.getInput();
     if (input && input !== "") {
       SearchActions.search(input);
       React.findDOMNode(this.refs.input).value = input;
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div className="search-collection">
         <div id="search">
@@ -29,33 +30,35 @@ var Search = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  _onChange: function(e) {
+  _onChange(e) {
     SearchActions.search(e.currentTarget.value);
-  },
-});
-
-function getResultsState() {
-  return {
-    results: SearchStore.getResults(),
-  };
+  }
 }
 
-var Results = React.createClass({
-  getInitialState: function() {
-    return getResultsState();
-  },
 
-  componentDidMount: function() {
+function getResultsState() {
+  return {results: SearchStore.getResults()};
+}
+
+class Results extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = getResultsState();
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     SearchStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     SearchStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var list = this.state.results.map(function(path) {
       return <RootGroup path={path} key={CollectionStore.pathToKey(path)} />;
     });
@@ -64,12 +67,12 @@ var Results = React.createClass({
         {list}
       </div>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getResultsState());
   }
-});
+}
 
 
 function getItem(path) {
@@ -80,27 +83,28 @@ function getItem(path) {
   return c;
 }
 
-var RootGroup = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-  },
+function getRootGroupState(props) {
+  return {item: getItem(props.path)};
+}
 
-  getInitialState: function() {
-    return {
-      item: getItem(this.props.path),
-    };
-  },
+export class RootGroup extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getRootGroupState(this.props);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     CollectionStore.addChangeListener(this._onChange);
     CollectionActions.fetch(this.props.path);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     CollectionStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.item === null) {
       return null;
     }
@@ -108,16 +112,15 @@ var RootGroup = React.createClass({
     return (
       <Group item={this.state.item} path={this.props.path} depth={1} />
     );
-  },
+  }
 
-  _onChange: function(keyPath) {
+  _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
-       this.setState({
-         item: getItem(this.props.path)
-       });
+       this.setState(getRootGroupState(this.props));
     }
-  },
-});
+  }
+}
 
-module.exports.Search = Search;
-module.exports.RootGroup = RootGroup;
+RootGroup.propTypes = {
+  path: React.PropTypes.array.isRequired,
+};
