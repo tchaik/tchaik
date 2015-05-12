@@ -1,18 +1,19 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var Icon = require('./Icon.js');
-var TimeFormatter = require('./TimeFormatter.js');
-var GroupAttributes = require('./GroupAttributes.js');
-var ArtworkImage = require('./ArtworkImage.js');
+import Icon from './Icon.js';
+import TimeFormatter from './TimeFormatter.js';
+import GroupAttributes from './GroupAttributes.js';
+import ArtworkImage from './ArtworkImage.js';
 
-var NowPlayingStore = require('../stores/NowPlayingStore.js');
-var NowPlayingActions = require('../actions/NowPlayingActions.js');
+import NowPlayingStore from '../stores/NowPlayingStore.js';
+import NowPlayingActions from '../actions/NowPlayingActions.js';
 
-var PlayingStatusStore = require('../stores/PlayingStatusStore.js');
+import PlayingStatusStore from '../stores/PlayingStatusStore.js';
+
 
 function getNowPlayingState() {
   return {
@@ -24,22 +25,25 @@ function getNowPlayingState() {
   };
 }
 
-var NowPlaying = React.createClass({
-  getInitialState: function() {
-    return getNowPlayingState();
-  },
+export default class NowPlaying extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getNowPlayingState();
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     NowPlayingStore.addChangeListener(this._onChange);
     PlayingStatusStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     NowPlayingStore.removeChangeListener(this._onChange);
     PlayingStatusStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var track = this.state.track;
     if (track === null) {
       return null;
@@ -76,12 +80,13 @@ var NowPlaying = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getNowPlayingState());
   }
-});
+}
+
 
 function _getOffsetLeft(elem) {
     var offsetLeft = 0;
@@ -93,15 +98,15 @@ function _getOffsetLeft(elem) {
     return offsetLeft;
 }
 
-var PlayProgress = React.createClass({
-  propTypes: {
-    markerWidth: React.PropTypes.number.isRequired,
-    current: React.PropTypes.number.isRequired,
-    buffered: React.PropTypes.number.isRequired,
-    duration: React.PropTypes.number.isRequired,
-  },
+class PlayProgress extends React.Component {
+  constructor(props) {
+    super(props);
 
-  render: function() {
+    this._onClick = this._onClick.bind(this);
+    this._onWheel = this._onWheel.bind(this);
+  }
+
+  render() {
     var wpc = (this.props.current / this.props.duration) * 100;
     var w = "calc("+Math.min(wpc, 100.0)+"% - " + this.props.markerWidth + "px)";
     var bpc = (this.props.buffered / this.props.duration) * 100 - wpc;
@@ -116,15 +121,15 @@ var PlayProgress = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  _onClick: function(evt) {
+  _onClick(evt) {
     var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
     var width = evt.currentTarget.offsetWidth;
     this.props.setCurrentTime((pos / width) * this.props.duration);
-  },
+  }
 
-  _onWheel: function(evt) {
+  _onWheel(evt) {
     evt.stopPropagation();
     var t = this.props.current + (0.01 * this.props.duration * evt.deltaY);
     if (t > this.props.duration) {
@@ -133,7 +138,12 @@ var PlayProgress = React.createClass({
       t = 0.0;
     }
     this.props.setCurrentTime(t);
-  },
-});
+  }
+}
 
-module.exports = NowPlaying;
+PlayProgress.propTypes = {
+  markerWidth: React.PropTypes.number.isRequired,
+  current: React.PropTypes.number.isRequired,
+  buffered: React.PropTypes.number.isRequired,
+  duration: React.PropTypes.number.isRequired,
+};
