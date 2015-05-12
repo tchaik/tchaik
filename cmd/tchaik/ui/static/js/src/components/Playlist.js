@@ -1,40 +1,40 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var Icon = require('./Icon.js');
-var TimeFormatter = require('./TimeFormatter.js');
-var GroupAttributes = require('./GroupAttributes.js');
-var ArtworkImage = require('./ArtworkImage.js');
+import Icon from './Icon.js';
+import TimeFormatter from './TimeFormatter.js';
+import GroupAttributes from './GroupAttributes.js';
+import ArtworkImage from './ArtworkImage.js';
 
-var CollectionStore = require('../stores/CollectionStore.js');
-var CollectionActions = require('../actions/CollectionActions.js');
+import CollectionStore from '../stores/CollectionStore.js';
+import CollectionActions from '../actions/CollectionActions.js';
 
-var PlaylistStore = require('../stores/PlaylistStore.js');
-var PlaylistActions = require('../actions/PlaylistActions.js');
+import PlaylistStore from '../stores/PlaylistStore.js';
+import PlaylistActions from '../actions/PlaylistActions.js';
 
-var NowPlayingStore = require('../stores/NowPlayingStore.js');
+import NowPlayingStore from '../stores/NowPlayingStore.js';
 
 
-var Playlist = React.createClass({
+export default class Playlist extends React.Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState: function() {
-    return {
-      list: PlaylistStore.getPlaylist(),
-    };
-  },
+    this.state = {list: PlaylistStore.getPlaylist()};
+    this._onChange = this._onChange.bind(this);
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     PlaylistStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     PlaylistStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var rootCount = {};
     var items = this.state.list.map(function(item, i) {
       if (!rootCount[item.root]) {
@@ -49,15 +49,13 @@ var Playlist = React.createClass({
         {items}
       </div>
     );
-  },
+  }
 
-  _onChange: function() {
-    this.setState({
-      list: PlaylistStore.getPlaylist(),
-    });
-  },
+  _onChange() {
+    this.setState({list: PlaylistStore.getPlaylist()});
+  }
+}
 
-});
 
 function getItem(path) {
   var c = CollectionStore.getCollection(path);
@@ -67,28 +65,28 @@ function getItem(path) {
   return c;
 }
 
-var RootGroup = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    itemIndex: React.PropTypes.number.isRequired,
-  },
+function getRootGroupState(props) {
+  return {item: getItem(props.path)};
+}
 
-  getInitialState: function() {
-    return {
-      item: getItem(this.props.path),
-    };
-  },
+class RootGroup extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getRootGroupState(this.props);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     CollectionStore.addChangeListener(this._onChange);
     CollectionActions.fetch(this.props.path);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     CollectionStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.item === null) {
       return null;
     }
@@ -96,38 +94,36 @@ var RootGroup = React.createClass({
     return (
       <Group item={this.state.item} path={this.props.path} itemIndex={this.props.itemIndex} />
     );
-  },
+  }
 
-  _onChange: function(keyPath) {
+  _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
-       this.setState({
-         item: getItem(this.props.path)
-       });
+       this.setState(getRootGroupState(this.props));
     }
-  },
-});
+  }
+}
 
-var Group = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    itemIndex: React.PropTypes.number.isRequired,
-    item: React.PropTypes.object.isRequired,
-  },
+RootGroup.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  itemIndex: React.PropTypes.number.isRequired
+};
 
-  getInitialState: function() {
-    return {
-      expanded: true,
-      common: {},
-    };
-  },
 
-  setCommon: function(c) {
-    this.setState({
-      common: c,
-    });
-  },
+class Group extends React.Component {
+  constructor(props) {
+    super(props);
 
-  render: function() {
+    this.state = {expanded: true, common: {}};
+    this.setCommon = this.setCommon.bind(this);
+    this._onClick = this._onClick.bind(this);
+    this._onClickRemove = this._onClickRemove.bind(this);
+  }
+
+  setCommon(c) {
+    this.setState({common: c});
+  }
+
+  render() {
     var groupClasses = {
       'group': true,
       'expanded': this.state.expanded
@@ -177,40 +173,43 @@ var Group = React.createClass({
         {content}
       </div>
     );
-  },
+  }
 
-  _onClickRemove: function(e) {
+  _onClickRemove(e) {
     e.stopPropagation();
     PlaylistActions.remove(this.props.itemIndex, this.props.path);
-  },
+  }
 
-  _onClick: function() {
-    this.setState({
-      expanded: !this.state.expanded
-    });
-  },
-});
+  _onClick() {
+    this.setState({expanded: !this.state.expanded});
+  }
+}
 
-var GroupContent = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    itemIndex: React.PropTypes.number.isRequired,
-  },
+Group.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  itemIndex: React.PropTypes.number.isRequired,
+  item: React.PropTypes.object.isRequired
+};
 
-  getInitialState: function() {
-    return {item: null};
-  },
 
-  componentDidMount: function() {
+class GroupContent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {item: null};
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     CollectionStore.addChangeListener(this._onChange);
     CollectionActions.fetch(this.props.path);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     CollectionStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var item = this.state.item;
     if (item === null) {
       return null;
@@ -221,9 +220,9 @@ var GroupContent = React.createClass({
       return <GroupList path={this.props.path} list={item.Groups} itemIndex={this.props.itemIndex} keys={pathKeys.keys} />;
     }
     return <TrackList path={this.props.path} list={item.Tracks} listStyle={item.ListStyle} itemIndex={this.props.itemIndex} keys={pathKeys.keys} />;
-  },
+  }
 
-  _onChange: function(keyPath) {
+  _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
       var item = CollectionStore.getCollection(this.props.path);
 
@@ -241,16 +240,16 @@ var GroupContent = React.createClass({
       this.setState({item: item});
     }
   }
-});
+}
 
-var GroupList = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    itemIndex: React.PropTypes.number.isRequired,
-    keys: React.PropTypes.array.isRequired,
-  },
+GroupContent.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  itemIndex: React.PropTypes.number.isRequired,
+}
 
-  render: function() {
+
+class GroupList extends React.Component {
+  render() {
     var keys = this.props.keys;
     var list = this.props.list;
 
@@ -268,19 +267,18 @@ var GroupList = React.createClass({
         {groups}
       </div>
     );
-  },
-});
+  }
+}
 
-var TrackList = React.createClass({
-  propTypes: {
-    itemIndex: React.PropTypes.number.isRequired,
-    path: React.PropTypes.array.isRequired,
-    list: React.PropTypes.array.isRequired,
-    keys: React.PropTypes.array.isRequired,
-    listStyle: React.PropTypes.string.isRequired,
-  },
+GroupList.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  itemIndex: React.PropTypes.number.isRequired,
+  keys: React.PropTypes.array.isRequired
+};
 
-  render: function() {
+
+class TrackList extends React.Component {
+  render() {
     var list = this.props.list;
     var keys = this.props.keys;
     var tracks = keys.map(function(i) {
@@ -294,8 +292,17 @@ var TrackList = React.createClass({
         </ol>
       </div>
     );
-  },
-});
+  }
+}
+
+TrackList.propTypes = {
+  itemIndex: React.PropTypes.number.isRequired,
+  path: React.PropTypes.array.isRequired,
+  list: React.PropTypes.array.isRequired,
+  keys: React.PropTypes.array.isRequired,
+  listStyle: React.PropTypes.string.isRequired,
+}
+
 
 function pathsEqual(p1, p2) {
   return CollectionStore.pathToKey(p1) === CollectionStore.pathToKey(p2);
@@ -322,31 +329,34 @@ function isPlaying(trackId) {
   return false;
 }
 
-var Track = React.createClass({
-  propTypes: {
-    itemIndex: React.PropTypes.number.isRequired,
-    index: React.PropTypes.number.isRequired,
-    path: React.PropTypes.array.isRequired,
-  },
+function getTrackState(props) {
+  return {
+    isCurrent: isCurrent(props.itemIndex, props.path),
+    isPlaying: isPlaying(props.data.TrackID)
+  };
+}
 
-  getInitialState: function() {
-    return {
-      isCurrent: isCurrent(this.props.itemIndex, this.props.path),
-      isPlaying: isPlaying(this.props.data.TrackID),
-    };
-  },
+class Track extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getTrackState(this.props);
+    this._onClick = this._onClick.bind(this);
+    this._onClickRemove = this._onClickRemove.bind(this);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     PlaylistStore.addChangeListener(this._onChange);
     NowPlayingStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     PlaylistStore.removeChangeListener(this._onChange);
     NowPlayingStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var durationSecs = parseInt(this.props.data.TotalTime/1000);
     var style = {
       current: this.state.isCurrent,
@@ -362,23 +372,24 @@ var Track = React.createClass({
         </span>
       </li>
     );
-  },
+  }
 
-  _onClick: function() {
+  _onClick() {
     PlaylistActions.play(this.props.itemIndex, this.props.path, this.props.data);
-  },
+  }
 
-  _onClickRemove: function(e) {
+  _onClickRemove(e) {
     e.stopPropagation();
     PlaylistActions.remove(this.props.itemIndex, this.props.path);
-  },
+  }
 
-  _onChange: function() {
-    this.setState({
-      isCurrent: isCurrent(this.props.itemIndex, this.props.path),
-      isPlaying: isPlaying(this.props.data.TrackID),
-    });
-  },
-});
+  _onChange() {
+    this.setState(getTrackState(this.props));
+  }
+}
 
-module.exports = Playlist;
+Track.propTypes = {
+  itemIndex: React.PropTypes.number.isRequired,
+  index: React.PropTypes.number.isRequired,
+  path: React.PropTypes.array.isRequired
+};
