@@ -1,13 +1,14 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var RecentStore = require('../stores/RecentStore.js');
-var RecentActions = require('../actions/RecentActions.js');
+import RecentStore from '../stores/RecentStore.js';
+import RecentActions from '../actions/RecentActions.js';
 
-var CollectionStore = require('../stores/CollectionStore.js');
+import CollectionStore from '../stores/CollectionStore.js';
 
-var RootGroup = require('./Search.js').RootGroup;
+import {RootGroup as RootGroup} from './Search.js';
+
 
 function getRecentState() {
   return {
@@ -15,21 +16,24 @@ function getRecentState() {
   };
 }
 
-var Recent = React.createClass({
-  getInitialState: function() {
-    return getRecentState();
-  },
+export default class Recent extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getRecentState();
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     RecentStore.addChangeListener(this._onChange);
     RecentActions.fetch();
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     RecentStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var list = this.state.items.map(function(path) {
       return <RootGroup path={path} key={"rootgroup-"+CollectionStore.pathToKey(path)} />;
     });
@@ -39,11 +43,9 @@ var Recent = React.createClass({
         {list}
       </div>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getRecentState());
   }
-});
-
-module.exports = Recent;
+}
