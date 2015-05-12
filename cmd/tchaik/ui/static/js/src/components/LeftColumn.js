@@ -1,89 +1,93 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var Icon = require('./Icon.js');
-var StatusView = require('./Status.js');
-var PlayerKeyView = require('./PlayerKey.js');
+import Icon from './Icon.js';
+import StatusView from './Status.js';
+import PlayerKeyView from './PlayerKey.js';
 
-var RootCollection = require('./Collection.js').RootCollection;
-var Search = require('./Search.js').Search;
-var Covers = require('./Covers.js');
-var Filter = require('./Filter.js');
-var Recent = require('./Recent.js');
-var Settings = require('./Settings.js');
+import {RootCollection as RootCollection} from './Collection.js';
+import {Search as Search} from './Search.js';
+import Covers from './Covers.js';
+import Filter from './Filter.js';
+import Recent from './Recent.js';
+import Settings from './Settings.js';
 
-var LeftColumnStore = require('../stores/LeftColumnStore.js');
-var LeftColumnActions = require('../actions/LeftColumnActions.js');
+import LeftColumnStore from '../stores/LeftColumnStore.js';
+import LeftColumnActions from '../actions/LeftColumnActions.js';
 
-var VolumeStore = require('../stores/VolumeStore.js');
-var VolumeActions = require('../actions/VolumeActions.js');
+import VolumeStore from '../stores/VolumeStore.js';
+import VolumeActions from '../actions/VolumeActions.js';
 
 
 function getToolBarItemState(mode) {
-  return {
-    selected: mode === LeftColumnStore.getMode(),
-  };
+  return {selected: mode === LeftColumnStore.getMode()};
 }
 
-var ToolbarItem = React.createClass({
-  getInitialState: function() {
-    return getToolBarItemState(this.props.mode);
-  },
+class ToolbarItem extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getToolBarItemState(this.props.mode);
+    this._onClick = this._onClick.bind(this);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     LeftColumnStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     LeftColumnStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var {...other} = this.props;
     var classes = {
       item: true,
       toolbar: true,
-      selected: this.state.selected,
+      selected: this.state.selected
     };
     return (
       <span className={classNames(classes)} onClick={this._onClick}>
         <Icon {...other} />
       </span>
     );
-  },
+  }
 
-  _onClick: function() {
+  _onClick() {
     LeftColumnActions.mode(this.props.mode);
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getToolBarItemState(this.props.mode));
   }
-});
-
-function leftColumnState() {
-  return {
-    mode: LeftColumnStore.getMode(),
-  };
 }
 
-var LeftColumn = React.createClass({
-  getInitialState: function() {
-    return leftColumnState();
-  },
 
-  componentDidMount: function() {
+function leftColumnState() {
+  return {mode: LeftColumnStore.getMode()};
+}
+
+export default class LeftColumn extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = leftColumnState();
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     LeftColumnStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     LeftColumnStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var container = null;
     switch (this.state.mode) {
     case "All":
@@ -125,12 +129,13 @@ var LeftColumn = React.createClass({
         </div>
       </div>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(leftColumnState());
-  },
-});
+  }
+}
+
 
 function _getOffsetTop(elem) {
   var offsetTop = 0;
@@ -148,25 +153,24 @@ function getVolumeStatus() {
   };
 }
 
-var Volume = React.createClass({
-  propTypes: {
-    height: React.PropTypes.number.isRequired,
-    markerHeight: React.PropTypes.number.isRequired,
-  },
+class Volume extends React.Component {
+  constructor(props) {
+    super(props);
 
-  getInitialState: function() {
-    return getVolumeStatus();
-  },
+    this.state = getVolumeStatus();
+    this._onChange = this._onChange.bind(this);
+    this._onWheel = this._onWheel.bind(this);
+  }
 
-  componentDidMount: function() {
+  componentDidMount() {
     VolumeStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     VolumeStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var volume = this.state.volume;
     var classSuffix;
     if (volume === 0.00) {
@@ -187,14 +191,14 @@ var Volume = React.createClass({
         <Icon icon={'volume-' + classSuffix} onClick={this._toggleMute} />
       </div>
     );
-  },
+  }
 
-  _toggleMute: function(evt) {
+  _toggleMute(evt) {
     evt.stopPropagation();
     VolumeActions.toggleVolumeMute();
-  },
+  }
 
-  _onWheel: function(evt) {
+  _onWheel(evt) {
     evt.stopPropagation();
     var v = this.state.volume + 0.05 * evt.deltaY;
     if (v > 1.0) {
@@ -203,18 +207,20 @@ var Volume = React.createClass({
       v = 0.0;
     }
     VolumeActions.volume(v);
-  },
+  }
 
-  _onClick: function(evt) {
+  _onClick(evt) {
     var pos = evt.pageY - _getOffsetTop(evt.currentTarget);
     var height = evt.currentTarget.offsetHeight;
     VolumeActions.volume(1 - pos/height);
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getVolumeStatus());
-  },
-});
+  }
+}
 
-
-module.exports = LeftColumn;
+Volume.propTypes = {
+  height: React.PropTypes.number.isRequired,
+  markerHeight: React.PropTypes.number.isRequired,
+};
