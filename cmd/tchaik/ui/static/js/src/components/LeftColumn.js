@@ -180,7 +180,7 @@ var Volume = React.createClass({
     var h = this.props.height - parseInt(volume * this.props.height);
     return (
       <div className="volume" onWheel={this._onWheel} >
-        <div className="bar" onMouseOver={this._onMouseOver} onMouseDown={this._onMouseDown} style={{height: this.props.height}}>
+        <div className="bar" onMouseDown={this._onMouseDown} style={{height: this.props.height}}>
           <div className="current" style={{height: h}} />
           <div className="marker" style={{height: this.props.markerHeight}} />
         </div>
