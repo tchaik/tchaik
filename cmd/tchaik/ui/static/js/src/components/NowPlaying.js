@@ -108,7 +108,7 @@ var PlayProgress = React.createClass({
     var b = "calc("+Math.min(bpc, 100.0)+"% - " + this.props.markerWidth + "px)";
 
     return (
-      <div className="playProgress" onMouseDown={this._onMouseDown} onWheel={this._onWheel}>
+      <div className="playProgress" onClick={this._onClick} onWheel={this._onWheel}>
         <div className="bar">
           <div className="current" style={{width: w}} />
           <div className="marker" style={{width: this.props.markerWidth}} />
@@ -118,13 +118,10 @@ var PlayProgress = React.createClass({
     );
   },
 
-  _onMouseDown: function(evt) {
-    // Only proceed on left mouse button clicks.
-    if (evt.button === 0) {
-      var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
-      var width = evt.currentTarget.offsetWidth;
-      this.props.setCurrentTime((pos / width) * this.props.duration);
-    }
+  _onClick: function(evt) {
+    var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
+    var width = evt.currentTarget.offsetWidth;
+    this.props.setCurrentTime((pos / width) * this.props.duration);
   },
 
   _onWheel: function(evt) {
