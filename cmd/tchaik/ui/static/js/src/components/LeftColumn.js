@@ -180,11 +180,11 @@ var Volume = React.createClass({
     var h = this.props.height - parseInt(volume * this.props.height);
     return (
       <div className="volume" onWheel={this._onWheel} >
-        <div className="bar" onMouseDown={this._onMouseDown} style={{height: this.props.height}}>
+        <div className="bar" onClick={this._onClick} style={{height: this.props.height}}>
           <div className="current" style={{height: h}} />
           <div className="marker" style={{height: this.props.markerHeight}} />
         </div>
-        <Icon icon={'volume-' + classSuffix} onMouseDown={this._toggleMute} />
+        <Icon icon={'volume-' + classSuffix} onClick={this._toggleMute} />
       </div>
     );
   },
@@ -205,7 +205,7 @@ var Volume = React.createClass({
     VolumeActions.volume(v);
   },
 
-  _onMouseDown: function(evt) {
+  _onClick: function(evt) {
     var pos = evt.pageY - _getOffsetTop(evt.currentTarget);
     var height = evt.currentTarget.offsetHeight;
     VolumeActions.volume(1 - pos/height);
