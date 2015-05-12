@@ -1,50 +1,53 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var Icon = require('./Icon.js');
-var TimeFormatter = require('./TimeFormatter.js');
-var GroupAttributes = require('./GroupAttributes.js');
-var ArtworkImage = require('./ArtworkImage.js');
+import Icon from './Icon.js';
+import TimeFormatter from './TimeFormatter.js';
+import GroupAttributes from './GroupAttributes.js';
+import ArtworkImage from './ArtworkImage.js';
 
-var CollectionStore = require('../stores/CollectionStore.js');
-var CollectionActions = require('../actions/CollectionActions.js');
+import CollectionStore from '../stores/CollectionStore.js';
+import CollectionActions from '../actions/CollectionActions.js';
 
-var NowPlayingStore = require('../stores/NowPlayingStore.js');
+import NowPlayingStore from '../stores/NowPlayingStore.js';
 
-var RootCollection = React.createClass({
-  render: function() {
+
+export class RootCollection extends React.Component {
+  render() {
     var path = ["Root"];
     if (this.props.path) {
       path = this.props.path;
     }
     return <GroupContent path={path} depth={0} />;
   }
-});
+}
 
-var Group = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    item: React.PropTypes.object.isRequired,
-    depth: React.PropTypes.number.isRequired
-  },
 
-  getInitialState: function() {
-    return {
+export class Group extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
       expanded: (this.props.depth !== 1) || CollectionStore.isExpanded(this.props.path),
-      common: {},
+      common: {}
     };
-  },
 
-  setCommon: function(c) {
-    this.setState({
-      common: c,
-    });
-  },
+    this.setCommon = this.setCommon.bind(this);
 
-  render: function() {
+    this._onClick = this._onClick.bind(this);
+    this._onClickName = this._onClickName.bind(this);
+    this._onPlayNow = this._onPlayNow.bind(this);
+    this._onQueue = this._onQueue.bind(this);
+  }
+
+  setCommon(c) {
+    this.setState({common: c});
+  }
+
+  render() {
     var content = null;
     var play = null;
     var headerDiv = null;
@@ -124,7 +127,7 @@ var Group = React.createClass({
     var groupClasses = {
       'group': true,
       'untitled': this.props.item.Name === "",
-      'expanded': this.state.expanded,
+      'expanded': this.state.expanded
     };
 
     return (
@@ -133,54 +136,57 @@ var Group = React.createClass({
         {content}
       </div>
     );
-  },
+  }
 
-  _onClick: function(e) {
+  _onClick(e) {
     if (!this.state.expanded) {
       this._onClickName(e);
     }
-  },
+  }
 
-  _onClickName: function(e) {
+  _onClickName(e) {
     e.stopPropagation();
-    this.setState({
-      expanded: !this.state.expanded
-    });
+    this.setState({expanded: !this.state.expanded});
     CollectionActions.expandPath(this.props.path, !this.state.expanded);
-  },
+  }
 
-  _onPlayNow: function(e) {
+  _onPlayNow(e) {
     CollectionActions.playNow(this.props.path);
     e.stopPropagation();
-  },
+  }
 
-  _onQueue: function(e) {
+  _onQueue(e) {
     CollectionActions.appendToPlaylist(this.props.path);
     e.stopPropagation();
-  },
+  }
 
-});
+}
 
-var GroupContent = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    depth: React.PropTypes.number.isRequired,
-  },
+Group.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  item: React.PropTypes.object.isRequired,
+  depth: React.PropTypes.number.isRequired
+};
 
-  getInitialState: function() {
-    return {item: null};
-  },
 
-  componentDidMount: function() {
+class GroupContent extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {item: null};
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
     CollectionStore.addChangeListener(this._onChange);
     CollectionActions.fetch(this.props.path);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     CollectionStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var item = this.state.item;
     if (item === null) {
       return null;
@@ -190,9 +196,9 @@ var GroupContent = React.createClass({
       return <GroupList path={this.props.path} depth={this.props.depth} list={item.Groups} />;
     }
     return <TrackList path={this.props.path} list={item.Tracks} listStyle={item.ListStyle} />;
-  },
+  }
 
-  _onChange: function(keyPath) {
+  _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
       var item = CollectionStore.getCollection(this.props.path);
 
@@ -210,16 +216,16 @@ var GroupContent = React.createClass({
       this.setState({item: item});
     }
   }
-});
+}
 
-var GroupList = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    depth: React.PropTypes.number.isRequired,
-    list: React.PropTypes.array.isRequired,
-  },
+GroupContent.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  depth: React.PropTypes.number.isRequired
+};
 
-  render: function() {
+
+class GroupList extends React.Component {
+  render() {
     var list = this.props.list.map(function(item) {
       return <Group path={this.props.path.concat([item.Key])} depth={this.props.depth + 1} item={item} key={item.Key} />;
     }.bind(this));
@@ -229,21 +235,18 @@ var GroupList = React.createClass({
         {list}
       </div>
     );
-  },
-});
+  }
+}
 
-var TrackList = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-    list: React.PropTypes.array.isRequired,
-    listStyle: React.PropTypes.string.isRequired,
-  },
+GroupList.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  depth: React.PropTypes.number.isRequired,
+  list: React.PropTypes.array.isRequired
+};
 
-  getInitialState: function() {
-    return {};
-  },
 
-  render: function() {
+class TrackList extends React.Component {
+  render() {
     var discs = {};
     var discIndices = [];
     var trackNumber = 0;
@@ -276,8 +279,15 @@ var TrackList = React.createClass({
         {ols}
       </div>
     );
-  },
-});
+  }
+}
+
+TrackList.propTypes = {
+  path: React.PropTypes.array.isRequired,
+  list: React.PropTypes.array.isRequired,
+  listStyle: React.PropTypes.string.isRequired,
+};
+
 
 function isCurrent(trackId) {
   var t = NowPlayingStore.getTrack();
@@ -290,32 +300,35 @@ function isCurrent(trackId) {
 function getTrackState(trackID) {
   return {
     current: isCurrent(trackID),
-    playing: NowPlayingStore.getPlaying(),
+    playing: NowPlayingStore.getPlaying()
   };
 }
 
-var Track = React.createClass({
-  propTypes: {
-    path: React.PropTypes.array.isRequired,
-  },
 
-  getInitialState: function() {
-    return getTrackState(this.props.data.TrackID);
-  },
+class Track extends React.Component {
+  constructor(props) {
+    super(props);
 
-  componentDidMount: function() {
+    this.state = getTrackState(this.props.data.TrackID);
+    this._onChange = this._onChange.bind(this);
+    this._onClick = this._onClick.bind(this);
+    this._onPlayNow = this._onPlayNow.bind(this);
+    this._onQueue = this._onQueue.bind(this);
+  }
+
+  componentDidMount() {
     NowPlayingStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     NowPlayingStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
+  render() {
     var durationSecs = parseInt(this.props.data.TotalTime/1000);
     var liClasses = {
       'current': this.state.current,
-      'playing': this.state.current && this.state.playing,
+      'playing': this.state.current && this.state.playing
     };
     return (
       <li className={classNames(liClasses)} onClick={this._onClick}>
@@ -327,27 +340,26 @@ var Track = React.createClass({
         </span>
       </li>
     );
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getTrackState(this.props.data.TrackID));
-  },
+  }
 
-  _onClick: function(e) {
+  _onClick(e) {
     e.stopPropagation();
     CollectionActions.setCurrentTrack(this.props.data);
-  },
+  }
 
-  _onPlayNow: function(e) {
+  _onPlayNow(e) {
     e.stopPropagation();
     CollectionActions.playNow(this.props.path.concat([this.props.Key]));
-  },
+  }
 
-  _onQueue: function(e) {
+  _onQueue(e) {
     e.stopPropagation();
     CollectionActions.appendToPlaylist(this.props.path.concat([this.props.Key]));
-  },
-});
+  }
+}
 
-module.exports.RootCollection = RootCollection;
-module.exports.Group = Group;
+Track.propTypes = {path: React.PropTypes.array.isRequired};
