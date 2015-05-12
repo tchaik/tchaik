@@ -1,6 +1,6 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
 function zeroPad(n, width) {
   var s = "" + n;
@@ -10,9 +10,8 @@ function zeroPad(n, width) {
   return s;
 }
 
-var TimeFormatter = React.createClass({
-
-  render: function() {
+class TimeFormatter extends React.Component {
+  render() {
     var {time, ...others} = this.props;
     if (isNaN(time)) {
       return null;
@@ -37,6 +36,6 @@ var TimeFormatter = React.createClass({
       <span {...others}>{timeText}</span>
     );
   }
-});
+}
 
-module.exports = TimeFormatter;
+export default TimeFormatter;

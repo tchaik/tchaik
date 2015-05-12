@@ -6,10 +6,6 @@ import classNames from 'classnames';
 
 
 class Icon extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     var {icon, extraClasses, ...others} = this.props;
     var classes = {
