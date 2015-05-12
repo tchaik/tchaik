@@ -14,7 +14,7 @@ function getStatus() {
   return WebsocketAPI.getStatus();
 }
 
-class StatusView extends React.Component {
+export default class StatusView extends React.Component {
   constructor(props) {
     super(props);
     this.state = getStatus();
@@ -54,5 +54,3 @@ class StatusView extends React.Component {
     WebsocketActions.reconnect();
   }
 }
-
-export default StatusView;

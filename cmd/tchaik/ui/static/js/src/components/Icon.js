@@ -5,7 +5,7 @@ import React from 'react/addons';
 import classNames from 'classnames';
 
 
-class Icon extends React.Component {
+export default class Icon extends React.Component {
   render() {
     var {icon, extraClasses, ...others} = this.props;
     var classes = {
@@ -29,5 +29,3 @@ Icon.propTypes = {
   icon: React.PropTypes.string.isRequired,
   extraClasses: React.PropTypes.object,
 };
-
-export default Icon;

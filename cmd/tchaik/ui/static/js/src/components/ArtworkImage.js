@@ -5,7 +5,7 @@ import React from 'react/addons';
 import classNames from 'classnames';
 
 
-class ArtworkImage extends React.Component {
+export default class ArtworkImage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {visible: false};
@@ -32,5 +32,3 @@ class ArtworkImage extends React.Component {
     this.setState({visible: false});
   }
 }
-
-export default ArtworkImage;

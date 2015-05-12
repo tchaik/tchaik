@@ -2,7 +2,7 @@
 
 import React from 'react/addons';
 
-class GroupAttributes extends React.Component {
+export default class GroupAttributes extends React.Component {
   render() {
     var list = this.props.list.map(function(attr) {
       return [
@@ -19,5 +19,3 @@ class GroupAttributes extends React.Component {
     );
   }
 }
-
-export default GroupAttributes;
