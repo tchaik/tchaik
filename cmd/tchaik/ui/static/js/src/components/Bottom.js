@@ -1,53 +1,59 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var Icon = require('./Icon.js');
+import Icon from './Icon.js';
 
-var NowPlayingActions = require('../actions/NowPlayingActions.js');
-var NowPlayingStore = require('../stores/NowPlayingStore.js');
-var NowPlaying = require('./NowPlaying.js');
+import NowPlayingActions from '../actions/NowPlayingActions.js';
+import NowPlayingStore from '../stores/NowPlayingStore.js';
+import NowPlaying from './NowPlaying.js';
 
-var PlaylistStore = require('../stores/PlaylistStore.js');
-var PlaylistActions = require('../actions/PlaylistActions.js');
+import PlaylistStore from '../stores/PlaylistStore.js';
+import PlaylistActions from '../actions/PlaylistActions.js';
 
-var PlayingStatusStore = require('../stores/PlayingStatusStore.js');
+import PlayingStatusStore from '../stores/PlayingStatusStore.js';
+
 
 var BACKWARD_TIMEOUT = 2000;
 
-var Bottom = React.createClass({
-
-  render: function() {
+export default class Bottom extends React.Component {
+  render() {
     return (
       <div className="now-playing">
         <Controls />
         <NowPlaying />
       </div>
     );
-  },
+  }
+}
 
-});
+class Controls extends React.Component {
+  constructor(props) {
+    super(props);
 
-var Controls = React.createClass({
-  getInitialState: function() {
-    return {
+    this.state = {
       playing: NowPlayingStore.getPlaying(),
       canNext: PlaylistStore.canNext(),
-      canPrev: PlaylistStore.canPrev(),
+      canPrev: PlaylistStore.canPrev()
     };
-  },
 
-  componentDidMount: function() {
+    this._onChangePlaylist = this._onChangePlaylist.bind(this);
+    this._onChange = this._onChange.bind(this);
+    this._togglePlayPause = this._togglePlayPause.bind(this);
+    this._onBackward = this._onBackward.bind(this);
+  }
+
+  componentDidMount() {
     NowPlayingStore.addChangeListener(this._onChange);
     PlaylistStore.addChangeListener(this._onChangePlaylist);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     NowPlayingStore.removeChangeListener(this._onChange);
     PlaylistStore.removeChangeListener(this._onChangePlaylist);
-  },
+  }
 
-  render: function() {
+  render() {
     var prevClasses = {'enabled': this.state.canPrev};
     var nextClasses = {'enabled': this.state.canNext};
     return (
@@ -57,16 +63,16 @@ var Controls = React.createClass({
         <Icon icon="step-forward" extraClasses={nextClasses} onClick={this._onForward} />
       </div>
     );
-  },
+  }
 
-  _onChangePlaylist: function() {
+  _onChangePlaylist() {
     this.setState({
       canNext: PlaylistStore.canNext(),
       canPrev: PlaylistStore.canPrev(),
     });
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState({playing: NowPlayingStore.getPlaying()});
 
     var favicon = document.querySelector("head link[rel=\"shortcut icon\"]");
@@ -77,38 +83,38 @@ var Controls = React.createClass({
     }
     document.title = currentTrack.Name;
     favicon.href = "/icon/" + currentTrack.TrackID;
-  },
+  }
 
-  _togglePlayPause: function() {
+  _togglePlayPause() {
     NowPlayingActions.playing(!this.state.playing);
     this.setState({
       playing: !this.state.playing,
     });
-  },
+  }
 
-  _backButtonTimerRunning: function() {
+  _backButtonTimerRunning() {
     if (this._backButtonTimer) {
       return true;
     }
     return false;
-  },
+  }
 
-  _backButtonTimerStart: function() {
+  _backButtonTimerStart() {
     if (this._backButtonTimer) {
       clearTimeout(this._backButtonTimer);
     }
     this._backButtonTimer = setTimeout(this._backButtonTimerTimeout, BACKWARD_TIMEOUT);
-  },
+  }
 
-  _backButtonTimerTimeout: function() {
+  _backButtonTimerTimeout() {
     this._backButtonTimer = null;
-  },
+  }
 
-  _prev: function() {
+  _prev() {
     PlaylistActions.prev();
-  },
+  }
 
-  _onBackward: function() {
+  _onBackward() {
     if (this._backButtonTimerRunning()) {
       PlaylistActions.prev();
     } else if (this.state.playing || PlayingStatusStore.getTime() > 0) {
@@ -118,12 +124,10 @@ var Controls = React.createClass({
     }
     this._backButtonTimerStart();
     return;
-  },
+  }
 
-  _onForward: function() {
+  _onForward() {
     PlaylistActions.next();
-  },
+  }
 
-});
-
-module.exports = Bottom;
+}
