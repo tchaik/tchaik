@@ -1,16 +1,16 @@
 'use strict';
 
-var React = require('react/addons');
+import React from 'react/addons';
 
-var classNames = require('classnames');
+import classNames from 'classnames';
 
-var Icon = React.createClass({
-  propTypes: {
-    icon: React.PropTypes.string.isRequired,
-    extraClasses: React.PropTypes.object,
-  },
 
-  render: function() {
+class Icon extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
     var {icon, extraClasses, ...others} = this.props;
     var classes = {
       glyphicon: true,
@@ -27,6 +27,11 @@ var Icon = React.createClass({
       <span {...others} className={classNames(classes)} />
     );
   }
-});
+}
 
-module.exports = Icon;
+Icon.propTypes = {
+  icon: React.PropTypes.string.isRequired,
+  extraClasses: React.PropTypes.object,
+};
+
+export default Icon;
