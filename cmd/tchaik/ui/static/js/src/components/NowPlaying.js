@@ -68,7 +68,7 @@ var NowPlaying = React.createClass({
           <div className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
           {attributes}
 
-          <PlayProgress markerWidth={2} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
+          <PlayProgress markerWidth={10} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
           <div className="times">
             <TimeFormatter className="currentTime" time={this.state.currentTime} />
             <TimeFormatter className="remaining" time={remainingTime} />

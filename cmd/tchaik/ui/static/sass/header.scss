@@ -88,8 +88,9 @@ div#header {
       }
 
       & > div.marker {
-        width: 12px;
-        margin-left: -4px;
+        width: 10px;
+        border-radius: 50%;
+        margin-left: -3px;
         background-color: #ddd;
       }
     }

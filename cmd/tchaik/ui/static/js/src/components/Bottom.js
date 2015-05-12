@@ -22,7 +22,6 @@ var Bottom = React.createClass({
       <div className="now-playing">
         <Controls />
         <NowPlaying />
-        <div style={{'float':'right'}} />
       </div>
     );
   },

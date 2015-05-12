@@ -58,11 +58,12 @@ div#bottom {
 
     div.now-playing-track {
       float: left;
+      margin-top: 5px;
 
       img.artwork {
         float: left;
         display: none;
-        margin: 5px 0 5px 10px;
+        margin-right: 10px;
 
         &.visible {
           display: inline;
@@ -71,10 +72,10 @@ div#bottom {
       }
 
       div.track-info {
-        margin: 5px 10px;
+        margin-top: 1px;
         float: left;
         display:inline;
-        width: 500px;
+        width: 600px;
       }
 
       div.title {
@@ -140,14 +141,15 @@ div#bottom {
           & > div.buffered {
             height: 4px;
             float: left;
-            background-color: #555;
+            background-color: #666;
           }
 
           & > div.marker {
             height: 10px;
+            border-radius: 50%;
             float: left;
-            background-color: white;
-            margin-top: -5px;
+            background-color: #fff;
+            margin-top:-3px;
           }
         }
       }

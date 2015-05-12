@@ -115,7 +115,7 @@ var LeftColumn = React.createClass({
           <ToolbarItem mode="Recent" icon="time" title="Recently Added" />
           <ToolbarItem mode="Settings" icon="cog" title="Settings" />
           <div className="bottom">
-            <Volume height={100} markerHeight={2} />
+            <Volume height={100} markerHeight={10} />
             <StatusView />
             <PlayerKeyView />
           </div>
