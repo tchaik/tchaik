@@ -1,13 +1,13 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import {Store} from './Store.js';
 
-var CtrlConstants = require('../constants/ControlConstants.js');
-var VolumeConstants = require('../constants/VolumeConstants.js');
+import AppDispatcher from '../dispatcher/AppDispatcher';
+import EventEmitter from 'eventemitter3';
 
-var CHANGE_EVENT = 'change';
+import CtrlConstants from '../constants/ControlConstants.js';
+import VolumeConstants from '../constants/VolumeConstants.js';
+
 
 var defaultVolume = 0.75;
 var defaultVolumeMute = false;
@@ -39,35 +39,19 @@ function volumeMute() {
 }
 
 
-var VolumeStore = assign({}, EventEmitter.prototype, {
-  getVolume: function() {
+class VolumeStore extends Store {
+  getVolume() {
     return volumeMute() ? 0.0 : volume();
-  },
+  }
 
-  getVolumeMute: function() {
+  getVolumeMute() {
     return volumeMute();
-  },
+  }
+}
 
-  emitChange: function(type) {
-    this.emit(CHANGE_EVENT, type);
-  },
+var _volumeStore = new VolumeStore();
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-});
-
-VolumeStore.dispatchToken = AppDispatcher.register(function(payload) {
+_volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -77,7 +61,7 @@ VolumeStore.dispatchToken = AppDispatcher.register(function(payload) {
 
         case CtrlConstants.TOGGLE_MUTE:
           setVolumeMute(!volumeMute());
-          VolumeStore.emitChange();
+          _volumeStore.emitChange();
           break;
 
         default:
@@ -91,12 +75,12 @@ VolumeStore.dispatchToken = AppDispatcher.register(function(payload) {
             if (action.data.Value > 0) {
               setVolumeMute(false);
             }
-            VolumeStore.emitChange();
+            _volumeStore.emitChange();
             break;
 
           case "mute":
             setVolumeMute(action.data.Value);
-            VolumeStore.emitChange();
+            _volumeStore.emitChange();
             break;
 
           default:
@@ -114,17 +98,17 @@ VolumeStore.dispatchToken = AppDispatcher.register(function(payload) {
         if (action.volume > 0) {
           setVolumeMute(false);
         }
-        VolumeStore.emitChange();
+        _volumeStore.emitChange();
         break;
 
       case VolumeConstants.SET_VOLUME_MUTE:
         setVolumeMute(action.volumeMute);
-        VolumeStore.emitChange();
+        _volumeStore.emitChange();
         break;
 
       case VolumeConstants.TOGGLE_VOLUME_MUTE:
         setVolumeMute(!volumeMute());
-        VolumeStore.emitChange();
+        _volumeStore.emitChange();
         break;
 
       default:
@@ -135,4 +119,4 @@ VolumeStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = VolumeStore;
+export default _volumeStore;
