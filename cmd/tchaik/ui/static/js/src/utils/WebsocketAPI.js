@@ -1,14 +1,13 @@
 'use strict';
 
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import EventEmitter from 'eventemitter3';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher.js');
+import {Store} from '../stores/Store.js';
 
-var WebsocketActions = require('../actions/WebsocketActions.js');
-var WebsocketConstants = require('../constants/WebsocketConstants.js');
+import AppDispatcher from '../dispatcher/AppDispatcher.js';
 
-var CHANGE_EVENT = 'status';
+import WebsocketActions from '../actions/WebsocketActions.js';
+import WebsocketConstants from '../constants/WebsocketConstants.js';
 
 var _host = null;
 
@@ -46,37 +45,18 @@ function onError(err) {
   console.error(err);
 }
 
-function onOpen() {
-  _websocket.open = true;
-  WebsocketAPI.emitChange();
-  _websocket.queue.map(function(payload) {
-    WebsocketAPI.send(payload.action, payload.data);
-  });
-  _websocket.queue = [];
-}
-
-function onClose() {
-  _websocket.open = false;
-  WebsocketAPI.emitChange();
-}
-
-var WebsocketAPI = assign({}, EventEmitter.prototype, {
-
-  init: function(host) {
+class WebsocketAPI extends Store {
+  init(host) {
     init(host);
-  },
+  }
 
-  getStatus: function() {
+  getStatus() {
     return {
       'open': _websocket.open
     };
-  },
+  }
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
-
-  send: function(action, data) {
+  send(action, data) {
     var payload = {
       action: action,
       data: data
@@ -86,25 +66,27 @@ var WebsocketAPI = assign({}, EventEmitter.prototype, {
       return;
     }
     _websocket.sock.send(JSON.stringify(payload));
-  },
-
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
   }
+}
 
-});
+var _websocketAPI = new WebsocketAPI();
 
-WebsocketAPI.dispatchToken = AppDispatcher.register(function(payload) {
+function onOpen() {
+  _websocket.open = true;
+  _websocketAPI.emitChange();
+  _websocket.queue.map(function(payload) {
+    _websocketAPI.send(payload.action, payload.data);
+  });
+  _websocket.queue = [];
+}
+
+
+function onClose() {
+  _websocket.open = false;
+  _websocketAPI.emitChange();
+}
+
+_websocketAPI.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -119,4 +101,4 @@ WebsocketAPI.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = WebsocketAPI;
+export default _websocketAPI;
