@@ -1,12 +1,11 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import ChangeEmitter from '../utils/ChangeEmitter.js';
 
-var SearchConstants = require('../constants/SearchConstants.js');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var CHANGE_EVENT = 'change';
+import SearchConstants from '../constants/SearchConstants.js';
+
 
 var _results = [];
 
@@ -29,37 +28,20 @@ function input() {
   return s;
 }
 
-var SearchResultStore = assign({}, EventEmitter.prototype, {
 
-  getResults: function() {
+class SearchResultStore extends ChangeEmitter {
+  getResults() {
     return _results;
-  },
+  }
 
-  getInput: function() {
+  getInput() {
     return input();
-  },
+  }
+}
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+var _searchResultStore = new SearchResultStore();
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-SearchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
+_searchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -67,7 +49,7 @@ SearchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case SearchConstants.SEARCH:
         setResults(action.data);
-        SearchResultStore.emitChange();
+        _searchResultStore.emitChange();
         break;
     }
   }
@@ -76,7 +58,7 @@ SearchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case SearchConstants.SEARCH:
         setInput(action.input);
-        SearchResultStore.emitChange();
+        _searchResultStore.emitChange();
         break;
     }
   }
@@ -84,4 +66,4 @@ SearchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = SearchResultStore;
+export default _searchResultStore;
