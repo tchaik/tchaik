@@ -6,7 +6,7 @@ export var CHANGE_EVENT = 'change';
 
 export class Store extends EventEmitter {
   emitChange() {
-    this.emit(CHANGE_EVENT)
+    this.emit(CHANGE_EVENT);
   }
   
   /**

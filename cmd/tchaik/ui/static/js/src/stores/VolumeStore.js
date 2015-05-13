@@ -3,7 +3,6 @@
 import {Store} from './Store.js';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import EventEmitter from 'eventemitter3';
 
 import CtrlConstants from '../constants/ControlConstants.js';
 import VolumeConstants from '../constants/VolumeConstants.js';

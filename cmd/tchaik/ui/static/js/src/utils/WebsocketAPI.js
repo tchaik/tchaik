@@ -1,7 +1,5 @@
 'use strict';
 
-import EventEmitter from 'eventemitter3';
-
 import {Store} from '../stores/Store.js';
 
 import AppDispatcher from '../dispatcher/AppDispatcher.js';
@@ -64,7 +62,7 @@ class WebsocketAPI extends Store {
     if (source === 'VIEW_ACTION') {
       switch (action.actionType) {
         case WebsocketConstants.RECONNECT:
-          init(_host);
+          this.init(this.host);
           break;
       }
     }
