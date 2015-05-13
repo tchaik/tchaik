@@ -1,12 +1,11 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import ChangeEmitter from '../utils/ChangeEmitter.js';
 
-var LeftColumnConstants = require('../constants/LeftColumnConstants.js');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var CHANGE_EVENT = 'change';
+import LeftColumnConstants from '../constants/LeftColumnConstants.js';
+
 
 var _defaultMode = "All";
 
@@ -25,33 +24,16 @@ function mode() {
   return m;
 }
 
-var LeftColumnStore = assign({}, EventEmitter.prototype, {
 
-  getMode: function() {
+class LeftColumnStore extends ChangeEmitter {
+  getMode() {
     return mode();
-  },
+  }
+}
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+var _leftColumnStore = new LeftColumnStore();
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-LeftColumnStore.dispatchToken = AppDispatcher.register(function(payload) {
+_leftColumnStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -59,11 +41,11 @@ LeftColumnStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case LeftColumnConstants.MODE:
         setMode(action.mode);
-        LeftColumnStore.emitChange();
+        _leftColumnStore.emitChange();
         break;
     }
   }
   return true;
 });
 
-module.exports = LeftColumnStore;
+export default _leftColumnStore;
