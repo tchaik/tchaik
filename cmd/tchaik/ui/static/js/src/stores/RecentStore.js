@@ -1,42 +1,23 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var RecentConstants = require('../constants/RecentConstants.js');
+import {Store} from './Store.js';
 
-var CHANGE_EVENT = 'change';
+import RecentConstants from '../constants/RecentConstants.js';
+
 
 var _recentPaths = [];
 
-var RecentStore = assign({}, EventEmitter.prototype, {
-
-  getPaths: function() {
+class RecentStore extends Store {
+  getPaths() {
     return _recentPaths;
-  },
+  }
+}
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+var _recentStore = new RecentStore();
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-RecentStore.dispatchToken = AppDispatcher.register(function(payload) {
+_recentStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -44,7 +25,7 @@ RecentStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case RecentConstants.FETCH_RECENT:
         _recentPaths = action.data;
-        RecentStore.emitChange();
+        _recentStore.emitChange();
         break;
     }
   }
@@ -52,4 +33,4 @@ RecentStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = RecentStore;
+export default _recentStore;
