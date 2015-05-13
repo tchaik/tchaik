@@ -1,12 +1,11 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import ChangeEmitter from '../utils/ChangeEmitter.js';
 
-var FilterConstants = require('../constants/FilterConstants.js');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var CHANGE_EVENT = 'change';
+import FilterConstants from '../constants/FilterConstants.js';
+
 
 var _currentItems = null;
 var _filters = {};
@@ -42,21 +41,21 @@ function _addFilterPaths(name, itemName, paths) {
   _filterPaths[name] = filterPaths;
 }
 
-var FilterStore = assign({}, EventEmitter.prototype, {
 
-  getCurrentItem: function(name) {
+class FilterStore extends ChangeEmitter {
+  getCurrentItem(name) {
     return _getCurrentItem(name);
-  },
+  }
 
-  getItems: function(name) {
+  getItems(name) {
     var x = _filters[name];
     if (!x) {
       x = [];
     }
     return x;
-  },
+  }
   
-  getPaths: function(name, itemName) {
+  getPaths(name, itemName) {
     var x = _filterPaths[name];
     if (!x) {
       return [];
@@ -66,29 +65,12 @@ var FilterStore = assign({}, EventEmitter.prototype, {
       paths = [];
     }
     return paths;
-  },
+  }
+}
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+var _filterStore = new FilterStore();
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-FilterStore.dispatchToken = AppDispatcher.register(function(payload) {
+_filterStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -96,19 +78,19 @@ FilterStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case FilterConstants.FILTER_LIST:
         _filters[action.data.Name] = action.data.Items;
-        FilterStore.emitChange();
+        _filterStore.emitChange();
         break;
       case FilterConstants.FILTER_PATHS:
         var path = action.data.Path; // [name, item]
         _addFilterPaths(path[0], path[1], action.data.Paths);
-        FilterStore.emitChange();
+        _filterStore.emitChange();
         break;
     }
   } else if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
       case FilterConstants.SET_FILTER_ITEM:
         _setCurrentItem(action.name, action.itemName);
-        FilterStore.emitChange();
+        _filterStore.emitChange();
         break;
     }
   }
@@ -116,4 +98,4 @@ FilterStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = FilterStore;
+export default _filterStore;
