@@ -1,12 +1,10 @@
 'use strict';
 
+import {Store, CHANGE_EVENT} from './Store.js';
+
 var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
 
 var CollectionConstants = require('../constants/CollectionConstants.js');
-
-var CHANGE_EVENT = 'change';
 
 var _commonFields = ["Album", "AlbumArtist", "Artist", "Composer", "Year"];
 
@@ -22,7 +20,7 @@ function addItem(path, item) {
       });
     });
   }
-  _collections[CollectionStore.pathToKey(path)] = item;
+  _collections[pathToKey(path)] = item;
 }
 
 var _expandedPaths = null;
@@ -51,52 +49,43 @@ function expandPath(path, expand) {
   localStorage.setItem("expandedPaths", JSON.stringify(_expandedPaths));
 }
 
-var CollectionStore = assign({}, EventEmitter.prototype, {
+// pathToKey returns a string representation of the path.  The only requirement is that
+// subpaths should be prefixes.
+function pathToKey(path) {
+  if (path) {
+    return path.join(">>");
+  }
+  return null;
+}
 
-  // pathToKey returns a string representation of the path.  The only requirement is that
-  // subpaths should be prefixes.
-  pathToKey: function(path) {
-    if (path) {
-      return path.join(">>");
-    }
-    return null;
-  },
 
-  getCollection: function(path) {
-    var key = CollectionStore.pathToKey(path);
+class CollectionStore extends Store {
+  pathToKey(path) {
+    return pathToKey(path);
+  }
+
+  getCollection(path) {
+    var key = pathToKey(path);
     return _collections[key];
-  },
+  }
 
-  isExpanded: function(path) {
-    var key = CollectionStore.pathToKey(path);
+  isExpanded(path) {
     var ep = getExpandedPaths();
+    var key = pathToKey(path);
     if (ep[key]) {
       return true;
     }
     return false;
-  },
+  }
 
-  emitChange: function(path) {
-    this.emit(CHANGE_EVENT, CollectionStore.pathToKey(path));
-  },
+  emitChange(path) {
+    this.emit(CHANGE_EVENT, pathToKey(path));
+  }
+}
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
+var _store = new CollectionStore();
 
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-CollectionStore.dispatchToken = AppDispatcher.register(function(payload) {
+_store.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -104,19 +93,18 @@ CollectionStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case CollectionConstants.FETCH:
         addItem(action.data.Path, action.data.Item);
-        CollectionStore.emitChange(action.data.Path);
+        _store.emitChange(action.data.Path);
         break;
     }
   } else if (source === 'VIEW_ACTION') {
     switch (action.actionType) {
       case CollectionConstants.EXPAND_PATH:
-        expandPath(CollectionStore.pathToKey(action.path), action.expand);
-        CollectionStore.emitChange(action.path);
+        expandPath(pathToKey(action.path), action.expand);
+        _store.emitChange(action.path);
         break;
     }
   }
-
   return true;
 });
 
-module.exports = CollectionStore;
+export default _store;
