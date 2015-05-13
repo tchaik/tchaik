@@ -12,7 +12,7 @@ import VolumeConstants from '../constants/VolumeConstants.js';
 var defaultVolume = 0.75;
 var defaultVolumeMute = false;
 
-function setVolume(v) {
+function _setVolume(v) {
   localStorage.setItem("volume", v);
 }
 
@@ -36,6 +36,13 @@ function volumeMute() {
     return defaultVolumeMute;
   }
   return (v === "true");
+}
+
+function setVolume(v) {
+  _setVolume(v);
+  if (v > 0) {
+    setVolumeMute(false);
+  }
 }
 
 
@@ -72,9 +79,6 @@ _volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
         switch (action.data.Key) {
           case "volume":
             setVolume(action.data.Value);
-            if (action.data.Value > 0) {
-              setVolumeMute(false);
-            }
             _volumeStore.emitChange();
             break;
 
@@ -95,9 +99,6 @@ _volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case VolumeConstants.SET_VOLUME:
         setVolume(action.volume);
-        if (action.volume > 0) {
-          setVolumeMute(false);
-        }
         _volumeStore.emitChange();
         break;
 
