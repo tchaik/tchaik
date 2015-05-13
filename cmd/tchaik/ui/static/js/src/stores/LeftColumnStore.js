@@ -1,6 +1,6 @@
 'use strict';
 
-import ChangeEmitter from '../utils/ChangeEmitter.js';
+import {ChangeEmitter} from '../utils/ChangeEmitter.js';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
