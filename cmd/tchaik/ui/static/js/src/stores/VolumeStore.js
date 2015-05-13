@@ -1,6 +1,6 @@
 'use strict';
 
-import {Store} from './Store.js';
+import {ChangeEmitter} from '../utils/ChangeEmitter.js';
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
@@ -45,7 +45,7 @@ function setVolume(v) {
 }
 
 
-class VolumeStore extends Store {
+class VolumeStore extends ChangeEmitter {
   getVolume() {
     return volumeMute() ? 0.0 : volume();
   }

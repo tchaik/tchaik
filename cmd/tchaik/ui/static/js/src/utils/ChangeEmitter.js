@@ -4,7 +4,7 @@ import EventEmitter from 'eventemitter3';
 
 export var CHANGE_EVENT = 'change';
 
-export class Store extends EventEmitter {
+export class ChangeEmitter extends EventEmitter {
   emitChange() {
     this.emit(CHANGE_EVENT);
   }

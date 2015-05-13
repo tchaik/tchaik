@@ -1,6 +1,6 @@
 'use strict';
 
-import {Store, CHANGE_EVENT} from './Store.js';
+import {ChangeEmitter, CHANGE_EVENT} from '../utils/ChangeEmitter.js';
 
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 
@@ -59,7 +59,7 @@ function pathToKey(path) {
 }
 
 
-class CollectionStore extends Store {
+class CollectionStore extends ChangeEmitter {
   pathToKey(path) {
     return pathToKey(path);
   }

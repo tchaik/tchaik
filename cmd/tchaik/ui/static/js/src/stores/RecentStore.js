@@ -2,14 +2,14 @@
 
 import AppDispatcher from '../dispatcher/AppDispatcher';
 
-import {Store} from './Store.js';
+import {ChangeEmitter} from '../utils/ChangeEmitter.js';
 
 import RecentConstants from '../constants/RecentConstants.js';
 
 
 var _recentPaths = [];
 
-class RecentStore extends Store {
+class RecentStore extends ChangeEmitter {
   getPaths() {
     return _recentPaths;
   }

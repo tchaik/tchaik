@@ -1,6 +1,6 @@
 'use strict';
 
-import {Store} from '../stores/Store.js';
+import {ChangeEmitter} from './ChangeEmitter.js';
 
 import AppDispatcher from '../dispatcher/AppDispatcher.js';
 
@@ -8,7 +8,7 @@ import WebsocketActions from '../actions/WebsocketActions.js';
 import WebsocketConstants from '../constants/WebsocketConstants.js';
 
 
-class WebsocketAPI extends Store {
+class WebsocketAPI extends ChangeEmitter {
   constructor() {
     super();
 
