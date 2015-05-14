@@ -1,10 +1,11 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var WebsocketAPI = require('../utils/WebsocketAPI.js');
+import WebsocketAPI from '../utils/WebsocketAPI.js';
 
-var FilterConstants = require('../constants/FilterConstants.js');
+import FilterConstants from '../constants/FilterConstants.js';
+
 
 var FilterActions = {
 
@@ -29,4 +30,4 @@ var FilterActions = {
 
 };
 
-module.exports = FilterActions;
+export default FilterActions;

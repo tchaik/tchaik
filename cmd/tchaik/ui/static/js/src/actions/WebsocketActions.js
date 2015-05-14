@@ -1,8 +1,9 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var WebsocketConstants = require('../constants/WebsocketConstants.js');
+import WebsocketConstants from '../constants/WebsocketConstants.js';
+
 
 var WebsocketActions = {
 
@@ -17,8 +18,8 @@ var WebsocketActions = {
     AppDispatcher.handleViewAction({
       actionType: WebsocketConstants.RECONNECT
     });
-  },
+  }
 
 };
 
-module.exports = WebsocketActions;
+export default WebsocketActions;

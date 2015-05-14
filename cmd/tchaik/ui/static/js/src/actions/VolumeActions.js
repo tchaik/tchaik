@@ -1,8 +1,9 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var VolumeConstants = require('../constants/VolumeConstants.js');
+import VolumeConstants from '../constants/VolumeConstants.js';
+
 
 var VolumeActions = {
 
@@ -17,8 +18,8 @@ var VolumeActions = {
     AppDispatcher.handleViewAction({
       actionType: VolumeConstants.TOGGLE_VOLUME_MUTE,
     });
-  },
+  }
 
 };
 
-module.exports = VolumeActions;
+export default VolumeActions;

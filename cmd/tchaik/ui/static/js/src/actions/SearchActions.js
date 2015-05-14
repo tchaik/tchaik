@@ -1,10 +1,11 @@
 'use strict';
 
-var WebsocketAPI = require('../utils/WebsocketAPI.js');
+import WebsocketAPI from '../utils/WebsocketAPI.js';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher.js');
+import AppDispatcher from '../dispatcher/AppDispatcher.js';
 
-var SearchConstants = require('../constants/SearchConstants.js');
+import SearchConstants from '../constants/SearchConstants.js';
+
 
 var SearchActions = {
 
@@ -15,8 +16,8 @@ var SearchActions = {
       actionType: SearchConstants.SEARCH,
       input: input,
     });
-  },
+  }
 
 };
 
-module.exports = SearchActions;
+export default SearchActions;

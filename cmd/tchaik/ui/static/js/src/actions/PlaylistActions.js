@@ -1,10 +1,11 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var PlaylistConstants = require('../constants/PlaylistConstants.js');
-var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
-var WebsocketAPI = require('../utils/WebsocketAPI.js');
+import PlaylistConstants from '../constants/PlaylistConstants.js';
+import NowPlayingConstants from '../constants/NowPlayingConstants.js';
+import WebsocketAPI from '../utils/WebsocketAPI.js';
+
 
 var PlaylistActions = {
 
@@ -44,8 +45,8 @@ var PlaylistActions = {
       track: data,
       source: "playlist",
     });
-  },
+  }
 
 };
 
-module.exports = PlaylistActions;
+export default PlaylistActions;

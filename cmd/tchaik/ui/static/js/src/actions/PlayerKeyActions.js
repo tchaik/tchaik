@@ -1,8 +1,9 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher.js');
+import AppDispatcher from '../dispatcher/AppDispatcher.js';
 
-var ControlConstants = require('../constants/ControlConstants.js');
+import ControlConstants from '../constants/ControlConstants.js';
+
 
 var PlayerKeyActions = {
 
@@ -18,8 +19,8 @@ var PlayerKeyActions = {
       actionType: ControlConstants.SET_PUSH_KEY,
       key: key,
     });
-  },
+  }
 
 };
 
-module.exports = PlayerKeyActions;
+export default PlayerKeyActions;

@@ -1,8 +1,9 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var LeftColumnConstants = require('../constants/LeftColumnConstants.js');
+import LeftColumnConstants from '../constants/LeftColumnConstants.js';
+
 
 var LeftColumnActions = {
 
@@ -11,8 +12,8 @@ var LeftColumnActions = {
       actionType: LeftColumnConstants.MODE,
       mode: m
     });
-  },
+  }
 
 };
 
-module.exports = LeftColumnActions;
+export default LeftColumnActions;

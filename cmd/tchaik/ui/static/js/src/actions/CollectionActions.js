@@ -1,13 +1,14 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var WebsocketAPI = require('../utils/WebsocketAPI.js');
+import WebsocketAPI from '../utils/WebsocketAPI.js';
 
-var CollectionStore = require('../stores/CollectionStore.js');
+import CollectionStore from '../stores/CollectionStore.js';
 
-var CollectionConstants = require('../constants/CollectionConstants.js');
-var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
+import CollectionConstants from '../constants/CollectionConstants.js';
+import NowPlayingConstants from '../constants/NowPlayingConstants.js';
+
 
 var CollectionActions = {
 
@@ -51,4 +52,4 @@ var CollectionActions = {
 
 };
 
-module.exports = CollectionActions;
+export default CollectionActions;

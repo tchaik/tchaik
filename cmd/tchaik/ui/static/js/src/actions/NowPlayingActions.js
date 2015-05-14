@@ -1,8 +1,9 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
+import NowPlayingConstants from '../constants/NowPlayingConstants.js';
+
 
 var NowPlayingActions = {
 
@@ -72,8 +73,8 @@ var NowPlayingActions = {
       actionType: NowPlayingConstants.SET_PLAYING,
       playing: v,
     });
-  },
+  }
 
 };
 
-module.exports = NowPlayingActions;
+export default NowPlayingActions;
