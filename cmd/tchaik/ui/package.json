@@ -40,5 +40,8 @@
     "testPathDirs": [
       "<rootDir>/static/js/__tests__"
     ]
+  },
+  "scripts": {
+      "test": "jest"
   }
 }

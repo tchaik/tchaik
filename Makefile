@@ -6,7 +6,7 @@ build: gobuild uibuild
 deps: godeps uideps
 fmt: gofmt
 lint: golint uilint
-test: gotest
+test: gotest uitest
 
 gobuild:
 	go install -a ./...
@@ -27,3 +27,5 @@ uideps:
 	cd cmd/tchaik/ui; npm install
 uilint:
 	cd cmd/tchaik/ui; gulp lint
+uitest:
+	cd cmd/tchaik/ui; npm run test
