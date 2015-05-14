@@ -1,15 +1,14 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
-var PlaylistConstants = require('../constants/PlaylistConstants.js');
+import NowPlayingConstants from '../constants/NowPlayingConstants.js';
+import PlaylistConstants from '../constants/PlaylistConstants.js';
 
-var PlaylistStore = require('./PlaylistStore.js');
+import PlaylistStore from './PlaylistStore.js';
 
-var CtrlConstants = require('../constants/ControlConstants.js');
+import CtrlConstants from '../constants/ControlConstants.js';
 
 var CHANGE_EVENT = 'change';
 var CONTROL_EVENT = 'control';
@@ -61,64 +60,46 @@ function currentTrack() {
 }
 
 
-var NowPlayingStore = assign({}, EventEmitter.prototype, {
-
-  getPlaying: function() {
+class NowPlayingStore extends ChangeEmitter {
+  getPlaying() {
     return playing();
-  },
+  }
 
-  getTrack: function() {
+  getTrack() {
     return currentTrack();
-  },
+  }
 
-  getSource: function() {
+  getSource() {
     return currentTrackSource();
-  },
+  }
 
-  emitChange: function(type) {
-    this.emit(CHANGE_EVENT, type);
-  },
-
-  emitControl: function(type, value) {
+  emitControl(type, value) {
     this.emit(CONTROL_EVENT, type, value);
-  },
+  }
 
   /**
    * @param {function} callback
    */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  addControlListener: function(callback) {
+  addControlListener(callback) {
     this.on(CONTROL_EVENT, callback);
-  },
+  }
 
   /**
    * @param {function} callback
    */
-  removeControlListener: function(callback) {
+  removeControlListener(callback) {
     this.removeListener(CONTROL_EVENT, callback);
-  },
+  }
+}
 
-});
+var _nowPlayingStore = new NowPlayingStore();
 
 function handlePrevAction() {
   AppDispatcher.waitFor([
     PlaylistStore.dispatchToken,
   ]);
   setCurrentTrack(PlaylistStore.getCurrentTrack());
-  NowPlayingStore.emitChange();
+  _nowPlayingStore.emitChange();
 }
 
 function handleNextAction() {
@@ -126,10 +107,10 @@ function handleNextAction() {
     PlaylistStore.dispatchToken,
   ]);
   setCurrentTrack(PlaylistStore.getCurrentTrack());
-  NowPlayingStore.emitChange();
+  _nowPlayingStore.emitChange();
 }
 
-NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
+_nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -139,12 +120,12 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
         case CtrlConstants.PLAY:
           setPlaying(true);
-          NowPlayingStore.emitChange();
+          _nowPlayingStore.emitChange();
           break;
 
         case CtrlConstants.PAUSE:
           setPlaying(false);
-          NowPlayingStore.emitChange();
+          _nowPlayingStore.emitChange();
           break;
 
         case CtrlConstants.NEXT:
@@ -156,8 +137,8 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           break;
 
         case CtrlConstants.TOGGLE_PLAY_PAUSE:
-          setPlaying(!NowPlayingStore.getPlaying());
-          NowPlayingStore.emitChange();
+          setPlaying(!_nowPlayingStore.getPlaying());
+          _nowPlayingStore.emitChange();
           break;
 
         default:
@@ -168,7 +149,7 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         switch (action.data.Key) {
 
           case "time":
-            NowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.data.Value);
+            _nowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.data.Value);
             break;
 
           default:
@@ -197,17 +178,17 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.SET_PLAYING:
         setPlaying(action.playing);
-        NowPlayingStore.emitChange();
+        _nowPlayingStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_CURRENT_TIME:
-        NowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.currentTime);
+        _nowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.currentTime);
         break;
 
       case NowPlayingConstants.SET_CURRENT_TRACK:
         setCurrentTrack(action.track);
         setCurrentTrackSource(action.source);
-        NowPlayingStore.emitChange();
+        _nowPlayingStore.emitChange();
         break;
 
       case PlaylistConstants.PLAY_NOW:
@@ -215,7 +196,7 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           PlaylistStore.dispatchToken,
         ]);
         setCurrentTrack(PlaylistStore.getCurrentTrack());
-        NowPlayingStore.emitChange();
+        _nowPlayingStore.emitChange();
         break;
 
       default:
@@ -226,4 +207,4 @@ NowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = NowPlayingStore;
+export default _nowPlayingStore;
