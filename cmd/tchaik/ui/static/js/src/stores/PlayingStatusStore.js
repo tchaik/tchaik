@@ -1,15 +1,13 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
-var PlaylistConstants = require('../constants/PlaylistConstants.js');
+import NowPlayingConstants from '../constants/NowPlayingConstants.js';
+import PlaylistConstants from '../constants/PlaylistConstants.js';
 
-var NowPlayingStore = require('../stores/NowPlayingStore.js');
+import NowPlayingStore from '../stores/NowPlayingStore.js';
 
-var CHANGE_EVENT = 'change';
 
 var _defaultTrackState = {
   buffered: 0.0,
@@ -39,46 +37,27 @@ function currentTime() {
 }
 
 
-var PlayingStatusStore = assign({}, EventEmitter.prototype, {
-
-  getTime: function() {
+class PlayingStatusStore extends ChangeEmitter {
+  getTime() {
     return currentTime();
-  },
+  }
 
-  getBuffered: function() {
+  getBuffered() {
     return _trackState.buffered;
-  },
+  }
 
-  getDuration: function() {
+  getDuration() {
     return _trackState.duration;
-  },
+  }
 
-  getError: function() {
+  getError() {
     return _trackState.error;
-  },
+  }
+}
 
-  emitChange: function(type) {
-    this.emit(CHANGE_EVENT, type);
-  },
+var _playingStatusStore = new PlayingStatusStore();
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-
-PlayingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
+_playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -101,7 +80,7 @@ PlayingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
           NowPlayingStore.dispatchToken,
         ]);
         setCurrentTime(0);
-        PlayingStatusStore.emitChange();
+        _playingStatusStore.emitChange();
         break;
 
       case NowPlayingConstants.RESET:
@@ -110,27 +89,27 @@ PlayingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
           duration: 0,
           error: null,
         };
-        PlayingStatusStore.emitChange();
+        _playingStatusStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_ERROR:
         _trackState.error = action.error;
-        PlayingStatusStore.emitChange();
+        _playingStatusStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_DURATION:
         _trackState.duration = action.duration;
-        PlayingStatusStore.emitChange();
+        _playingStatusStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_BUFFERED:
         _trackState.buffered = action.buffered;
-        PlayingStatusStore.emitChange();
+        _playingStatusStore.emitChange();
         break;
 
       case NowPlayingConstants.STORE_CURRENT_TIME:
         setCurrentTime(action.currentTime);
-        PlayingStatusStore.emitChange();
+        _playingStatusStore.emitChange();
         break;
 
       default:
@@ -141,4 +120,4 @@ PlayingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = PlayingStatusStore;
+export default _playingStatusStore;
