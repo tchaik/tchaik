@@ -10,7 +10,7 @@ import PlaylistStore from './PlaylistStore.js';
 
 import CtrlConstants from '../constants/ControlConstants.js';
 
-var CHANGE_EVENT = 'change';
+
 var CONTROL_EVENT = 'control';
 
 var currentPlaying = null;
