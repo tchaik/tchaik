@@ -1,15 +1,13 @@
 'use strict';
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import AppDispatcher from '../dispatcher/AppDispatcher';
 
-var WebsocketConstants = require('../constants/WebsocketConstants.js');
-var WebsocketAPI = require('../utils/WebsocketAPI.js');
+import WebsocketConstants from '../constants/WebsocketConstants.js';
+import WebsocketAPI from '../utils/WebsocketAPI.js';
 
-var ControlConstants = require('../constants/ControlConstants.js');
+import ControlConstants from '../constants/ControlConstants.js';
 
-var CHANGE_EVENT = 'change';
 
 var _playerKey = null;
 var _pushKey = null;
@@ -47,53 +45,35 @@ function pushKey() {
 }
 
 
-var PlayerKeyStore = assign({}, EventEmitter.prototype, {
-
-  isKeySet: function() {
+class PlayerKeyStore extends ChangeEmitter {
+  isKeySet() {
     var k = key();
     if (k === null || k === "") {
       return false;
     }
     return true;
-  },
+  }
 
-  getKey: function() {
+  getKey() {
     return key();
-  },
+  }
 
-  isPushKeySet: function() {
+  isPushKeySet() {
     var k = pushKey();
     if (k === null || k === "") {
       return false;
     }
     return true;
-  },
+  }
 
-  getPushKey: function() {
+  getPushKey() {
     return pushKey();
-  },
+  }
+}
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+var _playerKeyStore = new PlayerKeyStore();
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
-
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-PlayerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
+_playerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -102,17 +82,17 @@ PlayerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
       case ControlConstants.SET_KEY:
         setKey(action.key);
         sendKey(action.key);
-        PlayerKeyStore.emitChange();
+        _playerKeyStore.emitChange();
         break;
 
       case ControlConstants.SET_PUSH_KEY:
         setPushKey(action.key);
-        PlayerKeyStore.emitChange();
+        _playerKeyStore.emitChange();
         break;
 
       case WebsocketConstants.RECONNECT:
-        if (PlayerKeyStore.isKeySet()) {
-          sendKey(PlayerKeyStore.getKey());
+        if (_playerKeyStore.isKeySet()) {
+          sendKey(_playerKeyStore.getKey());
         }
         break;
     }
@@ -120,4 +100,4 @@ PlayerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = PlayerKeyStore;
+export default _playerKeyStore;
