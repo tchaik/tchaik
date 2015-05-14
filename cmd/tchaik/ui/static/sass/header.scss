@@ -15,6 +15,7 @@ div#header {
     color: #999;
     padding: 10px 10px 10px 11px;
     float: left;
+    @include fade-in(color);
 
     span.glyphicon {
       font-size: 20px;
