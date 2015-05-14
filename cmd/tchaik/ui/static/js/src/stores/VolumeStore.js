@@ -101,11 +101,6 @@ _volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
         _volumeStore.emitChange();
         break;
 
-      case VolumeConstants.SET_VOLUME_MUTE:
-        setVolumeMute(action.volumeMute);
-        _volumeStore.emitChange();
-        break;
-
       case VolumeConstants.TOGGLE_VOLUME_MUTE:
         setVolumeMute(!volumeMute());
         _volumeStore.emitChange();
