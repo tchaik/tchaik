@@ -1,6 +1,6 @@
 build
 interim
 .module-cache
-ui/static/.sass-cache
-ui/static/css
+.sass-cache
+cmd/tchaik/ui/static/css
 node_modules
