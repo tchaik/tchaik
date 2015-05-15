@@ -67,11 +67,12 @@ div#bottom {
       display: flex;
       flex: 1 0px;
       vertical-align: top;
+      margin-right: 5px;
 
       img.artwork {
         float: left;
         display: none;
-        margin-right: 10px;
+        margin-right: 5px;
 
         &.visible {
           display: inline;
