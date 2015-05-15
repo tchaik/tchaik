@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/dhowden/tchaik/index"
+	"github.com/tchaik/tchaik/index"
 )
 
 type LibraryAPI struct {

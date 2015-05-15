@@ -31,8 +31,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/dhowden/tchaik/store"
-	"github.com/dhowden/tchaik/store/cmdflag"
+	"github.com/tchaik/tchaik/store"
+	"github.com/tchaik/tchaik/store/cmdflag"
 )
 
 var listen string

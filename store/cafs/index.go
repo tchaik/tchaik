@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/dhowden/tchaik/store"
+	"github.com/tchaik/tchaik/store"
 )
 
 // Index is an interface which contains methods for implementing

@@ -27,10 +27,10 @@ import (
 
 	"github.com/dhowden/httpauth"
 
-	"github.com/dhowden/tchaik/index"
-	"github.com/dhowden/tchaik/index/itl"
-	"github.com/dhowden/tchaik/store"
-	"github.com/dhowden/tchaik/store/cmdflag"
+	"github.com/tchaik/tchaik/index"
+	"github.com/tchaik/tchaik/index/itl"
+	"github.com/tchaik/tchaik/store"
+	"github.com/tchaik/tchaik/store/cmdflag"
 )
 
 var debug bool

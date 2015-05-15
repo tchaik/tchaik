@@ -15,7 +15,7 @@ import (
 	"time"
 
 	rawitl "github.com/dhowden/itl"
-	"github.com/dhowden/tchaik/index"
+	"github.com/tchaik/tchaik/index"
 )
 
 // ReadFrom creates a Tchaik Library implementation from an iTunes Music Library passed through

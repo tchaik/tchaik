@@ -12,7 +12,7 @@ import (
 
 	"golang.org/x/net/websocket"
 
-	"github.com/dhowden/tchaik/index"
+	"github.com/tchaik/tchaik/index"
 )
 
 type Command struct {

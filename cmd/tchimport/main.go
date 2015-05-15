@@ -26,8 +26,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/dhowden/tchaik/index"
-	"github.com/dhowden/tchaik/index/itl"
+	"github.com/tchaik/tchaik/index"
+	"github.com/tchaik/tchaik/index/itl"
 )
 
 var itlXML, path string
