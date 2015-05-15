@@ -21,13 +21,13 @@ Tchaik is an open source music organisation and streaming system.  The backend i
 
 ### Building
 
-    $ go get github.com/dhowden/tchaik/...
+    $ go get github.com/tchaik/tchaik/...
 
 Which will fetch the code and build the command line tools, putting the executables into `$GOPATH/bin` (which is assumed to be in your `PATH` already).
 
 Building the UI:
 
-    $ cd $GOPATH/src/github.com/dhowden/tchaik/cmd/tchaik/ui
+    $ cd $GOPATH/src/github.com/tchaik/tchaik/cmd/tchaik/ui
     $ npm install
     $ NODE_ENV=development gulp
 
@@ -37,7 +37,7 @@ Alternative, if you want the JS and CSS to be recompiled, and have the browser r
 
 Now you can start Tchaik.  For the moment this means first moving to the cmd/tchaik directory:
 
-    $ cd $GOPATH/src/github.com/dhowden/tchaik/cmd/tchaik
+    $ cd $GOPATH/src/github.com/tchaik/tchaik/cmd/tchaik
     $ tchaik -itlXML ~/path/to/iTunesLibrary.xml
     Parsing ~/path/to/iTunesLibrary.xml...done.
     Building Tchaik Library...done.
