@@ -16,14 +16,19 @@ div#bottom {
     position: relative;
     height: 100%;
     width: 100%;
+    display: flex;
+    flex: 1 auto;
 
     div.controls {
-      margin-top: 10px;
-      float: left;
+      padding-right: 10px;
+      display: flex;
+      align-items: center;
+      flex: 0 auto;
 
       span.glyphicon {
         margin: 8px;
         @include user-select(none);
+        @include fade-in(color);
 
         &.glyphicon-step-forward, &.glyphicon-step-backward {
           font-size: 20px;
@@ -47,6 +52,7 @@ div#bottom {
           padding: 7px 6px 9px 10px;
           border: 2px solid #666;
           border-radius: 50%;
+          @include fade-in(border-color, 50ms);
 
           &:hover {
             color: lighten($light-blue, 10);
@@ -57,8 +63,10 @@ div#bottom {
     }
 
     div.now-playing-track {
-      float: left;
-      margin-top: 5px;
+      padding-top: 5px;
+      display: flex;
+      flex: 1 0px;
+      vertical-align: top;
 
       img.artwork {
         float: left;
@@ -73,9 +81,7 @@ div#bottom {
 
       div.track-info {
         margin-top: 1px;
-        float: left;
-        display:inline;
-        width: 600px;
+        flex: 1 auto;
       }
 
       div.title {
