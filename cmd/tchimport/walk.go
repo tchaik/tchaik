@@ -37,14 +37,20 @@ func (l *Library) Tracks() []index.Track {
 type Track struct {
 	tag.Metadata
 	Location    string
-	ModTime     time.Time
+	FileInfo    os.FileInfo
 	CreatedTime time.Time
 }
 
 func (m *Track) GetString(name string) string {
 	switch name {
 	case "Name":
-		return m.Title()
+		title := m.Title()
+		if title == "" {
+			fileName := m.FileInfo.Name()
+			ext := filepath.Ext(fileName)
+			title = strings.TrimSuffix(fileName, ext)
+		}
+		return title
 	case "Album":
 		return m.Album()
 	case "Artist":
@@ -83,7 +89,7 @@ func (m *Track) GetInt(name string) int {
 func (m *Track) GetTime(name string) time.Time {
 	switch name {
 	case "DateModified":
-		return m.ModTime
+		return m.FileInfo.ModTime()
 	case "DateAdded":
 		return m.CreatedTime
 	}
@@ -148,7 +154,7 @@ func processPath(path string) (*Track, error) {
 	return &Track{
 		Metadata:    m,
 		Location:    path,
-		ModTime:     fileInfo.ModTime(),
+		FileInfo:    fileInfo,
 		CreatedTime: createdTime,
 	}, nil
 }
