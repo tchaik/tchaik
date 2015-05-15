@@ -10,7 +10,9 @@ export default class GroupAttributes extends React.Component {
         <span className="bull">&bull;</span>,
       ];
     });
-    list[list.length-1].pop();
+    if (list.length > 0) {
+      list[list.length-1].pop();
+    }
 
     return (
       <div className="attributes">
