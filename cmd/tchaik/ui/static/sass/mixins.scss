@@ -40,7 +40,7 @@
   transition-timing-function: $fn;
 }
 
-@mixin fade-in($property, $duration:150ms) {
+@mixin fade-in($property, $duration:100ms) {
   @include transition-property($property);
   @include transition-duration($duration);
   @include transition-timing-function(ease-in);
