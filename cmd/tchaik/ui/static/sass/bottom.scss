@@ -40,7 +40,7 @@ div#bottom {
         @include fade-in(color);
 
         &.glyphicon-step-forward, &.glyphicon-step-backward {
-          font-size: 20px;
+          font-size: 18px;
           line-height: 36px;
           color: #666;
           top: -5px;
@@ -56,12 +56,16 @@ div#bottom {
 
         &.glyphicon-play, &.glyphicon-pause {
           font-size: 34px;
+          height: 34px;
+          width: 34px;
           margin-right: 4px;
           margin-top: 0px;
           padding: 7px 6px 9px 10px;
           border: 2px solid #666;
           border-radius: 50%;
           @include fade-in(border-color, 50ms);
+          background-color: #444;
+          color: #eee;
 
           &:hover {
             color: lighten($light-blue, 10);
