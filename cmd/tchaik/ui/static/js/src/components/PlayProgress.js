@@ -74,7 +74,7 @@ export default class PlayProgress extends React.Component {
 
   _onWheel(evt) {
     evt.stopPropagation();
-    var t = this.state.current + (0.01 * this.state.duration * evt.deltaY);
+    var t = this.state.currentTime + (0.01 * this.state.duration * evt.deltaY);
     if (t > this.state.duration) {
       t = this.state.duration;
     } else if (t < 0.00) {
