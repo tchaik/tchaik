@@ -1,7 +1,3 @@
-var __path__ = '../../src/components/ArtworkImage.js';
-
-jest.dontMock(__path__);
-
 describe('ArtworkImage', function() {
   var React, TestUtils, ArtworkImage;
   var domNode, artworkImage;
@@ -9,7 +5,7 @@ describe('ArtworkImage', function() {
   beforeEach(function() {
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
-    ArtworkImage = require(__path__);
+    ArtworkImage = require( '../../src/components/ArtworkImage.js');
 
     artworkImage = TestUtils.renderIntoDocument(
       <ArtworkImage path='/artwork/19199193' />
@@ -20,7 +16,7 @@ describe('ArtworkImage', function() {
   describe('in the initial state', function() {
     it('should not be visible', function() {
       var classes = domNode.getAttribute('class').split(' ');
-      expect(classes).not.toContain('visible');
+      expect(classes).not.to.contain('visible');
     });
   });
 
@@ -31,7 +27,7 @@ describe('ArtworkImage', function() {
 
     it('should be visible', function() {
       var classes = domNode.getAttribute('class').split(' ');
-      expect(classes).toContain('visible');
+      expect(classes).to.contain('visible');
     });
   });
 
@@ -42,7 +38,7 @@ describe('ArtworkImage', function() {
 
     it('should be visible', function() {
       var classes = domNode.getAttribute('class').split(' ');
-      expect(classes).not.toContain('visible');
+      expect(classes).not.to.contain('visible');
     });
   });
 

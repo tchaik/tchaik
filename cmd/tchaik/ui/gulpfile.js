@@ -3,6 +3,7 @@ var gulp = require('gulp');
 var _ = require('lodash');
 var gutil = require('gulp-util');
 var jshint = require('gulp-jshint');
+var karma = require('gulp-karma');
 var webpack = require('webpack');
 var webpackDevServer = require('webpack-dev-server');
 
@@ -106,5 +107,32 @@ gulp.task('serve', function() {
   server.listen(3000);
 });
 
+
+function setupKarma(options) {
+  return gulp.src([
+    // Polyfill so we can use react in phantomjs
+    './node_modules/phantomjs-polyfill/bind-polyfill.js',
+    // Test files
+    'static/js/src/**/*-test.js'
+  ])
+  .pipe(karma(_.assign({
+    configFile: 'karma.conf.js',
+    browsers: ['PhantomJS'],
+  }, options)));
+}
+
+gulp.task('karma:ci', function() {
+  return setupKarma({
+    action: 'run',
+  });
+});
+
+gulp.task('karma:dev', function() {
+  return setupKarma({
+    action: 'watch',
+  });
+});
+
 gulp.task('default', ['webpack', 'jshint:jsx']);
 gulp.task('lint', ['jshint', 'jshint:jsx']);
+gulp.task('test', ['karma:ci']);
