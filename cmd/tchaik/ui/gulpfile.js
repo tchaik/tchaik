@@ -13,6 +13,7 @@ var paths = {
     dest: 'static/css'
   },
   js: {
+    tests: 'static/js/src/**/*-test.js',
     entry: './static/js/src/app.js',
     bundleName: 'tchaik.js',
     dest: 'static/js/build'
@@ -113,7 +114,7 @@ function setupKarma(options) {
     // Polyfill so we can use react in phantomjs
     './node_modules/phantomjs-polyfill/bind-polyfill.js',
     // Test files
-    'static/js/src/**/*-test.js'
+    paths.js.tests,
   ])
   .pipe(karma(_.assign({
     configFile: 'karma.conf.js',
