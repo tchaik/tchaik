@@ -16,13 +16,11 @@ div#bottom {
     height: 100%;
     width: 100%;
     display: flex;
-    flex: 1 auto;
 
     div.controls {
       padding-right: 10px;
       display: flex;
       align-items: center;
-      flex: 0 auto;
 
       span.glyphicon {
         margin: 8px;
@@ -61,11 +59,16 @@ div#bottom {
       }
     }
 
+    div.right {
+      display: flex;
+      flex: 1;
+    }
+
     div.now-playing-track {
       display: flex;
-      flex: 1 0px;
       vertical-align: top;
       margin-right: 5px;
+      flex: 1;
 
       img.artwork {
         float: left;

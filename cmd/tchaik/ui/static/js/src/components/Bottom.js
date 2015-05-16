@@ -23,8 +23,9 @@ export default class Bottom extends React.Component {
       <div className="bottom-container">
         <PlayProgress/>
         <div className="now-playing">
-          <Controls />
           <NowPlaying />
+          <Controls />
+          <div className="right"/>
         </div>
       </div>
     );
