@@ -220,15 +220,22 @@ div#bottom {
   }
 
   div.playProgress {
+    $bar-height: 4px;
+
     margin: 0;
     padding: 0;
-
-    $bar-height: 4px;
+    position: relative;
+    width: 100%;
+    height: $bar-height;
 
     & > div.bar {
       height: $bar-height;
       display: flex;
       cursor: pointer;
+      position: absolute;
+      width: 100%;
+      padding-bottom: 7px;
+      z-index: 10;
 
       .current {
         height: $bar-height;
@@ -255,7 +262,7 @@ div#bottom {
         margin-right: -5px;
         margin-top:-3px;
         width: 10px;
-        z-index: 100;
+        z-index: 10;
       }
 
       &:hover {
