@@ -21,7 +21,7 @@ export default class Bottom extends React.Component {
   render() {
     return (
       <div className="bottom-container">
-        <PlayProgress markerWidth={10} />
+        <PlayProgress/>
         <div className="now-playing">
           <Controls />
           <NowPlaying />

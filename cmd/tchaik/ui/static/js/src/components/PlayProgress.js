@@ -49,16 +49,16 @@ export default class PlayProgress extends React.Component {
   }
 
   render() {
-    var wpc = (this.state.currentTime / this.state.duration) * 100;
-    var w = "calc("+Math.min(wpc, 100.0)+"% - " + this.props.markerWidth + "px)";
+    var wpc = Math.min((this.state.currentTime / this.state.duration) * 100, 100);
+    var w = `${Math.min(wpc, 100.0)}%`;
     var bpc = (this.state.buffered / this.state.duration) * 100 - wpc;
-    var b = "calc("+Math.min(bpc, 100.0)+"% - " + this.props.markerWidth + "px)";
+    var b = `${Math.min(bpc, 100.0)}%`;
 
     return (
       <div className="playProgress" onClick={this._onClick} onWheel={this._onWheel}>
         <div className="bar">
           <div className="current" style={{width: w}} />
-          <div className="marker" style={{width: this.props.markerWidth}} />
+          <div className="marker" />
           <div className="buffered" style={{width: b}} />
         </div>
       </div>

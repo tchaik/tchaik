@@ -228,26 +228,45 @@ div#bottom {
     & > div.bar {
       height: $bar-height;
       display: flex;
+      cursor: pointer;
 
-      & > div.current {
+      .current {
         height: $bar-height;
         float: left;
         background-color: $light-blue;
       }
 
-      & > div.buffered {
+      .buffered {
+        display: none;
+
         height: $bar-height;
         float: left;
         background-color: #333;
       }
 
-      & > div.marker {
+      .marker {
+        display: none;
+
+        width: 10px;
+        margin-left: -5px;
+        margin-right: -5px;
+
         height: 10px;
         border-radius: 50%;
         float: left;
         background-color: #fff;
         margin-top:-3px;
         box-shadow:-1px 0px 2px #444;
+      }
+
+      &:hover {
+        .marker {
+          display: initial;
+        }
+
+        .buffered {
+          display: initial;
+        }
       }
     }
   }
