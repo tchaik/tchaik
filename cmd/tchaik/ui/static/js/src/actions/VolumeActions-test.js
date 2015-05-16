@@ -5,9 +5,6 @@ describe('VolumeActions', function() {
   var handleViewActionSpy;
 
   beforeEach(function() {
-    React = require('react/addons');
-    TestUtils = React.addons.TestUtils;
-
     VolumeActions = rewire('./VolumeActions.js');
     VolumeConstants = rewire('../constants/VolumeConstants.js');
 

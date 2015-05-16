@@ -60,6 +60,7 @@ var jshintConfig = {
     'describe': false,
     'expect': false,
     'it': false,
+    'sinon': false,
   }
 };
 

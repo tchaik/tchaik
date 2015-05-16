@@ -1,3 +1,5 @@
+/* jshint expr:true */
+
 var rewire = require('rewire');
 
 describe('ArtworkImage', function() {
