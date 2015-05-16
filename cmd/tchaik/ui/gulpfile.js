@@ -55,6 +55,12 @@ var jshintConfig = {
   unused: true,
   node: true,
   newcap: false,
+  globals: {
+    'beforeEach': false,
+    'describe': false,
+    'expect': false,
+    'it': false,
+  }
 };
 
 gulp.task('jshint', function() {
@@ -65,19 +71,12 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('jshint:jsx', function() {
+  var config = _.assign({}, jshintConfig, {
+    linter: require('jshint-jsx').JSXHINT,
+  });
+
   return gulp.src(['static/js/src/components/*.js'])
-    .pipe(jshint({
-      linter: require('jshint-jsx').JSXHINT,
-      esnext: true,
-      browser: true,
-      devel: true,
-      jquery: true,
-      curly: true,
-      undef: true,
-      unused: true,
-      node: true,
-      newcap: false
-    }))
+    .pipe(jshint(config))
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
 });
