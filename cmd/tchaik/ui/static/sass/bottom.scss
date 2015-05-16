@@ -226,7 +226,6 @@ div#bottom {
     $bar-height: 4px;
 
     & > div.bar {
-      background-color: #444;
       height: $bar-height;
       display: flex;
 
@@ -239,7 +238,7 @@ div#bottom {
       & > div.buffered {
         height: $bar-height;
         float: left;
-        background-color: #666;
+        background-color: #333;
       }
 
       & > div.marker {
