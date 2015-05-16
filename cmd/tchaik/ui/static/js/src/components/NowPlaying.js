@@ -10,7 +10,6 @@ import GroupAttributes from './GroupAttributes.js';
 import ArtworkImage from './ArtworkImage.js';
 
 import NowPlayingStore from '../stores/NowPlayingStore.js';
-import NowPlayingActions from '../actions/NowPlayingActions.js';
 
 import PlayingStatusStore from '../stores/PlayingStatusStore.js';
 
@@ -75,9 +74,9 @@ export default class NowPlaying extends React.Component {
           <div className="title">{track.Name}<BitRate track={track} /><a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
           {attributes}
 
-          <PlayProgress markerWidth={10} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
           <div className="times">
-            <TimeFormatter className="currentTime" time={this.state.currentTime} />
+            <TimeFormatter className="current-time" time={this.state.currentTime} />
+            <TimeFormatter className="track-length" time={this.state.duration} />
             <TimeFormatter className="remaining" time={remainingTime} />
           </div>
         </div>
@@ -123,63 +122,3 @@ class BitRate extends React.Component {
     this.setState({expanded: !this.state.expanded});
   }
 }
-
-function _getOffsetLeft(elem) {
-    var offsetLeft = 0;
-    do {
-      if (!isNaN(elem.offsetLeft)) {
-          offsetLeft += elem.offsetLeft;
-      }
-    } while ((elem = elem.offsetParent));
-    return offsetLeft;
-}
-
-class PlayProgress extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this._onClick = this._onClick.bind(this);
-    this._onWheel = this._onWheel.bind(this);
-  }
-
-  render() {
-    var wpc = (this.props.current / this.props.duration) * 100;
-    var w = "calc("+Math.min(wpc, 100.0)+"% - " + this.props.markerWidth + "px)";
-    var bpc = (this.props.buffered / this.props.duration) * 100 - wpc;
-    var b = "calc("+Math.min(bpc, 100.0)+"% - " + this.props.markerWidth + "px)";
-
-    return (
-      <div className="playProgress" onClick={this._onClick} onWheel={this._onWheel}>
-        <div className="bar">
-          <div className="current" style={{width: w}} />
-          <div className="marker" style={{width: this.props.markerWidth}} />
-          <div className="buffered" style={{width: b}} />
-        </div>
-      </div>
-    );
-  }
-
-  _onClick(evt) {
-    var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
-    var width = evt.currentTarget.offsetWidth;
-    this.props.setCurrentTime((pos / width) * this.props.duration);
-  }
-
-  _onWheel(evt) {
-    evt.stopPropagation();
-    var t = this.props.current + (0.01 * this.props.duration * evt.deltaY);
-    if (t > this.props.duration) {
-      t = this.props.duration;
-    } else if (t < 0.00) {
-      t = 0.0;
-    }
-    this.props.setCurrentTime(t);
-  }
-}
-
-PlayProgress.propTypes = {
-  markerWidth: React.PropTypes.number.isRequired,
-  current: React.PropTypes.number.isRequired,
-  buffered: React.PropTypes.number.isRequired,
-  duration: React.PropTypes.number.isRequired,
-};

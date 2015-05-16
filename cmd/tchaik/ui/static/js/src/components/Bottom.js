@@ -7,6 +7,7 @@ import Icon from './Icon.js';
 import NowPlayingActions from '../actions/NowPlayingActions.js';
 import NowPlayingStore from '../stores/NowPlayingStore.js';
 import NowPlaying from './NowPlaying.js';
+import PlayProgress from './PlayProgress.js';
 
 import PlaylistStore from '../stores/PlaylistStore.js';
 import PlaylistActions from '../actions/PlaylistActions.js';
@@ -19,9 +20,12 @@ var BACKWARD_TIMEOUT = 2000;
 export default class Bottom extends React.Component {
   render() {
     return (
-      <div className="now-playing">
-        <Controls />
-        <NowPlaying />
+      <div className="bottom-container">
+        <PlayProgress markerWidth={10} />
+        <div className="now-playing">
+          <Controls />
+          <NowPlaying />
+        </div>
       </div>
     );
   }
