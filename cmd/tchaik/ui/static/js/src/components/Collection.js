@@ -38,7 +38,8 @@ export class Group extends React.Component {
     this.setCommon = this.setCommon.bind(this);
 
     this._onClick = this._onClick.bind(this);
-    this._onClickName = this._onClickName.bind(this);
+    this._onClickHeader = this._onClickHeader.bind(this);
+    this._onClickImage = this._onClickImage.bind(this);
     this._onPlayNow = this._onPlayNow.bind(this);
     this._onQueue = this._onQueue.bind(this);
   }
@@ -98,7 +99,7 @@ export class Group extends React.Component {
       );
 
       if (this.state.common.TrackID && this.props.depth == 1) {
-        image = <ArtworkImage path={"/artwork/" + common.TrackID} />;
+        image = <ArtworkImage path={"/artwork/" + common.TrackID} onClick={this._onClickImage}/>;
       }
     }
 
@@ -116,9 +117,9 @@ export class Group extends React.Component {
 
     if (itemName !== "") {
       headerDiv = (
-        <div className="header">
+        <div className="header" onClick={this._onClickHeader}>
           {image}
-          <span className="name" onClick={this._onClickName}>{itemName}</span>{albumArtist}
+          <span className="name">{itemName}</span>{albumArtist}
           {play}
         </div>
       );
@@ -140,14 +141,18 @@ export class Group extends React.Component {
 
   _onClick(e) {
     if (!this.state.expanded) {
-      this._onClickName(e);
+      this._onClickHeader(e);
     }
   }
 
-  _onClickName(e) {
+  _onClickHeader(e) {
     e.stopPropagation();
     this.setState({expanded: !this.state.expanded});
     CollectionActions.expandPath(this.props.path, !this.state.expanded);
+  }
+
+  _onClickImage(e) {
+    e.stopPropagation();
   }
 
   _onPlayNow(e) {
