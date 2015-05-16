@@ -62,7 +62,6 @@ div#bottom {
     }
 
     div.now-playing-track {
-      padding-top: 5px;
       display: flex;
       flex: 1 0px;
       vertical-align: top;
@@ -75,12 +74,12 @@ div#bottom {
 
         &.visible {
           display: inline;
-          max-height: $bottom-row-height - 10px;
+          max-height: $bottom-row-height;
         }
       }
 
       div.track-info {
-        margin-top: 1px;
+        margin-top: 5px;
         flex: 1 auto;
       }
 
