@@ -108,7 +108,7 @@ div.collection {
           float: right;
           display: block;
           max-width: 250px;
-          padding-top: 5px;
+          margin: -5px -10px -6px 5px;
 
           @media (max-width: 1000px) {
             max-width: 150px;
