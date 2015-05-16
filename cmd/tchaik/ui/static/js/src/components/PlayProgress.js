@@ -68,13 +68,14 @@ export default class PlayProgress extends React.Component {
   _onClick(evt) {
     var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
     var width = evt.currentTarget.offsetWidth;
-    NowPlayingActions.setCurrentTime((pos / width) * this.props.duration);
+    var time = (pos / width) * this.state.duration;
+    NowPlayingActions.setCurrentTime(time);
   }
 
   _onWheel(evt) {
     evt.stopPropagation();
-    var t = this.props.current + (0.01 * this.props.duration * evt.deltaY);
-    if (t > this.props.duration) {
+    var t = this.state.current + (0.01 * this.state.duration * evt.deltaY);
+    if (t > this.state.duration) {
       t = this.props.duration;
     } else if (t < 0.00) {
       t = 0.0;
