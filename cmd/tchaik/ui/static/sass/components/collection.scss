@@ -2,11 +2,14 @@
 @import '../mixins.scss';
 
 div.collection {
+  background-color: #333;
+
   div.group {
     display: block;
-    padding: 5px 10px 6px;
+    margin: 1px 0;
+    padding: 10px;
     color: #ccc;
-    border-bottom: 1px solid #333;
+    background-color: #171717;
     cursor: pointer;
 
     &:hover {
@@ -60,13 +63,13 @@ div.collection {
     div.header {
       span.name {
         font-weight: 600;
-        font-size: 13px;
+        font-size: 14px;
         cursor: pointer;
       }
 
       span.group-album-artist {
         margin-left: 10px;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 600;
         color: #777;
       }
@@ -108,7 +111,7 @@ div.collection {
           float: right;
           display: block;
           max-width: 250px;
-          margin: -5px -10px -6px 5px;
+          margin: -10px -10px -10px 5px;
 
           @media (max-width: 1000px) {
             max-width: 150px;
