@@ -8,6 +8,7 @@ import NowPlayingActions from '../actions/NowPlayingActions.js';
 import NowPlayingStore from '../stores/NowPlayingStore.js';
 import NowPlaying from './NowPlaying.js';
 import PlayProgress from './PlayProgress.js';
+import Volume from './Volume.js';
 
 import PlaylistStore from '../stores/PlaylistStore.js';
 import PlaylistActions from '../actions/PlaylistActions.js';
@@ -25,7 +26,9 @@ export default class Bottom extends React.Component {
         <div className="now-playing">
           <NowPlaying />
           <Controls />
-          <div className="right"/>
+          <div className="right">
+            <Volume />
+          </div>
         </div>
       </div>
     );

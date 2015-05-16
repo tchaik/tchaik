@@ -62,47 +62,4 @@ div.control-bar {
     left: 0;
     padding-bottom: 5px;
   }
-
-  div.volume {
-    margin: 0;
-    padding-bottom: 10px;
-
-    span.glyphicon {
-      color: #bbb;
-      padding: 10px 0;
-      margin-left: 12px;
-      font-size: 20px;
-
-      &:hover {
-        color: white;
-      }
-    }
-
-    & > div.bar {
-      background-color: $light-blue;
-      width: 4px;
-      margin-left: 19px;
-      opacity: 0;
-      @include fade-in(opacity);
-
-      & > div.current {
-        width: 4px;
-        background-color: #444;
-      }
-
-      & > div.marker {
-        width: 10px;
-        border-radius: 50%;
-        margin-left: -3px;
-        background-color: #fff;
-        box-shadow: 0 1px 2px #444;
-      }
-    }
-
-    &:hover {
-      & > div.bar {
-        opacity: 1.0;
-      }
-    }
-  }
 }

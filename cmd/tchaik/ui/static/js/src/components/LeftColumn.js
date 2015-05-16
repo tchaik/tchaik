@@ -14,7 +14,6 @@ import Covers from './Covers.js';
 import Filter from './Filter.js';
 import Recent from './Recent.js';
 import Settings from './Settings.js';
-import Volume from './Volume.js';
 
 import LeftColumnStore from '../stores/LeftColumnStore.js';
 import LeftColumnActions from '../actions/LeftColumnActions.js';
@@ -121,7 +120,6 @@ export default class LeftColumn extends React.Component {
           <ToolbarItem mode="Recent" icon="time" title="Recently Added" />
           <ToolbarItem mode="Settings" icon="cog" title="Settings" />
           <div className="bottom">
-            <Volume height={100} markerHeight={10} />
             <StatusView />
             <PlayerKeyView />
           </div>

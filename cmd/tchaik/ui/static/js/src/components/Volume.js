@@ -8,14 +8,14 @@ import VolumeStore from '../stores/VolumeStore.js';
 import VolumeActions from '../actions/VolumeActions.js';
 
 
-function _getOffsetTop(elem) {
-  var offsetTop = 0;
-  do {
-    if (!isNaN(elem.offsetTop)) {
-        offsetTop += elem.offsetTop;
-    }
-  } while ((elem = elem.offsetParent));
-  return offsetTop;
+function _getOffsetLeft(elem) {
+    var offsetLeft = 0;
+    do {
+      if (!isNaN(elem.offsetLeft)) {
+          offsetLeft += elem.offsetLeft;
+      }
+    } while ((elem = elem.offsetParent));
+    return offsetLeft;
 }
 
 function getVolumeState() {
@@ -51,12 +51,12 @@ export default class Volume extends React.Component {
       classSuffix = 'up';
     }
 
-    var h = this.props.height - parseInt(volume * this.props.height);
+    var w = `${Math.min(volume * 100.0, 100.0)}%`;
     return (
       <div className="volume" onWheel={this._onWheel}>
-        <div className="bar" onClick={this._onClick} style={{height: this.props.height}}>
-          <div className="current" style={{height: h}} />
-          <div className="marker" style={{height: this.props.markerHeight}} />
+        <div className="bar" onClick={this._onClick}>
+          <div className="current" style={{width: w}} />
+          <div className="marker" />
         </div>
         <Icon icon={'volume-' + classSuffix} onClick={this._toggleMute} />
       </div>
@@ -80,9 +80,9 @@ export default class Volume extends React.Component {
   }
 
   _onClick(evt) {
-    var pos = evt.pageY - _getOffsetTop(evt.currentTarget);
-    var height = evt.currentTarget.offsetHeight;
-    VolumeActions.volume(1 - pos/height);
+    var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
+    var width = evt.currentTarget.offsetWidth;
+    VolumeActions.volume(pos/width);
   }
 
   _onChange() {

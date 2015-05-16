@@ -73,6 +73,7 @@ div#bottom {
 
     div.right {
       display: flex;
+      justify-content: flex-end;
       flex: 1;
     }
 
@@ -291,6 +292,60 @@ div#bottom {
         .buffered {
           opacity: 1;
         }
+      }
+    }
+  }
+
+  div.volume {
+    margin-right: 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    span.glyphicon {
+      color: #bbb;
+      padding: 10px 0;
+      margin-left: 12px;
+      font-size: 22px;
+
+      &:hover {
+        color: white;
+      }
+    }
+
+    & > div.bar {
+      width: 100px;
+      background-color: #444;
+      height: 4px;
+      opacity: 0;
+      @include fade-in(opacity);
+      border-radius: 5px;
+
+      & > div.current {
+        border-radius: 5px;
+        background-color: $light-blue;
+        float: left;
+        height: 4px;
+      }
+
+      & > div.marker {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #fff;
+        box-shadow: -1px 0 2px #444;
+        display: initial;
+        float: left;
+        margin-left: -5px;
+        margin-right: -5px;
+        margin-top: -3px;
+        z-index: 10;
+      }
+    }
+
+    &:hover {
+      & > div.bar {
+        opacity: 1.0;
       }
     }
   }
