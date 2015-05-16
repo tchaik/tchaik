@@ -3,7 +3,6 @@
 import React from 'react/addons';
 
 import SearchStore from '../stores/SearchStore.js';
-import SearchActions from '../actions/SearchActions.js';
 
 import {Group as Group} from './Collection.js';
 import CollectionStore from '../stores/CollectionStore.js';
@@ -11,14 +10,6 @@ import CollectionActions from '../actions/CollectionActions.js';
 
 
 export class Search extends React.Component {
-  componentDidMount() {
-    var input = SearchStore.getInput();
-    if (input && input !== "") {
-      SearchActions.search(input);
-      React.findDOMNode(this.refs.input).value = input;
-    }
-  }
-
   render() {
     return (
       <div className="collection">
