@@ -12,6 +12,17 @@ div#bottom {
   right: 0;
   color: white;
 
+  .hover-show {
+    opacity: 0;
+    @include fade-in(opacity);
+  }
+
+  &:hover {
+    .hover-show {
+      opacity: 1;
+    }
+  }
+
   div.now-playing {
     position: relative;
     height: 100%;

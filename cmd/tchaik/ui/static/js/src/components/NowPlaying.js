@@ -63,7 +63,15 @@ export default class NowPlaying extends React.Component {
         <ArtworkImage path={"/artwork/" + track.TrackID} />
         <div className="track-info">
           <div className="container">
-            <div className="title">{track.Name}<BitRate track={track} /><a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
+            <div className="title">
+              {track.Name}
+              <span className="hover-show">
+                <BitRate track={track} />
+                <a className="goto" href={"#track_"+track.TrackID}>
+                  <Icon icon="share-alt" />
+                </a>
+              </span>
+            </div>
             {group}
 
             <div className="times">
