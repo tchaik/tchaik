@@ -10,7 +10,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"strconv"
 	"time"
 )
 
@@ -35,31 +34,6 @@ type Track interface {
 	GetTime(string) time.Time
 }
 
-var trackStringFields = []string{
-	"TrackID", // unique identifier for the track.
-	"Name",
-	"Album",
-	"AlbumArtist",
-	"Artist",
-	"Composer",
-	"Location", // location of the associated file
-}
-
-var trackIntFields = []string{
-	"TotalTime",
-	"Year",
-	"DiscNumber",
-	"TrackNumber",
-	"TrackCount",
-	"DiscCount",
-	"BitRate",
-}
-
-var trackTimeFields = []string{
-	"DateAdded",
-	"DateModified",
-}
-
 // Convert reads all the data exported by the Library and writes into the standard
 // tchaik Library implementation.
 // NB: The identifier field is set to be the value of TrackID on every track, regardless
@@ -68,23 +42,30 @@ func Convert(l Library, id string) *library {
 	allTracks := l.Tracks()
 	tracks := make(map[string]*track, len(allTracks))
 
-	n := len(trackStringFields) + len(trackIntFields)
 	for _, t := range allTracks {
-		m := make(map[string]interface{}, n)
-		for _, f := range trackStringFields {
-			m[f] = t.GetString(f)
-		}
-		for _, f := range trackIntFields {
-			m[f] = t.GetInt(f)
-		}
-		for _, f := range trackTimeFields {
-			m[f] = t.GetTime(f)
-		}
-
 		identifier := t.GetString(id)
-		m["TrackID"] = identifier
 		tracks[identifier] = &track{
-			flds: m,
+			// string fields
+			TrackID:     identifier,
+			Name:        t.GetString("Name"),
+			Album:       t.GetString("Album"),
+			AlbumArtist: t.GetString("AlbumArtist"),
+			Artist:      t.GetString("Artist"),
+			Composer:    t.GetString("Composer"),
+			Location:    t.GetString("Location"),
+
+			// integer fields
+			TotalTime:   t.GetInt("TotalTime"),
+			Year:        t.GetInt("Year"),
+			DiscNumber:  t.GetInt("DiscNumber"),
+			TrackNumber: t.GetInt("TrackNumber"),
+			TrackCount:  t.GetInt("TrackCount"),
+			DiscCount:   t.GetInt("DiscCount"),
+			BitRate:     t.GetInt("BitRate"),
+
+			// date fields
+			DateAdded:    t.GetTime("DateAdded"),
+			DateModified: t.GetTime("DateModified"),
 		}
 	}
 	return &library{
@@ -148,90 +129,75 @@ func ReadFrom(r io.Reader) (Library, error) {
 
 // track is the default implementation of the Track interface.
 type track struct {
-	flds map[string]interface{}
-}
+	TrackID     string
+	Name        string
+	Album       string
+	AlbumArtist string
+	Artist      string
+	Composer    string
+	Location    string
 
-func (t *track) MarshalJSON() ([]byte, error) {
-	return json.Marshal(t.flds)
-}
+	TotalTime   int
+	Year        int
+	DiscNumber  int
+	TrackNumber int
+	TrackCount  int
+	DiscCount   int
+	BitRate     int
 
-func (t *track) UnmarshalJSON(b []byte) error {
-	t.flds = make(map[string]interface{})
-	err := json.Unmarshal(b, &t.flds)
-	if err != nil {
-		return err
-	}
-
-	// TODO: need to move away from using map[string]interface{} to avoid this
-	// nonsense.
-	for _, f := range trackTimeFields {
-		if x, ok := t.flds[f]; ok {
-			xs, ok := x.(string)
-			if !ok {
-				return fmt.Errorf("expected field '%v' to be of type string, got '%T'", f, x)
-			}
-			nt := &time.Time{}
-			err := nt.UnmarshalJSON([]byte(`"` + xs + `"`))
-			if err != nil {
-				return err
-			}
-			t.flds[f] = *nt
-		}
-	}
-	return nil
+	DateAdded    time.Time
+	DateModified time.Time
 }
 
 // GetString implements Track.
 func (t *track) GetString(name string) string {
-	x, ok := t.flds[name]
-	if !ok {
-		panic(fmt.Sprintf("unknown string field '%v'", name))
+	switch name {
+	case "TrackID":
+		return t.TrackID
+	case "Name":
+		return t.Name
+	case "Album":
+		return t.Album
+	case "AlbumArtist":
+		return t.AlbumArtist
+	case "Artist":
+		return t.Artist
+	case "Composer":
+		return t.Composer
+	case "Location":
+		return t.Location
 	}
-	if x == nil {
-		panic(fmt.Sprintf("<nil> string field '%v'", name))
-	}
-	s, ok := x.(string)
-	if !ok {
-		panic(fmt.Sprintf("field '%v': expected string, got %#v (%T)", name, x, x))
-	}
-	return s
+	panic(fmt.Sprintf("unknown string field '%v'", name))
 }
 
 // GetInt implements Track.
 func (t *track) GetInt(name string) int {
-	x, ok := t.flds[name]
-	if !ok {
-		panic(fmt.Sprintf("unknown int field '%v'", name))
+	switch name {
+	case "TotalTime":
+		return t.TotalTime
+	case "Year":
+		return t.Year
+	case "DiscNumber":
+		return t.DiscNumber
+	case "TrackNumber":
+		return t.TrackNumber
+	case "TrackCount":
+		return t.TrackCount
+	case "DiscCount":
+		return t.DiscCount
+	case "BitRate":
+		return t.BitRate
 	}
-	if x == nil {
-		panic(fmt.Sprintf("<nil> int field '%v'", name))
-	}
-	switch x := x.(type) {
-	case int:
-		return x
-	case float64:
-		return int(x)
-	case string:
-		n, err := strconv.Atoi(x)
-		if err != nil {
-			panic(fmt.Sprintf("error converting string to int: %v", err))
-		}
-		return n
-	}
-	panic(fmt.Sprintf("unknown type '%T' for field '%v'", x, name))
+	panic(fmt.Sprintf("unknown int field '%v'", name))
 }
 
 // GetTime implements Track.
 func (t *track) GetTime(name string) time.Time {
-	x, ok := t.flds[name]
-	if !ok {
-		panic(fmt.Sprintf("unknown time field '%v'", name))
+	switch name {
+	case "DateAdded":
+		return t.DateAdded
+	case "DateModified":
+		return t.DateModified
 	}
-	if x == nil {
-		panic(fmt.Sprintf("<nil> time field '%v'", name))
-	}
-	if x, ok := x.(time.Time); ok {
-		return x
-	}
-	panic(fmt.Sprintf("field '%v': expected time.Time, got '%T'", name, x))
+	panic(fmt.Sprintf("unknown time field '%v'", name))
 }
