@@ -26,6 +26,10 @@ div#right-column {
       flex: 1;
       background-color: #1C1C1C;
 
+      div.group-info {
+        margin-top:5px;
+      }
+
       div.group {
         font-size: 12px;
 
@@ -38,13 +42,12 @@ div#right-column {
             font-weight: 600;
           }
           border: 1px solid #333;
-          padding: 5px;
 
           img {
             display: none;
 
             &.visible {
-              max-height: 50px;
+              max-height: 60px;
               float: left;
               margin-right: 6px;
               display: block;

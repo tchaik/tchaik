@@ -162,13 +162,15 @@ class Group extends React.Component {
       <div className={classNames(groupClasses)}>
         <div className="name" onClick={this._onClick}>
           {image}
-          <span className="name">{this.props.item.Name === "" ? "" : this.props.item.Name}</span>
-          <span className="info">
-            <Icon icon="remove" onClick={this._onClickRemove} />
-            <span className="controls">{duration}</span>
-          </span>
-          {attributes}
-          <div key="clear" style={{clear: 'both'}}/>
+          <div className="group-info">
+            <span className="name">{this.props.item.Name === "" ? "" : this.props.item.Name}</span>
+            <span className="info">
+              <Icon icon="remove" onClick={this._onClickRemove} />
+              <span className="controls">{duration}</span>
+            </span>
+            {attributes}
+            <div key="clear" style={{clear: 'both'}}/>
+          </div>
         </div>
         {content}
       </div>
