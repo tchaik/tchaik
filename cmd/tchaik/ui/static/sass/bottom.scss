@@ -2,6 +2,7 @@
 @import './mixins.scss';
 
 div#bottom {
+  $progressbar-height: 4px;
   border-top: 2px solid black;
   background-color: #222;
   position: absolute;
@@ -77,7 +78,7 @@ div#bottom {
 
         &.visible {
           display: inline;
-          max-height: $bottom-row-height;
+          max-height: $bottom-row-height - $progressbar-height;
         }
       }
 
@@ -223,16 +224,15 @@ div#bottom {
   }
 
   div.playProgress {
-    $bar-height: 4px;
 
     margin: 0;
     padding: 0;
     position: relative;
     width: 100%;
-    height: $bar-height;
+    height: $progressbar-height;
 
     & > div.bar {
-      height: $bar-height;
+      height: $progressbar-height;
       display: flex;
       cursor: pointer;
       position: absolute;
@@ -241,7 +241,7 @@ div#bottom {
       z-index: 10;
 
       .current {
-        height: $bar-height;
+        height: $progressbar-height;
         float: left;
         background-color: $light-blue;
       }
@@ -249,7 +249,7 @@ div#bottom {
       .buffered {
         display: none;
 
-        height: $bar-height;
+        height: $progressbar-height;
         float: left;
         background-color: #333;
       }
