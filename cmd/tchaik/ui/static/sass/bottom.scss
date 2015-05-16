@@ -245,18 +245,17 @@ div#bottom {
       }
 
       .marker {
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow:-1px 0px 2px #444;
         display: none;
-
-        width: 10px;
+        float: left;
+        height: 10px;
         margin-left: -5px;
         margin-right: -5px;
-
-        height: 10px;
-        border-radius: 50%;
-        float: left;
-        background-color: #fff;
         margin-top:-3px;
-        box-shadow:-1px 0px 2px #444;
+        width: 10px;
+        z-index: 100;
       }
 
       &:hover {
