@@ -18,6 +18,7 @@ function addItem(path, item) {
           track[fld] = item[fld];
         }
       });
+      track.GroupName = item.Name;
     });
   }
   _collections[pathToKey(path)] = item;

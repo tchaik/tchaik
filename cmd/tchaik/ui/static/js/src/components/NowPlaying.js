@@ -48,19 +48,13 @@ export default class NowPlaying extends React.Component {
       return null;
     }
 
-    var fields = ['Album', 'Artist', 'AlbumArtist', 'Composer', 'Year'];
-    if (track.Artist && track.AlbumArtist) {
-      fields = ['Album', 'Artist', 'Composer', 'Year'];
-    }
-    var attributeArr = [];
-    fields.forEach(function(f) {
-      if (track[f]) {
-        attributeArr.push(track[f]);
-      }
-    });
-
-    var attributes = <GroupAttributes list={attributeArr} />;
+    var attributes = null; //<GroupAttributes list={attributeArr} />;
     var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
+
+    var group = null;
+    if (track.GroupName != "") {
+      group = <div className="attributes">{track.GroupName}</div>;
+    }
 
     var className = classNames({
       'now-playing-track': true,
@@ -72,7 +66,7 @@ export default class NowPlaying extends React.Component {
         <ArtworkImage path={"/artwork/" + track.TrackID} />
         <div className="track-info">
           <div className="title">{track.Name}<BitRate track={track} /><a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
-          {attributes}
+          {group}
 
           <div className="times">
             <TimeFormatter className="current-time" time={this.state.currentTime} />
