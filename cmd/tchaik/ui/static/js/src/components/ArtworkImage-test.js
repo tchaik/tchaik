@@ -1,3 +1,5 @@
+var rewire = require('rewire');
+
 describe('ArtworkImage', function() {
   var React, TestUtils, ArtworkImage;
   var domNode, artworkImage;
@@ -5,7 +7,7 @@ describe('ArtworkImage', function() {
   beforeEach(function() {
     React = require('react/addons');
     TestUtils = React.addons.TestUtils;
-    ArtworkImage = require( '../../src/components/ArtworkImage.js');
+    ArtworkImage = rewire('../../src/components/ArtworkImage.js');
 
     artworkImage = TestUtils.renderIntoDocument(
       <ArtworkImage path='/artwork/19199193' />
