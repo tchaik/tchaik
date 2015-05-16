@@ -10,7 +10,6 @@ div#bottom {
   left: $left-column-width;
   right: 0;
   color: white;
-  overflow: hidden;
 
   div.now-playing {
     position: relative;
@@ -157,47 +156,31 @@ div#bottom {
         font-size: 11px;
         color: #999;
 
-        span.currentTime {
+        span.current-time {
           margin-left: 5px;
           float: left;
         }
 
-        span.remaining {
-          float: right;
+        span.track-length {
           margin-right: 5px;
+
+          &::before {
+            content: '\00a0/\00a0'
+          }
+        }
+
+        span.remaining {
+          margin-right: 5px;
+
+          &::before {
+            content: '('
+          }
+          &::after {
+            content: ')'
+          }
         }
       }
 
-      div.playProgress {
-        margin: 0 5px;
-        padding: 5px 0;
-
-        & > div.bar {
-          background-color: #444;
-          height: 4px;
-
-          & > div.current {
-            height: 4px;
-            float: left;
-            background-color: $light-blue;
-          }
-
-          & > div.buffered {
-            height: 4px;
-            float: left;
-            background-color: #666;
-          }
-
-          & > div.marker {
-            height: 10px;
-            border-radius: 50%;
-            float: left;
-            background-color: #fff;
-            margin-top:-3px;
-            box-shadow:-1px 0px 2px #444;
-          }
-        }
-      }
 
       &.error {
         div.title::before {
@@ -231,6 +214,40 @@ div#bottom {
             }
           }
         }
+      }
+    }
+  }
+
+  div.playProgress {
+    margin: 0;
+    padding: 0;
+
+    $bar-height: 4px;
+
+    & > div.bar {
+      background-color: #444;
+      height: $bar-height;
+      display: flex;
+
+      & > div.current {
+        height: $bar-height;
+        float: left;
+        background-color: $light-blue;
+      }
+
+      & > div.buffered {
+        height: $bar-height;
+        float: left;
+        background-color: #666;
+      }
+
+      & > div.marker {
+        height: 10px;
+        border-radius: 50%;
+        float: left;
+        background-color: #fff;
+        margin-top:-3px;
+        box-shadow:-1px 0px 2px #444;
       }
     }
   }
