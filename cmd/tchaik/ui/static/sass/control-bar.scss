@@ -82,6 +82,8 @@ div.control-bar {
       background-color: $light-blue;
       width: 4px;
       margin-left: 19px;
+      opacity: 0;
+      @include fade-in(opacity);
 
       & > div.current {
         width: 4px;
@@ -94,6 +96,12 @@ div.control-bar {
         margin-left: -3px;
         background-color: #fff;
         box-shadow: 0 1px 2px #444;
+      }
+    }
+
+    &:hover {
+      & > div.bar {
+        opacity: 1.0;
       }
     }
   }
