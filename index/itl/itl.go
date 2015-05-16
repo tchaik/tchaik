@@ -132,6 +132,8 @@ func (t *itlTrack) GetInt(name string) int {
 		return t.Year
 	case "TotalTime":
 		return t.TotalTime
+	case "BitRate":
+		return t.BitRate
 	}
 
 	tt := reflect.TypeOf(t)

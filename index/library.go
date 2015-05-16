@@ -52,6 +52,7 @@ var trackIntFields = []string{
 	"TrackNumber",
 	"TrackCount",
 	"DiscCount",
+	"BitRate",
 }
 
 var trackTimeFields = []string{
