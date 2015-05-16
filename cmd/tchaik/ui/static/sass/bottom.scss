@@ -90,8 +90,44 @@ div#bottom {
         font-weight: 400;
         padding: 0 4px;
 
+        span.bitrate {
+          padding: 2px 4px;
+          margin: -2px 5px;
+          font-size: 10pt;
+
+          &.expanded {
+            color: #888;
+            background-color: #444;
+            border-radius: 2px;
+
+            span.glphicon {
+              color: white;
+            }
+
+            span.value {
+              margin-left: 2px;
+            }
+
+            &:hover {
+              color: #ccc;
+              background-color: #666;
+
+              span.glyphicon {
+                color: white;
+              }
+            };
+          }
+
+          span.glyphicon {
+            color: #999;
+
+            &:hover {
+              color: white;
+            };
+          }
+        }
+
         a.goto {
-          margin-left: 10px;
           color: #999;
 
           &:hover {

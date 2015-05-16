@@ -69,6 +69,7 @@ type track struct {
 	Year        int    `json:",omitempty"`
 	DiscNumber  int    `json:",omitempty"`
 	TotalTime   int    `json:",omitempty"`
+	BitRate     int    `json:",omitempty"`
 }
 
 func buildCollection(h group, c index.Collection) group {
@@ -121,6 +122,7 @@ func build(g index.Group, key index.Key) group {
 			Name:       t.GetString("Name"),
 			TotalTime:  t.GetInt("TotalTime"),
 			DiscNumber: t.GetInt("DiscNumber"),
+			BitRate:    t.GetInt("BitRate"),
 			// Potentially common fields (don't want to re-transmit everything)
 			Album:       getString(t, "Album"),
 			Artist:      getString(t, "Artist"),

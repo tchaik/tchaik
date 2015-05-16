@@ -69,7 +69,7 @@ export default class NowPlaying extends React.Component {
       <div className={className}>
         <ArtworkImage path={"/artwork/" + track.TrackID} />
         <div className="track-info">
-          <div className="title">{track.Name}<a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
+          <div className="title">{track.Name}<BitRate track={track} /><a className="goto" href={"#track_"+track.TrackID}><Icon icon="share-alt" /></a></div>
           {attributes}
 
           <PlayProgress markerWidth={10} current={this.state.currentTime} duration={this.state.duration} buffered={this.state.buffered} setCurrentTime={NowPlayingActions.setCurrentTime} />
@@ -87,6 +87,39 @@ export default class NowPlaying extends React.Component {
   }
 }
 
+
+class BitRate extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {expanded: false};
+    this._onClick = this._onClick.bind(this);
+  }
+
+  render() {
+    var bitRate = null;
+    if (this.state.expanded) {
+      bitRate = (
+        <span className="value">{this.props.track.BitRate} kbps</span>
+      );
+    }
+
+    var className = classNames({
+      'bitrate': true,
+      'expanded': this.state.expanded,
+    });
+    return (
+      <span className={className} onClick={this._onClick}>
+        <Icon icon="equalizer" />
+        {bitRate}
+      </span>
+    );
+  }
+
+  _onClick() {
+    this.setState({expanded: !this.state.expanded});
+  }
+}
 
 function _getOffsetLeft(elem) {
     var offsetLeft = 0;
