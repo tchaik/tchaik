@@ -3,7 +3,7 @@
 div#container {
   overflow: auto;
   position: absolute;
-  top: 0;
+  top: $top-row-height;
   bottom: $bottom-row-height;
   left: $left-column-width;
   right: $right-column-width;

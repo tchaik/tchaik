@@ -21,19 +21,10 @@ export class Search extends React.Component {
 
   render() {
     return (
-      <div className="search-collection">
-        <div id="search">
-          <input ref="input" type="text" onChange={this._onChange} />
-        </div>
-        <div className="collection">
-          <Results />
-        </div>
+      <div className="collection">
+        <Results />
       </div>
     );
-  }
-
-  _onChange(e) {
-    SearchActions.search(e.currentTarget.value);
   }
 }
 

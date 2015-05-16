@@ -1,0 +1,46 @@
+@import './variables.scss';
+@import './mixins.scss';
+
+div#top {
+  border-top: 2px solid black;
+  background-color: #222;
+  position: absolute;
+  top: 0;
+  height: $bottom-row-height;
+  left: 0;
+  right: 0;
+  color: white;
+
+  div {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    span.glyphicon-search {
+      color: white;
+      margin-right: -32px;
+      font-size: 18px;
+    }
+
+    input {
+      outline: none;
+      background-color: #333;
+      border: 3px solid #444;
+      color: #eee;
+      font-size: 16px;
+      font-weight: 200;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      padding: 5px 10px 5px 34px;
+      margin: 5px;
+      width: 400px;
+
+      @include fade-in(background-color);
+      @include fade-in(border-color);
+
+      &:active, &:focus {
+        background-color: #373737;
+        border: 3px solid #474747;
+      }
+    }
+  }
+}

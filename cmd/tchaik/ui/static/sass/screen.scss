@@ -13,6 +13,7 @@ a {
   @include fade-in(color);
 }
 
+@import './top.scss';
 @import './bottom.scss';
 @import './control-bar.scss';
 @import './right-column.scss';

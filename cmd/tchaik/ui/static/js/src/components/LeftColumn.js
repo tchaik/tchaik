@@ -19,6 +19,8 @@ import Volume from './Volume.js';
 import LeftColumnStore from '../stores/LeftColumnStore.js';
 import LeftColumnActions from '../actions/LeftColumnActions.js';
 
+import SearchStore from '../stores/SearchStore.js';
+
 
 function getToolBarItemState(mode) {
   return {selected: mode === LeftColumnStore.getMode()};
@@ -75,14 +77,17 @@ export default class LeftColumn extends React.Component {
 
     this.state = leftColumnState();
     this._onChange = this._onChange.bind(this);
+    this._onSearch = this._onSearch.bind(this);
   }
 
   componentDidMount() {
     LeftColumnStore.addChangeListener(this._onChange);
+    SearchStore.addChangeListener(this._onSearch);
   }
 
   componentWillUnmount() {
     LeftColumnStore.removeChangeListener(this._onChange);
+    SearchStore.removeChangeListener(this._onSearch);
   }
 
   render() {
@@ -110,7 +115,6 @@ export default class LeftColumn extends React.Component {
     return (
       <div>
         <div className="control-bar">
-          <ToolbarItem mode="Search" icon="search" title="Search" />
           <ToolbarItem mode="All" icon="align-justify" title="All" />
           <ToolbarItem mode="Artists" icon="list" title="Artists" />
           <ToolbarItem mode="Covers" icon="th-large" title="Covers" />
@@ -131,5 +135,9 @@ export default class LeftColumn extends React.Component {
 
   _onChange() {
     this.setState(leftColumnState());
+  }
+
+  _onSearch() {
+    this.setState({mode:"Search"});
   }
 }

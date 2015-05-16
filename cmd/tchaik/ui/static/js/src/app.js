@@ -13,6 +13,7 @@ var AudioAPI = require('./utils/AudioAPI.js');
 var LeftColumn = require('./components/LeftColumn.js');
 var RightColumn = require('./components/RightColumn.js');
 var Bottom = require('./components/Bottom.js');
+var Top = require('./components/Top.js');
 
 var socketAddr = document.location.host;
 
@@ -45,4 +46,10 @@ var Bottom = React.createFactory(Bottom);
 React.render(
   Bottom(),
   document.getElementById('bottom')
+);
+
+var Top = React.createFactory(Top);
+React.render(
+  Top(),
+  document.getElementById('top')
 );

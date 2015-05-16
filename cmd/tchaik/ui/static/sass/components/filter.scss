@@ -5,7 +5,7 @@ div.filter {
   div.sidebar {
     width: $filter-column-width;
     position: fixed;
-    top: 0;
+    top: $top-row-height;
     bottom: 0;
     overflow-y: auto;
 
