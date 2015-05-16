@@ -236,7 +236,6 @@ div#bottom {
   }
 
   div.playProgress {
-
     margin: 0;
     padding: 0;
     position: relative;
@@ -259,18 +258,21 @@ div#bottom {
       }
 
       .buffered {
-        display: none;
+        opacity: 0;
+        display: initial;
 
         height: $progressbar-height;
         float: left;
         background-color: #333;
+        @include fade-in(opacity);
       }
 
       .marker {
         background-color: #fff;
         border-radius: 50%;
         box-shadow:-1px 0px 2px #444;
-        display: none;
+        display: initial;
+        opacity: 0;
         float: left;
         height: 10px;
         margin-left: -5px;
@@ -278,15 +280,16 @@ div#bottom {
         margin-top:-3px;
         width: 10px;
         z-index: 10;
+        @include fade-in(opacity);
       }
 
       &:hover {
         .marker {
-          display: initial;
+          opacity: 1;
         }
 
         .buffered {
-          display: initial;
+          opacity: 1;
         }
       }
     }
