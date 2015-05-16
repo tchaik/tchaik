@@ -44,14 +44,10 @@ div.collection {
     &.expanded {
       @include fade-in(background-color);
       background-color: #191919;
-      border-top: 1px solid #333;
-      border-bottom: 1px solid #333;
 
       div.header {
         span.name {
           color: white;
-          font-weight: 500;
-          font-size: 14px;
         }
 
         span.group-album-artist {
@@ -77,6 +73,8 @@ div.collection {
       span.glyphicon {
         padding-left: 10px;
         color: #666;
+        font-size: 14px;
+        font-weight: 100;
 
         &:hover {
           color: white;
@@ -87,11 +85,12 @@ div.collection {
         margin-left: 10px;
         font-weight: normal;
         color: #666;
+        font-size: 12px;
       }
 
       div.attributes {
         color: #888;
-        margin-top:3px;
+        margin-top:4px;
 
         span {
           font-size: 13px;
@@ -130,7 +129,7 @@ div.collection {
 
     div.tracks {
       ol {
-        margin: 4px 0;
+        margin: 5px 0;
         padding: 0;
         color: #777;
         display: block;
@@ -143,7 +142,7 @@ div.collection {
 
         li {
           padding: 5px 0;
-          font-size: 12px;
+          font-size: 13px;
           cursor: pointer;
 
           &::before {
