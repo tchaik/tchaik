@@ -82,8 +82,9 @@ div#bottom {
       }
 
       div.track-info {
-        margin-top: 5px;
+        display: flex;
         flex: 1 auto;
+        align-items: center;
       }
 
       div.title {
