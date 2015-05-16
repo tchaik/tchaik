@@ -112,6 +112,7 @@ function setupKarma(options) {
   return gulp.src([
     // Polyfill so we can use react in phantomjs
     './node_modules/phantomjs-polyfill/bind-polyfill.js',
+    './node_modules/babel-core/browser-polyfill.js',
     // Test files
     paths.js.tests,
   ])
