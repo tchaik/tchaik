@@ -44,4 +44,26 @@ describe('ArtworkImage', function() {
     });
   });
 
+  describe('when it is given an onClick property', function() {
+    var artworkImageNode;
+    var onClickSpy;
+    beforeEach(function() {
+      onClickSpy = sinon.spy();
+
+      var artworkImage = TestUtils.renderIntoDocument(
+        <ArtworkImage path="/artwork/aaa" onClick={onClickSpy} />
+      );
+      artworkImageNode = React.findDOMNode(artworkImage);
+    });
+
+    describe('when the image is clicked', function() {
+      beforeEach(function() {
+        TestUtils.Simulate.click(artworkImageNode);
+      });
+
+      it('should be triggered', function() {
+        expect(onClickSpy).to.have.been.called;
+      });
+    });
+  });
 });

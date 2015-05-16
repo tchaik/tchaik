@@ -20,7 +20,11 @@ export default class ArtworkImage extends React.Component {
       'artwork': true,
     };
     return (
-      <img src={this.props.path} className={classNames(classes)} onLoad={this._onLoad} onError={this._onError} />
+      <img src={this.props.path}
+          className={classNames(classes)}
+          onLoad={this._onLoad}
+          onError={this._onError}
+          onClick={this.props.onClick} />
     );
   }
 
