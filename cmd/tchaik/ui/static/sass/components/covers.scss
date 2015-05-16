@@ -33,7 +33,7 @@ div.covers {
       span.glyphicon {
         padding-left: 5px;
         padding-right: 5px;
-        color: #666;
+        color: #999;
 
         &:hover {
           color: white;
@@ -46,6 +46,10 @@ div.covers {
 
       .controls {
         display: block;
+      }
+
+      img {
+        opacity: 0.5;
       }
     };
 
