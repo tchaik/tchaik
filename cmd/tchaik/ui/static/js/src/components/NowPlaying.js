@@ -49,7 +49,10 @@ export default class NowPlaying extends React.Component {
       return null;
     }
 
-    var fields = ['Album', 'Artist', 'Year'];
+    var fields = ['Album', 'Artist', 'AlbumArtist', 'Composer', 'Year'];
+    if (track.Artist && track.AlbumArtist) {
+      fields = ['Album', 'Artist', 'Composer', 'Year'];
+    }
     var attributeArr = [];
     fields.forEach(function(f) {
       if (track[f]) {
