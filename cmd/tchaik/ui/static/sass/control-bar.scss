@@ -1,7 +1,7 @@
 @import './variables.scss';
 @import './mixins.scss';
 
-div#header {
+div.control-bar {
   background-color: $light-background;
   position: fixed;
   left: 0;

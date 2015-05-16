@@ -109,7 +109,7 @@ export default class LeftColumn extends React.Component {
 
     return (
       <div>
-        <div id="header">
+        <div className="control-bar">
           <ToolbarItem mode="Search" icon="search" title="Search" />
           <ToolbarItem mode="All" icon="align-justify" title="All" />
           <ToolbarItem mode="Artists" icon="list" title="Artists" />
