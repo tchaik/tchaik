@@ -18,17 +18,16 @@ function _getOffsetTop(elem) {
   return offsetTop;
 }
 
-function getVolumeState() {
-  return {volume: VolumeStore.getVolume()};
-}
 
 export default class Volume extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getVolumeState();
+    this.state = {barVisible: false, volume: VolumeStore.getVolume()};
     this._onChange = this._onChange.bind(this);
     this._onWheel = this._onWheel.bind(this);
+    this._onMouseEnter = this._onMouseEnter.bind(this);
+    this._onMouseLeave = this._onMouseLeave.bind(this);
   }
 
   componentDidMount() {
@@ -50,13 +49,20 @@ export default class Volume extends React.Component {
       classSuffix = 'up';
     }
 
-    var h = this.props.height - parseInt(volume * this.props.height);
-    return (
-      <div className="volume" onWheel={this._onWheel} >
+    var bar = null;
+    if (this.state.barVisible) {
+      var h = this.props.height - parseInt(volume * this.props.height);
+      bar = (
         <div className="bar" onClick={this._onClick} style={{height: this.props.height}}>
           <div className="current" style={{height: h}} />
           <div className="marker" style={{height: this.props.markerHeight}} />
         </div>
+      );
+    }
+
+    return (
+      <div className="volume" onWheel={this._onWheel} onMouseEnter={this._onMouseEnter} onMouseLeave={this._onMouseLeave}>
+        {bar}
         <Icon icon={'volume-' + classSuffix} onClick={this._toggleMute} />
       </div>
     );
@@ -85,7 +91,15 @@ export default class Volume extends React.Component {
   }
 
   _onChange() {
-    this.setState(getVolumeState());
+    this.setState({volume: VolumeStore.getVolume()});
+  }
+
+  _onMouseEnter() {
+    this.setState({barVisible: true});
+  }
+
+  _onMouseLeave() {
+    this.setState({barVisible: false});
   }
 }
 
