@@ -6,7 +6,6 @@ import classNames from 'classnames';
 
 import Icon from './Icon.js';
 import TimeFormatter from './TimeFormatter.js';
-import GroupAttributes from './GroupAttributes.js';
 import ArtworkImage from './ArtworkImage.js';
 
 import NowPlayingStore from '../stores/NowPlayingStore.js';
@@ -48,11 +47,9 @@ export default class NowPlaying extends React.Component {
       return null;
     }
 
-    var attributes = null; //<GroupAttributes list={attributeArr} />;
     var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
-
     var group = null;
-    if (track.GroupName != "") {
+    if (track.GroupName !== "") {
       group = <div className="attributes">{track.GroupName}</div>;
     }
 
