@@ -76,7 +76,7 @@ export default class PlayProgress extends React.Component {
     evt.stopPropagation();
     var t = this.state.current + (0.01 * this.state.duration * evt.deltaY);
     if (t > this.state.duration) {
-      t = this.props.duration;
+      t = this.state.duration;
     } else if (t < 0.00) {
       t = 0.0;
     }
