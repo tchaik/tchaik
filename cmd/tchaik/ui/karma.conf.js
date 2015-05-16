@@ -5,5 +5,9 @@ module.exports = function(config) {
       'static/**/*.js': ['webpack']
     },
     webpack: require('./webpack.tests.config.js'),
+    reporters: ['mocha'],
+    mochaReporter: {
+      output: 'autowatch',
+    }
   });
 };
