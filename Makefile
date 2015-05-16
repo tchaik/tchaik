@@ -28,4 +28,4 @@ uideps:
 uilint:
 	cd cmd/tchaik/ui; gulp lint
 uitest:
-	cd cmd/tchaik/ui; npm run test
+	cd cmd/tchaik/ui; gulp test

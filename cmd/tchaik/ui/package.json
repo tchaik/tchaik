@@ -10,11 +10,18 @@
     "flux": "^2.0.1",
     "gulp": "^3.8.11",
     "gulp-jshint": "^1.10.0",
+    "gulp-karma": "0.0.4",
     "gulp-util": "^3.0.4",
     "jest-cli": "^0.4.3",
     "jshint-jsx": "^0.4.1",
     "jshint-stylish": "^1.0.1",
+    "karma-mocha": "^0.1.10",
+    "karma-mocha-reporter": "^1.0.2",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-sinon-chai": "^0.3.0",
+    "karma-webpack": "^1.5.1",
     "lodash": "^3.8.0",
+    "phantomjs-polyfill": "0.0.1",
     "react": "^0.13.1",
     "react-hot-loader": "^1.2.7",
     "react-tools": "^0.13.3",
@@ -28,20 +35,5 @@
     "eventemitter3": "^0.1.6",
     "keymirror": "^0.1.0",
     "object-assign": "^2.0.0"
-  },
-  "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-    "unmockedModulePathPatterns": [
-      "<rootDir>/node_modules/react",
-      "<rootDir>/node_modules/react-tools"
-    ],
-    "testFileExtensions": ["es6", "js"],
-    "moduleFileExtensions": ["js", "json", "es6"],
-    "testPathDirs": [
-      "<rootDir>/static/js/__tests__"
-    ]
-  },
-  "scripts": {
-      "test": "jest"
   }
 }

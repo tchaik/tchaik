@@ -3,6 +3,7 @@ var gulp = require('gulp');
 var _ = require('lodash');
 var gutil = require('gulp-util');
 var jshint = require('gulp-jshint');
+var karma = require('gulp-karma');
 var webpack = require('webpack');
 var webpackDevServer = require('webpack-dev-server');
 
@@ -12,6 +13,7 @@ var paths = {
     dest: 'static/css'
   },
   js: {
+    tests: 'static/js/src/**/*-test.js',
     entry: './static/js/src/app.js',
     bundleName: 'tchaik.js',
     dest: 'static/js/build'
@@ -53,6 +55,12 @@ var jshintConfig = {
   unused: true,
   node: true,
   newcap: false,
+  globals: {
+    'beforeEach': false,
+    'describe': false,
+    'expect': false,
+    'it': false,
+  }
 };
 
 gulp.task('jshint', function() {
@@ -63,19 +71,12 @@ gulp.task('jshint', function() {
 });
 
 gulp.task('jshint:jsx', function() {
+  var config = _.assign({}, jshintConfig, {
+    linter: require('jshint-jsx').JSXHINT,
+  });
+
   return gulp.src(['static/js/src/components/*.js'])
-    .pipe(jshint({
-      linter: require('jshint-jsx').JSXHINT,
-      esnext: true,
-      browser: true,
-      devel: true,
-      jquery: true,
-      curly: true,
-      undef: true,
-      unused: true,
-      node: true,
-      newcap: false
-    }))
+    .pipe(jshint(config))
     .pipe(jshint.reporter('jshint-stylish'))
     .pipe(jshint.reporter('fail'));
 });
@@ -106,5 +107,32 @@ gulp.task('serve', function() {
   server.listen(3000);
 });
 
+
+function setupKarma(options) {
+  return gulp.src([
+    // Polyfill so we can use react in phantomjs
+    './node_modules/phantomjs-polyfill/bind-polyfill.js',
+    // Test files
+    paths.js.tests,
+  ])
+  .pipe(karma(_.assign({
+    configFile: 'karma.conf.js',
+    browsers: ['PhantomJS'],
+  }, options)));
+}
+
+gulp.task('karma:ci', function() {
+  return setupKarma({
+    action: 'run',
+  });
+});
+
+gulp.task('karma:dev', function() {
+  return setupKarma({
+    action: 'watch',
+  });
+});
+
 gulp.task('default', ['webpack', 'jshint:jsx']);
 gulp.task('lint', ['jshint', 'jshint:jsx']);
+gulp.task('test', ['karma:ci']);
