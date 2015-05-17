@@ -37,7 +37,11 @@ div.collection {
 
     &>div.collection {
       div.group.expanded {
-        border: 0px;
+        div.header {
+          span.name {
+            font-size: 16px;
+          }
+        }
       }
     }
 
@@ -47,6 +51,8 @@ div.collection {
 
       div.header {
         span.name {
+          font-weight: 300;
+          font-size: 18px;
           color: white;
         }
 
@@ -58,7 +64,7 @@ div.collection {
 
     div.header {
       span.name {
-        font-weight: 600;
+        font-weight: 400;
         font-size: 14px;
         cursor: pointer;
       }
@@ -66,23 +72,31 @@ div.collection {
       span.group-album-artist {
         margin-left: 10px;
         font-size: 14px;
-        font-weight: 600;
+        font-weight: 500;
         color: #777;
       }
 
       span.glyphicon {
         padding-left: 10px;
-        color: #666;
+        color: #999;
         font-size: 14px;
         font-weight: 100;
 
         &:hover {
           color: white;
         }
+
+        &.glyphicon-time {
+          color: #666;
+        }
+      }
+
+      span.controls {
+        float: right;
       }
 
       span.duration {
-        margin-left: 10px;
+        margin-left: 5px;
         font-weight: normal;
         color: #666;
         font-size: 12px;
@@ -90,7 +104,6 @@ div.collection {
 
       div.attributes {
         color: #888;
-        margin-top:4px;
 
         span {
           font-size: 13px;
@@ -107,22 +120,10 @@ div.collection {
         display: none;
 
         &.visible {
-          float: right;
+          float: left;
           display: block;
-          max-width: 250px;
-          margin: -10px -10px -10px 5px;
-
-          @media (max-width: 1000px) {
-            max-width: 150px;
-          }
-
-          @media (min-width: 1250px) {
-            max-width: 350px;
-          }
-
-          @media (min-width: 1500px) {
-            max-width: 500px;
-          }
+          max-height: 200px;
+          margin: -10px 10px 10px -10px;
         }
       }
     }

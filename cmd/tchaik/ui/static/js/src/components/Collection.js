@@ -51,6 +51,7 @@ export class Group extends React.Component {
   render() {
     var content = null;
     var play = null;
+    var attributes = null;
     var headerDiv = null;
     var image = null;
 
@@ -68,7 +69,11 @@ export class Group extends React.Component {
       var common = this.state.common;
       var duration = null;
       if (this.state.common.TotalTime) {
-        duration = <TimeFormatter className="duration" time={parseInt(common.TotalTime/1000)} />;
+        duration = (
+          <span>
+            <Icon icon="time" /><TimeFormatter className="duration" time={parseInt(common.TotalTime/1000)} />
+          </span>
+        );
       }
 
       // NB: To avoid duplications, ignore AlbumArtist if we have a common Artist
@@ -84,17 +89,15 @@ export class Group extends React.Component {
         }
       });
 
-      var attributes = null;
       if (attributeArr.length > 0) {
         attributes = <GroupAttributes list={attributeArr} />;
       }
 
       play = (
         <span className="controls">
+          {duration}
           <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="list" title="Queue" onClick={this._onQueue} />
-          {duration}
-          {attributes}
         </span>
       );
 
@@ -121,6 +124,8 @@ export class Group extends React.Component {
           {image}
           <span className="name">{itemName}</span>{albumArtist}
           {play}
+          {attributes}
+          <div style={{'clear': 'both'}} />
         </div>
       );
     }
