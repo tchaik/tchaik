@@ -2,7 +2,6 @@
 @import './mixins.scss';
 
 div#right-column {
-  background-color: $light-background;
   color: white;
   position: fixed;
   right: 0;
@@ -24,7 +23,7 @@ div#right-column {
       text-align: left;
       -webkit-flex: 1;
       flex: 1;
-      background-color: #1C1C1C;
+      background-color: $darker-background;
 
       div.group {
         font-size: 12px;
