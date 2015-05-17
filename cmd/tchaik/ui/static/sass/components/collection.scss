@@ -9,7 +9,7 @@ div.collection {
     margin: 1px 0;
     padding: 10px;
     color: #ccc;
-    background-color: #171717;
+    background-color: #272727;
     cursor: pointer;
 
     &:hover {
@@ -47,7 +47,7 @@ div.collection {
 
     &.expanded {
       @include fade-in(background-color);
-      background-color: #191919;
+      background-color: #222;
 
       div.header {
         span.name {
@@ -110,8 +110,8 @@ div.collection {
           font-weight: 200;
 
           &.bull {
-            margin: 0 5px;
-            color: #666;
+            margin: 0 8px;
+            color: #444;
           }
         }
       }
