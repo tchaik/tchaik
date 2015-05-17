@@ -55,7 +55,7 @@ export default class PlayProgress extends React.Component {
     var b = `${Math.min(bpc, 100.0)}%`;
 
     return (
-      <div className="playProgress" onClick={this._onClick} onWheel={this._onWheel}>
+      <div className="play-progress" onClick={this._onClick} onWheel={this._onWheel}>
         <div className="bar">
           <div className="current" style={{width: w}} />
           <div className="marker" />
