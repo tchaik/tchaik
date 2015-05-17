@@ -26,26 +26,41 @@ div#right-column {
       flex: 1;
       background-color: #1C1C1C;
 
-      div.group-info {
-        margin-top:5px;
-
-        .info {
-          margin-right: 9px;
-        }
-      }
-
       div.group {
         font-size: 12px;
+        padding-left: 10px;
 
-        div.group {
-          padding-left: 10px;
-        }
-
-        div.name {
-          span.name {
-            font-weight: 600;
-          }
+        div.group-info-container {
+          display: flex;
           border: 1px solid #333;
+
+          div.group-info {
+            display: flex;
+            flex: 1;
+
+            margin-top: 5px;
+            margin-left: 15px;
+            margin-bottom: 5px;
+
+            .group-details {
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              flex: 1;
+            }
+
+            .controls {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-diection: column;
+              margin-right: 9px;
+            }
+
+            .name {
+              font-weight: 600;
+            }
+          }
 
           img {
             display: none;
@@ -53,22 +68,20 @@ div#right-column {
             &.visible {
               max-height: 60px;
               float: left;
-              margin-right: 6px;
               display: block;
             }
           }
-        }
 
-        div.attributes {
-          color: #888;
+          .attributes {
+            color: #888;
+            span {
+              font-weight: 200;
 
-          span {
-            font-weight: 200;
-
-            &.bull {
-              margin-left: 2px;
-              margin-right: 2px;
-              color: #666;
+              &.bull {
+                margin-left: 2px;
+                margin-right: 2px;
+                color: #666;
+              }
             }
           }
         }
