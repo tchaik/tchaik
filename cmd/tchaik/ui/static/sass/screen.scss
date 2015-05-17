@@ -19,5 +19,7 @@ a {
 @import './right-column.scss';
 @import './main-container.scss';
 
+@import './components/index.scss';
+
 // FIXME: node-sass doesn't seem to like this?
 // @include webkit-scrollbar(div#container, #333);

@@ -52,11 +52,13 @@ export default class Volume extends React.Component {
     }
 
     var w = `${Math.min(volume * 100.0, 100.0)}%`;
+    var rest = `${100 - Math.min(volume * 100.0, 100.0)}%`;
     return (
       <div className="volume" onWheel={this._onWheel}>
         <div className="bar" onClick={this._onClick}>
           <div className="current" style={{width: w}} />
           <div className="marker" />
+          <div className="rest" style={{width: rest}} />
         </div>
         <Icon icon={'volume-' + classSuffix} onClick={this._toggleMute} />
       </div>
