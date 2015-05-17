@@ -6,7 +6,7 @@ div.filter {
     width: $filter-column-width;
     position: fixed;
     top: $top-row-height;
-    bottom: 0;
+    bottom: $bottom-row-height;
     overflow-y: auto;
 
     background-color: #1d1d1d;
