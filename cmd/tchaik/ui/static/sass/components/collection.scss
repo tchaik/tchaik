@@ -204,6 +204,8 @@ div.collection {
           }
 
           &:hover {
+            background-color: #333;
+
             &.current {
               background-color: #555;
             }
@@ -221,7 +223,12 @@ div.collection {
             }
 
             &::before {
-              color: #aaa;
+              color: #ddd;
+              font-family: 'Glyphicons Halflings';
+              content: '\e072';
+              font-size: 12px;
+              line-height: 10px;
+              vertical-align: -20%;
             }
           }
         }
