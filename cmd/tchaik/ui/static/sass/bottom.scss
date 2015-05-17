@@ -99,6 +99,7 @@ div#bottom {
 
         &.visible {
           display: inline;
+          flex-shrink: 0;
           max-height: $bottom-row-height - $progressbar-height;
         }
       }
