@@ -55,6 +55,8 @@ func (m *Track) GetString(name string) string {
 		return m.Album()
 	case "Artist":
 		return m.Artist()
+	case "AlbumArtist":
+		return m.AlbumArtist()
 	case "Composer":
 		return m.Composer()
 	case "Location":
