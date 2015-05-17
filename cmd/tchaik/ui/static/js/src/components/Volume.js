@@ -89,8 +89,3 @@ export default class Volume extends React.Component {
     this.setState(getVolumeState());
   }
 }
-
-Volume.propTypes = {
-  height: React.PropTypes.number.isRequired,
-  markerHeight: React.PropTypes.number.isRequired,
-};
