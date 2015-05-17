@@ -227,24 +227,6 @@ div#bottom {
         div.times {
           color: #936;
         }
-
-        div.playProgress {
-          & > div.bar {
-            background-color: #936;
-
-            & > div.current {
-              background-color: #936;
-            }
-
-            & > div.buffered {
-              background-color: #936;
-            }
-
-            & > div.marker {
-              background-color: #f69;
-            }
-          }
-        }
       }
     }
   }
