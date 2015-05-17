@@ -23,6 +23,10 @@ div#bottom {
     }
   }
 
+  div.bottom-container {
+    height: 100%;
+  }
+
   div.now-playing {
     position: relative;
     height: 100%;
@@ -103,7 +107,11 @@ div#bottom {
         display: flex;
         flex: 1 auto;
         align-items: center;
-        margin-left: 10px;
+        margin-left: 5px;
+
+        div.container {
+          margin-top: -7px;
+        }
       }
 
       div.title {
