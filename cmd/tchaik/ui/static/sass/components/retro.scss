@@ -1,0 +1,36 @@
+@import '../variables.scss';
+@import '../mixins.scss';
+
+div.retro {
+  position:relative;
+  width: 100%;
+  height: 100%;
+  
+  div.blur {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+    z-index: 0;
+    height: 20%; width: 20%; /* Using Glen Maddern's trick /via @mente */
+    transform: scale(5);
+    transform-origin: top left;
+    -webkit-filter: blur(10px);
+    @include fade-in(background-image);
+  }
+
+  div.content {
+    z-index:10;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: right;
+  }
+
+  img {
+    border: 10px solid rgba(17, 17, 17, 0.2);
+    margin-right: 30px;
+  }
+}

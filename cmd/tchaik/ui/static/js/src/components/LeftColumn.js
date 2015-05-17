@@ -14,6 +14,7 @@ import Covers from './Covers.js';
 import Filter from './Filter.js';
 import Recent from './Recent.js';
 import Settings from './Settings.js';
+import Retro from './Retro.js';
 
 import LeftColumnStore from '../stores/LeftColumnStore.js';
 import LeftColumnActions from '../actions/LeftColumnActions.js';
@@ -109,6 +110,9 @@ export default class LeftColumn extends React.Component {
       break;
     case "Settings":
       container = <Settings />;
+      break;
+    case "Retro":
+      container = <Retro />;
     }
 
     return (
@@ -118,6 +122,7 @@ export default class LeftColumn extends React.Component {
           <ToolbarItem mode="Artists" icon="list" title="Artists" />
           <ToolbarItem mode="Covers" icon="th-large" title="Covers" />
           <ToolbarItem mode="Recent" icon="time" title="Recently Added" />
+          <ToolbarItem mode="Retro" icon="cd" title="Reto" />
           <ToolbarItem mode="Settings" icon="cog" title="Settings" />
           <div className="bottom">
             <StatusView />
