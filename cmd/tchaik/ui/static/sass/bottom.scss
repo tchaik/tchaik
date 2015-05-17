@@ -319,6 +319,7 @@ div#bottom {
       color: #bbb;
       padding: 10px 0;
       margin-left: 12px;
+      margin-top: -10px;
       font-size: 22px;
 
       &:hover {
@@ -327,6 +328,7 @@ div#bottom {
     }
 
     & > div.bar {
+      margin-top: -8px;
       width: 100px;
       background-color: #444;
       height: 4px;
