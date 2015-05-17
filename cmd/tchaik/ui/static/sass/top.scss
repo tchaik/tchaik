@@ -25,12 +25,12 @@ div#top {
     input {
       outline: none;
       background-color: #333;
-      border: 3px solid #444;
+      border: 3px solid #333;
       color: #eee;
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 200;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      padding: 5px 10px 5px 34px;
+      padding: 8px 10px 8px 34px;
       margin: 5px;
       width: 600px;
 
@@ -39,7 +39,7 @@ div#top {
 
       &:active, &:focus {
         background-color: #373737;
-        border: 3px solid #474747;
+        border: 3px solid #444;
       }
     }
   }

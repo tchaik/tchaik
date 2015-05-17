@@ -40,10 +40,10 @@ div#bottom {
         @include fade-in(color);
 
         &.glyphicon-step-forward, &.glyphicon-step-backward {
-          font-size: 18px;
-          line-height: 36px;
+          font-size: 16px;
+          line-height: 34px;
           color: #666;
-          top: -5px;
+          top: -3px;
 
           &.enabled {
             color: white;
@@ -55,12 +55,13 @@ div#bottom {
         }
 
         &.glyphicon-play, &.glyphicon-pause {
-          font-size: 34px;
+          font-size: 28px;
+          line-height: 34px;
           height: 34px;
           width: 34px;
           margin-right: 4px;
           margin-top: 0px;
-          padding: 7px 6px 9px 10px;
+          padding: 8px 3px 8px 13px;
           border: 2px solid #666;
           border-radius: 50%;
           @include fade-in(border-color, 50ms);
@@ -70,7 +71,7 @@ div#bottom {
           &:hover {
             color: lighten($light-blue, 10);
             border-color: lighten($light-blue, 30);
-          };
+          }
         }
       }
     }
