@@ -5,7 +5,7 @@ div#bottom {
   $progressbar-height: 4px;
   border-top: 2px solid black;
   background-color: #222;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   height: $bottom-row-height;
   left: $left-column-width;
