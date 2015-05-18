@@ -31,7 +31,7 @@ export default class RightColumn extends React.Component {
   render() {
     var playlist = null;
     if (this.state.showPlaylist) {
-      playlist = <Playlist />
+      playlist = <Playlist />;
     }
 
     return (
