@@ -2,11 +2,11 @@
 @import '../mixins.scss';
 
 div.collection {
-  background-color: #333;
+  background-color: #171717;
 
   div.group {
     display: block;
-    margin: 1px 0;
+    margin: 2px 0;;
     padding: 10px;
     color: #ccc;
     background-color: $lighter-background;;
@@ -37,6 +37,7 @@ div.collection {
 
     &>div.collection {
       div.group.expanded {
+        border: 0;
         div.header {
           span.name {
             font-size: 16px;
@@ -48,6 +49,7 @@ div.collection {
     &.expanded {
       @include fade-in(background-color);
       background-color: #222;
+      border: 1px solid #333;
 
       div.header {
         span.name {
