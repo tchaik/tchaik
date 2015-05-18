@@ -68,7 +68,7 @@ div#bottom {
           border: 2px solid #666;
           border-radius: 50%;
           @include fade-in(border-color, 50ms);
-          background-color: #444;
+          background-color: rgba(17, 17, 17, 0.2);
           color: #eee;
 
           &:hover {
