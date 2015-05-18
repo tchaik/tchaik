@@ -35,8 +35,8 @@ div.retro {
   }
 
   .current-artwork {
-    position: absolute;
-    top: 0px;
+    position: fixed;
+    top: 100px;
     right: 100px;
 
     img {
