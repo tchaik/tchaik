@@ -266,7 +266,7 @@ class GroupList extends React.Component {
     }.bind(this));
 
     return (
-      <div className="collection">
+      <div>
         {groups}
       </div>
     );
