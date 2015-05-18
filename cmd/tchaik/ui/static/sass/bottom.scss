@@ -2,13 +2,13 @@
 @import './mixins.scss';
 
 div#bottom {
-  border-top: 2px solid black;
   position: fixed;
   bottom: 0;
   height: $bottom-row-height;
   left: 0;
   right: 0;
   color: white;
+  background-color: $transparent-bar-background;
 
   .hover-show {
     opacity: 0;

@@ -9,3 +9,6 @@ $progressbar-height: 4px;
 $lighter-background: #272727;
 $light-background: #222;
 $darker-background: #1C1C1C;
+
+$transparent-bar-background: rgba($light-background, 0.4);
+$transparent-bar-light-background: rgba($light-background, 0.3);

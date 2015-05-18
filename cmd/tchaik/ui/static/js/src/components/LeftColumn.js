@@ -115,6 +115,11 @@ export default class LeftColumn extends React.Component {
       container = <Retro />;
     }
 
+    var containerClasses = classNames({
+      container: true,
+      retro: this.state.mode === 'Retro',
+    });
+
     return (
       <div>
         <div className="control-bar">
@@ -129,7 +134,7 @@ export default class LeftColumn extends React.Component {
             <PlayerKeyView />
           </div>
         </div>
-        <div id="container">
+        <div id="container" className={containerClasses}>
           {container}
         </div>
       </div>

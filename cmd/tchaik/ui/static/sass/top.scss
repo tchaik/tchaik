@@ -9,6 +9,7 @@ div#top {
   left: 0;
   right: 0;
   color: white;
+  z-index: 1;
 
   div {
     position: absolute;
@@ -23,8 +24,8 @@ div#top {
 
     input {
       outline: none;
-      background-color: #333;
-      border: 3px solid #333;
+      background-color: $transparent-bar-background;
+      border: 0px;
       color: #eee;
       font-size: 13px;
       font-weight: 200;

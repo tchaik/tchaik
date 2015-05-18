@@ -6,9 +6,11 @@ div.control-bar {
   left: 0;
   top: 0;
   padding-top: 5px;
+  z-index: 1;
 
   bottom: $bottom-row-height;
   width: $left-column-width;
+  background-color: $transparent-bar-light-background;
 
   span.item {
     color: #999;

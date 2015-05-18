@@ -16,3 +16,10 @@ div#container {
   @import './components/settings.scss';
   @import './components/retro.scss';
 }
+
+div#container.retro {
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
