@@ -24,13 +24,58 @@ div.retro {
   div.content {
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
     z-index: 1;
 
     .playlist {
+      margin-left: 100px;
       max-width: 600px;
       background-color: $transparent-bar-dark-background;
+
+      .group {
+        padding-left: 0;
+
+        .group-info-container {
+          border: 0;
+        }
+
+        .group-details {
+          .name {
+            font-size: 15px;
+            font-weight: 400;
+          }
+        }
+
+        .tracks {
+          margin-top: 10px;
+          margin-bottom: 10px;
+
+          li {
+            border-bottom: 0;
+            padding: 6px;
+          }
+        }
+
+        img {
+          max-height: 100px;
+        }
+
+        .group {
+          img {
+            display: none;
+          }
+
+          .group-info-container {
+            border: 0;
+
+            .group-info {
+              margin-top: 10px;
+              margin-bottom: 0;
+            }
+          }
+        }
+      }
     }
   }
 
