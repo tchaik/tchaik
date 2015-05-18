@@ -3,6 +3,7 @@
 import React from 'react/addons';
 
 import ArtworkImage from './ArtworkImage.js';
+import Playlist from './Playlist.js';
 
 import NowPlayingStore from '../stores/NowPlayingStore.js';
 
@@ -34,8 +35,11 @@ export default class Retro extends React.Component {
     return (
       <div className="retro">
         <div className="blur" style={{'backgroundImage': "url("+imagePath+")"}} />
+          <div className="current-artwork">
+            {artworkImage}
+          </div>
         <div className="content">
-          {artworkImage}
+          <Playlist />
         </div>
       </div>
     );

@@ -18,8 +18,8 @@ div#container {
 }
 
 div#container.retro {
-  top: 0;
-  bottom: 0;
+  top: $top-row-height;
+  bottom: $bottom-row-height;
   left: 0;
   right: 0;
 }
