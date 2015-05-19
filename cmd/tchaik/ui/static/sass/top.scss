@@ -34,19 +34,21 @@ div#top {
 
     span.glyphicon-search {
       color: white;
-      margin-right: -32px;
+      margin-right: -36px;
       font-size: 18px;
+      vertical-align: -3px;
     }
 
     input {
       outline: none;
-      background-color: $transparent-bar-background;
+      background-color: $search-box-background;
       border: 0px;
+      border-radius: 5px;
       color: #eee;
       font-size: 13px;
       font-weight: 200;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      padding: 8px 10px 8px 34px;
+      padding: 12px 10px 12px 48px;
       margin: 5px;
       width: 600px;
 
@@ -54,8 +56,7 @@ div#top {
       @include fade-in(border-color);
 
       &:active, &:focus {
-        background-color: #373737;
-        border: 3px solid #444;
+        background-color: $search-box-background-focus;
       }
     }
   }
