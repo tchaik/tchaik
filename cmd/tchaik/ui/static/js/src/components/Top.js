@@ -23,7 +23,7 @@ class MenuButton extends React.Component {
     );
   }
 
-  _onClick(evt) {
+  _onClick() {
     LeftColumnActions.toggleVisibility();
   }
 }
