@@ -10,7 +10,6 @@ div.playlist {
 
   div.group {
     font-size: 12px;
-    padding-left: 10px;
 
     div.group-info-container {
       display: flex;
@@ -108,8 +107,8 @@ div.playlist {
       li {
         font-size: 11px;
         line-height: 15px;
-        padding: 5px 10px 5px 5px;
-        border-bottom: 1px solid #333;
+        padding: 10px;
+        border-bottom: 1px solid #232323;
         color: #bbb;
 
         &::before {
