@@ -149,23 +149,13 @@ div.playlist {
           }
         }
 
-        &.is-playing {
+        &.is-playing, &.is-playing:hover {
           &::before {
             font-family: 'Glyphicons Halflings';
             content: '\e038';
-            font-size: 14px;
+            font-size: 16px;
             line-height: 10px;
-            vertical-align: -30%;
-          }
-
-          &:hover {
-            &::before {
-              font-family: 'Glyphicons Halflings';
-              content: '\e038';
-              font-size: 14px;
-              line-height: 10px;
-              vertical-align: -30%;
-            }
+            vertical-align: -35%;
           }
         }
 
