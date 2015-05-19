@@ -42,7 +42,7 @@ div.retro {
 
         .group-details {
           .name {
-            font-size: 15px;
+            font-size: 18px;
             font-weight: 400;
           }
         }
@@ -72,6 +72,12 @@ div.retro {
             .group-info {
               margin-top: 10px;
               margin-bottom: 0;
+            }
+          }
+
+          .group-details {
+            .name {
+              font-size: 15px;
             }
           }
         }
