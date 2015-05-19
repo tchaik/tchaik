@@ -17,8 +17,10 @@ export default class Top extends React.Component {
   render() {
     return (
       <div>
-        <Icon icon="search" />
-        <input type="text" name="search" placeholder="Search Music" onChange={this._onChange} />
+        <div className="search">
+          <Icon icon="search" />
+          <input type="text" name="search" placeholder="Search Music" onChange={this._onChange} />
+        </div>
       </div>
     );
   }
