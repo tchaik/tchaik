@@ -52,8 +52,12 @@ div.retro {
           margin-bottom: 10px;
 
           li {
-            border-bottom: 0;
-            padding: 9px;
+            padding: 10px;
+            border: 0;
+
+            &:hover, &:hover::before, &.current:hover::before {
+              background-color: $transparent-bar-dark-background-highlight;
+            }
           }
         }
 
@@ -94,7 +98,6 @@ div.retro {
       box-shadow: 5px 5px 5px rgba(17, 17, 17, 0.3);
       max-height: 600px;
       margin-right: 30px;
-
     }
   }
 }
