@@ -8,12 +8,21 @@ import LeftColumnConstants from '../constants/LeftColumnConstants.js';
 
 
 var _defaultMode = "All";
+var _defaultHidden = true;
 
 function setMode(m) {
   if (m === null) {
     m = _defaultMode;
   }
   localStorage.setItem("mode", m);
+}
+
+function setHidden(h) {
+  if (h === null) {
+    h = _defaultHidden;
+  }
+
+  localStorage.setItem('toolbarHidden', JSON.stringify(h));
 }
 
 function mode() {
@@ -24,10 +33,25 @@ function mode() {
   return m;
 }
 
+function isHidden() {
+  var h = localStorage.getItem('toolbarHidden');
+  if (h === null) {
+    h = _defaultHidden;
+  } else {
+    h = JSON.parse(h);
+  }
+
+  return h;
+}
+
 
 class LeftColumnStore extends ChangeEmitter {
   getMode() {
     return mode();
+  }
+
+  getIsHidden() {
+    return isHidden();
   }
 }
 
@@ -41,6 +65,11 @@ _leftColumnStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case LeftColumnConstants.MODE:
         setMode(action.mode);
+        _leftColumnStore.emitChange();
+        break;
+      case LeftColumnConstants.TOGGLE_VISIBILITY:
+        var current = isHidden();
+        setHidden(!current);
         _leftColumnStore.emitChange();
         break;
     }

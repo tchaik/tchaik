@@ -10,6 +10,23 @@ div#top {
   color: white;
   z-index: 1;
 
+  .menu-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 3;
+
+    .glyphicon {
+      font-size: 22px;
+      color: #999;
+      cursor: pointer;
+
+      &:hover {
+        color: white;
+      }
+    }
+  }
+
   .search {
     position: absolute;
     left: 50%;

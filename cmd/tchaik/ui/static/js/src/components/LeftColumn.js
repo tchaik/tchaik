@@ -68,7 +68,10 @@ class ToolbarItem extends React.Component {
 
 
 function leftColumnState() {
-  return {mode: LeftColumnStore.getMode()};
+  return {
+    mode: LeftColumnStore.getMode(),
+    hidden: LeftColumnStore.getIsHidden(),
+  };
 }
 
 export default class LeftColumn extends React.Component {
@@ -120,8 +123,9 @@ export default class LeftColumn extends React.Component {
       retro: this.state.mode === 'Retro',
     });
 
-    return (
-      <div>
+    var toolbar = null;
+    if (!this.state.hidden) {
+      toolbar = (
         <div className="control-bar">
           <ToolbarItem mode="All" icon="align-justify" title="All" />
           <ToolbarItem mode="Artists" icon="list" title="Artists" />
@@ -134,6 +138,12 @@ export default class LeftColumn extends React.Component {
             <PlayerKeyView />
           </div>
         </div>
+      );
+    }
+
+    return (
+      <div>
+        {toolbar}
         <div id="container" className={containerClasses}>
           {container}
         </div>

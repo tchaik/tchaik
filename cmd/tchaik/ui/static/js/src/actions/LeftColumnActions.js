@@ -12,8 +12,13 @@ var LeftColumnActions = {
       actionType: LeftColumnConstants.MODE,
       mode: m
     });
-  }
+  },
 
+  toggleVisibility: function() {
+    AppDispatcher.handleViewAction({
+      actionType: LeftColumnConstants.TOGGLE_VISIBILITY,
+    });
+  },
 };
 
 export default LeftColumnActions;
