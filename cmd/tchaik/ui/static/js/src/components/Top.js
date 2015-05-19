@@ -33,6 +33,7 @@ export default class Top extends React.Component {
     super(props);
 
     this._onChange = this._onChange.bind(this);
+    this._onClick = this._onClick.bind(this);
   }
 
   render() {
@@ -41,7 +42,7 @@ export default class Top extends React.Component {
         <MenuButton />
         <div className="search">
           <Icon icon="search" />
-          <input type="text" name="search" placeholder="Search Music" onChange={this._onChange} />
+          <input type="text" name="search" placeholder="Search Music" onChange={this._onChange} onClick={this._onClick} />
         </div>
       </div>
     );
@@ -49,5 +50,9 @@ export default class Top extends React.Component {
 
   _onChange(e) {
     SearchActions.search(e.currentTarget.value);
+  }
+
+  _onClick(e) {
+    e.currentTarget.select();
   }
 }
