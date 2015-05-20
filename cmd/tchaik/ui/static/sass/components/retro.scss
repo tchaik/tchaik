@@ -56,8 +56,14 @@ div.retro {
             border: 0;
             font-size: 12px;
 
-            &:hover, &:hover::before, &.current:hover::before {
+            &:hover, &:hover::before {
               background-color: $transparent-bar-dark-background-highlight;
+            }
+
+            &.current {
+              &:hover, &:hover::before {
+                background-color: $lighter-blue;
+              }
             }
 
             span.info span.duration {
