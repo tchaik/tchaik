@@ -44,7 +44,7 @@ export default class NowPlaying extends React.Component {
   render() {
     var track = this.state.track;
     if (track === null) {
-      return null;
+      return <div className="now-playing-track" />;
     }
 
     var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
