@@ -61,8 +61,20 @@ div.retro {
             }
 
             &.current {
+              color: $light-blue;
+              background-color: inherit;
+
+              &::before {
+                color: $light-blue;
+                background-color: inherit;
+              }
+
+              span.info span.duration, span.info span.glyphicon-remove {
+                color: $light-blue;
+              }
+
               &:hover, &:hover::before {
-                background-color: $lighter-blue;
+                background-color: $transparent-bar-dark-background-highlight;
               }
             }
 
