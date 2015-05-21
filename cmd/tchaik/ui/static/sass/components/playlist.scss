@@ -122,29 +122,26 @@ div.playlist {
         }
 
         &.current {
-          background-color: $light-blue;
-          color: #333;
+          color: $light-blue;
 
           span.duration {
-            color: #444;
+            color: $light-blue;
           }
 
           &:hover {
-            background-color: $light-blue;
-            color: #333;
+            color: $light-blue;
 
             &::before {
-              background-color: $light-blue;
-              color: #333;
+              color: $light-blue;
             }
 
             span.glyphicon-remove, span.duration {
-              color: #333;
+              color: $light-blue;
             }
           }
 
           &::before {
-            color: #333;
+            color: $light-blue;
           }
         }
 
