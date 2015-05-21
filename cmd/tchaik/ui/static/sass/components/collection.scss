@@ -185,22 +185,21 @@ div.collection {
           }
 
           &.current {
-            background-color: $light-blue;
             span.name, span.duration {
-              color: #333;
+              color: $light-blue;
             }
 
             &::before{
-              color: #333;
+              color: $light-blue;
             }
 
             &.playing {
               &::before {
                 font-family: 'Glyphicons Halflings';
                 content: '\e038';
-                font-size: 14px;
+                font-size: 16px;
                 line-height: 10px;
-                vertical-align: -30%;
+                vertical-align: -34%;
               }
             }
           }
@@ -209,7 +208,13 @@ div.collection {
             background-color: #333;
 
             &.current {
-              background-color: #555;
+              span.name, span.duration {
+                color: $light-blue;
+              }
+
+              &::before{
+                color: $light-blue;
+              }
             }
 
             span.name {
