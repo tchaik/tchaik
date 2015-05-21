@@ -56,24 +56,28 @@ div.retro {
             border: 0;
             font-size: 12px;
 
-            &:hover, &:hover::before {
+            &:hover {
               background-color: $transparent-bar-dark-background-highlight;
+            }
+
+            &:hover::before {
+              background-color: $transparent;
             }
 
             &.current {
               color: $light-blue;
-              background-color: inherit;
+              background-color: $transparent;
 
               &::before {
                 color: $light-blue;
-                background-color: inherit;
+                background-color: $transparent;
               }
 
               span.info span.duration, span.info span.glyphicon-remove {
                 color: $light-blue;
               }
 
-              &:hover, &:hover::before {
+              &:hover {
                 background-color: $transparent-bar-dark-background-highlight;
               }
             }
