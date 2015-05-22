@@ -30,26 +30,22 @@ WebsocketAPI.init(websocketUrl);
 
 AudioAPI.init();
 
-var LeftColumn = React.createFactory(LeftColumn);
 React.render(
-  LeftColumn(),
+  React.createFactory(LeftColumn)(),
   document.getElementById('left-column')
 );
 
-var RightColumn = React.createFactory(RightColumn);
 React.render(
-  RightColumn(),
+  React.createFactory(RightColumn)(),
   document.getElementById('right-column')
 );
 
-var Bottom = React.createFactory(Bottom);
 React.render(
-  Bottom(),
+  React.createFactory(Bottom)(),
   document.getElementById('bottom')
 );
 
-var Top = React.createFactory(Top);
 React.render(
-  Top(),
+  React.createFactory(Top)(),
   document.getElementById('top')
 );
