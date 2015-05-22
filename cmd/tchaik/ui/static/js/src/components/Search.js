@@ -44,6 +44,15 @@ class Results extends React.Component {
     var list = this.state.results.map(function(path) {
       return <RootGroup path={path} key={CollectionStore.pathToKey(path)} />;
     });
+
+    if (list.length === 0) {
+      return (
+        <div className="collection">
+          <div className="no-results">No results found</div>
+        </div>
+      );
+    }
+
     return (
       <div className="collection">
         {list}

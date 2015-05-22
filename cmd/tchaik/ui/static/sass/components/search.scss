@@ -31,5 +31,12 @@ div.search-collection {
 
   > div.collection {
     margin-top: 46px;
+
+    div.no-results {
+      font-size: 14px;
+      font-weight: 200;
+      color: #fff;
+      text-align: center;
+    }
   }
 }
