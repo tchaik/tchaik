@@ -67,7 +67,7 @@ class LinkItem extends React.Component {
     return (
       <a className="menu-item" href={this.props.href} target="_blank">
         <span className="item">
-          <Icon icon={this.props.icon} />
+          <Icon icon={this.props.icon} fa={true} />
         </span>
         <span className="title">{this.props.title}</span>
       </a>
@@ -120,7 +120,7 @@ export default class LeftColumn extends React.Component {
             <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
           </div>
           <div className="links">
-            <LinkItem title="Github" href="https://github.com/tchaik/tchaik" icon="home" />
+            <LinkItem title="Github" href="https://github.com/tchaik/tchaik" icon="github" />
           </div>
         </div>
         <div className="middle"></div>

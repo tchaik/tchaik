@@ -23,8 +23,9 @@ div.control-bar {
     margin-left: -$left-column-width - 2px;
   }
 
-  span.glyphicon {
+  span.icon {
     font-size: 20px;
+    width: 20px;
     display: block;
   }
 
@@ -65,7 +66,7 @@ div.control-bar {
     cursor: pointer;
 
     &.selected {
-      span.glyphicon {
+      span.icon {
         color: lighten($light-blue, 15);
       }
 
@@ -74,13 +75,13 @@ div.control-bar {
       }
 
       &:hover {
-        span.glyphicon {
+        span.icon {
           color: lighten($light-blue, 15);
         }
       }
     }
 
-    span.glyphicon {
+    span.icon {
       color: #999;
     }
 
@@ -96,7 +97,7 @@ div.control-bar {
         color: white;
       }
 
-      span.glyphicon {
+      span.icon {
         color: white;
       }
     }
@@ -115,7 +116,7 @@ div.control-bar {
       display: flex;
     }
     .item {
-      span.glyphicon {
+      span.icon {
         padding: 10px;
         font-size: 20px;
         display: block;
