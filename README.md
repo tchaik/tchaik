@@ -1,5 +1,7 @@
 # Music organisation and streaming system
 
+[![Join the chat at https://gitter.im/tchaik/tchaik](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tchaik/tchaik?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Tchaik is an open source music organisation and streaming system.  The backend is written in [Go](http://golang.org), the frontend is built using [React](https://facebook.github.io/react/) and [Flux](https://facebook.github.io/flux/).
 
 ![Tchaik UI](https://s3-ap-southeast-2.amazonaws.com/dhowden-pictures/tchaik-may.jpg "Tchaik UI")
