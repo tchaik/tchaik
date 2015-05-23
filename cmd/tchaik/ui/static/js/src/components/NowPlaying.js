@@ -4,16 +4,15 @@ import React from "react/addons";
 
 import classNames from "classnames";
 
-import Icon from "./Icon.js";
-import TimeFormatter from "./TimeFormatter.js";
 import ArtworkImage from "./ArtworkImage.js";
-import NowPlayingStore from "../stores/NowPlayingStore.js";
-import PlayingStatusStore from "../stores/PlayingStatusStore.js";
-
 import ContainerActions from "../actions/ContainerActions.js";
 import ContainerConstants from "../constants/ContainerConstants.js";
-
 import GroupAttributes from "../components/GroupAttributes.js";
+import Icon from "./Icon.js";
+import NowPlayingStore from "../stores/NowPlayingStore.js";
+import PlayingStatusStore from "../stores/PlayingStatusStore.js";
+import SearchActions from "../actions/SearchActions.js";
+import TimeFormatter from "./TimeFormatter.js";
 
 function getNowPlayingState() {
   return {
@@ -57,7 +56,7 @@ export default class NowPlaying extends React.Component {
 
     for (var attribute of ["Artist", "GroupName"]) {
       if (track[attribute]) {
-        attributes.push(<span>{track[attribute]}</span>);
+        attributes.push(<a onClick={this._onClickAttribute.bind(this, track[attribute])}>{track[attribute]}</a>);
       }
     }
 
@@ -103,6 +102,10 @@ export default class NowPlaying extends React.Component {
 
   _onClickArtwork() {
     ContainerActions.mode(ContainerConstants.RETRO);
+  }
+
+  _onClickAttribute(attributeValue) {
+    SearchActions.search(attributeValue);
   }
 }
 
