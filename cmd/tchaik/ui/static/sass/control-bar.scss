@@ -14,6 +14,7 @@ div.control-bar {
   width: $left-column-width;
   background-color: $transparent-bar-light-background;
   color: #999;
+  border-right: 2px solid $transparent-bar-dark-background-highlight;
 
   margin-left: 0px;
   transition: margin-left .5s ease-in;
