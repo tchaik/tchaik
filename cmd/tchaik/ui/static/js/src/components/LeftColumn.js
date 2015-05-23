@@ -16,7 +16,6 @@ import ContainerStore from "../stores/ContainerStore.js";
 import LeftColumnActions from "../actions/LeftColumnActions.js";
 import LeftColumnStore from "../stores/LeftColumnStore.js";
 
-
 function getToolBarItemState(mode) {
   return {selected: mode === ContainerStore.getMode()};
 }
@@ -107,37 +106,33 @@ export default class LeftColumn extends React.Component {
   }
 
   render() {
-    var toolbar = null;
-    if (!this.state.hidden) {
-      toolbar = (
-        <div className="control-bar">
-          <div className="top">
-            <div className="menu-item menu-button-item" onClick={this._onClickMenuToggle}>
-              <MenuToggleButton />
-              <span className="title">Tchaik</span>
-            </div>
-            <div className="menu-items">
-              <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
-              <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
-              <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
-              <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
-              <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Retro" />
-              <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
-            </div>
-            <div className="links">
-              <LinkItem title="Github" href="https://github.com/tchaik/tchaik" icon="home" />
-            </div>
+    var classes = classNames('control-bar', {hidden: this.state.hidden});
+    return (
+      <div className={classes}>
+        <div className="top">
+          <div className="menu-item menu-button-item" onClick={this._onClickMenuToggle}>
+            <MenuToggleButton />
+            <span className="title">Tchaik</span>
           </div>
-          <div className="middle"></div>
-          <div className="bottom">
-            <div className="bottom-item"><StatusView /></div>
-            <div className="bottom-item"><PlayerKeyView /></div>
+          <div className="menu-items">
+            <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
+            <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
+            <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
+            <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
+            <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Retro" />
+            <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
+          </div>
+          <div className="links">
+            <LinkItem title="Github" href="https://github.com/tchaik/tchaik" icon="home" />
           </div>
         </div>
-      );
-    }
-
-    return toolbar;
+        <div className="middle"></div>
+        <div className="bottom">
+          <div className="bottom-item"><StatusView /></div>
+          <div className="bottom-item"><PlayerKeyView /></div>
+        </div>
+      </div>
+    );
   }
 
   _onChange() {

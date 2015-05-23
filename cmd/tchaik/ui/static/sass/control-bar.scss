@@ -15,6 +15,12 @@ div.control-bar {
   background-color: $lighter-background;
   color: #999;
 
+  margin-left: 0px;
+  transition: margin-left .5s ease-in;
+  &.hidden {
+    margin-left: -$left-column-width;
+  }
+
   span.glyphicon {
     font-size: 20px;
     display: block;
