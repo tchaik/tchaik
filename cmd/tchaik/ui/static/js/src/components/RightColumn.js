@@ -32,14 +32,14 @@ export default class RightColumn extends React.Component {
   render() {
     var playlist = null;
     if (this.state.showPlaylist) {
-      playlist = <Playlist />;
+      playlist = (
+        <div className="now-playing">
+          <Playlist />;
+        </div>
+      );
     }
 
-    return (
-      <div className="now-playing">
-        {playlist}
-      </div>
-    );
+    return playlist;
   }
 
   _onChange() {

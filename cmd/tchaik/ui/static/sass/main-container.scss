@@ -2,10 +2,6 @@
 
 div#container {
   overflow: auto;
-  top: $top-row-height;
-  bottom: $bottom-row-height;
-  left: $left-column-width;
-  right: $right-column-width;
   flex: 1;
 
   @import './components/collection.scss';
@@ -14,13 +10,6 @@ div#container {
   @import './components/search.scss';
   @import './components/settings.scss';
   @import './components/retro.scss';
-}
-
-div#container.retro {
-  top: $top-row-height;
-  bottom: $bottom-row-height;
-  left: 0;
-  right: 0;
 }
 
 div#middle {

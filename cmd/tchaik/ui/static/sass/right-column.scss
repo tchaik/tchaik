@@ -2,18 +2,17 @@
 @import './mixins.scss';
 
 div#right-column {
+  display: flex;
   color: white;
-  width: $right-column-width;
   text-align: center;
-  overflow: auto;
 
   div.now-playing {
+    width: $right-column-width;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-flow: column;
     flex-flow: column;
     position: relative;
-    height: 100%;
-
+    flex: 1;
   }
 }
