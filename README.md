@@ -56,7 +56,7 @@ You can also convert the iTunes Library into a Tchaik library using the `tchimpo
     $ tchimport -itlXML ~/path/to/iTunesLibrary.xml -out lib.tch
     $ tchaik -lib lib.tch
 
-NB: An Tchaik library will generally be smaller than its corresponding iTunes Library.  Tchaik libraries are stored as gzipped-JSON (rather than Apple plist) and contain a subset of the metadata used by iTunes.
+NB: A Tchaik library will generally be smaller than its corresponding iTunes Library.  Tchaik libraries are stored as gzipped-JSON (rather than Apple plist) and contain a subset of the metadata used by iTunes.
 
 ## Importing Audio Files
 
