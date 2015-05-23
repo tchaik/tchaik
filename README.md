@@ -31,11 +31,13 @@ Building the UI:
 
     $ cd $GOPATH/src/github.com/tchaik/tchaik/cmd/tchaik/ui
     $ npm install
-    $ NODE_ENV=development gulp
+    $ gulp
 
 Alternatively, if you want the JS and CSS to be recompiled and have the browser refreshed as you change the source files:
 
-    $ WS_URL="ws://localhost:8080/socket" NODE_ENV=development gulp serve
+    $ WS_URL="ws://localhost:8080/socket" gulp serve
+
+Then browse to `http://localhost:3000/` to use tchaik.
 
 # Starting the UI
 
