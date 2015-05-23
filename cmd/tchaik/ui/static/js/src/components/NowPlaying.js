@@ -13,6 +13,7 @@ import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 import LeftColumnActions from "../actions/LeftColumnActions.js";
 import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 
+import GroupAttributes from "../components/GroupAttributes.js";
 
 function getNowPlayingState() {
   return {
@@ -50,9 +51,18 @@ export default class NowPlaying extends React.Component {
     }
 
     var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
-    var group = null;
-    if (track.GroupName !== "") {
-      group = <div className="attributes">{track.GroupName}</div>;
+
+    var attributes = [];
+    var attributesElement = null;
+
+    for (var attribute of ["Artist", "GroupName"]) {
+      if (track[attribute]) {
+        attributes.push(<span>{track[attribute]}</span>);
+      }
+    }
+
+    if (attributes) {
+      attributesElement = <GroupAttributes list={attributes} />;
     }
 
     var className = classNames({
@@ -74,7 +84,7 @@ export default class NowPlaying extends React.Component {
                 </a>
               </span>
             </div>
-            {group}
+            {attributesElement}
 
             <div className="times">
               <TimeFormatter className="current-time" time={this.state.currentTime} />
