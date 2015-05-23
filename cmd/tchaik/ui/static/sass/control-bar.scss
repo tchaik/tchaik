@@ -61,7 +61,6 @@ div.control-bar {
     display: flex;
     padding: 15px;
     background-color: $transparent;
-    @include fade-in(background-color, 0.05s);
     text-decoration: none;
     cursor: pointer;
 
