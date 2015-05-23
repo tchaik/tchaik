@@ -1,7 +1,5 @@
 # Music organisation and streaming system
 
-[![Join the chat at https://gitter.im/tchaik/tchaik](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tchaik/tchaik?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 Tchaik is an open source music organisation and streaming system.  The backend is written in [Go](http://golang.org), the frontend is built using [React](https://facebook.github.io/react/) and [Flux](https://facebook.github.io/flux/).
 
 ![Tchaik UI](https://s3-ap-southeast-2.amazonaws.com/dhowden-pictures/tchaik-may.jpg "Tchaik UI")
@@ -103,3 +101,9 @@ Set `-media-cache` to cache all files loaded from `-remote-store` (or `-local-st
 ### -artwork-cache
 
 Set `-artwork-cache` to create/use a content addressable filesystem for track artwork.  An index file will be created in the path on first use.  The folder should initially be empty to ensure that no other files interfere with the system.
+
+# Get Involved!
+
+Development is on-going and the codebase is changing very quickly.  If you're interested in contributing then it's safest to jump into our gitter room and chat to people before getting started!
+
+[![Join the chat at https://gitter.im/tchaik/tchaik](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/tchaik/tchaik?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
