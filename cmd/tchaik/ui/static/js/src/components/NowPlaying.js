@@ -7,10 +7,11 @@ import classNames from "classnames";
 import Icon from "./Icon.js";
 import TimeFormatter from "./TimeFormatter.js";
 import ArtworkImage from "./ArtworkImage.js";
-
 import NowPlayingStore from "../stores/NowPlayingStore.js";
-
 import PlayingStatusStore from "../stores/PlayingStatusStore.js";
+
+import LeftColumnActions from "../actions/LeftColumnActions.js";
+import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 
 
 function getNowPlayingState() {
@@ -91,7 +92,7 @@ export default class NowPlaying extends React.Component {
   }
 
   _onClickArtwork() {
-
+    LeftColumnActions.mode(LeftColumnConstants.RETRO);
   }
 }
 
