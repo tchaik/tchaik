@@ -20,7 +20,7 @@ var paths = {
   },
   eslint: {
     src: [
-      "gulpfile.js",
+      "*.js",
       "static/js/src/**/*.js",
       "static/js/src/*.js",
     ],

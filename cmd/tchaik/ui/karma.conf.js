@@ -1,13 +1,13 @@
 module.exports = function(config) {
   config.set({
-    frameworks: ['mocha', 'sinon-chai'],
+    frameworks: ["mocha", "sinon-chai"],
     preprocessors: {
-      'static/**/*.js': ['webpack']
+      "static/**/*.js": ["webpack"],
     },
-    webpack: require('./webpack.tests.config.js'),
-    reporters: ['mocha'],
+    webpack: require("./webpack.tests.config.js"),
+    reporters: ["mocha"],
     mochaReporter: {
-      output: 'autowatch',
-    }
+      output: "autowatch",
+    },
   });
 };

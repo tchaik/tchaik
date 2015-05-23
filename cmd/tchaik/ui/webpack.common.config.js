@@ -1,5 +1,5 @@
-var path = require('path');
-var webpack = require('webpack');
+var path = require("path");
+var webpack = require("webpack");
 
 module.exports = {
   plugins: [
@@ -7,18 +7,18 @@ module.exports = {
       "process.env": Object.keys(process.env).reduce(function(o, k) {
         o[k] = JSON.stringify(process.env[k]);
         return o;
-      }, {})
+      }, {}),
     }),
   ],
 
-  devtool: '#inline-source-map',
+  devtool: "#inline-source-map",
 
   module: {
     loaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ['react-hot-loader', 'babel-loader?stage=0'],
+        loaders: ["react-hot-loader", "babel-loader?stage=0"],
       },
       {
         test: /\.scss$/,
@@ -26,8 +26,8 @@ module.exports = {
           "includePaths[]=" +
             (path.resolve(__dirname, "./bower_components")) + "&" +
           "includePaths[]=" +
-            (path.resolve(__dirname, "./node_modules"))
+            (path.resolve(__dirname, "./node_modules")),
       },
-    ]
-  }
+    ],
+  },
 };
