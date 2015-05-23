@@ -10,8 +10,8 @@ import ArtworkImage from "./ArtworkImage.js";
 import NowPlayingStore from "../stores/NowPlayingStore.js";
 import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
-import LeftColumnActions from "../actions/LeftColumnActions.js";
-import LeftColumnConstants from "../constants/LeftColumnConstants.js";
+import ContainerActions from "../actions/ContainerActions.js";
+import ContainerConstants from "../constants/ContainerConstants.js";
 
 import GroupAttributes from "../components/GroupAttributes.js";
 
@@ -102,7 +102,7 @@ export default class NowPlaying extends React.Component {
   }
 
   _onClickArtwork() {
-    LeftColumnActions.mode(LeftColumnConstants.RETRO);
+    ContainerActions.mode(ContainerConstants.RETRO);
   }
 }
 
