@@ -2,12 +2,12 @@
 @import './mixins.scss';
 
 div#top {
-  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   color: white;
   z-index: 1;
+  height: $top-row-height;
 
   .menu-button {
     position: absolute;

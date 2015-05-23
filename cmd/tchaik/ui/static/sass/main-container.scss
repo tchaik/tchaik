@@ -2,11 +2,11 @@
 
 div#container {
   overflow: auto;
-  position: absolute;
   top: $top-row-height;
   bottom: $bottom-row-height;
   left: $left-column-width;
   right: $right-column-width;
+  flex: 1;
 
   @import './components/collection.scss';
   @import './components/covers.scss';
@@ -21,4 +21,15 @@ div#container.retro {
   bottom: $bottom-row-height;
   left: 0;
   right: 0;
+}
+
+div#middle {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+div#left-column {
+  display: flex;
+  flex-direction: column;
 }

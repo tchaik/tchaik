@@ -92,12 +92,15 @@ export default class LeftColumn extends React.Component {
     if (!this.state.hidden) {
       toolbar = (
         <div className="control-bar">
-          <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
-          <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
-          <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
-          <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
-          <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Reto" />
-          <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
+          <div className="top">
+            <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
+            <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
+            <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
+            <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
+            <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Reto" />
+            <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
+          </div>
+          <div className="middle"></div>
           <div className="bottom">
             <StatusView />
             <PlayerKeyView />

@@ -2,7 +2,6 @@
 @import './mixins.scss';
 
 div#bottom {
-  position: fixed;
   bottom: 0;
   height: $bottom-row-height;
   left: 0;
@@ -28,7 +27,6 @@ div#bottom {
 
   div.now-playing {
     position: relative;
-    height: 100%;
     width: 100%;
     display: flex;
 

@@ -3,12 +3,9 @@
 
 div#right-column {
   color: white;
-  position: fixed;
-  right: 0;
-  top:$top-row-height;
-  bottom: $bottom-row-height;
   width: $right-column-width;
   text-align: center;
+  overflow: auto;
 
   div.now-playing {
     display: -webkit-flex;
