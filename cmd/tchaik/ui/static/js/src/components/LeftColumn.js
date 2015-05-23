@@ -75,7 +75,6 @@ export default class LeftColumn extends React.Component {
 
     this.state = leftColumnState();
     this._onChange = this._onChange.bind(this);
-    this._onSearch = this._onSearch.bind(this);
   }
 
   componentDidMount() {
