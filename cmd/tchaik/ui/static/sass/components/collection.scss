@@ -106,15 +106,12 @@ div.collection {
 
       div.attributes {
         color: #888;
+        font-size: 13px;
+        font-weight: 200;
 
-        span {
-          font-size: 13px;
-          font-weight: 200;
-
-          &.bull {
-            margin: 0 8px;
-            color: #444;
-          }
+        span.bull {
+          margin: 0 8px;
+          color: #444;
         }
       }
 
