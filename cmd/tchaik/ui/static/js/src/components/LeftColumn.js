@@ -106,7 +106,7 @@ export default class LeftColumn extends React.Component {
   }
 
   render() {
-    var classes = classNames('control-bar', {hidden: this.state.hidden});
+    var classes = classNames("control-bar", {hidden: this.state.hidden});
     return (
       <div className={classes}>
         <div className="top">
