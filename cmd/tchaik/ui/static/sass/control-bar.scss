@@ -20,7 +20,7 @@ div.control-bar {
   transition: margin-left .5s ease-in;
 
   &.hidden {
-    margin-left: -$left-column-width;
+    margin-left: -$left-column-width - 2px;
   }
 
   span.glyphicon {
