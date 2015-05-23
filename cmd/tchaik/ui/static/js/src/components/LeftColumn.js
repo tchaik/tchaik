@@ -16,6 +16,7 @@ import Recent from "./Recent.js";
 import Settings from "./Settings.js";
 import Retro from "./Retro.js";
 
+import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 import LeftColumnStore from "../stores/LeftColumnStore.js";
 import LeftColumnActions from "../actions/LeftColumnActions.js";
 
@@ -96,43 +97,45 @@ export default class LeftColumn extends React.Component {
   render() {
     var container = null;
     switch (this.state.mode) {
-    case "All":
-      container = <RootCollection />;
-      break;
-    case "Artists":
+    case LeftColumnConstants.ARTISTS:
       container = <Filter name="Artist" />;
       break;
-    case "Search":
+    case LeftColumnConstants.SEARCH:
       container = <Search />;
       break;
-    case "Covers":
+    case LeftColumnConstants.COVERS:
       container = <Covers />;
       break;
-    case "Recent":
+    case LeftColumnConstants.RECENT:
       container = <Recent />;
       break;
-    case "Settings":
+    case LeftColumnConstants.SETTINGS:
       container = <Settings />;
       break;
-    case "Retro":
+    case LeftColumnConstants.RETRO:
       container = <Retro />;
+      break;
+    case LeftColumnConstants.ALL:
+    default:
+      container = <RootCollection />;
+      break;
     }
 
     var containerClasses = classNames({
       container: true,
-      retro: this.state.mode === "Retro",
+      retro: this.state.mode === LeftColumnConstants.RETRO,
     });
 
     var toolbar = null;
     if (!this.state.hidden) {
       toolbar = (
         <div className="control-bar">
-          <ToolbarItem mode="All" icon="align-justify" title="All" />
-          <ToolbarItem mode="Artists" icon="list" title="Artists" />
-          <ToolbarItem mode="Covers" icon="th-large" title="Covers" />
-          <ToolbarItem mode="Recent" icon="time" title="Recently Added" />
-          <ToolbarItem mode="Retro" icon="cd" title="Reto" />
-          <ToolbarItem mode="Settings" icon="cog" title="Settings" />
+          <ToolbarItem mode={LeftColumnConstants.ALL} icon="align-justify" title="All" />
+          <ToolbarItem mode={LeftColumnConstants.ARTISTS} icon="list" title="Artists" />
+          <ToolbarItem mode={LeftColumnConstants.COVERS} icon="th-large" title="Covers" />
+          <ToolbarItem mode={LeftColumnConstants.RECENT} icon="time" title="Recently Added" />
+          <ToolbarItem mode={LeftColumnConstants.RETRO} icon="cd" title="Reto" />
+          <ToolbarItem mode={LeftColumnConstants.SETTINGS} icon="cog" title="Settings" />
           <div className="bottom">
             <StatusView />
             <PlayerKeyView />
@@ -156,6 +159,6 @@ export default class LeftColumn extends React.Component {
   }
 
   _onSearch() {
-    this.setState({mode: "Search"});
+    this.setState({mode: LeftColumnConstants.SEARCH});
   }
 }

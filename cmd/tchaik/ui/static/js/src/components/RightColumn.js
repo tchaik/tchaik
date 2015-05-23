@@ -4,11 +4,12 @@ import React from "react/addons";
 
 import Playlist from "./Playlist.js";
 
+import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 import LeftColumnStore from "../stores/LeftColumnStore.js";
 
 function getColumnState() {
   return {
-    showPlaylist: LeftColumnStore.getMode() !== "Retro",
+    showPlaylist: LeftColumnStore.getMode() !== LeftColumnConstants.RETRO,
   };
 }
 
