@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import Playlist from './Playlist.js';
+import Playlist from "./Playlist.js";
 
-import LeftColumnStore from '../stores/LeftColumnStore.js';
+import LeftColumnStore from "../stores/LeftColumnStore.js";
 
 function getColumnState() {
   return {
-    showPlaylist: LeftColumnStore.getMode() !== 'Retro',
+    showPlaylist: LeftColumnStore.getMode() !== "Retro",
   };
 }
 

@@ -1,9 +1,9 @@
-import React from 'react/addons';
+import React from "react/addons";
 
-import NowPlayingStore from '../stores/NowPlayingStore.js';
-import NowPlayingActions from '../actions/NowPlayingActions.js';
+import NowPlayingStore from "../stores/NowPlayingStore.js";
+import NowPlayingActions from "../actions/NowPlayingActions.js";
 
-import PlayingStatusStore from '../stores/PlayingStatusStore.js';
+import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
 function getNowPlayingState() {
   return {
@@ -14,13 +14,13 @@ function getNowPlayingState() {
 }
 
 function _getOffsetLeft(elem) {
-    var offsetLeft = 0;
-    do {
-      if (!isNaN(elem.offsetLeft)) {
-          offsetLeft += elem.offsetLeft;
-      }
-    } while ((elem = elem.offsetParent));
-    return offsetLeft;
+  var offsetLeft = 0;
+  do {
+    if (!isNaN(elem.offsetLeft)) {
+      offsetLeft += elem.offsetLeft;
+    }
+  } while ((elem = elem.offsetParent));
+  return offsetLeft;
 }
 
 export default class PlayProgress extends React.Component {

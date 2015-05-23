@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import Icon from './Icon.js';
+import Icon from "./Icon.js";
 
-import WebsocketAPI from '../utils/WebsocketAPI.js';
-import WebsocketActions from '../actions/WebsocketActions.js';
+import WebsocketAPI from "../utils/WebsocketAPI.js";
+import WebsocketActions from "../actions/WebsocketActions.js";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
 
 function getStatus() {
@@ -32,9 +32,9 @@ export default class StatusView extends React.Component {
 
   render() {
     var classes = {
-      'item': true,
-      'status': true,
-      'closed': !this.state.open
+      "item": true,
+      "status": true,
+      "closed": !this.state.open,
     };
     var title = this.state.open ? "Online" : "Offline";
 

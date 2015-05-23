@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from './ChangeEmitter.js';
+import {ChangeEmitter} from "./ChangeEmitter.js";
 
-import AppDispatcher from '../dispatcher/AppDispatcher.js';
+import AppDispatcher from "../dispatcher/AppDispatcher.js";
 
-import WebsocketActions from '../actions/WebsocketActions.js';
-import WebsocketConstants from '../constants/WebsocketConstants.js';
+import WebsocketActions from "../actions/WebsocketActions.js";
+import WebsocketConstants from "../constants/WebsocketConstants.js";
 
 
 class WebsocketAPI extends ChangeEmitter {
@@ -40,13 +40,13 @@ class WebsocketAPI extends ChangeEmitter {
   }
 
   getStatus() {
-    return {'open': this.open};
+    return {"open": this.open};
   }
 
   send(action, data) {
     var payload = {
       action: action,
-      data: data
+      data: data,
     };
     if (!this.open) {
       this.queue.push(payload);
@@ -59,7 +59,7 @@ class WebsocketAPI extends ChangeEmitter {
     var action = payload.action;
     var source = payload.source;
 
-    if (source === 'VIEW_ACTION') {
+    if (source === "VIEW_ACTION") {
       switch (action.actionType) {
         case WebsocketConstants.RECONNECT:
           this.init(this.host);

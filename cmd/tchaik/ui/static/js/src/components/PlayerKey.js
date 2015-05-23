@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import Icon from './Icon.js';
+import Icon from "./Icon.js";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
-import PlayerKeyStore from '../stores/PlayerKeyStore.js';
-import PlayerKeyActions from '../actions/PlayerKeyActions.js';
+import PlayerKeyStore from "../stores/PlayerKeyStore.js";
+import PlayerKeyActions from "../actions/PlayerKeyActions.js";
 
 
 function getStatus() {
@@ -38,9 +38,9 @@ export default class PlayerKeyView extends React.Component {
 
   render() {
     var classes = {
-      'item': true,
-      'key': true,
-      'set': this.state.set,
+      "item": true,
+      "key": true,
+      "set": this.state.set,
     };
     var title = this.state.set ? "Player Key: Set" : "";
     return (

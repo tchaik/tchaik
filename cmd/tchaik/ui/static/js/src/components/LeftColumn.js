@@ -1,25 +1,25 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
-import Icon from './Icon.js';
-import StatusView from './Status.js';
-import PlayerKeyView from './PlayerKey.js';
+import Icon from "./Icon.js";
+import StatusView from "./Status.js";
+import PlayerKeyView from "./PlayerKey.js";
 
-import {RootCollection as RootCollection} from './Collection.js';
-import {Search as Search} from './Search.js';
-import Covers from './Covers.js';
-import Filter from './Filter.js';
-import Recent from './Recent.js';
-import Settings from './Settings.js';
-import Retro from './Retro.js';
+import {RootCollection as RootCollection} from "./Collection.js";
+import {Search as Search} from "./Search.js";
+import Covers from "./Covers.js";
+import Filter from "./Filter.js";
+import Recent from "./Recent.js";
+import Settings from "./Settings.js";
+import Retro from "./Retro.js";
 
-import LeftColumnStore from '../stores/LeftColumnStore.js';
-import LeftColumnActions from '../actions/LeftColumnActions.js';
+import LeftColumnStore from "../stores/LeftColumnStore.js";
+import LeftColumnActions from "../actions/LeftColumnActions.js";
 
-import SearchStore from '../stores/SearchStore.js';
+import SearchStore from "../stores/SearchStore.js";
 
 
 function getToolBarItemState(mode) {
@@ -48,7 +48,7 @@ class ToolbarItem extends React.Component {
     var classes = {
       item: true,
       toolbar: true,
-      selected: this.state.selected
+      selected: this.state.selected,
     };
     return (
       <span className={classNames(classes)} onClick={this._onClick}>
@@ -120,7 +120,7 @@ export default class LeftColumn extends React.Component {
 
     var containerClasses = classNames({
       container: true,
-      retro: this.state.mode === 'Retro',
+      retro: this.state.mode === "Retro",
     });
 
     var toolbar = null;
@@ -156,6 +156,6 @@ export default class LeftColumn extends React.Component {
   }
 
   _onSearch() {
-    this.setState({mode:"Search"});
+    this.setState({mode: "Search"});
   }
 }

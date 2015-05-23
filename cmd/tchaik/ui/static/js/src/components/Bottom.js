@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import Icon from './Icon.js';
+import Icon from "./Icon.js";
 
-import NowPlayingActions from '../actions/NowPlayingActions.js';
-import NowPlayingStore from '../stores/NowPlayingStore.js';
-import NowPlaying from './NowPlaying.js';
-import PlayProgress from './PlayProgress.js';
-import Volume from './Volume.js';
+import NowPlayingActions from "../actions/NowPlayingActions.js";
+import NowPlayingStore from "../stores/NowPlayingStore.js";
+import NowPlaying from "./NowPlaying.js";
+import PlayProgress from "./PlayProgress.js";
+import Volume from "./Volume.js";
 
-import PlaylistStore from '../stores/PlaylistStore.js';
-import PlaylistActions from '../actions/PlaylistActions.js';
+import PlaylistStore from "../stores/PlaylistStore.js";
+import PlaylistActions from "../actions/PlaylistActions.js";
 
-import PlayingStatusStore from '../stores/PlayingStatusStore.js';
+import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
 
 var BACKWARD_TIMEOUT = 2000;
@@ -42,7 +42,7 @@ class Controls extends React.Component {
     this.state = {
       playing: NowPlayingStore.getPlaying(),
       canNext: PlaylistStore.canNext(),
-      canPrev: PlaylistStore.canPrev()
+      canPrev: PlaylistStore.canPrev(),
     };
 
     this._onChangePlaylist = this._onChangePlaylist.bind(this);
@@ -62,8 +62,8 @@ class Controls extends React.Component {
   }
 
   render() {
-    var prevClasses = {'enabled': this.state.canPrev};
-    var nextClasses = {'enabled': this.state.canNext};
+    var prevClasses = {"enabled": this.state.canPrev};
+    var nextClasses = {"enabled": this.state.canNext};
     return (
       <div className="controls">
         <Icon icon="step-backward" extraClasses={prevClasses} onClick={this._onBackward} />
@@ -90,7 +90,7 @@ class Controls extends React.Component {
       return;
     }
     document.title = currentTrack.Name;
-    favicon.href = "/icon/" + currentTrack.TrackID;
+    favicon.href = `/icon/${currentTrack.TrackID}`;
   }
 
   _togglePlayPause() {

@@ -1,8 +1,6 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-
-import LeftColumnConstants from '../constants/LeftColumnConstants.js';
+import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 
 
 var LeftColumnActions = {
@@ -10,7 +8,7 @@ var LeftColumnActions = {
   mode: function(m) {
     AppDispatcher.handleViewAction({
       actionType: LeftColumnConstants.MODE,
-      mode: m
+      mode: m,
     });
   },
 

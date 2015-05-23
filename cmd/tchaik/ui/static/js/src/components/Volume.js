@@ -1,21 +1,21 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import Icon from './Icon.js';
+import Icon from "./Icon.js";
 
-import VolumeStore from '../stores/VolumeStore.js';
-import VolumeActions from '../actions/VolumeActions.js';
+import VolumeStore from "../stores/VolumeStore.js";
+import VolumeActions from "../actions/VolumeActions.js";
 
 
 function _getOffsetLeft(elem) {
-    var offsetLeft = 0;
-    do {
-      if (!isNaN(elem.offsetLeft)) {
-          offsetLeft += elem.offsetLeft;
-      }
-    } while ((elem = elem.offsetParent));
-    return offsetLeft;
+  var offsetLeft = 0;
+  do {
+    if (!isNaN(elem.offsetLeft)) {
+      offsetLeft += elem.offsetLeft;
+    }
+  } while ((elem = elem.offsetParent));
+  return offsetLeft;
 }
 
 function getVolumeState() {
@@ -44,11 +44,11 @@ export default class Volume extends React.Component {
     var volume = this.state.volume;
     var classSuffix;
     if (volume === 0.00) {
-      classSuffix = 'off';
+      classSuffix = "off";
     } else if (volume < 0.5) {
-      classSuffix = 'down';
+      classSuffix = "down";
     } else {
-      classSuffix = 'up';
+      classSuffix = "up";
     }
 
     var w = `${Math.min(volume * 100.0, 100.0)}%`;
@@ -60,7 +60,7 @@ export default class Volume extends React.Component {
           <div className="marker" />
           <div className="rest" style={{width: rest}} />
         </div>
-        <Icon icon={'volume-' + classSuffix} onClick={this._toggleMute} />
+        <Icon icon={"volume-" + classSuffix} onClick={this._toggleMute} />
       </div>
     );
   }
@@ -84,7 +84,7 @@ export default class Volume extends React.Component {
   _onClick(evt) {
     var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
     var width = evt.currentTarget.offsetWidth;
-    VolumeActions.volume(pos/width);
+    VolumeActions.volume(pos / width);
   }
 
   _onChange() {

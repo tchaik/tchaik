@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
 export default class GroupAttributes extends React.Component {
   render() {
@@ -11,7 +11,7 @@ export default class GroupAttributes extends React.Component {
       ];
     });
     if (list.length > 0) {
-      list[list.length-1].pop();
+      list[list.length - 1].pop();
     }
 
     return (

@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
-import FilterStore from '../stores/FilterStore.js';
-import FilterActions from '../actions/FilterActions.js';
+import FilterStore from "../stores/FilterStore.js";
+import FilterActions from "../actions/FilterActions.js";
 
-import CollectionStore from '../stores/CollectionStore.js';
+import CollectionStore from "../stores/CollectionStore.js";
 
-import {RootGroup as RootGroup} from './Search.js';
+import {RootGroup as RootGroup} from "./Search.js";
 
 
 export default class Filter extends React.Component {
@@ -77,7 +77,7 @@ class Item extends React.Component {
   }
 
   render() {
-    return <li onClick={this._onClick} className={classNames({'selected':this.props.current})}>{this.props.item}</li>;
+    return <li onClick={this._onClick} className={classNames({"selected": this.props.current})}>{this.props.item}</li>;
   }
 
   _onClick() {
@@ -90,7 +90,7 @@ class Results extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {items:[]};
+    this.state = {items: []};
     this._onChange = this._onChange.bind(this);
   }
 

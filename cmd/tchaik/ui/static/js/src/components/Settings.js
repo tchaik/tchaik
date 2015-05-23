@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import PlayerKeyStore from '../stores/PlayerKeyStore.js';
-import PlayerKeyActions from '../actions/PlayerKeyActions.js';
+import PlayerKeyStore from "../stores/PlayerKeyStore.js";
+import PlayerKeyActions from "../actions/PlayerKeyActions.js";
 
 
 function getPlayerKeySettingsState() {
   return {
     set: PlayerKeyStore.isKeySet(),
-    key: PlayerKeyStore.getKey()
+    key: PlayerKeyStore.getKey(),
   };
 }
 
@@ -101,7 +101,7 @@ class PlayerKeyForm extends React.Component {
   }
 
   _handleChange(event) {
-     this.setState({key: event.target.value});
+    this.setState({key: event.target.value});
   }
 
   _onResetSubmit(e) {
@@ -171,7 +171,7 @@ class PushToPlayerKeyForm extends React.Component {
   }
 
   _handleChange(event) {
-     this.setState({key: event.target.value});
+    this.setState({key: event.target.value});
   }
 
   _onResetSubmit(e) {

@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import SearchConstants from '../constants/SearchConstants.js';
+import SearchConstants from "../constants/SearchConstants.js";
 
 
 var _results = [];
@@ -16,8 +16,8 @@ function setResults(results) {
   _results = results;
 }
 
-function setInput(input) {
-  localStorage.setItem("searchInput", input);
+function setInput(searchTerms) {
+  localStorage.setItem("searchInput", searchTerms);
 }
 
 function input() {
@@ -45,7 +45,7 @@ _searchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'SERVER_ACTION') {
+  if (source === "SERVER_ACTION") {
     switch (action.actionType) {
       case SearchConstants.SEARCH:
         setResults(action.data);
@@ -54,7 +54,7 @@ _searchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
     }
   }
 
-  if (source === 'VIEW_ACTION') {
+  if (source === "VIEW_ACTION") {
     switch (action.actionType) {
       case SearchConstants.SEARCH:
         setInput(action.input);

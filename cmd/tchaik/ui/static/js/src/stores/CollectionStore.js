@@ -1,14 +1,23 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter, CHANGE_EVENT} from '../utils/ChangeEmitter.js';
+import {ChangeEmitter, CHANGE_EVENT} from "../utils/ChangeEmitter.js";
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
+var AppDispatcher = require("../dispatcher/AppDispatcher");
 
-var CollectionConstants = require('../constants/CollectionConstants.js');
+var CollectionConstants = require("../constants/CollectionConstants.js");
 
 var _commonFields = ["Album", "AlbumArtist", "Artist", "Composer", "Year"];
 
 var _collections = {};
+
+// pathToKey returns a string representation of the path.  The only requirement is that
+// subpaths should be prefixes.
+function pathToKey(path) {
+  if (path) {
+    return path.join(">>");
+  }
+  return null;
+}
 
 function addItem(path, item) {
   if (item.Tracks) { // fill in common fields if they are set
@@ -50,15 +59,6 @@ function expandPath(path, expand) {
   localStorage.setItem("expandedPaths", JSON.stringify(_expandedPaths));
 }
 
-// pathToKey returns a string representation of the path.  The only requirement is that
-// subpaths should be prefixes.
-function pathToKey(path) {
-  if (path) {
-    return path.join(">>");
-  }
-  return null;
-}
-
 
 class CollectionStore extends ChangeEmitter {
   pathToKey(path) {
@@ -90,14 +90,14 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'SERVER_ACTION') {
+  if (source === "SERVER_ACTION") {
     switch (action.actionType) {
       case CollectionConstants.FETCH:
         addItem(action.data.Path, action.data.Item);
         _store.emitChange(action.data.Path);
         break;
     }
-  } else if (source === 'VIEW_ACTION') {
+  } else if (source === "VIEW_ACTION") {
     switch (action.actionType) {
       case CollectionConstants.EXPAND_PATH:
         expandPath(pathToKey(action.path), action.expand);

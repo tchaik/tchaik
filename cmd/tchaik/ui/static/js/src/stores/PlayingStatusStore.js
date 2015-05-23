@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import NowPlayingConstants from '../constants/NowPlayingConstants.js';
-import PlaylistConstants from '../constants/PlaylistConstants.js';
+import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import PlaylistConstants from "../constants/PlaylistConstants.js";
 
-import NowPlayingStore from '../stores/NowPlayingStore.js';
+import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 
 var _defaultTrackState = {
@@ -61,7 +61,7 @@ _playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'VIEW_ACTION') {
+  if (source === "VIEW_ACTION") {
     switch (action.actionType) {
 
     case NowPlayingConstants.ENDED:
@@ -83,37 +83,37 @@ _playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
         _playingStatusStore.emitChange();
         break;
 
-      case NowPlayingConstants.RESET:
-        _trackState = {
-          buffered: 0,
-          duration: 0,
-          error: null,
-        };
-        _playingStatusStore.emitChange();
-        break;
+    case NowPlayingConstants.RESET:
+      _trackState = {
+        buffered: 0,
+        duration: 0,
+        error: null,
+      };
+      _playingStatusStore.emitChange();
+      break;
 
-      case NowPlayingConstants.SET_ERROR:
-        _trackState.error = action.error;
-        _playingStatusStore.emitChange();
-        break;
+    case NowPlayingConstants.SET_ERROR:
+      _trackState.error = action.error;
+      _playingStatusStore.emitChange();
+      break;
 
-      case NowPlayingConstants.SET_DURATION:
-        _trackState.duration = action.duration;
-        _playingStatusStore.emitChange();
-        break;
+    case NowPlayingConstants.SET_DURATION:
+      _trackState.duration = action.duration;
+      _playingStatusStore.emitChange();
+      break;
 
-      case NowPlayingConstants.SET_BUFFERED:
-        _trackState.buffered = action.buffered;
-        _playingStatusStore.emitChange();
-        break;
+    case NowPlayingConstants.SET_BUFFERED:
+      _trackState.buffered = action.buffered;
+      _playingStatusStore.emitChange();
+      break;
 
-      case NowPlayingConstants.STORE_CURRENT_TIME:
-        setCurrentTime(action.currentTime);
-        _playingStatusStore.emitChange();
-        break;
+    case NowPlayingConstants.STORE_CURRENT_TIME:
+      setCurrentTime(action.currentTime);
+      _playingStatusStore.emitChange();
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
   }
 

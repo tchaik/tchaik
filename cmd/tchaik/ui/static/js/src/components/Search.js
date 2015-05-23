@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import SearchStore from '../stores/SearchStore.js';
+import SearchStore from "../stores/SearchStore.js";
 
-import {Group as Group} from './Collection.js';
-import CollectionStore from '../stores/CollectionStore.js';
-import CollectionActions from '../actions/CollectionActions.js';
+import {Group as Group} from "./Collection.js";
+import CollectionStore from "../stores/CollectionStore.js";
+import CollectionActions from "../actions/CollectionActions.js";
 
 
 export class Search extends React.Component {
@@ -107,7 +107,7 @@ export class RootGroup extends React.Component {
 
   _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
-       this.setState(getRootGroupState(this.props));
+      this.setState(getRootGroupState(this.props));
     }
   }
 }

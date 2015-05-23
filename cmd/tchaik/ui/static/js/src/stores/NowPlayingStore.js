@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import NowPlayingConstants from '../constants/NowPlayingConstants.js';
-import PlaylistConstants from '../constants/PlaylistConstants.js';
+import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import PlaylistConstants from "../constants/PlaylistConstants.js";
 
-import PlaylistStore from './PlaylistStore.js';
+import PlaylistStore from "./PlaylistStore.js";
 
-import CtrlConstants from '../constants/ControlConstants.js';
+import CtrlConstants from "../constants/ControlConstants.js";
 
 
-var CONTROL_EVENT = 'control';
+var CONTROL_EVENT = "control";
 
 var currentPlaying = null;
 
@@ -114,7 +114,7 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'SERVER_ACTION') {
+  if (source === "SERVER_ACTION") {
     if (action.actionType === CtrlConstants.CTRL) {
       switch (action.data) {
 
@@ -160,7 +160,7 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
     }
   }
 
-  if (source === 'VIEW_ACTION') {
+  if (source === "VIEW_ACTION") {
     switch (action.actionType) {
 
       case PlaylistConstants.PREV:

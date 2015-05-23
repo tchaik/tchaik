@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import ArtworkImage from './ArtworkImage.js';
-import Icon from './Icon.js';
+import ArtworkImage from "./ArtworkImage.js";
+import Icon from "./Icon.js";
 
-import CollectionStore from '../stores/CollectionStore.js';
-import CollectionActions from '../actions/CollectionActions.js';
+import CollectionStore from "../stores/CollectionStore.js";
+import CollectionActions from "../actions/CollectionActions.js";
 
 
 export default class Covers extends React.Component {
@@ -70,7 +70,7 @@ class Cover extends React.Component {
   render() {
     return (
       <div className="cover">
-        <ArtworkImage path={"/artwork/"+this.state.item.TrackID} />
+        <ArtworkImage path={`/artwork/${this.state.item.TrackID}`} />
         <span className="controls">
           <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="list" title="Queue" onClick={this._onQueue} />
@@ -80,7 +80,7 @@ class Cover extends React.Component {
   }
 
   _onChange(keyPath) {
-    if (keyPath == CollectionStore.pathToKey(this.props.path)) {
+    if (keyPath === CollectionStore.pathToKey(this.props.path)) {
       this.setState({item: CollectionStore.getCollection(this.props.path)});
     }
   }

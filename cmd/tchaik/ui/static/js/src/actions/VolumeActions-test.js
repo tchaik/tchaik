@@ -1,12 +1,12 @@
-var rewire = require('rewire');
+var rewire = require("rewire");
 
-describe('VolumeActions', function() {
+describe("VolumeActions", function() {
   var VolumeActions, VolumeConstants;
   var handleViewActionSpy;
 
   beforeEach(function() {
-    VolumeActions = rewire('./VolumeActions.js');
-    VolumeConstants = rewire('../constants/VolumeConstants.js');
+    VolumeActions = rewire("./VolumeActions.js");
+    VolumeConstants = rewire("../constants/VolumeConstants.js");
 
     handleViewActionSpy = sinon.spy();
     VolumeActions.__Rewire__(
@@ -15,8 +15,8 @@ describe('VolumeActions', function() {
     );
   });
 
-  describe('volume function', function() {
-    describe('when called', function() {
+  describe("volume function", function() {
+    describe("when called", function() {
       var volume;
 
       beforeEach(function() {
@@ -24,22 +24,22 @@ describe('VolumeActions', function() {
         VolumeActions.volume(volume);
       });
 
-      it('should call handleViewAction on the AppDispatcher', function() {
+      it("should call handleViewAction on the AppDispatcher", function() {
         expect(handleViewActionSpy).to.have.been.calledWith({
           actionType: VolumeConstants.SET_VOLUME,
-          volume: volume
+          volume: volume,
         });
       });
     });
   });
 
-  describe('toggleVolumeMute function', function() {
-    describe('when called', function() {
+  describe("toggleVolumeMute function", function() {
+    describe("when called", function() {
       beforeEach(function() {
         VolumeActions.toggleVolumeMute();
       });
 
-      it('should call handleViewAction on the AppDispatcher', function() {
+      it("should call handleViewAction on the AppDispatcher", function() {
         expect(handleViewActionSpy).to.have.been.calledWith({
           actionType: VolumeConstants.TOGGLE_VOLUME_MUTE,
         });

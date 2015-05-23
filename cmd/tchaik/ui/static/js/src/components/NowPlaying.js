@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
-import Icon from './Icon.js';
-import TimeFormatter from './TimeFormatter.js';
-import ArtworkImage from './ArtworkImage.js';
+import Icon from "./Icon.js";
+import TimeFormatter from "./TimeFormatter.js";
+import ArtworkImage from "./ArtworkImage.js";
 
-import NowPlayingStore from '../stores/NowPlayingStore.js';
+import NowPlayingStore from "../stores/NowPlayingStore.js";
 
-import PlayingStatusStore from '../stores/PlayingStatusStore.js';
+import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
 
 function getNowPlayingState() {
@@ -29,6 +29,7 @@ export default class NowPlaying extends React.Component {
 
     this.state = getNowPlayingState();
     this._onChange = this._onChange.bind(this);
+    this._onClickArtwork = this._onClickArtwork.bind(this);
   }
 
   componentDidMount() {
@@ -54,20 +55,20 @@ export default class NowPlaying extends React.Component {
     }
 
     var className = classNames({
-      'now-playing-track': true,
-      'error': (this.state.error !== null),
+      "now-playing-track": true,
+      "error": (this.state.error !== null),
     });
 
     return (
       <div className={className}>
-        <ArtworkImage path={"/artwork/" + track.TrackID} />
+        <ArtworkImage path={`/artwork/${track.TrackID}`} onClick={this._onClickArtwork}/>
         <div className="track-info">
           <div className="container">
             <div className="title">
               {track.Name}
               <span className="hover-show">
                 <BitRate track={track} />
-                <a className="goto" href={"#track_"+track.TrackID}>
+                <a className="goto" href={`#track_${track.TrackID}`}>
                   <Icon icon="share-alt" />
                 </a>
               </span>
@@ -87,6 +88,10 @@ export default class NowPlaying extends React.Component {
 
   _onChange() {
     this.setState(getNowPlayingState());
+  }
+
+  _onClickArtwork() {
+
   }
 }
 
@@ -108,8 +113,8 @@ class BitRate extends React.Component {
     }
 
     var className = classNames({
-      'bitrate': true,
-      'expanded': this.state.expanded,
+      "bitrate": true,
+      "expanded": this.state.expanded,
     });
     return (
       <span className={className} onClick={this._onClick}>

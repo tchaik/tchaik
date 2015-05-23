@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import ArtworkImage from './ArtworkImage.js';
-import Playlist from './Playlist.js';
+import ArtworkImage from "./ArtworkImage.js";
+import Playlist from "./Playlist.js";
 
-import NowPlayingStore from '../stores/NowPlayingStore.js';
+import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 
 export default class Retro extends React.Component {
@@ -28,13 +28,13 @@ export default class Retro extends React.Component {
     var artworkImage = null;
     var imagePath = null;
     if (this.state.track) {
-      imagePath = "/artwork/" + this.state.track.TrackID;
+      imagePath = `/artwork/${this.state.track.TrackID}`;
       artworkImage = <ArtworkImage path={imagePath} />;
     }
 
     return (
       <div className="retro">
-        <div className="blur" style={{'backgroundImage': "url("+imagePath+")"}} />
+        <div className="blur" style={{"backgroundImage": `url("${imagePath}")`}} />
           <div className="current-artwork">
             {artworkImage}
           </div>

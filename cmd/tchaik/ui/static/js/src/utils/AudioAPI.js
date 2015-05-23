@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
-var NowPlayingActions = require('../actions/NowPlayingActions.js');
-var NowPlayingStore = require('../stores/NowPlayingStore.js');
+var NowPlayingConstants = require("../constants/NowPlayingConstants.js");
+var NowPlayingActions = require("../actions/NowPlayingActions.js");
+var NowPlayingStore = require("../stores/NowPlayingStore.js");
 
-var PlayingStatusStore = require('../stores/PlayingStatusStore.js');
+var PlayingStatusStore = require("../stores/PlayingStatusStore.js");
 
-var VolumeStore = require('../stores/VolumeStore.js');
+var VolumeStore = require("../stores/VolumeStore.js");
 
 var _audio = new Audio();
 var _src = null;
@@ -57,24 +57,6 @@ function duration() {
   return _audio.duration;
 }
 
-function init() {
-  _audio.addEventListener('error', onPlayerEvent);
-  _audio.addEventListener('progress', onPlayerEvent);
-  _audio.addEventListener('play', onPlayerEvent);
-  _audio.addEventListener('pause', onPlayerEvent);
-  _audio.addEventListener('ended', onPlayerEvent);
-  _audio.addEventListener('timeupdate', onPlayerEvent);
-  _audio.addEventListener('loadedmetadata', onPlayerEvent);
-  _audio.addEventListener('loadstart', onPlayerEvent);
-
-  NowPlayingStore.addChangeListener(update);
-  NowPlayingStore.addControlListener(_onNowPlayingControl);
-  VolumeStore.addChangeListener(_onVolumeChange);
-
-  update();
-  _onVolumeChange();
-}
-
 function onPlayerEvent(evt) {
   switch (evt.type) {
   case "error":
@@ -86,7 +68,7 @@ function onPlayerEvent(evt) {
   case "progress":
     var range = buffered();
     if (range.length > 0) {
-      NowPlayingActions.setBuffered(range.end(range.length-1));
+      NowPlayingActions.setBuffered(range.end(range.length - 1));
     }
     break;
 
@@ -135,7 +117,7 @@ function _onNowPlayingControl(type, value) {
 function update() {
   var track = NowPlayingStore.getTrack();
   if (track) {
-    var source = "/track/"+track.TrackID;
+    var source = `/track/${track.TrackID}`;
     var orig = src();
     if (orig !== source) {
       setSrc(source);
@@ -162,6 +144,23 @@ function _onVolumeChange() {
   }
 }
 
+function init() {
+  _audio.addEventListener("error", onPlayerEvent);
+  _audio.addEventListener("progress", onPlayerEvent);
+  _audio.addEventListener("play", onPlayerEvent);
+  _audio.addEventListener("pause", onPlayerEvent);
+  _audio.addEventListener("ended", onPlayerEvent);
+  _audio.addEventListener("timeupdate", onPlayerEvent);
+  _audio.addEventListener("loadedmetadata", onPlayerEvent);
+  _audio.addEventListener("loadstart", onPlayerEvent);
+
+  NowPlayingStore.addChangeListener(update);
+  NowPlayingStore.addControlListener(_onNowPlayingControl);
+  VolumeStore.addChangeListener(_onVolumeChange);
+
+  update();
+  _onVolumeChange();
+}
 
 var AudioAPI = {
 

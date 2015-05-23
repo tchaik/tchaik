@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
-require('../../sass/screen.scss');
-require('../../sass/glyphicons.scss');
+require("../../sass/screen.scss");
+require("../../sass/glyphicons.scss");
 
-var React = require('react/addons');
+var React = require("react/addons");
 
-require('babel-core/polyfill');
+require("babel-core/polyfill");
 
-var WebsocketAPI = require('./utils/WebsocketAPI.js');
-var AudioAPI = require('./utils/AudioAPI.js');
+var WebsocketAPI = require("./utils/WebsocketAPI.js");
+var AudioAPI = require("./utils/AudioAPI.js");
 
-var LeftColumn = require('./components/LeftColumn.js');
-var RightColumn = require('./components/RightColumn.js');
-var Bottom = require('./components/Bottom.js');
-var Top = require('./components/Top.js');
+var LeftColumn = require("./components/LeftColumn.js");
+var RightColumn = require("./components/RightColumn.js");
+var Bottom = require("./components/Bottom.js");
+var Top = require("./components/Top.js");
 
 var socketAddr = document.location.host;
 
@@ -32,20 +32,20 @@ AudioAPI.init();
 
 React.render(
   React.createFactory(LeftColumn)(),
-  document.getElementById('left-column')
+  document.getElementById("left-column")
 );
 
 React.render(
   React.createFactory(RightColumn)(),
-  document.getElementById('right-column')
+  document.getElementById("right-column")
 );
 
 React.render(
   React.createFactory(Bottom)(),
-  document.getElementById('bottom')
+  document.getElementById("bottom")
 );
 
 React.render(
   React.createFactory(Top)(),
-  document.getElementById('top')
+  document.getElementById("top")
 );

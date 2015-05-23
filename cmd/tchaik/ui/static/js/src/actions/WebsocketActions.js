@@ -1,8 +1,6 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-
-import WebsocketConstants from '../constants/WebsocketConstants.js';
+import WebsocketConstants from "../constants/WebsocketConstants.js";
 
 
 var WebsocketActions = {
@@ -16,9 +14,9 @@ var WebsocketActions = {
 
   reconnect: function() {
     AppDispatcher.handleViewAction({
-      actionType: WebsocketConstants.RECONNECT
+      actionType: WebsocketConstants.RECONNECT,
     });
-  }
+  },
 
 };
 

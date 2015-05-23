@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
 function zeroPad(n, width) {
   var s = "" + n;

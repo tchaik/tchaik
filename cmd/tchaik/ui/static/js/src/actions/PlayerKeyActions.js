@@ -1,8 +1,6 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher.js";
 
-import AppDispatcher from '../dispatcher/AppDispatcher.js';
-
-import ControlConstants from '../constants/ControlConstants.js';
+import ControlConstants from "../constants/ControlConstants.js";
 
 
 var PlayerKeyActions = {
@@ -19,7 +17,7 @@ var PlayerKeyActions = {
       actionType: ControlConstants.SET_PUSH_KEY,
       key: key,
     });
-  }
+  },
 
 };
 

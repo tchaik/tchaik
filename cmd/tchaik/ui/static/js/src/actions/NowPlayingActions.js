@@ -1,21 +1,19 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-
-import NowPlayingConstants from '../constants/NowPlayingConstants.js';
+import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 
 
 var NowPlayingActions = {
 
   reset: function() {
     AppDispatcher.handleViewAction({
-      actionType:NowPlayingConstants.RESET,
+      actionType: NowPlayingConstants.RESET,
     });
   },
 
   setError: function(err) {
     AppDispatcher.handleViewAction({
-      actionType:NowPlayingConstants.SET_ERROR,
+      actionType: NowPlayingConstants.SET_ERROR,
       error: err,
     });
   },
@@ -23,14 +21,14 @@ var NowPlayingActions = {
   setDuration: function(duration) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_DURATION,
-      duration: duration
+      duration: duration,
     });
   },
 
   setBuffered: function(buffered) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_BUFFERED,
-      buffered: buffered
+      buffered: buffered,
     });
   },
 
@@ -73,7 +71,7 @@ var NowPlayingActions = {
       actionType: NowPlayingConstants.SET_PLAYING,
       playing: v,
     });
-  }
+  },
 
 };
 

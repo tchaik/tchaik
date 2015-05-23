@@ -1,8 +1,6 @@
-'use strict';
+import React from "react/addons";
 
-import React from 'react/addons';
-
-import classNames from 'classnames';
+import classNames from "classnames";
 
 
 export default class ArtworkImage extends React.Component {
@@ -16,8 +14,8 @@ export default class ArtworkImage extends React.Component {
 
   render() {
     var classes = {
-      'visible': this.state.visible,
-      'artwork': true,
+      "visible": this.state.visible,
+      "artwork": true,
     };
     return (
       <img src={this.props.path}

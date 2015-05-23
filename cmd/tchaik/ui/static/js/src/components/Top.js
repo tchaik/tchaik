@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import Icon from './Icon.js';
+import Icon from "./Icon.js";
 
-import LeftColumnActions from '../actions/LeftColumnActions.js';
-import SearchActions from '../actions/SearchActions.js';
+import LeftColumnActions from "../actions/LeftColumnActions.js";
+import SearchActions from "../actions/SearchActions.js";
 
 
 class MenuButton extends React.Component {

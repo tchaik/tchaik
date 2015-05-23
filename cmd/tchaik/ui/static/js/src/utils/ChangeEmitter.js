@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-import EventEmitter from 'eventemitter3';
+import EventEmitter from "eventemitter3";
 
-export var CHANGE_EVENT = 'change';
+export var CHANGE_EVENT = "change";
 
 export class ChangeEmitter extends EventEmitter {
   emitChange() {
     this.emit(CHANGE_EVENT);
   }
-  
+
   /**
    * @param {function} callback
    */

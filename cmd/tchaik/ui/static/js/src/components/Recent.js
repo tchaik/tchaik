@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import RecentStore from '../stores/RecentStore.js';
-import RecentActions from '../actions/RecentActions.js';
+import RecentStore from "../stores/RecentStore.js";
+import RecentActions from "../actions/RecentActions.js";
 
-import CollectionStore from '../stores/CollectionStore.js';
+import CollectionStore from "../stores/CollectionStore.js";
 
-import {RootGroup as RootGroup} from './Search.js';
+import {RootGroup as RootGroup} from "./Search.js";
 
 
 function getRecentState() {
   return {
-    items: RecentStore.getPaths()
+    items: RecentStore.getPaths(),
   };
 }
 
@@ -35,7 +35,7 @@ export default class Recent extends React.Component {
 
   render() {
     var list = this.state.items.map(function(path) {
-      return <RootGroup path={path} key={"rootgroup-"+CollectionStore.pathToKey(path)} />;
+      return <RootGroup path={path} key={`rootgroup-${CollectionStore.pathToKey(path)}`} />;
     });
 
     return (

@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
-import Icon from './Icon.js';
-import TimeFormatter from './TimeFormatter.js';
-import GroupAttributes from './GroupAttributes.js';
-import ArtworkImage from './ArtworkImage.js';
+import Icon from "./Icon.js";
+import TimeFormatter from "./TimeFormatter.js";
+import GroupAttributes from "./GroupAttributes.js";
+import ArtworkImage from "./ArtworkImage.js";
 
-import CollectionStore from '../stores/CollectionStore.js';
-import CollectionActions from '../actions/CollectionActions.js';
+import CollectionStore from "../stores/CollectionStore.js";
+import CollectionActions from "../actions/CollectionActions.js";
 
-import NowPlayingStore from '../stores/NowPlayingStore.js';
+import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 
 export class RootCollection extends React.Component {
@@ -32,7 +32,7 @@ export class Group extends React.Component {
 
     this.state = {
       expanded: (this.props.depth !== 1) || CollectionStore.isExpanded(this.props.path),
-      common: {}
+      common: {},
     };
 
     this.setCommon = this.setCommon.bind(this);
@@ -57,12 +57,12 @@ export class Group extends React.Component {
 
     if (this.state.expanded) {
       content = [
-        <GroupContent path={this.props.path} depth={this.props.depth} setCommon={this.setCommon} key="GroupContent0" />
+        <GroupContent path={this.props.path} depth={this.props.depth} setCommon={this.setCommon} key="GroupContent0" />,
       ];
 
       if (this.props.depth === 1) {
         content.push(
-          <div style={{clear: 'both'}} key="GroupContent1" />
+          <div style={{clear: "both"}} key="GroupContent1" />
         );
       }
 
@@ -71,7 +71,7 @@ export class Group extends React.Component {
       if (this.state.common.TotalTime) {
         duration = (
           <span>
-            <Icon icon="time" /><TimeFormatter className="duration" time={parseInt(common.TotalTime/1000)} />
+            <Icon icon="time" /><TimeFormatter className="duration" time={parseInt(common.TotalTime / 1000)} />
           </span>
         );
       }
@@ -82,7 +82,7 @@ export class Group extends React.Component {
       }
 
       var attributeArr = [];
-      var fields = ['AlbumArtist', 'Artist', 'Composer', 'Year'];
+      var fields = ["AlbumArtist", "Artist", "Composer", "Year"];
       fields.forEach(function(f) {
         if (common[f]) {
           attributeArr.push(common[f]);
@@ -101,13 +101,13 @@ export class Group extends React.Component {
         </span>
       );
 
-      if (this.state.common.TrackID && this.props.depth == 1) {
-        image = <ArtworkImage path={"/artwork/" + common.TrackID} onClick={this._onClickImage}/>;
+      if (this.state.common.TrackID && this.props.depth === 1) {
+        image = <ArtworkImage path={`/artwork/${common.TrackID}`} onClick={this._onClickImage}/>;
       }
     }
 
     // FIXME: this is to get around the "everything else" group which has no name
-    // (and can't be closed)
+    // (and can"t be closed)
     var itemName = this.props.item.Name;
     if (this.props.depth === 1 && itemName === "") {
       itemName = "Misc";
@@ -125,15 +125,15 @@ export class Group extends React.Component {
           <span className="name">{itemName}</span>{albumArtist}
           {play}
           {attributes}
-          <div style={{'clear': 'both'}} />
+          <div style={{"clear": "both"}} />
         </div>
       );
     }
 
     var groupClasses = {
-      'group': true,
-      'untitled': this.props.item.Name === "",
-      'expanded': this.state.expanded
+      "group": true,
+      "untitled": this.props.item.Name === "",
+      "expanded": this.state.expanded,
     };
 
     return (
@@ -175,7 +175,7 @@ export class Group extends React.Component {
 Group.propTypes = {
   path: React.PropTypes.array.isRequired,
   item: React.PropTypes.object.isRequired,
-  depth: React.PropTypes.number.isRequired
+  depth: React.PropTypes.number.isRequired,
 };
 
 
@@ -213,7 +213,7 @@ class GroupContent extends React.Component {
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var fields = ['TotalTime', 'AlbumArtist', 'Artist', 'TrackID', 'Composer', 'Year'];
+      var fields = ["TotalTime", "AlbumArtist", "Artist", "TrackID", "Composer", "Year"];
       fields.forEach(function(f) {
         if (item[f]) {
           common[f] = item[f];
@@ -230,7 +230,7 @@ class GroupContent extends React.Component {
 
 GroupContent.propTypes = {
   path: React.PropTypes.array.isRequired,
-  depth: React.PropTypes.number.isRequired
+  depth: React.PropTypes.number.isRequired,
 };
 
 
@@ -251,7 +251,7 @@ class GroupList extends React.Component {
 GroupList.propTypes = {
   path: React.PropTypes.array.isRequired,
   depth: React.PropTypes.number.isRequired,
-  list: React.PropTypes.array.isRequired
+  list: React.PropTypes.array.isRequired,
 };
 
 
@@ -266,7 +266,7 @@ class TrackList extends React.Component {
         discs[discNumber] = [];
         discIndices.push(discNumber);
       }
-      track.Key = ""+(trackNumber++);
+      track.Key = String(trackNumber++);
       discs[discNumber].push(track);
     });
 
@@ -278,7 +278,7 @@ class TrackList extends React.Component {
     for (var i = 0; i < discIndices.length; i++) {
       var disc = discs[discIndices[i]];
       ols.push(
-        <ol key={"disc"+discIndices[i]} className={this.props.listStyle}>
+        <ol key={`disc${discIndices[i]}`} className={this.props.listStyle}>
           {disc.map(buildTrack)}
         </ol>
       );
@@ -310,7 +310,7 @@ function isCurrent(trackId) {
 function getTrackState(trackID) {
   return {
     current: isCurrent(trackID),
-    playing: NowPlayingStore.getPlaying()
+    playing: NowPlayingStore.getPlaying(),
   };
 }
 
@@ -335,14 +335,14 @@ class Track extends React.Component {
   }
 
   render() {
-    var durationSecs = parseInt(this.props.data.TotalTime/1000);
+    var durationSecs = parseInt(this.props.data.TotalTime / 1000);
     var liClasses = {
-      'current': this.state.current,
-      'playing': this.state.current && this.state.playing
+      "current": this.state.current,
+      "playing": this.state.current && this.state.playing,
     };
     return (
       <li className={classNames(liClasses)} onClick={this._onClick}>
-        <span id={"track_"+this.props.data.TrackID} className="name">{this.props.data.Name}</span>
+        <span id={`track_${this.props.data.TrackID}`} className="name">{this.props.data.Name}</span>
         <TimeFormatter className="duration" time={durationSecs} />
         <span className="controls">
           <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />

@@ -1,10 +1,8 @@
-'use strict';
+import WebsocketAPI from "../utils/WebsocketAPI.js";
 
-import WebsocketAPI from '../utils/WebsocketAPI.js';
+import AppDispatcher from "../dispatcher/AppDispatcher.js";
 
-import AppDispatcher from '../dispatcher/AppDispatcher.js';
-
-import SearchConstants from '../constants/SearchConstants.js';
+import SearchConstants from "../constants/SearchConstants.js";
 
 
 var SearchActions = {
@@ -16,7 +14,7 @@ var SearchActions = {
       actionType: SearchConstants.SEARCH,
       input: input,
     });
-  }
+  },
 
 };
 

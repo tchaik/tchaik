@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import LeftColumnConstants from '../constants/LeftColumnConstants.js';
+import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 
 
 var _defaultMode = "All";
@@ -22,7 +22,7 @@ function setHidden(h) {
     h = _defaultHidden;
   }
 
-  localStorage.setItem('toolbarHidden', JSON.stringify(h));
+  localStorage.setItem("toolbarHidden", JSON.stringify(h));
 }
 
 function mode() {
@@ -34,7 +34,7 @@ function mode() {
 }
 
 function isHidden() {
-  var h = localStorage.getItem('toolbarHidden');
+  var h = localStorage.getItem("toolbarHidden");
   if (h === null) {
     h = _defaultHidden;
   } else {
@@ -61,7 +61,7 @@ _leftColumnStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'VIEW_ACTION') {
+  if (source === "VIEW_ACTION") {
     switch (action.actionType) {
       case LeftColumnConstants.MODE:
         setMode(action.mode);

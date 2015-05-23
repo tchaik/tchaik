@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import FilterConstants from '../constants/FilterConstants.js';
+import FilterConstants from "../constants/FilterConstants.js";
 
 
 var _currentItems = null;
@@ -54,7 +54,7 @@ class FilterStore extends ChangeEmitter {
     }
     return x;
   }
-  
+
   getPaths(name, itemName) {
     var x = _filterPaths[name];
     if (!x) {
@@ -74,7 +74,7 @@ _filterStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'SERVER_ACTION') {
+  if (source === "SERVER_ACTION") {
     switch (action.actionType) {
       case FilterConstants.FILTER_LIST:
         _filters[action.data.Name] = action.data.Items;
@@ -86,7 +86,7 @@ _filterStore.dispatchToken = AppDispatcher.register(function(payload) {
         _filterStore.emitChange();
         break;
     }
-  } else if (source === 'VIEW_ACTION') {
+  } else if (source === "VIEW_ACTION") {
     switch (action.actionType) {
       case FilterConstants.SET_FILTER_ITEM:
         _setCurrentItem(action.name, action.itemName);

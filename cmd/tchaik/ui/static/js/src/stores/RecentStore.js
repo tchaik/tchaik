@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
-import RecentConstants from '../constants/RecentConstants.js';
+import RecentConstants from "../constants/RecentConstants.js";
 
 
 var _recentPaths = [];
@@ -21,7 +21,7 @@ _recentStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'SERVER_ACTION') {
+  if (source === "SERVER_ACTION") {
     switch (action.actionType) {
       case RecentConstants.FETCH_RECENT:
         _recentPaths = action.data;

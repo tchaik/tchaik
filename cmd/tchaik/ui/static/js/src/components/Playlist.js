@@ -1,21 +1,21 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
-import Icon from './Icon.js';
-import TimeFormatter from './TimeFormatter.js';
-import GroupAttributes from './GroupAttributes.js';
-import ArtworkImage from './ArtworkImage.js';
+import Icon from "./Icon.js";
+import TimeFormatter from "./TimeFormatter.js";
+import GroupAttributes from "./GroupAttributes.js";
+import ArtworkImage from "./ArtworkImage.js";
 
-import CollectionStore from '../stores/CollectionStore.js';
-import CollectionActions from '../actions/CollectionActions.js';
+import CollectionStore from "../stores/CollectionStore.js";
+import CollectionActions from "../actions/CollectionActions.js";
 
-import PlaylistStore from '../stores/PlaylistStore.js';
-import PlaylistActions from '../actions/PlaylistActions.js';
+import PlaylistStore from "../stores/PlaylistStore.js";
+import PlaylistActions from "../actions/PlaylistActions.js";
 
-import NowPlayingStore from '../stores/NowPlayingStore.js';
+import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 
 export default class Playlist extends React.Component {
@@ -41,7 +41,7 @@ export default class Playlist extends React.Component {
         rootCount[item.root] = 0;
       }
       rootCount[item.root]++;
-      return <RootGroup path={item.root} key={item.root+rootCount[item.root]} itemIndex={i} />;
+      return <RootGroup path={item.root} key={item.root + rootCount[item.root]} itemIndex={i} />;
     });
 
     return (
@@ -98,14 +98,14 @@ class RootGroup extends React.Component {
 
   _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
-       this.setState(getRootGroupState(this.props));
+      this.setState(getRootGroupState(this.props));
     }
   }
 }
 
 RootGroup.propTypes = {
   path: React.PropTypes.array.isRequired,
-  itemIndex: React.PropTypes.number.isRequired
+  itemIndex: React.PropTypes.number.isRequired,
 };
 
 
@@ -125,22 +125,22 @@ class Group extends React.Component {
 
   render() {
     var groupClasses = {
-      'group': true,
-      'expanded': this.state.expanded
+      "group": true,
+      "expanded": this.state.expanded,
     };
 
     var image = null;
     if (this.state.common.TrackID) {
-      image = <ArtworkImage path={"/artwork/" + this.state.common.TrackID} />;
+      image = <ArtworkImage path={`/artwork/${this.state.common.TrackID}`} />;
     }
 
     var duration = null;
     if (this.state.common.TotalTime) {
-      duration = <TimeFormatter className="duration" time={parseInt(this.state.common.TotalTime/1000)} />;
+      duration = <TimeFormatter className="duration" time={parseInt(this.state.common.TotalTime / 1000)} />;
     }
 
     var common = this.state.common;
-    var fields = ['Artist', 'Composer', 'Year'];
+    var fields = ["Artist", "Composer", "Year"];
     var attributeArr = [];
     fields.forEach(function(f) {
       if (common[f]) {
@@ -191,7 +191,7 @@ class Group extends React.Component {
 Group.propTypes = {
   path: React.PropTypes.array.isRequired,
   itemIndex: React.PropTypes.number.isRequired,
-  item: React.PropTypes.object.isRequired
+  item: React.PropTypes.object.isRequired,
 };
 
 
@@ -230,7 +230,7 @@ class GroupContent extends React.Component {
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var fields = ['TotalTime', 'Artist', 'Composer', 'TrackID', 'Year'];
+      var fields = ["TotalTime", "Artist", "Composer", "TrackID", "Year"];
       fields.forEach(function(f) {
         if (item[f]) {
           common[f] = item[f];
@@ -276,7 +276,7 @@ class GroupList extends React.Component {
 GroupList.propTypes = {
   path: React.PropTypes.array.isRequired,
   itemIndex: React.PropTypes.number.isRequired,
-  keys: React.PropTypes.array.isRequired
+  keys: React.PropTypes.array.isRequired,
 };
 
 
@@ -335,7 +335,7 @@ function isPlaying(trackId) {
 function getTrackState(props) {
   return {
     isCurrent: isCurrent(props.itemIndex, props.path),
-    isPlaying: isPlaying(props.data.TrackID)
+    isPlaying: isPlaying(props.data.TrackID),
   };
 }
 
@@ -360,15 +360,15 @@ class Track extends React.Component {
   }
 
   render() {
-    var durationSecs = parseInt(this.props.data.TotalTime/1000);
+    var durationSecs = parseInt(this.props.data.TotalTime / 1000);
     var style = {
       current: this.state.isCurrent,
-      'is-playing': this.state.isPlaying,
+      "is-playing": this.state.isPlaying,
     };
 
     return (
-      <li onClick={this._onClick} style={{'counterReset': "li "+ (this.props.index+1)}} className={classNames(style)}>
-        <span id={"track_"+this.props.data.TrackID} className="name">{this.props.data.Name}</span>
+      <li onClick={this._onClick} style={{"counterReset": "li " + (this.props.index + 1)}} className={classNames(style)}>
+        <span id={"track_" + this.props.data.TrackID} className="name">{this.props.data.Name}</span>
         <span className="info">
           <Icon icon="remove" onClick={this._onClickRemove} />
           <TimeFormatter className="duration" time={durationSecs} />
@@ -394,5 +394,5 @@ class Track extends React.Component {
 Track.propTypes = {
   itemIndex: React.PropTypes.number.isRequired,
   index: React.PropTypes.number.isRequired,
-  path: React.PropTypes.array.isRequired
+  path: React.PropTypes.array.isRequired,
 };

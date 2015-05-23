@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('eventemitter3').EventEmitter;
-var assign = require('object-assign');
+var AppDispatcher = require("../dispatcher/AppDispatcher");
+var EventEmitter = require("eventemitter3").EventEmitter;
+var assign = require("object-assign");
 
-var CollectionStore = require('./CollectionStore.js');
+var CollectionStore = require("./CollectionStore.js");
 
-var CollectionConstants = require('../constants/CollectionConstants.js');
-var PlaylistConstants = require('../constants/PlaylistConstants.js');
-var NowPlayingConstants = require('../constants/NowPlayingConstants.js');
-var ControlConstants = require('../constants/ControlConstants.js');
+var CollectionConstants = require("../constants/CollectionConstants.js");
+var PlaylistConstants = require("../constants/PlaylistConstants.js");
+var NowPlayingConstants = require("../constants/NowPlayingConstants.js");
+var ControlConstants = require("../constants/ControlConstants.js");
 
-var CHANGE_EVENT = 'change';
+var CHANGE_EVENT = "change";
 
 var _playlistItems = null;
 var _playlistCurrent = null;
@@ -166,7 +166,7 @@ function prev() {
 
   if (current.item > 0) {
     item = getPlaylistItem(--current.item);
-    current.track = item.tracks.length-1;
+    current.track = item.tracks.length - 1;
     current.path = item.root.concat(item.tracks[current.track]);
     setPlaylistCurrent(current);
     return;
@@ -189,7 +189,7 @@ function canNext() {
 
   var items = getPlaylistItems();
   var tracks = items[current.item].tracks;
-  return (current.track < (tracks.length - 1)) || (current.item < (items.length-1));
+  return (current.track < (tracks.length - 1)) || (current.item < (items.length - 1));
 }
 
 function getNext() {
@@ -201,18 +201,18 @@ function getNext() {
   var item = getPlaylistItem(current.item);
   var tracks = item.tracks;
   if (current.track < (tracks.length - 1)) {
-    return trackForPath(item.root.concat(tracks[current.track+1]));
+    return trackForPath(item.root.concat(tracks[current.track + 1]));
   }
   return null;
 }
 
 function remove(itemIndex, path) {
-  function _isPathPrefix(path, prefix) {
-    if (prefix.length > path.length) {
+  function _isPathPrefix(_path, prefix) {
+    if (prefix.length > _path.length) {
       return false;
     }
     for (var i = 0; i < prefix.length; i++) {
-      if (path[i] != prefix[i]) {
+      if (_path[i] !== prefix[i]) {
         return false;
       }
     }
@@ -220,13 +220,13 @@ function remove(itemIndex, path) {
   }
 
   function _pathsEqual(p1, p2) {
-    return (p1.length == p2.length) && _isPathPrefix(p1, p2);
+    return (p1.length === p2.length) && _isPathPrefix(p1, p2);
   }
 
-  function _removeTracks(tracks, path) {
+  function _removeTracks(tracks, _path) {
     var i = 0;
     while (i < tracks.length) {
-      if (_isPathPrefix(tracks[i], path)) {
+      if (_isPathPrefix(tracks[i], _path)) {
         tracks.splice(i, 1);
         continue;
       }
@@ -234,11 +234,11 @@ function remove(itemIndex, path) {
     }
   }
 
-  function _removePaths(paths, data, path) {
+  function _removePaths(paths, _data, _path) {
     var i = 0;
     while (i < paths.length) {
-      if (_isPathPrefix(paths[i], path)) {
-        delete data[CollectionStore.pathToKey(paths[i])];
+      if (_isPathPrefix(paths[i], _path)) {
+        delete _data[CollectionStore.pathToKey(paths[i])];
         paths.splice(i, 1);
         continue;
       }
@@ -246,8 +246,8 @@ function remove(itemIndex, path) {
     }
   }
 
-  function _removeItem(items, itemIndex) {
-    items.splice(itemIndex, 1);
+  function _removeItem(_items, _itemIndex) {
+    _items.splice(_itemIndex, 1);
   }
 
   var items = getPlaylistItems();
@@ -287,7 +287,7 @@ function setCurrent(itemIndex, path) {
     }
   }
   if (track === -1) {
-    console.error("Could not find track for path:"+path);
+    console.error("Could not find track for path:" + path);
   }
 
   setPlaylistCurrent({
@@ -301,7 +301,7 @@ function trackForPath(path) {
   var i = path.pop();
   var t = CollectionStore.getCollection(path);
   if (t === null) {
-    console.log("Could not find collection with path:"+path);
+    console.log("Could not find collection with path:" + path);
   }
 
   if (t.Tracks) {
@@ -309,7 +309,7 @@ function trackForPath(path) {
     if (track) {
       return track;
     }
-    console.log("No track found for index: "+i);
+    console.log("No track found for index: " + i);
     console.log(t.Tracks);
     return null;
   }
@@ -374,7 +374,7 @@ var PlaylistStore = assign({}, EventEmitter.prototype, {
    */
   removeChangeListener: function(callback) {
     this.removeListener(CHANGE_EVENT, callback);
-  }
+  },
 
 });
 
@@ -382,7 +382,7 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'SERVER_ACTION') {
+  if (source === "SERVER_ACTION") {
     if (action.actionType === ControlConstants.CTRL) {
       switch (action.data) {
         case ControlConstants.NEXT:
@@ -398,7 +398,7 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
     }
   }
 
-  if (source === 'VIEW_ACTION') {
+  if (source === "VIEW_ACTION") {
     var items;
     switch (action.actionType) {
 

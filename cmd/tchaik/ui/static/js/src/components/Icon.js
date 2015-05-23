@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-import React from 'react/addons';
+import React from "react/addons";
 
-import classNames from 'classnames';
+import classNames from "classnames";
 
 
 export default class Icon extends React.Component {
@@ -11,7 +11,7 @@ export default class Icon extends React.Component {
     var classes = {
       glyphicon: true,
     };
-    classes['glyphicon-' + icon] = true;
+    classes["glyphicon-" + icon] = true;
 
     if (extraClasses) {
       for (var k in extraClasses) {

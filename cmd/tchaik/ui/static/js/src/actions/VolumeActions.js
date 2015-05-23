@@ -1,8 +1,6 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-
-import VolumeConstants from '../constants/VolumeConstants.js';
+import VolumeConstants from "../constants/VolumeConstants.js";
 
 
 var VolumeActions = {
@@ -18,7 +16,7 @@ var VolumeActions = {
     AppDispatcher.handleViewAction({
       actionType: VolumeConstants.TOGGLE_VOLUME_MUTE,
     });
-  }
+  },
 
 };
 

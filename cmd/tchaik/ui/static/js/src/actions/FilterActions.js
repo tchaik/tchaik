@@ -1,10 +1,8 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import WebsocketAPI from "../utils/WebsocketAPI.js";
 
-import WebsocketAPI from '../utils/WebsocketAPI.js';
-
-import FilterConstants from '../constants/FilterConstants.js';
+import FilterConstants from "../constants/FilterConstants.js";
 
 
 var FilterActions = {
@@ -16,7 +14,7 @@ var FilterActions = {
   fetchPaths: function(name, itemName) {
     WebsocketAPI.send(FilterConstants.FILTER_PATHS, {
       name: name,
-      path: [itemName]
+      path: [itemName],
     });
   },
 
@@ -26,7 +24,7 @@ var FilterActions = {
       name: name,
       itemName: itemName,
     });
-  }
+  },
 
 };
 

@@ -1,10 +1,8 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
-
-import PlaylistConstants from '../constants/PlaylistConstants.js';
-import NowPlayingConstants from '../constants/NowPlayingConstants.js';
-import WebsocketAPI from '../utils/WebsocketAPI.js';
+import PlaylistConstants from "../constants/PlaylistConstants.js";
+import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import WebsocketAPI from "../utils/WebsocketAPI.js";
 
 
 var PlaylistActions = {
@@ -45,7 +43,7 @@ var PlaylistActions = {
       track: data,
       source: "playlist",
     });
-  }
+  },
 
 };
 

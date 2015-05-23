@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import CtrlConstants from '../constants/ControlConstants.js';
-import VolumeConstants from '../constants/VolumeConstants.js';
+import CtrlConstants from "../constants/ControlConstants.js";
+import VolumeConstants from "../constants/VolumeConstants.js";
 
 
 var defaultVolume = 0.75;
@@ -61,7 +61,7 @@ _volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'SERVER_ACTION') {
+  if (source === "SERVER_ACTION") {
     if (action.actionType === CtrlConstants.CTRL) {
       switch (action.data) {
 
@@ -93,7 +93,7 @@ _volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
     }
   }
 
-  if (source === 'VIEW_ACTION') {
+  if (source === "VIEW_ACTION") {
     switch (action.actionType) {
 
       case VolumeConstants.SET_VOLUME:

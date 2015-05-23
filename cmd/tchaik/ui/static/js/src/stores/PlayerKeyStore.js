@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-import {ChangeEmitter} from '../utils/ChangeEmitter.js';
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import WebsocketConstants from '../constants/WebsocketConstants.js';
-import WebsocketAPI from '../utils/WebsocketAPI.js';
+import WebsocketConstants from "../constants/WebsocketConstants.js";
+import WebsocketAPI from "../utils/WebsocketAPI.js";
 
-import ControlConstants from '../constants/ControlConstants.js';
+import ControlConstants from "../constants/ControlConstants.js";
 
 
 var _playerKey = null;
@@ -26,8 +26,8 @@ function key() {
   return _playerKey;
 }
 
-function sendKey(key) {
-  WebsocketAPI.send("KEY", {key: key});
+function sendKey(k) {
+  WebsocketAPI.send("KEY", {key: k});
 }
 
 function setPushKey(k) {
@@ -77,7 +77,7 @@ _playerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
-  if (source === 'VIEW_ACTION') {
+  if (source === "VIEW_ACTION") {
     switch (action.actionType) {
       case ControlConstants.SET_KEY:
         setKey(action.key);

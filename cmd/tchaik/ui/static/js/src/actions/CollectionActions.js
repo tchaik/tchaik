@@ -1,13 +1,11 @@
-'use strict';
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import WebsocketAPI from "../utils/WebsocketAPI.js";
 
-import WebsocketAPI from '../utils/WebsocketAPI.js';
+import CollectionStore from "../stores/CollectionStore.js";
 
-import CollectionStore from '../stores/CollectionStore.js';
-
-import CollectionConstants from '../constants/CollectionConstants.js';
-import NowPlayingConstants from '../constants/NowPlayingConstants.js';
+import CollectionConstants from "../constants/CollectionConstants.js";
+import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 
 
 var CollectionActions = {
@@ -39,16 +37,16 @@ var CollectionActions = {
   appendToPlaylist: function(path) {
     AppDispatcher.handleViewAction({
       actionType: CollectionConstants.APPEND_TO_PLAYLIST,
-      path: path
+      path: path,
     });
   },
 
   playNow: function(path) {
     AppDispatcher.handleViewAction({
       actionType: CollectionConstants.PLAY_NOW,
-      path: path
+      path: path,
     });
-  }
+  },
 
 };
 
