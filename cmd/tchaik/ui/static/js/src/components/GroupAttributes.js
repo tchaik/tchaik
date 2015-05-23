@@ -2,11 +2,14 @@
 
 import React from "react/addons";
 
+import SearchActions from "../actions/SearchActions.js";
+
 export default class GroupAttributes extends React.Component {
   render() {
+    var _this = this;
     var list = this.props.list.map(function(attr) {
       return [
-        <span>{attr}</span>,
+        <a onClick={_this._onClickAttribute.bind(_this, attr)}>{attr}</a>,
         <span className="bull">&bull;</span>,
       ];
     });
@@ -19,5 +22,9 @@ export default class GroupAttributes extends React.Component {
         {list}
       </div>
     );
+  }
+
+  _onClickAttribute(attributeValue) {
+    SearchActions.search(attributeValue);
   }
 }
