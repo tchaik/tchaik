@@ -7,24 +7,23 @@ div.control-bar {
   flex-direction: column;
   justify-content: center;
   left: 0;
-  top: 40px;
-  padding-top: 5px;
+  margin-top: -$top-row-height;
   z-index: 2;
 
   bottom: $bottom-row-height;
   width: $left-column-width;
-  background-color: $transparent-bar-light-background;
+  background-color: $lighter-background;
+  color: #999;
+
+  span.glyphicon {
+    font-size: 20px;
+    display: block;
+  }
 
   span.item {
     color: #999;
-    padding: 10px 10px 10px 11px;
-    float: left;
     @include fade-in(color);
 
-    span.glyphicon {
-      font-size: 20px;
-      display: block;
-    }
 
     &.toolbar {
       &.selected {
@@ -60,7 +59,50 @@ div.control-bar {
     }
   }
 
+  .menu-button-item {
+    margin-bottom: 20px;
+  }
+
+  .links {
+    margin-top: 40px;
+  }
+
+  .menu-item {
+    display: flex;
+    padding: 15px;
+    background-color: $transparent;
+    @include fade-in(background-color, 0.05s);
+    text-decoration: none;
+    cursor: pointer;
+
+    .title {
+      margin-left: 15px;
+      color: white;
+    }
+
+    &:hover {
+      background-color: rgba(white, 0.1);
+    }
+
+    &:hover, &:active, &:visited {
+      text-decoration: none;
+    }
+  }
+
   .middle {
     flex: 1;
+  }
+
+  .bottom {
+    .bottom-item {
+      display: flex;
+    }
+    .item {
+      span.glyphicon {
+        padding: 10px;
+        font-size: 20px;
+        display: block;
+      }
+    }
   }
 }

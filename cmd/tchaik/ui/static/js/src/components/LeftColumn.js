@@ -7,11 +7,13 @@ import classNames from "classnames";
 import Icon from "./Icon.js";
 import StatusView from "./Status.js";
 import PlayerKeyView from "./PlayerKey.js";
+import MenuToggleButton from "./MenuToggleButton.js";
 
 import ContainerActions from "../actions/ContainerActions.js";
 import ContainerConstants from "../constants/ContainerConstants.js";
 import ContainerStore from "../stores/ContainerStore.js";
 
+import LeftColumnActions from "../actions/LeftColumnActions.js";
 import LeftColumnStore from "../stores/LeftColumnStore.js";
 
 
@@ -46,9 +48,12 @@ class ToolbarItem extends React.Component {
       selected: this.state.selected,
     };
     return (
-      <span className={classNames(classes)} onClick={this._onClick}>
-        <Icon {...other} />
-      </span>
+      <div className="menu-item" onClick={this._onClick}>
+        <span className={classNames(classes)}>
+          <Icon {...other} />
+        </span>
+        <span className="title">{this.props.title}</span>
+      </div>
     );
   }
 
@@ -58,6 +63,19 @@ class ToolbarItem extends React.Component {
 
   _onChange() {
     this.setState(getToolBarItemState(this.props.mode));
+  }
+}
+
+class LinkItem extends React.Component {
+  render() {
+    return (
+      <a className="menu-item" href={this.props.href} target="_blank">
+        <span className="item">
+          <Icon icon={this.props.icon} />
+        </span>
+        <span className="title">{this.props.title}</span>
+      </a>
+    );
   }
 }
 
@@ -75,6 +93,7 @@ export default class LeftColumn extends React.Component {
 
     this.state = leftColumnState();
     this._onChange = this._onChange.bind(this);
+    this._onClickMenuToggle = this._onClickMenuToggle.bind(this);
   }
 
   componentDidMount() {
@@ -93,17 +112,26 @@ export default class LeftColumn extends React.Component {
       toolbar = (
         <div className="control-bar">
           <div className="top">
-            <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
-            <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
-            <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
-            <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
-            <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Reto" />
-            <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
+            <div className="menu-item menu-button-item" onClick={this._onClickMenuToggle}>
+              <MenuToggleButton />
+              <span className="title">Tchaik</span>
+            </div>
+            <div className="menu-items">
+              <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
+              <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
+              <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
+              <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
+              <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Retro" />
+              <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
+            </div>
+            <div className="links">
+              <LinkItem title="Github" href="https://github.com/tchaik/tchaik" icon="home" />
+            </div>
           </div>
           <div className="middle"></div>
           <div className="bottom">
-            <StatusView />
-            <PlayerKeyView />
+            <div className="bottom-item"><StatusView /></div>
+            <div className="bottom-item"><PlayerKeyView /></div>
           </div>
         </div>
       );
@@ -114,5 +142,9 @@ export default class LeftColumn extends React.Component {
 
   _onChange() {
     this.setState(leftColumnState());
+  }
+
+  _onClickMenuToggle() {
+    LeftColumnActions.toggleVisibility();
   }
 }
