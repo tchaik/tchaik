@@ -14,10 +14,8 @@ div.retro {
     width: 100%;
     background-size: cover;
     z-index: -100;
-    height: 20%; width: 20%; /* Using Glen Maddern's trick /via @mente */
-    transform: scale(5);
     transform-origin: top left;
-    -webkit-filter: blur(10px);
+    -webkit-filter: blur(40px);
     @include fade-in(background-image);
   }
 
