@@ -17,6 +17,7 @@ div.control-bar {
 
   margin-left: 0px;
   transition: margin-left .5s ease-in;
+
   &.hidden {
     margin-left: -$left-column-width;
   }
@@ -27,24 +28,6 @@ div.control-bar {
   }
 
   span.item {
-    color: #999;
-    @include fade-in(color);
-
-
-    &.toolbar {
-      &.selected {
-        color: lighten($light-blue, 15);
-
-        &:hover {
-          color: lighten($light-blue, 25);
-        };
-      }
-
-      &:hover {
-        color: white;
-      };
-    }
-
     &.status {
       &.closed {
         background-color: lighten(#FF00BF, 10);
@@ -81,13 +64,41 @@ div.control-bar {
     text-decoration: none;
     cursor: pointer;
 
+    &.selected {
+      span.glyphicon {
+        color: lighten($light-blue, 15);
+      }
+
+      .title {
+        color: white;
+      }
+
+      &:hover {
+        span.glyphicon {
+          color: lighten($light-blue, 15);
+        }
+      }
+    }
+
+    span.glyphicon {
+      color: #999;
+    }
+
     .title {
       margin-left: 15px;
-      color: white;
+      color: #ccc;
     }
 
     &:hover {
       background-color: rgba(white, 0.1);
+
+      .title {
+        color: white;
+      }
+
+      span.glyphicon {
+        color: white;
+      }
     }
 
     &:hover, &:active, &:visited {

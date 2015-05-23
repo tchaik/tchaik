@@ -42,15 +42,12 @@ class ToolbarItem extends React.Component {
   render() {
     var {...other} = this.props;
     var classes = {
-      item: true,
-      toolbar: true,
+      "menu-item": true,
       selected: this.state.selected,
     };
     return (
-      <div className="menu-item" onClick={this._onClick}>
-        <span className={classNames(classes)}>
-          <Icon {...other} />
-        </span>
+      <div className={classNames(classes)} onClick={this._onClick}>
+        <Icon {...other} />
         <span className="title">{this.props.title}</span>
       </div>
     );
