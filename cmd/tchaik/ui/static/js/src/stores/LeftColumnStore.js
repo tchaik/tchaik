@@ -7,15 +7,7 @@ import AppDispatcher from "../dispatcher/AppDispatcher";
 import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 
 
-var _defaultMode = "All";
 var _defaultHidden = true;
-
-function setMode(m) {
-  if (m === null) {
-    m = _defaultMode;
-  }
-  localStorage.setItem("mode", m);
-}
 
 function setHidden(h) {
   if (h === null) {
@@ -23,14 +15,6 @@ function setHidden(h) {
   }
 
   localStorage.setItem("toolbarHidden", JSON.stringify(h));
-}
-
-function mode() {
-  var m = localStorage.getItem("mode");
-  if (m === null) {
-    m = _defaultMode;
-  }
-  return m;
 }
 
 function isHidden() {
@@ -46,10 +30,6 @@ function isHidden() {
 
 
 class LeftColumnStore extends ChangeEmitter {
-  getMode() {
-    return mode();
-  }
-
   getIsHidden() {
     return isHidden();
   }
@@ -63,10 +43,6 @@ _leftColumnStore.dispatchToken = AppDispatcher.register(function(payload) {
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {
-      case LeftColumnConstants.MODE:
-        setMode(action.mode);
-        _leftColumnStore.emitChange();
-        break;
       case LeftColumnConstants.TOGGLE_VISIBILITY:
         var current = isHidden();
         setHidden(!current);

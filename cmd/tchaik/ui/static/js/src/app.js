@@ -14,6 +14,7 @@ var LeftColumn = require("./components/LeftColumn.js");
 var RightColumn = require("./components/RightColumn.js");
 var Bottom = require("./components/Bottom.js");
 var Top = require("./components/Top.js");
+var Container = require("./components/Container.js");
 
 var socketAddr = document.location.host;
 
@@ -48,4 +49,9 @@ React.render(
 React.render(
   React.createFactory(Top)(),
   document.getElementById("top")
+);
+
+React.render(
+  React.createFactory(Container)(),
+  document.getElementById("container")
 );

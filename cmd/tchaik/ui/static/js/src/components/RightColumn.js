@@ -4,12 +4,12 @@ import React from "react/addons";
 
 import Playlist from "./Playlist.js";
 
-import LeftColumnConstants from "../constants/LeftColumnConstants.js";
-import LeftColumnStore from "../stores/LeftColumnStore.js";
+import ContainerConstants from "../constants/ContainerConstants.js";
+import ContainerStore from "../stores/ContainerStore.js";
 
 function getColumnState() {
   return {
-    showPlaylist: LeftColumnStore.getMode() !== LeftColumnConstants.RETRO,
+    showPlaylist: ContainerStore.getMode() !== ContainerConstants.RETRO,
   };
 }
 
@@ -22,11 +22,11 @@ export default class RightColumn extends React.Component {
   }
 
   componentDidMount() {
-    LeftColumnStore.addChangeListener(this._onChange);
+    ContainerStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
-    LeftColumnStore.removeChangeListener(this._onChange);
+    ContainerStore.removeChangeListener(this._onChange);
   }
 
   render() {

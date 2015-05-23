@@ -8,23 +8,15 @@ import Icon from "./Icon.js";
 import StatusView from "./Status.js";
 import PlayerKeyView from "./PlayerKey.js";
 
-import {RootCollection as RootCollection} from "./Collection.js";
-import {Search as Search} from "./Search.js";
-import Covers from "./Covers.js";
-import Filter from "./Filter.js";
-import Recent from "./Recent.js";
-import Settings from "./Settings.js";
-import Retro from "./Retro.js";
+import ContainerActions from "../actions/ContainerActions.js";
+import ContainerConstants from "../constants/ContainerConstants.js";
+import ContainerStore from "../stores/ContainerStore.js";
 
-import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 import LeftColumnStore from "../stores/LeftColumnStore.js";
-import LeftColumnActions from "../actions/LeftColumnActions.js";
-
-import SearchStore from "../stores/SearchStore.js";
 
 
 function getToolBarItemState(mode) {
-  return {selected: mode === LeftColumnStore.getMode()};
+  return {selected: mode === ContainerStore.getMode()};
 }
 
 class ToolbarItem extends React.Component {
@@ -37,10 +29,12 @@ class ToolbarItem extends React.Component {
   }
 
   componentDidMount() {
+    ContainerStore.addChangeListener(this._onChange);
     LeftColumnStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
+    ContainerStore.removeChangeListener(this._onChange);
     LeftColumnStore.removeChangeListener(this._onChange);
   }
 
@@ -59,7 +53,7 @@ class ToolbarItem extends React.Component {
   }
 
   _onClick() {
-    LeftColumnActions.mode(this.props.mode);
+    ContainerActions.mode(this.props.mode);
   }
 
   _onChange() {
@@ -70,7 +64,7 @@ class ToolbarItem extends React.Component {
 
 function leftColumnState() {
   return {
-    mode: LeftColumnStore.getMode(),
+    mode: ContainerStore.getMode(),
     hidden: LeftColumnStore.getIsHidden(),
   };
 }
@@ -85,57 +79,26 @@ export default class LeftColumn extends React.Component {
   }
 
   componentDidMount() {
+    ContainerStore.addChangeListener(this._onChange);
     LeftColumnStore.addChangeListener(this._onChange);
-    SearchStore.addChangeListener(this._onSearch);
   }
 
   componentWillUnmount() {
+    ContainerStore.removeChangeListener(this._onChange);
     LeftColumnStore.removeChangeListener(this._onChange);
-    SearchStore.removeChangeListener(this._onSearch);
   }
 
   render() {
-    var container = null;
-    switch (this.state.mode) {
-    case LeftColumnConstants.ARTISTS:
-      container = <Filter name="Artist" />;
-      break;
-    case LeftColumnConstants.SEARCH:
-      container = <Search />;
-      break;
-    case LeftColumnConstants.COVERS:
-      container = <Covers />;
-      break;
-    case LeftColumnConstants.RECENT:
-      container = <Recent />;
-      break;
-    case LeftColumnConstants.SETTINGS:
-      container = <Settings />;
-      break;
-    case LeftColumnConstants.RETRO:
-      container = <Retro />;
-      break;
-    case LeftColumnConstants.ALL:
-    default:
-      container = <RootCollection />;
-      break;
-    }
-
-    var containerClasses = classNames({
-      container: true,
-      retro: this.state.mode === LeftColumnConstants.RETRO,
-    });
-
     var toolbar = null;
     if (!this.state.hidden) {
       toolbar = (
         <div className="control-bar">
-          <ToolbarItem mode={LeftColumnConstants.ALL} icon="align-justify" title="All" />
-          <ToolbarItem mode={LeftColumnConstants.ARTISTS} icon="list" title="Artists" />
-          <ToolbarItem mode={LeftColumnConstants.COVERS} icon="th-large" title="Covers" />
-          <ToolbarItem mode={LeftColumnConstants.RECENT} icon="time" title="Recently Added" />
-          <ToolbarItem mode={LeftColumnConstants.RETRO} icon="cd" title="Reto" />
-          <ToolbarItem mode={LeftColumnConstants.SETTINGS} icon="cog" title="Settings" />
+          <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
+          <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
+          <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
+          <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
+          <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Reto" />
+          <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
           <div className="bottom">
             <StatusView />
             <PlayerKeyView />
@@ -144,21 +107,10 @@ export default class LeftColumn extends React.Component {
       );
     }
 
-    return (
-      <div>
-        {toolbar}
-        <div id="container" className={containerClasses}>
-          {container}
-        </div>
-      </div>
-    );
+    return toolbar;
   }
 
   _onChange() {
     this.setState(leftColumnState());
-  }
-
-  _onSearch() {
-    this.setState({mode: LeftColumnConstants.SEARCH});
   }
 }
