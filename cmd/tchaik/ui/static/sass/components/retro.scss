@@ -13,7 +13,7 @@ div.retro {
     height: 100%;
     width: 100%;
     background-size: cover;
-    z-index: 0;
+    z-index: -100;
     height: 20%; width: 20%; /* Using Glen Maddern's trick /via @mente */
     transform: scale(5);
     transform-origin: top left;
