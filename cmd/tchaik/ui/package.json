@@ -8,6 +8,7 @@
     "classnames": "^1.2.0",
     "css-loader": "^0.12.0",
     "eslint": "^0.21.2",
+    "eslint-loader": "^0.11.2",
     "eslint-plugin-react": "^2.3.0",
     "file-loader": "^0.8.1",
     "flux": "^2.0.1",
