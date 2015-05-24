@@ -29,12 +29,13 @@ import (
 
 	"github.com/tchaik/tchaik/index"
 	"github.com/tchaik/tchaik/index/itl"
+	"github.com/tchaik/tchaik/index/walk"
 	"github.com/tchaik/tchaik/store"
 	"github.com/tchaik/tchaik/store/cmdflag"
 )
 
 var debug bool
-var itlXML, tchLib string
+var itlXML, tchLib, walkPath string
 
 var listenAddr string
 var staticDir string
@@ -51,6 +52,7 @@ func init() {
 
 	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
 	flag.StringVar(&tchLib, "lib", "", "path to Tchaik library file")
+	flag.StringVar(&walkPath, "path", "", "path to directory containing music files (to build index from)")
 
 	flag.StringVar(&staticDir, "static-dir", "ui/static", "Path to the static asset directory")
 
@@ -62,45 +64,62 @@ var creds = httpauth.Creds(map[string]string{
 })
 
 func readLibrary() (index.Library, error) {
-	if itlXML == "" && tchLib == "" {
-		return nil, fmt.Errorf("must specify one library file (-itlXML or -lib)")
+	var count int
+	check := func(x string) {
+		if x != "" {
+			count++
+		}
+	}
+	check(itlXML)
+	check(tchLib)
+	check(walkPath)
+
+	switch {
+	case count == 0:
+		return nil, fmt.Errorf("must specify one library file or a path to build one from (-itlXML, -lib or -path)")
+	case count > 1:
+		return nil, fmt.Errorf("must only specify one library file or a path to build one from (-itlXML, -lib or -path)")
 	}
 
-	if itlXML != "" && tchLib != "" {
-		return nil, fmt.Errorf("must only specify one library file (-itlXML or -lib)")
-	}
+	var lib index.Library
+	switch {
+	case tchLib != "":
+		f, err := os.Open(tchLib)
+		if err != nil {
+			return nil, fmt.Errorf("could not open Tchaik library file: %v", err)
+		}
+		defer f.Close()
 
-	var l index.Library
-	if itlXML != "" {
+		fmt.Printf("Parsing %v...", tchLib)
+		lib, err = index.ReadFrom(f)
+		if err != nil {
+			return nil, fmt.Errorf("error parsing Tchaik library file: %v\n", err)
+		}
+		fmt.Println("done.")
+		return lib, nil
+
+	case itlXML != "":
 		f, err := os.Open(itlXML)
 		if err != nil {
 			return nil, fmt.Errorf("could open iTunes library file: %v", err)
 		}
 		defer f.Close()
-		il, err := itl.ReadFrom(f)
+
+		lib, err = itl.ReadFrom(f)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing iTunes library file: %v", err)
 		}
 
-		fmt.Printf("Building Tchaik Library...")
-		l = index.Convert(il, "TrackID")
-		fmt.Println("done.")
-		return l, nil
+	case walkPath != "":
+		fmt.Printf("Walking %v...\n", walkPath)
+		lib = walk.NewLibrary(walkPath)
+		fmt.Println("Finished walking.")
 	}
 
-	f, err := os.Open(tchLib)
-	if err != nil {
-		return nil, fmt.Errorf("could not open Tchaik library file: %v", err)
-	}
-	defer f.Close()
-
-	fmt.Printf("Parsing %v...", tchLib)
-	l, err = index.ReadFrom(f)
-	if err != nil {
-		return nil, fmt.Errorf("error parsing Tchaik library file: %v\n", err)
-	}
+	fmt.Printf("Building Tchaik Library...")
+	lib = index.Convert(lib, "TrackID")
 	fmt.Println("done.")
-	return l, nil
+	return lib, nil
 }
 
 func buildRootCollection(l index.Library) index.Collection {
