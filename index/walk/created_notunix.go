@@ -1,6 +1,6 @@
 // +build !unix
 
-package main
+package walk
 
 import "time"
 

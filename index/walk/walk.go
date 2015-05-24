@@ -1,4 +1,6 @@
-package main
+// Package walk implements a path walker which reads audio files under a path and
+// constructs an index.Library from supported metadata tags (see github.com/dhowden/tag).
+package walk
 
 import (
 	"crypto/sha1"
@@ -13,19 +15,40 @@ import (
 	"github.com/tchaik/tchaik/index"
 )
 
-var fileExtensions = []string{".mp3", ".m4a", ".flac"}
+var fileExtensions = []string{".mp3", ".m4a", ".flac", ".ogg"}
 
-// Library is an implementation of index.Library.
-type Library struct {
-	tracks map[string]*Track
+// NewLibrary constructs an index.Library by walking through the directory tree under
+// the given path.  Any errors are logged to stdout (TODO: fix this!)
+func NewLibrary(path string) index.Library {
+	tracks := make(map[string]*track)
+	files := walk(path)
+	for p := range files {
+		if validExtension(p) {
+			t, err := processPath(p)
+			if err != nil {
+				log.Printf("error processing '%v': %v\n", p, err)
+				continue
+			}
+			tracks[p] = t
+		}
+	}
+
+	return &library{
+		tracks: tracks,
+	}
 }
 
-func (l *Library) Track(id string) (index.Track, bool) {
+// library is an implementation of index.library.
+type library struct {
+	tracks map[string]*track
+}
+
+func (l *library) Track(id string) (index.Track, bool) {
 	t, ok := l.tracks[id]
 	return t, ok
 }
 
-func (l *Library) Tracks() []index.Track {
+func (l *library) Tracks() []index.Track {
 	tracks := make([]index.Track, 0, len(l.tracks))
 	for _, t := range l.tracks {
 		tracks = append(tracks, t)
@@ -33,15 +56,15 @@ func (l *Library) Tracks() []index.Track {
 	return tracks
 }
 
-// Track is a wrapper around tag.Metadata which implements index.Track
-type Track struct {
+// track is a wrapper around tag.Metadata which implements index.Track
+type track struct {
 	tag.Metadata
 	Location    string
 	FileInfo    os.FileInfo
 	CreatedTime time.Time
 }
 
-func (m *Track) GetString(name string) string {
+func (m *track) GetString(name string) string {
 	switch name {
 	case "Name":
 		title := m.Title()
@@ -68,7 +91,7 @@ func (m *Track) GetString(name string) string {
 	return ""
 }
 
-func (m *Track) GetInt(name string) int {
+func (m *track) GetInt(name string) int {
 	switch name {
 	case "Year":
 		return m.Year()
@@ -88,7 +111,7 @@ func (m *Track) GetInt(name string) int {
 	return 0
 }
 
-func (m *Track) GetTime(name string) time.Time {
+func (m *track) GetTime(name string) time.Time {
 	switch name {
 	case "DateModified":
 		return m.FileInfo.ModTime()
@@ -131,7 +154,7 @@ func walk(root string) <-chan string {
 	return ch
 }
 
-func processPath(path string) (*Track, error) {
+func processPath(path string) (*track, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -153,7 +176,7 @@ func processPath(path string) (*Track, error) {
 		return nil, err
 	}
 
-	return &Track{
+	return &track{
 		Metadata:    m,
 		Location:    path,
 		FileInfo:    fileInfo,

@@ -23,11 +23,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/tchaik/tchaik/index"
 	"github.com/tchaik/tchaik/index/itl"
+	"github.com/tchaik/tchaik/index/walk"
 )
 
 var itlXML, path string
@@ -36,19 +36,19 @@ var out string
 func init() {
 	flag.StringVar(&itlXML, "itlXML", "", "iTunes Music Library XML file")
 	flag.StringVar(&path, "path", "", "directory path containing audio files")
-	flag.StringVar(&out, "out", "data.tch", "output file (Tchaik library binary format)")
+	flag.StringVar(&out, "out", "", "output file (Tchaik library binary format)")
 }
 
 func main() {
 	flag.Parse()
 
 	if itlXML != "" && path != "" || itlXML == "" && path == "" {
-		fmt.Println("must specify either 'itlXML' or 'path'")
+		fmt.Println("must specify either -itlXML or -path, see -help for more details")
 		os.Exit(1)
 	}
 
 	if out == "" {
-		fmt.Println("must specify 'out'")
+		fmt.Println("must specify -out, see -help for more details")
 		os.Exit(1)
 	}
 
@@ -58,7 +58,7 @@ func main() {
 	case itlXML != "":
 		l, err = importXML(itlXML)
 	case path != "":
-		l = importPath(path)
+		l = walk.NewLibrary(path)
 	}
 
 	if err != nil {
@@ -94,23 +94,4 @@ func importXML(itlXML string) (index.Library, error) {
 		return nil, err
 	}
 	return l, nil
-}
-
-func importPath(path string) index.Library {
-	tracks := make(map[string]*Track)
-	files := walk(path)
-	for p := range files {
-		if validExtension(p) {
-			track, err := processPath(p)
-			if err != nil {
-				log.Printf("error processing '%v': %v\n", p, err)
-				continue
-			}
-			tracks[p] = track
-		}
-	}
-
-	return &Library{
-		tracks: tracks,
-	}
 }
