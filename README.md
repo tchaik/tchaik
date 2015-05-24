@@ -62,6 +62,10 @@ NB: A Tchaik library will generally be smaller than its corresponding iTunes Lib
 
 Alternatively you can build a Tchaik library from a directory-tree of audio files, though only files with supported metadata (see [github.com/dhowden/tag](https://github.com/dhowden/tag)) will be imported:
 
+    $ tchaik -path /all/my/music
+
+To avoid rescanning all your media files every time you start Tchaik, you can build a Tchaik library instead:
+
     $ tchimport -path /all/my/music -out lib.tch
     $ tchaik -lib lib.tch
 
