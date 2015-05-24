@@ -97,6 +97,8 @@ func (t *itlTrack) GetString(name string) string {
 		return html.UnescapeString(t.AlbumArtist)
 	case "Composer":
 		return html.UnescapeString(t.Composer)
+	case "Genre":
+		return html.UnescapeString(t.Genre)
 	case "Kind":
 		return html.UnescapeString(t.Kind)
 	}

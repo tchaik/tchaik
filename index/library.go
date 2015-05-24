@@ -52,6 +52,7 @@ func Convert(l Library, id string) *library {
 			AlbumArtist: t.GetString("AlbumArtist"),
 			Artist:      t.GetString("Artist"),
 			Composer:    t.GetString("Composer"),
+			Genre:       t.GetString("Genre"),
 			Location:    t.GetString("Location"),
 
 			// integer fields
@@ -135,6 +136,7 @@ type track struct {
 	AlbumArtist string
 	Artist      string
 	Composer    string
+	Genre       string
 	Location    string
 
 	TotalTime   int
@@ -164,6 +166,8 @@ func (t *track) GetString(name string) string {
 		return t.Artist
 	case "Composer":
 		return t.Composer
+	case "Genre":
+		return t.Genre
 	case "Location":
 		return t.Location
 	}
