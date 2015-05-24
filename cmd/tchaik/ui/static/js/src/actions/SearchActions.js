@@ -8,6 +8,7 @@ import SearchConstants from "../constants/SearchConstants.js";
 var SearchActions = {
 
   search: function(input) {
+    input = "" + input;
     WebsocketAPI.send(SearchConstants.SEARCH, {input: input});
 
     AppDispatcher.handleViewAction({
