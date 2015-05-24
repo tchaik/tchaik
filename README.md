@@ -51,7 +51,7 @@ The easiest way to begin is to build a Tchaik library on-the-fly and start the U
 
     $ tchaik -itlXML ~/path/to/iTunesLibrary.xml
 
-You can also convert the iTunes Library into a Tchaik library using the `tchimport` tool, and use this instead:
+You can also convert the iTunes Library into a Tchaik library using the `tchimport` tool:
 
     $ tchimport -itlXML ~/path/to/iTunesLibrary.xml -out lib.tch
     $ tchaik -lib lib.tch
