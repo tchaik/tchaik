@@ -47,7 +47,7 @@ To start Tchaik you first need to move into the `cmd/tchaik` directory:
 
 ## Importing an iTunes Library
 
-If you have an iTunes Library then you can use this to build a Tchaik library on-the-fly and start the UI in one command:
+The easiest way to begin is to build a Tchaik library on-the-fly and start the UI in one command:
 
     $ tchaik -itlXML ~/path/to/iTunesLibrary.xml
 
@@ -60,11 +60,11 @@ NB: A Tchaik library will generally be smaller than its corresponding iTunes Lib
 
 ## Importing Audio Files
 
-Alternatively you can build a Tchaik library from a directory-tree of audio files, though only files with supported metadata (see [github.com/dhowden/tag](https://github.com/dhowden/tag)) will be imported:
+Alternatively you can build a Tchaik library on-the-fly from a directory-tree of audio files. Only files with supported metadata (see [github.com/dhowden/tag](https://github.com/dhowden/tag)) will be included in the index:
 
     $ tchaik -path /all/my/music
 
-To avoid rescanning all your media files every time you start Tchaik, you can build a Tchaik library instead:
+To avoid rescanning your entire collection every time you restart, you can build a Tchaik library using the `tchimport` tool:
 
     $ tchimport -path /all/my/music -out lib.tch
     $ tchaik -lib lib.tch
