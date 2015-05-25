@@ -11,6 +11,14 @@ div.playlist {
   div.group {
     font-size: 12px;
 
+    div.group {
+      div.group-info-container {
+        img.visible {
+          display: none;
+        }
+      }
+    }
+
     div.group-info-container {
       display: flex;
       border: 1px solid #333;
@@ -40,7 +48,8 @@ div.playlist {
 
         .name {
           color: white;
-          font-weight: 600;
+          font-weight: 200;
+          font-size: 14px;
         }
       }
 
@@ -48,21 +57,22 @@ div.playlist {
         display: none;
 
         &.visible {
-          max-height: 60px;
+          max-height: 80px;
           float: left;
           display: block;
         }
       }
 
       .attributes {
+        margin-top: 2px;
         color: #888;
         span {
           font-weight: 200;
 
           &.bull {
-            margin-left: 2px;
-            margin-right: 2px;
-            color: #666;
+            margin-left: 4px;
+            margin-right: 4px;
+            color: #444;
           }
         }
       }
