@@ -66,6 +66,12 @@ div.playlist {
       .attributes {
         margin-top: 2px;
         color: #888;
+
+        a:hover {
+          color: #ccc;
+          text-decoration: none;
+        }
+
         span {
           font-weight: 200;
 

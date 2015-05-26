@@ -110,6 +110,11 @@ div.collection {
         font-weight: 200;
         margin-top: 4px;
 
+        a:hover {
+          color: #ccc;
+          text-decoration: none;
+        }
+
         span.bull {
           margin: 0 8px;
           color: #444;

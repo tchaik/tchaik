@@ -21,12 +21,7 @@ body {
 }
 
 a {
-  @include fade-in(color);
-
   cursor: pointer;
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
 @import './top.scss';
