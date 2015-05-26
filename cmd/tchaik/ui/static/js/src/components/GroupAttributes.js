@@ -24,7 +24,8 @@ export default class GroupAttributes extends React.Component {
     );
   }
 
-  _onClickAttribute(attributeValue) {
+  _onClickAttribute(attributeValue, evt) {
+    evt.stopPropagation();
     SearchActions.search(attributeValue);
   }
 }
