@@ -98,7 +98,7 @@ func (c *col) addTrack(n string, k Key, t Track) {
 
 // add adds the track t to the collection, using the name n as the key.
 func (c *col) add(n string, t Track) {
-	k := Key(fmt.Sprintf("%x", sha1.Sum([]byte(n)))[:5])
+	k := Key(fmt.Sprintf("%x", sha1.Sum([]byte(n)))[:6])
 	c.addTrack(n, k, t)
 }
 
