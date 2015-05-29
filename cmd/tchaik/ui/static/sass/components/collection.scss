@@ -187,6 +187,29 @@ div.collection {
             }
           }
 
+          span.expanded {
+            display: block;
+
+            margin-left: 35px;
+
+            div.attributes {
+              color: #888;
+              font-size: 11px;
+              font-weight: 200;
+              margin-top: 4px;
+
+              a:hover {
+                color: #ccc;
+                text-decoration: none;
+              }
+
+              span.bull {
+                margin: 0 8px;
+                color: #444;
+              }
+            }
+          }
+
           &.current {
             span.name, span.duration {
               color: $light-blue;

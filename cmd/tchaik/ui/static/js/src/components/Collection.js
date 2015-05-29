@@ -307,22 +307,20 @@ function isCurrent(trackId) {
   return false;
 }
 
-function getTrackState(trackID) {
-  return {
-    current: isCurrent(trackID),
-    playing: NowPlayingStore.getPlaying(),
-  };
-}
-
 
 class Track extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getTrackState(this.props.data.TrackID);
+    this.state = {
+      current: isCurrent(this.props.data.TrackID),
+      playing: NowPlayingStore.getPlaying(),
+      expanded: false,
+    };
     this._onChange = this._onChange.bind(this);
     this._onClick = this._onClick.bind(this);
     this._onPlayNow = this._onPlayNow.bind(this);
+    this._onMore = this._onMore.bind(this);
     this._onQueue = this._onQueue.bind(this);
   }
 
@@ -340,20 +338,44 @@ class Track extends React.Component {
       "current": this.state.current,
       "playing": this.state.current && this.state.playing,
     };
+
+    var expanded = null;
+    if (this.state.expanded) {
+      var data = this.props.data;
+      var attributeArr = [];
+      var fields = ["AlbumArtist", "Artist", "Composer", "Year"];
+      fields.forEach(function(f) {
+        if (data[f]) {
+          attributeArr.push(data[f]);
+        }
+      });
+
+      var attributes = null;
+      if (attributeArr.length > 0) {
+        attributes = <GroupAttributes list={attributeArr} />;
+      }
+      expanded = <span className="expanded">{attributes}</span>;
+    }
+
     return (
       <li className={classNames(liClasses)} onClick={this._onClick}>
         <span id={`track_${this.props.data.TrackID}`} className="name">{this.props.data.Name}</span>
         <TimeFormatter className="duration" time={durationSecs} />
         <span className="controls">
+          <Icon icon="option-vertical" title="More" onClick={this._onMore} />
           <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="list" title="Queue" onClick={this._onQueue} />
         </span>
+        {expanded}
       </li>
     );
   }
 
   _onChange() {
-    this.setState(getTrackState(this.props.data.TrackID));
+    this.setState({
+      current: isCurrent(this.props.data.TrackID),
+      playing: NowPlayingStore.getPlaying(),
+    });
   }
 
   _onClick(e) {
@@ -369,6 +391,13 @@ class Track extends React.Component {
   _onQueue(e) {
     e.stopPropagation();
     CollectionActions.appendToPlaylist(this.props.path.concat([this.props.Key]));
+  }
+
+  _onMore(e) {
+    e.stopPropagation();
+    this.setState({
+      expanded: !this.state.expanded,
+    });
   }
 }
 
