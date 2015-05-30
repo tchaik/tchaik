@@ -114,8 +114,9 @@ export class Group extends React.Component {
     }
 
     var albumArtist = null;
-    if (this.props.depth === 1 && this.props.item.AlbumArtist !== "") {
-      albumArtist = <span className="group-album-artist">{this.props.item.AlbumArtist}</span>;
+    if (this.props.depth === 1 && (this.props.item.AlbumArtist || this.props.item.Artist)) {
+      var artist = this.props.item.AlbumArtist || this.props.item.Artist;
+      albumArtist = <span className="group-album-artist">{artist}</span>;
     }
 
     if (itemName !== "") {

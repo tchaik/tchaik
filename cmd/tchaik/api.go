@@ -76,10 +76,12 @@ func buildCollection(h group, c index.Collection) group {
 	for _, k := range c.Keys() {
 		g := c.Get(k)
 		g = index.FirstTrackAttr(index.StringAttr("AlbumArtist"), g)
+		g = index.CommonGroupAttr([]index.Attr{index.StringAttr("Artist")}, g)
 		h.Groups = append(h.Groups, group{
 			Name:        g.Name(),
 			Key:         k,
 			AlbumArtist: g.Field("AlbumArtist"),
+			Artist:      g.Field("Artist"),
 		})
 	}
 	return h
