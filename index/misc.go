@@ -81,8 +81,9 @@ func sumGroupIntAttr(field string, g Group) Group {
 	return ng
 }
 
-// CommonGroupAttr recurses through the Group and assigns fields on SubCollects
-// which are common amoungst their children (Groups or Tracks).  If there is no
+// CommonGroupAttr recurses through the Group and assigns fields on all sub groups
+// which are common amoungst their children (Groups or Tracks).  If there is no common
+// field, then the associated Field value is not set.
 func CommonGroupAttr(attrs []Attr, g Group) Group {
 	if c, ok := g.(Collection); ok {
 		return commonCollectionTrackAttr(attrs, c)
