@@ -33,7 +33,7 @@ export default class Top extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="top-container">
         <MenuToggleButton />
         <div className="search">
           <Icon icon="search" />

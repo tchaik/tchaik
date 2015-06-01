@@ -9,6 +9,11 @@ div#top {
   z-index: 1;
   height: $top-row-height;
 
+  div.top-container {
+    width: 100%;
+    display: flex;
+  }
+
   .menu-button {
     position: absolute;
     top: 15px;
@@ -27,9 +32,10 @@ div#top {
   }
 
   .search {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    flex: 1;
 
     span.glyphicon-search {
       color: white;
@@ -39,17 +45,18 @@ div#top {
     }
 
     input {
+      max-width: 800px;
       outline: none;
       background-color: $search-box-background;
       border: 0px;
-      border-radius: 5px;
+      border-radius: 3px;
       color: #eee;
       font-size: 15px;
       font-weight: 200;
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       padding: 10px 10px 10px 48px;
-      margin: 5px;
-      width: 600px;
+      margin: 6px 5px 5px;
+      width: 40%;
 
       @include fade-in(background-color);
       @include fade-in(border-color);
