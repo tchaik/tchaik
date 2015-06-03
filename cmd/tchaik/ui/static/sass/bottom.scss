@@ -173,10 +173,10 @@ div#bottom {
       }
 
       div.attributes {
-        font-size: 12px;
+        font-size: 13px;
         color: #999;
         line-height: 16px;
-        padding: 2px 4px;
+        padding: 4px;
         white-space: nowrap;
 
         a:hover {
@@ -188,7 +188,7 @@ div#bottom {
           font-weight: 200;
 
           &.bull {
-            margin: 0 4px;
+            margin: 0 8px;
             color: #666;
           }
         }
