@@ -76,11 +76,6 @@ export class Group extends React.Component {
         );
       }
 
-      // NB: To avoid duplications, ignore AlbumArtist if we have a common Artist
-      if (common.AlbumArtist && common.Artist) {
-        delete common.AlbumArtist;
-      }
-
       var attributeArr = [];
       var fields = ["AlbumArtist", "Artist", "Composer", "Year"];
       fields.forEach(function(f) {

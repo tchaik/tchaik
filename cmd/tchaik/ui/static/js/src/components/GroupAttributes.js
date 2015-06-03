@@ -4,10 +4,24 @@ import React from "react/addons";
 
 import SearchActions from "../actions/SearchActions.js";
 
+function dedupArray(arr) {
+  var t = {};
+  var result = [];
+  arr.forEach(function(item) {
+    if (t.hasOwnProperty(item)) {
+      return;
+    }
+    t[item] = true;
+    result.push(item);
+  });
+  return result;
+}
+
 export default class GroupAttributes extends React.Component {
   render() {
     var _this = this;
-    var list = this.props.list.map(function(attr) {
+    var list = dedupArray(this.props.list);
+    list = list.map(function(attr) {
       return [
         <a onClick={_this._onClickAttribute.bind(_this, attr)}>{attr}</a>,
         <span className="bull">&bull;</span>,
