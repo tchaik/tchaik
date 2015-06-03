@@ -8,6 +8,7 @@ import {Group as Group} from "./Collection.js";
 import CollectionStore from "../stores/CollectionStore.js";
 import CollectionActions from "../actions/CollectionActions.js";
 
+import Icon from "./Icon.js";
 
 export class Search extends React.Component {
   render() {
@@ -48,7 +49,7 @@ class Results extends React.Component {
     if (list.length === 0) {
       return (
         <div className="collection">
-          <div className="no-results">No results found</div>
+          <div className="no-results"><Icon icon="headphones" />No results found</div>
         </div>
       );
     }

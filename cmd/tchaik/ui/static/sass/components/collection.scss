@@ -6,6 +6,20 @@ div.collection {
   max-width: 1200px;
   margin: 0 auto;
 
+  div.no-results {
+    background-color: #222;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: 300;
+    color: #fff;
+    text-align: center;
+
+    span.glyphicon-headphones {
+      font-size: 24px;
+      margin-right: 20px;
+    }
+  }
+
   div.group {
     display: block;
     margin: 2px 0;;
