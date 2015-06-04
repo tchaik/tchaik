@@ -22,6 +22,8 @@ div.playlist {
     div.group-info-container {
       display: flex;
       border: 1px solid #333;
+      border-left: 0;
+      border-right: 0;
 
       div.group-info {
         display: flex;
