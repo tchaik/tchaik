@@ -1,15 +1,15 @@
 "use strict";
 
-var AppDispatcher = require("../dispatcher/AppDispatcher");
-var EventEmitter = require("eventemitter3").EventEmitter;
-var assign = require("object-assign");
+import AppDispatcher from "../dispatcher/AppDispatcher";
+import {EventEmitter} from "eventemitter3";
+import assign from "object-assign";
 
-var CollectionStore = require("./CollectionStore.js");
+import CollectionStore from "./CollectionStore.js";
 
-var CollectionConstants = require("../constants/CollectionConstants.js");
-var PlaylistConstants = require("../constants/PlaylistConstants.js");
-var NowPlayingConstants = require("../constants/NowPlayingConstants.js");
-var ControlConstants = require("../constants/ControlConstants.js");
+import CollectionConstants from "../constants/CollectionConstants.js";
+import PlaylistConstants from "../constants/PlaylistConstants.js";
+import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import ControlConstants from "../constants/ControlConstants.js";
 
 var CHANGE_EVENT = "change";
 
@@ -450,4 +450,4 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-module.exports = PlaylistStore;
+export default PlaylistStore;

@@ -1,9 +1,11 @@
-var rewire = require("rewire");
+let rewire = require("rewire");
+
+import CollectionConstants from "../constants/CollectionConstants.js";
+import CollectionStoreMock from "./CollectionStore-mock.js";
 
 describe("PlaylistStore", () => {
   let PlaylistStore;
-  //let callback;
-  let registerSpy;
+  let dispatcherCallback, registerSpy, collectionStoreMock, collection;
 
   beforeEach(() => {
     // we have to clear localstorage, otherwise we have leaks from other tests
@@ -15,12 +17,58 @@ describe("PlaylistStore", () => {
     // only way we can mock the register function is by applying the spy on the
     // raw module using require rather than rewire.
     var AppDispatcher = require("../dispatcher/AppDispatcher.js");
-    registerSpy = sinon.spy(function() {
-      //callback = cb;
+    registerSpy = sinon.spy(function(callback) {
+      dispatcherCallback = callback;
     });
     AppDispatcher.register = registerSpy;
 
     PlaylistStore = rewire("./PlaylistStore.js");
+
+    collectionStoreMock = new CollectionStoreMock();
+    PlaylistStore.__Rewire__("CollectionStore", collectionStoreMock);
+
+
+    collection = {
+      "Root>>19sea9": {
+        AlbumArtist: "Camo & Krooked",
+        Key: "19sea9",
+        ListStyle: "",
+        Name: "Above & Beyond",
+        TotalTime: 0,
+        TrackID: "5557b3238ec1cdbd69db5e049954488446cce05e",
+        Tracks: [
+          {
+            AlbumArtist: "Camo & Krooked",
+            Artist: "Camo & Krooked",
+            DiscNumber: 1,
+            GroupName: "Above & Beyond",
+            Key: "0",
+            Name: "You Cry",
+            TrackID: "5557b3238ec1cdbd69db5e049954488446cce05e",
+            Year: 2010,
+          },
+          {
+            AlbumArtist: "Camo & Krooked",
+            Artist: "Camo & Krooked",
+            DiscNumber: 1,
+            GroupName: "Above & Beyond",
+            Key: "1",
+            Name: "Walk on Air",
+            TrackID: "ffa00899e388b81cd3f2a0a971743aeffa447fe6",
+            Year: 2010,
+          },
+        ],
+      },
+    };
+    sinon.stub(collectionStoreMock, "getCollection", (path) => {
+      return collection[path.join(">>")];
+    });
+    sinon.stub(collectionStoreMock, "pathToKey", (path) => {
+      if (path) {
+        return path.join(">>");
+      }
+      return null;
+    });
   });
 
   describe("on initialisation", () => {
@@ -78,5 +126,35 @@ describe("PlaylistStore", () => {
   });
 
   describe("function: getItemKeys", () => {
+  });
+
+  describe("Dispatcher callback", () => {
+    describe("View actions", () => {
+      describe("APPEND_TO_PLAYLIST", () => {
+        beforeEach(() => {
+          dispatcherCallback({
+            source: "VIEW_ACTION",
+            action: {
+              actionType: CollectionConstants.APPEND_TO_PLAYLIST,
+              path: ["Root", "19sea9"],
+            },
+          });
+        });
+
+        it("adds the items to the playlist", () => {
+          expect(PlaylistStore.getPlaylist()).to.eql([{
+            data: {
+              "Root>>19sea9": {
+                type: "TYPE_TRACKS",
+                keys: [0, 1],
+              },
+            },
+            paths: [[]],
+            root: ["Root", "19sea9"],
+            tracks: [[0], [1]],
+          }, ]);
+        });
+      });
+    });
   });
 });
