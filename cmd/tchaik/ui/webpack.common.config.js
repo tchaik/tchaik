@@ -1,6 +1,8 @@
 var path = require("path");
 var webpack = require("webpack");
 
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 module.exports = {
   plugins: [
     new webpack.DefinePlugin({
@@ -9,9 +11,10 @@ module.exports = {
         return o;
       }, {}),
     }),
+    new ExtractTextPlugin("styles.css"),
   ],
 
-  devtool: "#inline-source-map",
+  devtool: "inline-source-map",
 
   module: {
     loaders: [
@@ -22,11 +25,13 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: "style!css!sass?outputStyle=expanded&" +
+        loader: ExtractTextPlugin.extract(
+          "css?sourceMap!sass?outputStyle=expanded&sourceMap&" +
           "includePaths[]=" +
             (path.resolve(__dirname, "./bower_components")) + "&" +
           "includePaths[]=" +
-            (path.resolve(__dirname, "./node_modules")),
+            (path.resolve(__dirname, "./node_modules"))
+        ),
       },
     ],
   },
