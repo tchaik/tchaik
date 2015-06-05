@@ -3,7 +3,6 @@
 
 div.collection {
   background-color: #171717;
-  max-width: 1200px;
   margin: 0 auto;
 
   div.no-results {
@@ -21,8 +20,9 @@ div.collection {
   }
 
   div.group {
+    max-width: 80%;
     display: block;
-    margin: 2px 0;;
+    margin: 2px auto;
     padding: 10px;
     color: #ccc;
     background-color: $lighter-background;;
@@ -52,11 +52,20 @@ div.collection {
     }
 
     &>div.collection {
-      div.group.expanded {
-        border: 0;
-        div.header {
-          span.name {
-            font-size: 16px;
+      background-color: inherit;
+
+      div.group {
+        margin-top: 0;
+        margin-bottom: 0;
+
+        &.expanded {
+          border: 0;
+          max-width: inherit;
+
+          div.header {
+            span.name {
+              font-size: 16px;
+            }
           }
         }
       }
@@ -64,8 +73,13 @@ div.collection {
 
     &.expanded {
       @include fade-in(background-color);
+      @include fade-in(margin);
+      @include fade-in(max-width);
       background-color: #222;
       border: 1px solid #333;
+      max-width: 85%;
+      margin-top: 15px;
+      margin-bottom: 15px;
 
       div.header {
         span.name {
