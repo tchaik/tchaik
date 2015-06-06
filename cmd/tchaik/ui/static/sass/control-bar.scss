@@ -8,14 +8,11 @@ div.control-bar {
   justify-content: center;
   left: 0;
   margin-top: -$top-row-height;
-  z-index: 2;
 
   bottom: $bottom-row-height;
   width: $left-column-width;
   background-color: $transparent-bar-light-background;
   color: #999;
-  border-right: 2px solid $transparent-bar-dark-background-highlight;
-
   margin-left: 0px;
   transition: margin-left .25s ease-in-out;
 
@@ -60,12 +57,15 @@ div.control-bar {
 
   .menu-item {
     display: flex;
-    padding: 15px;
+    margin: 10px;
+    padding: 10px;
     background-color: $transparent;
     text-decoration: none;
     cursor: pointer;
 
     &.selected {
+      background-color: rgba(white, 0.05);
+
       span.icon {
         color: lighten($light-blue, 15);
       }
@@ -87,6 +87,8 @@ div.control-bar {
     }
 
     .title {
+      font-size: 14px;
+      font-weight: 900;
       margin-left: 15px;
       color: #ccc;
     }

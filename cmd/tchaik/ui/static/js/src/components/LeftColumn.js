@@ -7,7 +7,6 @@ import classNames from "classnames";
 import Icon from "./Icon.js";
 import StatusView from "./Status.js";
 import PlayerKeyView from "./PlayerKey.js";
-import MenuToggleButton from "./MenuToggleButton.js";
 
 import ContainerActions from "../actions/ContainerActions.js";
 import ContainerConstants from "../constants/ContainerConstants.js";
@@ -107,10 +106,6 @@ export default class LeftColumn extends React.Component {
     return (
       <div className={classes}>
         <div className="top">
-          <div className="menu-item menu-button-item" onClick={this._onClickMenuToggle}>
-            <MenuToggleButton />
-            <span className="title">Tchaik</span>
-          </div>
           <div className="menu-items">
             <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
             <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
