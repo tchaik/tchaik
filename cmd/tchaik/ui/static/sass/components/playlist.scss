@@ -21,9 +21,7 @@ div.playlist {
 
     div.group-info-container {
       display: flex;
-      border: 1px solid #333;
-      border-left: 0;
-      border-right: 0;
+      border-top: 1px solid #333;
 
       div.group-info {
         display: flex;
@@ -118,6 +116,7 @@ div.playlist {
       padding-left: 0px;
       list-style: none;
       counter-reset: li;
+      border-top: 1px solid #232323;
 
       &.upper-roman li::before {
         content: counter(li, upper-roman) ".";
@@ -129,6 +128,10 @@ div.playlist {
         padding: 8px;
         border-bottom: 1px solid #232323;
         color: #bbb;
+
+        &:last-of-type {
+          border-bottom: 0;
+        }
 
         &::before {
           content: counter(li) ".";
