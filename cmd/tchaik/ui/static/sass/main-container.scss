@@ -3,7 +3,6 @@
 div#container {
   overflow: auto;
   flex: 1;
-  background-color: #171717;
 
   @import './components/collection.scss';
   @import './components/covers.scss';
