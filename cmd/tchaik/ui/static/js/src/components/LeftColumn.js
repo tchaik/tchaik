@@ -45,10 +45,10 @@ class ToolbarItem extends React.Component {
       selected: this.state.selected,
     };
     return (
-      <div className={classNames(classes)} onClick={this._onClick}>
+      <li className={classNames(classes)} onClick={this._onClick}>
         <Icon {...other} />
         <span className="title">{this.props.title}</span>
-      </div>
+      </li>
     );
   }
 
@@ -106,14 +106,14 @@ export default class LeftColumn extends React.Component {
     return (
       <div className={classes}>
         <div className="top">
-          <div className="menu-items">
+          <ul className="menu">
             <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
             <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
             <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
             <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
             <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Retro" />
             <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
-          </div>
+          </ul>
           <div className="links">
             <LinkItem title="Github" href="https://github.com/tchaik/tchaik" icon="github" />
           </div>

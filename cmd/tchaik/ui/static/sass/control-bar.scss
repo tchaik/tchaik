@@ -53,10 +53,15 @@ div.control-bar {
     margin-top: 40px;
   }
 
+  ul.menu {
+    padding: 0;
+    margin: 0;
+  }
+
   .menu-item {
     display: flex;
-    margin: 10px;
-    padding: 10px;
+    margin: 0 10px;
+    padding: 15px;
     background-color: $transparent;
     text-decoration: none;
     cursor: pointer;
