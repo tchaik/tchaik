@@ -1,8 +1,7 @@
 "use strict";
 
 import AppDispatcher from "../dispatcher/AppDispatcher";
-import {EventEmitter} from "eventemitter3";
-import assign from "object-assign";
+import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
 import CollectionStore from "./CollectionStore.js";
 
@@ -11,7 +10,6 @@ import PlaylistConstants from "../constants/PlaylistConstants.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 import ControlConstants from "../constants/ControlConstants.js";
 
-var CHANGE_EVENT = "change";
 
 var _playlistItems = null;
 var _playlistCurrent = null;
@@ -326,59 +324,43 @@ function currentTrack() {
   return trackForPath(current.path.slice(0));
 }
 
-var PlaylistStore = assign({}, EventEmitter.prototype, {
+class PlaylistStore extends ChangeEmitter {
 
-  getPlaylist: function() {
+  getPlaylist() {
     return getPlaylistItems();
-  },
+  }
 
-  getCurrent: function() {
+  getCurrent() {
     return getPlaylistCurrent();
-  },
+  }
 
-  getCurrentTrack: function() {
+  getCurrentTrack() {
     return currentTrack();
-  },
+  }
 
-  canPrev: function() {
+  canPrev() {
     return canPrev();
-  },
+  }
 
-  canNext: function() {
+  canNext() {
     return canNext();
-  },
+  }
 
-  getNext: function() {
+  getNext() {
     return getNext();
-  },
+  }
 
-  getItemKeys: function(index, path) {
+  getItemKeys(index, path) {
     var item = getPlaylistItem(index);
     var key = CollectionStore.pathToKey(path);
     return item.data[key];
-  },
+  }
 
-  emitChange: function() {
-    this.emit(CHANGE_EVENT);
-  },
+}
 
-  /**
-   * @param {function} callback
-   */
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
-  },
+var _store = new PlaylistStore();
 
-  /**
-   * @param {function} callback
-   */
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
-  },
-
-});
-
-PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
+_store.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
@@ -387,12 +369,12 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
       switch (action.data) {
         case ControlConstants.NEXT:
           next();
-          PlaylistStore.emitChange();
+          _store.emitChange();
           break;
 
         case ControlConstants.PREV:
           prev();
-          PlaylistStore.emitChange();
+          _store.emitChange();
           break;
       }
     }
@@ -409,24 +391,24 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
         /* falls through */
       case PlaylistConstants.NEXT:
         next();
-        PlaylistStore.emitChange();
+        _store.emitChange();
         break;
 
       case PlaylistConstants.PREV:
         prev();
-        PlaylistStore.emitChange();
+        _store.emitChange();
         break;
 
       case PlaylistConstants.REMOVE:
         remove(action.itemIndex, action.path);
-        PlaylistStore.emitChange();
+        _store.emitChange();
         break;
 
       case CollectionConstants.APPEND_TO_PLAYLIST:
         items = getPlaylistItems();
         items.push(buildPlaylistItem(action.path));
         setPlaylistItems(items);
-        PlaylistStore.emitChange();
+        _store.emitChange();
         break;
 
       case CollectionConstants.PLAY_NOW:
@@ -434,12 +416,12 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
         items.unshift(buildPlaylistItem(action.path));
         setPlaylistItems(items);
         reset();
-        PlaylistStore.emitChange();
+        _store.emitChange();
         break;
 
       case PlaylistConstants.PLAY_ITEM:
         setCurrent(action.itemIndex, action.path);
-        PlaylistStore.emitChange();
+        _store.emitChange();
         break;
 
       default:
@@ -450,4 +432,4 @@ PlaylistStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-export default PlaylistStore;
+export default _store;
