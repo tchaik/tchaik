@@ -128,7 +128,6 @@ export class Group extends React.Component {
 
     var groupClasses = {
       "group": true,
-      "untitled": this.props.item.Name === "",
       "expanded": this.state.expanded,
     };
 
