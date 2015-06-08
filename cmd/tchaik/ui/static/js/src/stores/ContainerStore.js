@@ -24,6 +24,7 @@ function mode() {
 
 var _titles = {};
 _titles[ContainerConstants.ALL] = "Library";
+_titles[ContainerConstants.RECENT] = "Recently Added";
 _titles[ContainerConstants.RETRO] = "";
 
 class ContainerStore extends ChangeEmitter {
