@@ -115,7 +115,7 @@ export default class LeftColumn extends React.Component {
             <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
           </ul>
           <div className="links">
-            <LinkItem title="Github" href="https://github.com/tchaik/tchaik" icon="github" />
+            <LinkItem title="GitHub" href="https://github.com/tchaik/tchaik" icon="github" />
           </div>
         </div>
         <div className="middle"></div>
