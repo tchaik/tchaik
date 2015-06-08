@@ -1,4 +1,4 @@
-import React from "react/addons";
+import React from "react";
 
 import ContainerConstants from "../constants/ContainerConstants.js";
 import ContainerStore from "../stores/ContainerStore.js";

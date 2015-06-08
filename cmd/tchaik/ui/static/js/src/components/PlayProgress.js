@@ -1,4 +1,4 @@
-import React from "react/addons";
+import React from "react";
 
 import NowPlayingStore from "../stores/NowPlayingStore.js";
 import NowPlayingActions from "../actions/NowPlayingActions.js";

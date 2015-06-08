@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react/addons";
+import React from "react";
 
 import PlayerKeyStore from "../stores/PlayerKeyStore.js";
 import PlayerKeyActions from "../actions/PlayerKeyActions.js";

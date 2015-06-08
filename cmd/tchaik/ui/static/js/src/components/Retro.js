@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react/addons";
+import React from "react";
 
 import ArtworkImage from "./ArtworkImage.js";
 import Playlist from "./Playlist.js";

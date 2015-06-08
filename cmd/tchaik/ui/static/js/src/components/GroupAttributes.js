@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react/addons";
+import React from "react";
 
 import SearchActions from "../actions/SearchActions.js";
 

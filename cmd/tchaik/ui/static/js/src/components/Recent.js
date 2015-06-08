@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react/addons";
+import React from "react";
 
 import RecentStore from "../stores/RecentStore.js";
 import RecentActions from "../actions/RecentActions.js";
