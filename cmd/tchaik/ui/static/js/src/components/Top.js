@@ -9,6 +9,7 @@ import SearchStore from "../stores/SearchStore.js";
 import SearchActions from "../actions/SearchActions.js";
 
 import ContainerStore from "../stores/ContainerStore.js";
+import ContainerConstants from "../constants/ContainerConstants.js";
 
 function getTopState() {
   return {
@@ -44,7 +45,7 @@ export default class Top extends React.Component {
         <span className="title">{this.state.title}</span>
         <div className="search">
           <Icon icon="search" />
-          <input type="text" name="search" placeholder="Search Music"
+          <input type="text" name="search" placeholder="Search"
             value={this.state.searchValue}
             onChange={this._onInputChange} onClick={this._onClick} />
         </div>
@@ -53,7 +54,11 @@ export default class Top extends React.Component {
   }
 
   _onChange() {
-    this.setState(getTopState());
+    var newState = getTopState();
+    if (ContainerStore.getMode() !== ContainerConstants.SEARCH) {
+      newState.searchValue = "";
+    }
+    this.setState(newState);
   }
 
   _onInputChange(e) {
