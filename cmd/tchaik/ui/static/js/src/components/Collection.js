@@ -31,7 +31,7 @@ export class Group extends React.Component {
     super(props);
 
     this.state = {
-      expanded: (this.props.depth !== 1) || CollectionStore.isExpanded(this.props.path),
+      expanded: (this.props.depth !== 1),
       common: {},
     };
 
@@ -148,7 +148,6 @@ export class Group extends React.Component {
   _onClickHeader(e) {
     e.stopPropagation();
     this.setState({expanded: !this.state.expanded});
-    CollectionActions.expandPath(this.props.path, !this.state.expanded);
   }
 
   _onClickImage(e) {

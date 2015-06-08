@@ -18,14 +18,6 @@ var CollectionActions = {
     WebsocketAPI.send(CollectionConstants.FETCH, {path: path});
   },
 
-  expandPath: function(path, expand) {
-    AppDispatcher.handleViewAction({
-      actionType: CollectionConstants.EXPAND_PATH,
-      path: path,
-      expand: expand,
-    });
-  },
-
   setCurrentTrack: function(track) {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_CURRENT_TRACK,

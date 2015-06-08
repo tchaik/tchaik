@@ -33,33 +33,6 @@ function addItem(path, item) {
   _collections[pathToKey(path)] = item;
 }
 
-var _expandedPaths = null;
-
-function _getExpandedPaths() {
-  var p = localStorage.getItem("expandedPaths");
-  if (p === null) {
-    return {};
-  }
-  return JSON.parse(p);
-}
-
-function getExpandedPaths() {
-  if (_expandedPaths === null) {
-    _expandedPaths = _getExpandedPaths();
-  }
-  return _expandedPaths;
-}
-
-function expandPath(path, expand) {
-  if (expand) {
-    _expandedPaths[path] = true;
-  } else {
-    delete _expandedPaths[path];
-  }
-  localStorage.setItem("expandedPaths", JSON.stringify(_expandedPaths));
-}
-
-
 class CollectionStore extends ChangeEmitter {
   pathToKey(path) {
     return pathToKey(path);
@@ -68,15 +41,6 @@ class CollectionStore extends ChangeEmitter {
   getCollection(path) {
     var key = pathToKey(path);
     return _collections[key];
-  }
-
-  isExpanded(path) {
-    var ep = getExpandedPaths();
-    var key = pathToKey(path);
-    if (ep[key]) {
-      return true;
-    }
-    return false;
   }
 
   emitChange(path) {
@@ -95,13 +59,6 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
       case CollectionConstants.FETCH:
         addItem(action.data.Path, action.data.Item);
         _store.emitChange(action.data.Path);
-        break;
-    }
-  } else if (source === "VIEW_ACTION") {
-    switch (action.actionType) {
-      case CollectionConstants.EXPAND_PATH:
-        expandPath(pathToKey(action.path), action.expand);
-        _store.emitChange(action.path);
         break;
     }
   }

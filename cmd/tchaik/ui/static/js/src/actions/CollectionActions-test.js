@@ -70,18 +70,6 @@ describe("CollectionActions", () => {
     });
   });
 
-  describe("function: expandPath", () => {
-    it("should call handleViewAction", () => {
-      CollectionActions.expandPath(PATH, true);
-
-      expect(appDispatcherMock.handleViewAction).to.have.been.calledWith({
-        actionType: CollectionConstants.EXPAND_PATH,
-        path: PATH,
-        expand: true,
-      });
-    });
-  });
-
   describe("function: setCurrentTrack", () => {
     it("should call handleViewAction", () => {
       var track = "98789722";
