@@ -107,7 +107,7 @@ export default class LeftColumn extends React.Component {
       <div className={classes}>
         <div className="top">
           <ul className="menu">
-            <ToolbarItem mode={ContainerConstants.ALL} icon="align-justify" title="All" />
+            <ToolbarItem mode={ContainerConstants.ALL} icon="headphones" title="Library" />
             <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
             <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
             <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
