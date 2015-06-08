@@ -76,10 +76,6 @@ export default class Container extends React.Component {
   }
 
   _onSearch() {
-    if (SearchStore.getInput() === "") {
-      this.setState({mode: ContainerConstants.ALL});
-      return;
-    }
     this.setState({mode: ContainerConstants.SEARCH});
   }
 }

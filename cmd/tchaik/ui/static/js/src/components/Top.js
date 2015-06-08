@@ -4,12 +4,16 @@ import React from "react";
 
 import Icon from "./Icon.js";
 import MenuToggleButton from "./MenuToggleButton.js";
+
 import SearchStore from "../stores/SearchStore.js";
 import SearchActions from "../actions/SearchActions.js";
+
+import ContainerStore from "../stores/ContainerStore.js";
 
 function getTopState() {
   return {
     searchValue: SearchStore.getInput(),
+    title: ContainerStore.getTitle(),
   };
 }
 
@@ -25,16 +29,19 @@ export default class Top extends React.Component {
 
   componentDidMount() {
     SearchStore.addChangeListener(this._onChange);
+    ContainerStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
     SearchStore.removeChangeListener(this._onChange);
+    ContainerStore.removeChangeListener(this._onChange);
   }
 
   render() {
     return (
       <div className="top-container">
         <MenuToggleButton />
+        <span className="title">{this.state.title}</span>
         <div className="search">
           <Icon icon="search" />
           <input type="text" name="search" placeholder="Search Music"

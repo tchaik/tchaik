@@ -1,6 +1,9 @@
 import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 import AppDispatcher from "../dispatcher/AppDispatcher.js";
+
 import ContainerConstants from "../constants/ContainerConstants.js";
+import SearchConstants from "../constants/SearchConstants.js";
+
 
 var _defaultMode = ContainerConstants.ALL;
 
@@ -19,9 +22,21 @@ function mode() {
   return m;
 }
 
+var _titles = {};
+_titles[ContainerConstants.ALL] = "Library";
+_titles[ContainerConstants.RETRO] = "";
+
 class ContainerStore extends ChangeEmitter {
   getMode() {
     return mode();
+  }
+
+  getTitle() {
+    var m = mode();
+    if (_titles.hasOwnProperty(m)) {
+      return _titles[m];
+    }
+    return m.toLowerCase();
   }
 }
 
@@ -35,6 +50,11 @@ _containerStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
       case ContainerConstants.MODE:
         setMode(action.mode);
+        _containerStore.emitChange();
+        break;
+
+      case SearchConstants.SEARCH:
+        setMode(ContainerConstants.SEARCH);
         _containerStore.emitChange();
         break;
     }

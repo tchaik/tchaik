@@ -15,9 +15,8 @@ div#top {
   }
 
   .menu-button {
-    position: absolute;
-    top: 15px;
-    left: 15px;
+    margin-top: 15px;
+    margin-left: 15px;
     z-index: 3;
 
     .glyphicon {
@@ -29,6 +28,15 @@ div#top {
         color: white;
       }
     }
+  }
+
+  .title {
+    display: block;
+    margin-top: 15px;
+    margin-left: 15px;
+    font-size: 20px;
+    font-weight: 200;
+    text-transform: capitalize;
   }
 
   .search {
