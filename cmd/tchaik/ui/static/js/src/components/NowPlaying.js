@@ -53,7 +53,7 @@ export default class NowPlaying extends React.Component {
     var attributes = [];
     var attributesElement = null;
 
-    for (var attribute of ["Artist", "GroupName"]) {
+    for (var attribute of ["Artist", "GroupName", "Composer"]) {
       if (track[attribute]) {
         attributes.push(track[attribute]);
       }
