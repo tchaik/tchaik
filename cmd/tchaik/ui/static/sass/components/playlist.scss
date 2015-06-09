@@ -186,7 +186,7 @@ div.playlist {
         }
 
         &:hover {
-          background-color: #333;
+          background-color: #111;
           color: #eee;
 
           &::before {
@@ -203,11 +203,7 @@ div.playlist {
           }
 
           span.duration {
-            color: #999;
-          }
-
-          &::before {
-            background-color: #333;
+            color: #ddd;
           }
         }
 
