@@ -4,9 +4,9 @@ import LeftColumnConstants from "../constants/LeftColumnConstants.js";
 
 
 var LeftColumnActions = {
-  toggleVisibility: function() {
+  toggle: function() {
     AppDispatcher.handleViewAction({
-      actionType: LeftColumnConstants.TOGGLE_VISIBILITY,
+      actionType: LeftColumnConstants.TOGGLE_LEFTCOLUMN,
     });
   },
 };

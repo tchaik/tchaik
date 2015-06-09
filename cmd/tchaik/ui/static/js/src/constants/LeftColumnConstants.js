@@ -1,5 +1,5 @@
 var keyMirror = require("keymirror");
 
 module.exports = keyMirror({
-  TOGGLE_VISIBILITY: null,
+  TOGGLE_LEFTCOLUMN: null,
 });

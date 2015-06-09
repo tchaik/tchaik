@@ -22,6 +22,6 @@ export default class MenuButton extends React.Component {
   _onClick(evt) {
     evt.stopPropagation();
 
-    LeftColumnActions.toggleVisibility();
+    LeftColumnActions.toggle();
   }
 }

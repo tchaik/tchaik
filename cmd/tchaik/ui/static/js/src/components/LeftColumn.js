@@ -12,7 +12,6 @@ import ContainerActions from "../actions/ContainerActions.js";
 import ContainerConstants from "../constants/ContainerConstants.js";
 import ContainerStore from "../stores/ContainerStore.js";
 
-import LeftColumnActions from "../actions/LeftColumnActions.js";
 import LeftColumnStore from "../stores/LeftColumnStore.js";
 
 function getToolBarItemState(mode) {
@@ -88,7 +87,6 @@ export default class LeftColumn extends React.Component {
 
     this.state = leftColumnState();
     this._onChange = this._onChange.bind(this);
-    this._onClickMenuToggle = this._onClickMenuToggle.bind(this);
   }
 
   componentDidMount() {
@@ -129,9 +127,5 @@ export default class LeftColumn extends React.Component {
 
   _onChange() {
     this.setState(leftColumnState());
-  }
-
-  _onClickMenuToggle() {
-    LeftColumnActions.toggleVisibility();
   }
 }

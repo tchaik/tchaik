@@ -13,18 +13,16 @@ function setHidden(h) {
   if (h === null) {
     h = _defaultHidden;
   }
-
-  localStorage.setItem("toolbarHidden", JSON.stringify(h));
+  localStorage.setItem("leftColumnHidden", JSON.stringify(h));
 }
 
 function isHidden() {
-  var h = localStorage.getItem("toolbarHidden");
+  var h = localStorage.getItem("leftColumnHidden");
   if (h === null) {
     h = _defaultHidden;
   } else {
     h = JSON.parse(h);
   }
-
   return h;
 }
 
@@ -35,22 +33,22 @@ class LeftColumnStore extends ChangeEmitter {
   }
 }
 
-var _leftColumnStore = new LeftColumnStore();
+var _store = new LeftColumnStore();
 
-_leftColumnStore.dispatchToken = AppDispatcher.register(function(payload) {
+_store.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {
-      case LeftColumnConstants.TOGGLE_VISIBILITY:
+      case LeftColumnConstants.TOGGLE_LEFTCOLUMN:
         var current = isHidden();
         setHidden(!current);
-        _leftColumnStore.emitChange();
+        _store.emitChange();
         break;
     }
   }
   return true;
 });
 
-export default _leftColumnStore;
+export default _store;
