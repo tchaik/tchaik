@@ -55,8 +55,10 @@ _containerStore.dispatchToken = AppDispatcher.register(function(payload) {
         break;
 
       case SearchConstants.SEARCH:
-        setMode(ContainerConstants.SEARCH);
-        _containerStore.emitChange();
+        if (_containerStore.getMode() !== ContainerConstants.SEARCH) {
+          setMode(ContainerConstants.SEARCH);
+          _containerStore.emitChange();
+        }
         break;
     }
   }
