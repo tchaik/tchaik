@@ -7,6 +7,7 @@ import Icon from "./Icon.js";
 import NowPlayingActions from "../actions/NowPlayingActions.js";
 import NowPlayingStore from "../stores/NowPlayingStore.js";
 import NowPlaying from "./NowPlaying.js";
+
 import PlayProgress from "./PlayProgress.js";
 import Volume from "./Volume.js";
 
@@ -14,6 +15,9 @@ import PlaylistStore from "../stores/PlaylistStore.js";
 import PlaylistActions from "../actions/PlaylistActions.js";
 
 import PlayingStatusStore from "../stores/PlayingStatusStore.js";
+
+import RightColumnStore from "../stores/RightColumnStore.js";
+import RightColumnActions from "../actions/RightColumnActions.js";
 
 
 var BACKWARD_TIMEOUT = 2000;
@@ -28,10 +32,42 @@ export default class Bottom extends React.Component {
           <Controls />
           <div className="right">
             <Volume />
+            <RightColumnToggle />
           </div>
         </div>
       </div>
     );
+  }
+}
+
+class RightColumnToggle extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._onClick = this._onClick.bind(this);
+  }
+
+  componentDidMount() {
+    RightColumnStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    RightColumnStore.removeChangeListener(this._onChange);
+  }
+
+  render() {
+    return (
+      <div className="right-column-toggle">
+        <Icon icon="list-alt" onClick={this._onClick} />
+      </div>
+    );
+  }
+
+  _onChange() {
+  }
+
+  _onClick() {
+    RightColumnActions.toggle();
   }
 }
 
