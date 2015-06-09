@@ -9,6 +9,22 @@ import (
 	"testing"
 )
 
+type testCol struct {
+	name string
+	keys []Key
+	grps map[Key]Group
+	flds map[string]interface{}
+}
+
+func (c testCol) Keys() []Key                    { return c.keys }
+func (c testCol) Name() string                   { return c.name }
+func (c testCol) Get(k Key) Group                { return c.grps[k] }
+func (c testCol) Field(field string) interface{} { return c.flds[field] }
+
+func (c testCol) Tracks() []Track {
+	return collectionTracks(c)
+}
+
 func TestSumGroupIntAttr(t *testing.T) {
 	table := []struct {
 		in    Group
@@ -51,7 +67,7 @@ func TestSumGroupIntAttr(t *testing.T) {
 
 		// One collection, one group, three tracks
 		{
-			in: col{
+			in: testCol{
 				name: "Group Three (collection)",
 				keys: []Key{"Group-Three-One"},
 				grps: map[Key]Group{
@@ -80,7 +96,7 @@ func TestSumGroupIntAttr(t *testing.T) {
 
 		// One collection, three groups, many tracks!
 		{
-			in: col{
+			in: testCol{
 				name: "Root",
 				keys: []Key{"Group-One", "Group-Two", "Group-Three"},
 				grps: map[Key]Group{
@@ -106,7 +122,7 @@ func TestSumGroupIntAttr(t *testing.T) {
 							},
 						},
 					},
-					"Group-Three": col{
+					"Group-Three": testCol{
 						name: "Group Three (collection)",
 						keys: []Key{"Group-Three-One"},
 						grps: map[Key]Group{
@@ -286,7 +302,7 @@ func TestCommonGroupAttr(t *testing.T) {
 
 		// One collection, one group, one track
 		{
-			in: col{
+			in: testCol{
 				name: "Group Three (collection)",
 				keys: []Key{"Group-Three-One"},
 				grps: map[Key]Group{
@@ -307,7 +323,7 @@ func TestCommonGroupAttr(t *testing.T) {
 
 		// One collection, three groups, many tracks!
 		{
-			in: col{
+			in: testCol{
 				name: "Root",
 				keys: []Key{"Group-One", "Group-Two", "Group-Three"},
 				grps: map[Key]Group{
@@ -336,7 +352,7 @@ func TestCommonGroupAttr(t *testing.T) {
 							},
 						},
 					},
-					"Group-Three": col{
+					"Group-Three": testCol{
 						name: "Group Three (collection)",
 						keys: []Key{"Group-Three-One"},
 						grps: map[Key]Group{
@@ -420,7 +436,7 @@ func TestFirstTrackAttr(t *testing.T) {
 
 		// One collection, one group, one track
 		{
-			in: col{
+			in: testCol{
 				name: "Group One (collection)",
 				keys: []Key{"Group-One-One"},
 				grps: map[Key]Group{
@@ -470,7 +486,7 @@ func TestFirstTrackAttr(t *testing.T) {
 
 		// One collection, one group, one track
 		{
-			in: col{
+			in: testCol{
 				name: "Group One (collection)",
 				keys: []Key{"Group-One-One"},
 				grps: map[Key]Group{

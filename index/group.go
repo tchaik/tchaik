@@ -58,14 +58,14 @@ func Collect(t Tracker, c Collector) Collection {
 type col struct {
 	keys []Key
 	name string
-	grps map[Key]Group
+	grps map[Key]group
 	flds map[string]interface{}
 }
 
 func newCol(name string) col {
 	return col{
 		name: name,
-		grps: make(map[Key]Group),
+		grps: make(map[Key]group),
 		flds: make(map[string]interface{}),
 	}
 }
@@ -83,17 +83,18 @@ func (c col) Tracks() []Track {
 // addTrack adds the track t to the collection by adding it to a group with key k.  If no such
 // group exists in the collection, then a new group is created with name n.
 func (c *col) addTrack(n string, k Key, t Track) {
-	if _, ok := c.grps[k]; !ok {
-		ng := group{name: n, tracks: make([]Track, 1)}
-		ng.tracks[0] = t
-		c.grps[k] = ng
-		c.keys = append(c.keys, k)
+	if g, ok := c.grps[k]; ok {
+		g.tracks = append(g.tracks, t)
+		c.grps[k] = g
 		return
 	}
-	ng := c.grps[k]
-	ngg := ng.(group)
-	ngg.tracks = append(ngg.tracks, t)
-	c.grps[k] = ngg
+	g := group{
+		name: n,
+		tracks: make([]Track, 1),
+	}
+	g.tracks[0] = t
+	c.grps[k] = g
+	c.keys = append(c.keys, k)
 }
 
 // add adds the track t to the collection, using the name n as the key.
