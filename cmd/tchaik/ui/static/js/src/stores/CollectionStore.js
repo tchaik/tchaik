@@ -6,7 +6,7 @@ var AppDispatcher = require("../dispatcher/AppDispatcher");
 
 var CollectionConstants = require("../constants/CollectionConstants.js");
 
-var _commonFields = ["Album", "AlbumArtist", "Artist", "Composer", "Year"];
+var _commonFields = ["Album", "AlbumArtist", "Artist", "Composer", "Year", "BitRate", "DiscNumber"];
 
 var _collections = {};
 

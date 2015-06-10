@@ -52,6 +52,8 @@ type group struct {
 	Artist      interface{} `json:",omitempty"`
 	AlbumArtist interface{} `json:",omitempty"`
 	Composer    interface{} `json:",omitempty"`
+	BitRate     interface{} `json:",omitempty"`
+	DiscNumber  interface{} `json:",omitempty"`
 	ListStyle   interface{} `json:",omitempty"`
 	TrackID     interface{} `json:",omitempty"`
 	Year        interface{} `json:",omitempty"`
@@ -96,6 +98,8 @@ func build(g index.Group, key index.Key) group {
 		AlbumArtist: g.Field("AlbumArtist"),
 		Composer:    g.Field("Composer"),
 		Year:        g.Field("Year"),
+		BitRate:     g.Field("BitRate"),
+		DiscNumber:  g.Field("DiscNumber"),
 		ListStyle:   g.Field("ListStyle"),
 		TrackID:     g.Field("TrackID"),
 	}
@@ -120,17 +124,17 @@ func build(g index.Group, key index.Key) group {
 
 	for _, t := range g.Tracks() {
 		h.Tracks = append(h.Tracks, track{
-			TrackID:    t.GetString("TrackID"),
-			Name:       t.GetString("Name"),
-			TotalTime:  t.GetInt("TotalTime"),
-			DiscNumber: t.GetInt("DiscNumber"),
-			BitRate:    t.GetInt("BitRate"),
+			TrackID:   t.GetString("TrackID"),
+			Name:      t.GetString("Name"),
+			TotalTime: t.GetInt("TotalTime"),
 			// Potentially common fields (don't want to re-transmit everything)
 			Album:       getString(t, "Album"),
 			Artist:      getString(t, "Artist"),
 			AlbumArtist: getString(t, "AlbumArtist"),
 			Composer:    getString(t, "Composer"),
 			Year:        getInt(t, "Year"),
+			DiscNumber:  getInt(t, "DiscNumber"),
+			BitRate:     getInt(t, "BitRate"),
 		})
 	}
 	return h
@@ -159,6 +163,8 @@ func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
 		index.StringAttr("AlbumArtist"),
 		index.StringAttr("Composer"),
 		index.IntAttr("Year"),
+		index.IntAttr("BitRate"),
+		index.IntAttr("DiscNumber"),
 	}
 	g = index.CommonGroupAttr(commonFields, g)
 	g = index.RemoveEmptyCollections(g)
