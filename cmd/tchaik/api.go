@@ -75,6 +75,13 @@ type track struct {
 }
 
 func buildCollection(h group, c index.Collection) group {
+	getField := func(f string, g index.Group, c index.Collection) interface{} {
+		if g.Field(f) == c.Field(f) {
+			return nil
+		}
+		return g.Field(f)
+	}
+
 	for _, k := range c.Keys() {
 		g := c.Get(k)
 		g = index.FirstTrackAttr(index.StringAttr("AlbumArtist"), g)
@@ -82,8 +89,8 @@ func buildCollection(h group, c index.Collection) group {
 		h.Groups = append(h.Groups, group{
 			Name:        g.Name(),
 			Key:         k,
-			AlbumArtist: g.Field("AlbumArtist"),
-			Artist:      g.Field("Artist"),
+			AlbumArtist: getField("AlbumArtist", g, c),
+			Artist:      getField("Artist", g, c),
 		})
 	}
 	return h
