@@ -17,12 +17,14 @@
     "gulp-eslint": "^0.12.0",
     "gulp-karma": "0.0.4",
     "gulp-util": "^3.0.4",
+    "karma": "^0.12.36",
     "karma-mocha": "^0.1.10",
     "karma-mocha-reporter": "^1.0.2",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-sinon-chai": "^0.3.0",
     "karma-webpack": "^1.5.1",
     "lodash": "^3.8.0",
+    "mocha": "^2.2.5",
     "phantomjs-polyfill": "0.0.1",
     "react": "^0.13.1",
     "react-hot-loader": "^1.2.7",
@@ -32,12 +34,14 @@
     "sass-loader": "^0.4.2",
     "style-loader": "^0.12.2",
     "url-loader": "^0.5.5",
+    "webpack": "^1.9.10",
     "webpack-dev-server": "^1.8.2"
   },
   "dependencies": {
     "babel-core": "5.5.4",
     "eventemitter3": "^0.1.6",
     "keymirror": "^0.1.0",
+    "node-libs-browser": "^0.5.2",
     "object-assign": "^2.0.0"
   }
 }
