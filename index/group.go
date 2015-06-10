@@ -89,7 +89,7 @@ func (c *col) addTrack(n string, k Key, t Track) {
 		return
 	}
 	g := group{
-		name: n,
+		name:   n,
 		tracks: make([]Track, 1),
 	}
 	g.tracks[0] = t
