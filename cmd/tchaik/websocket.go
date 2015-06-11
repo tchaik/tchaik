@@ -83,13 +83,13 @@ func (c Command) getStringSlice(f string) ([]string, error) {
 
 const (
 	KeyAction         string = "KEY"
-	CtrlAction        string = "CTRL"
-	FetchAction       string = "FETCH"
-	SearchAction      string = "SEARCH"
-	PlayerAction      string = "PLAYER"
-	FilterListAction  string = "FILTER_LIST"
-	FilterPathsAction string = "FILTER_PATHS"
-	FetchRecentAction string = "FETCH_RECENT"
+	CtrlAction               = "CTRL"
+	FetchAction              = "FETCH"
+	SearchAction             = "SEARCH"
+	PlayerAction             = "PLAYER"
+	FilterListAction         = "FILTER_LIST"
+	FilterPathsAction        = "FILTER_PATHS"
+	FetchRecentAction        = "FETCH_RECENT"
 )
 
 func (l LibraryAPI) WebsocketHandler() http.Handler {
