@@ -59,6 +59,7 @@ div#bottom {
       padding-right: 10px;
       display: flex;
       align-items: center;
+      height: $bottom-row-height - $progressbar-height;
 
       span.glyphicon {
         margin: 8px;
