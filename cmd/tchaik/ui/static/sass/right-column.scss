@@ -3,21 +3,16 @@
 
 div#right-column {
   display: flex;
-  color: white;
-  text-align: center;
+  overflow-x: hidden;
 
   div.now-playing {
     width: $right-column-width;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-flow: column;
-    flex-flow: column;
-    position: relative;
     flex: 1;
     transition: margin-right .25s ease-in-out;
 
     &.hidden {
-      margin-right: -$right-column-width;
+      margin-right: -$right-column-width - 2px;
     }
   }
 }
