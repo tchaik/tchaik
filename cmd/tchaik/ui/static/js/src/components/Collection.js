@@ -228,7 +228,7 @@ GroupContent.propTypes = {
 };
 
 
-class GroupList extends React.Component {
+export class GroupList extends React.Component {
   render() {
     var list = this.props.list.map(function(item) {
       return <Group path={this.props.path.concat([item.Key])} depth={this.props.depth + 1} item={item} key={item.Key} />;

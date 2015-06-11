@@ -81,6 +81,28 @@ func (c Command) getStringSlice(f string) ([]string, error) {
 	return result, nil
 }
 
+type sameSearcher struct {
+	index.Searcher
+	paths []index.Path
+	same  bool
+}
+
+func (r *sameSearcher) Search(input string) []index.Path {
+	paths := r.Searcher.Search(input)
+	r.same = false
+	if len(r.paths) == len(paths) {
+		r.same = true
+		for i, path := range r.paths {
+			if path[1] != paths[i][1] {
+				r.same = false
+				break
+			}
+		}
+	}
+	r.paths = paths
+	return paths
+}
+
 const (
 	KeyAction         string = "KEY"
 	CtrlAction               = "CTRL"
@@ -99,6 +121,10 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 		var key string
 		defer l.players.remove(key)
 
+		searcher := &sameSearcher{
+			Searcher: l.searcher,
+		}
+
 		var err error
 		for {
 			var c Command
@@ -115,7 +141,7 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 			case FetchAction:
 				resp, err = handleCollectionList(l, c)
 			case SearchAction:
-				resp, err = handleSearch(l, c)
+				resp, err = handleSearch(l, searcher, c)
 			case FilterListAction:
 				resp, err = handleFilterList(l, c)
 			case FilterPathsAction:
@@ -357,17 +383,23 @@ func handleFetchRecent(l LibraryAPI, c Command) interface{} {
 	}
 }
 
-func handleSearch(l LibraryAPI, c Command) (interface{}, error) {
+func handleSearch(l LibraryAPI, r *sameSearcher, c Command) (interface{}, error) {
 	input, err := c.getString("input")
 	if err != nil {
 		return nil, err
 	}
+
+	paths := r.Search(input)
+	if r.same {
+		return nil, nil
+	}
+	data := build(index.NewPathsCollection(l.collections["Root"], paths), index.Key("Root"))
 
 	return struct {
 		Action string
 		Data   interface{}
 	}{
 		Action: c.Action,
-		Data:   l.searcher.Search(input),
+		Data:   data,
 	}, nil
 }

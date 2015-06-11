@@ -53,6 +53,38 @@ func Collect(t Tracker, c Collector) Collection {
 	return c.Collect(t)
 }
 
+// NewCollection creates a new collection from a source collection `c` which will have the groups
+// represented by the given list of paths.  All the paths are assumed to be unique, an of at least
+// length 2.
+func NewPathsCollection(src Collection, paths []Path) Collection {
+	keys := make([]Key, len(paths))
+	for i, path := range paths {
+		keys[i] = path[1]
+	}
+
+	return pathsCollection{
+		Collection: src,
+		name:       "paths collection",
+		keys:       keys,
+	}
+}
+
+type pathsCollection struct {
+	Collection
+	name string
+	keys []Key
+}
+
+func (c pathsCollection) Keys() []Key  { return c.keys }
+func (c pathsCollection) Name() string { return c.name }
+
+func (c pathsCollection) Field(string) interface{} { return nil }
+
+func (c pathsCollection) Tracks() []Track {
+	// TODO: Do something better here - this method shouldn't really get called
+	return nil
+}
+
 // col is a basic implementation of Collection. It assumes that all Groups have unique names
 // and so uses Group names for the keys.
 type col struct {

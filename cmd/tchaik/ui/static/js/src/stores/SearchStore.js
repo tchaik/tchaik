@@ -10,10 +10,11 @@ import SearchConstants from "../constants/SearchConstants.js";
 var _results = [];
 
 function setResults(results) {
-  if (results === null) {
-    results = [];
+  if (results !== null && results.Groups) {
+    _results = results.Groups;
+    return;
   }
-  _results = results;
+  _results = [];
 }
 
 function setInput(searchTerms) {

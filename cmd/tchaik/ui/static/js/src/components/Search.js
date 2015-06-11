@@ -4,7 +4,7 @@ import React from "react";
 
 import SearchStore from "../stores/SearchStore.js";
 
-import {Group as Group} from "./Collection.js";
+import {GroupList as GroupList} from "./Collection.js";
 import CollectionStore from "../stores/CollectionStore.js";
 import CollectionActions from "../actions/CollectionActions.js";
 
@@ -42,10 +42,7 @@ class Results extends React.Component {
   }
 
   render() {
-    var list = this.state.results.map(function(path) {
-      return <RootGroup path={path} key={CollectionStore.pathToKey(path)} />;
-    });
-
+    var list = this.state.results;
     if (list.length === 0) {
       return (
         <div className="collection">
@@ -53,12 +50,7 @@ class Results extends React.Component {
         </div>
       );
     }
-
-    return (
-      <div className="collection">
-        {list}
-      </div>
-    );
+    return <GroupList path={["Root"]} list={list} depth={0} />;
   }
 
   _onChange() {
