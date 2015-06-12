@@ -20,7 +20,8 @@ div.collection {
   }
 
   div.group {
-    max-width: 85%;
+    max-width: 1200px;
+    width: 85%;
     display: block;
     margin: 2px auto;
     padding: 10px;
@@ -72,10 +73,11 @@ div.collection {
 
     &.expanded {
       @include fade-in(margin);
-      @include fade-in(max-width);
+      @include fade-in(width);
       background-color: #222;
       border: 1px solid #333;
-      max-width: 90%;
+      width: calc(85% + 20px);
+      max-width: 1220px;
       margin-top: 15px;
       margin-bottom: 15px;
       box-shadow: 2px 2px 5px black;
