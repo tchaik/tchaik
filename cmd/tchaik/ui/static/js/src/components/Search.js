@@ -5,8 +5,6 @@ import React from "react";
 import SearchStore from "../stores/SearchStore.js";
 
 import {GroupList as GroupList} from "./Collection.js";
-import CollectionStore from "../stores/CollectionStore.js";
-import CollectionActions from "../actions/CollectionActions.js";
 
 import Icon from "./Icon.js";
 
@@ -57,54 +55,3 @@ class Results extends React.Component {
     this.setState(getResultsState());
   }
 }
-
-
-function getItem(path) {
-  var c = CollectionStore.getCollection(path);
-  if (c === undefined) {
-    return null;
-  }
-  return c;
-}
-
-function getRootGroupState(props) {
-  return {item: getItem(props.path)};
-}
-
-export class RootGroup extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = getRootGroupState(this.props);
-    this._onChange = this._onChange.bind(this);
-  }
-
-  componentDidMount() {
-    CollectionStore.addChangeListener(this._onChange);
-    CollectionActions.fetch(this.props.path);
-  }
-
-  componentWillUnmount() {
-    CollectionStore.removeChangeListener(this._onChange);
-  }
-
-  render() {
-    if (this.state.item === null) {
-      return null;
-    }
-
-    return (
-      <Group item={this.state.item} path={this.props.path} depth={1} />
-    );
-  }
-
-  _onChange(keyPath) {
-    if (CollectionStore.pathToKey(this.props.path) === keyPath) {
-      this.setState(getRootGroupState(this.props));
-    }
-  }
-}
-
-RootGroup.propTypes = {
-  path: React.PropTypes.array.isRequired,
-};

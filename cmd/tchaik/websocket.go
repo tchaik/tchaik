@@ -365,10 +365,10 @@ func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
 		Action: c.Action,
 		Data: struct {
 			Path  []string
-			Paths []index.Path
+			Paths group
 		}{
 			Path:  []string{filterName, name},
-			Paths: item.Paths(),
+			Paths: l.ExpandPaths(item.Paths()),
 		},
 	}, nil
 }
@@ -379,7 +379,7 @@ func handleFetchRecent(l LibraryAPI, c Command) interface{} {
 		Data   interface{}
 	}{
 		Action: c.Action,
-		Data:   l.recent,
+		Data:   l.ExpandPaths(l.recent),
 	}
 }
 
@@ -393,13 +393,12 @@ func handleSearch(l LibraryAPI, r *sameSearcher, c Command) (interface{}, error)
 	if r.same {
 		return nil, nil
 	}
-	data := build(index.NewPathsCollection(l.collections["Root"], paths), index.Key("Root"))
 
 	return struct {
 		Action string
 		Data   interface{}
 	}{
 		Action: c.Action,
-		Data:   data,
+		Data:   l.ExpandPaths(paths),
 	}, nil
 }

@@ -7,25 +7,33 @@ import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 import RecentConstants from "../constants/RecentConstants.js";
 
 
-var _recentPaths = [];
+var _recent = [];
+
+function setRecent(recent) {
+  if (recent !== null && recent.Groups) {
+    _recent = recent.Groups;
+    return;
+  }
+  _recent = [];
+}
 
 class RecentStore extends ChangeEmitter {
   getPaths() {
-    return _recentPaths;
+    return _recent;
   }
 }
 
-var _recentStore = new RecentStore();
+var _store = new RecentStore();
 
-_recentStore.dispatchToken = AppDispatcher.register(function(payload) {
+_store.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
 
   if (source === "SERVER_ACTION") {
     switch (action.actionType) {
       case RecentConstants.FETCH_RECENT:
-        _recentPaths = action.data;
-        _recentStore.emitChange();
+        setRecent(action.data);
+        _store.emitChange();
         break;
     }
   }
@@ -33,4 +41,4 @@ _recentStore.dispatchToken = AppDispatcher.register(function(payload) {
   return true;
 });
 
-export default _recentStore;
+export default _store;

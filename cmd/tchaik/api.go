@@ -208,6 +208,10 @@ func (l *LibraryAPI) FileSystem(fs http.FileSystem) http.FileSystem {
 	return &libraryFileSystem{fs, l.Library}
 }
 
+func (l *LibraryAPI) ExpandPaths(paths []index.Path) group {
+	return build(index.NewPathsCollection(l.collections["Root"], paths), index.Key("Root"))
+}
+
 type players struct {
 	sync.RWMutex
 	m map[string]Player

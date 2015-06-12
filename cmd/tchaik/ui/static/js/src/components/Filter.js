@@ -7,9 +7,7 @@ import classNames from "classnames";
 import FilterStore from "../stores/FilterStore.js";
 import FilterActions from "../actions/FilterActions.js";
 
-import CollectionStore from "../stores/CollectionStore.js";
-
-import {RootGroup as RootGroup} from "./Search.js";
+import {GroupList as GroupList} from "./Collection.js";
 
 
 export default class Filter extends React.Component {
@@ -104,14 +102,7 @@ class Results extends React.Component {
   }
 
   render() {
-    var list = this.state.items.map(function(path) {
-      return <RootGroup path={path} key={CollectionStore.pathToKey(path)} />;
-    });
-    return (
-      <div className="collection" key={this.props.itemName}>
-        {list}
-      </div>
-    );
+    return <GroupList list={this.state.items} depth={0} path={["Root"]} />;
   }
 
   _onChange() {

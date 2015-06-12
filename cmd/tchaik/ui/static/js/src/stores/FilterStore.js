@@ -82,7 +82,7 @@ _filterStore.dispatchToken = AppDispatcher.register(function(payload) {
         break;
       case FilterConstants.FILTER_PATHS:
         var path = action.data.Path; // [name, item]
-        _addFilterPaths(path[0], path[1], action.data.Paths);
+        _addFilterPaths(path[0], path[1], action.data.Paths.Groups);
         _filterStore.emitChange();
         break;
     }

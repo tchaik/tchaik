@@ -5,9 +5,7 @@ import React from "react";
 import RecentStore from "../stores/RecentStore.js";
 import RecentActions from "../actions/RecentActions.js";
 
-import CollectionStore from "../stores/CollectionStore.js";
-
-import {RootGroup as RootGroup} from "./Search.js";
+import {GroupList as GroupList} from "./Collection.js";
 
 
 function getRecentState() {
@@ -34,15 +32,7 @@ export default class Recent extends React.Component {
   }
 
   render() {
-    var list = this.state.items.map(function(path) {
-      return <RootGroup path={path} key={`rootgroup-${CollectionStore.pathToKey(path)}`} />;
-    });
-
-    return (
-      <div className="collection">
-        {list}
-      </div>
-    );
+    return <GroupList path={["Root"]} list={this.state.items} depth={0} />;
   }
 
   _onChange() {
