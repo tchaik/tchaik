@@ -35,8 +35,17 @@ export default class Playlist extends React.Component {
   }
 
   render() {
+    var items = this.state.list;
+    if (items.length === 0) {
+      return (
+        <div className="playlist">
+          <div className="no-items"><Icon icon="list-alt" />Empty playlist</div>
+        </div>
+      );
+    }
+
     var rootCount = {};
-    var items = this.state.list.map(function(item, i) {
+    items = items.map(function(item, i) {
       if (!rootCount[item.root]) {
         rootCount[item.root] = 0;
       }
