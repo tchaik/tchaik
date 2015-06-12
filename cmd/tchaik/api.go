@@ -116,14 +116,14 @@ func build(g index.Group, key index.Key) group {
 	}
 
 	getString := func(t index.Track, field string) string {
-		if g.Field(field) != "" {
+		if g.Field(field) != nil {
 			return ""
 		}
 		return t.GetString(field)
 	}
 
 	getInt := func(t index.Track, field string) int {
-		if g.Field(field) != 0 {
+		if g.Field(field) != nil {
 			return 0
 		}
 		return t.GetInt(field)
