@@ -214,7 +214,6 @@ func (playersHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 
 	default:
 		err = InvalidValueError("invalid action")
-		return
 	}
 
 	if err != nil {
