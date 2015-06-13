@@ -120,72 +120,86 @@ const (
 func (s *server) WebsocketHandler() http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
-
-		var key string
-		defer s.players.remove(key)
-
-		searcher := &sameSearcher{
-			Searcher: s.lib.searcher,
+		h := &websocketHandler{
+			Conn:    ws,
+			players: s.players,
+			lib:     s.lib,
+			searcher: &sameSearcher{
+				Searcher: s.lib.searcher,
+			},
 		}
-
-		var err error
-		for {
-			var c Command
-			err = websocket.JSON.Receive(ws, &c)
-			if err != nil {
-				if err != io.EOF {
-					err = fmt.Errorf("receive: %v", err)
-				}
-				break
-			}
-
-			var resp interface{}
-			switch c.Action {
-			// Player actions
-			case KeyAction:
-				key, err = handleKey(s.players, c, ws, key)
-			case PlayerAction:
-				resp, err = handlePlayer(s.players, c)
-
-			// Library actions
-			case FetchAction:
-				resp, err = handleCollectionList(s.lib, c)
-			case SearchAction:
-				resp, err = handleSearch(s.lib, searcher, c)
-			case FilterListAction:
-				resp, err = handleFilterList(s.lib, c)
-			case FilterPathsAction:
-				resp, err = handleFilterPaths(s.lib, c)
-			case FetchRecentAction:
-				resp = handleFetchRecent(s.lib, c)
-			default:
-				err = fmt.Errorf("unknown action: %v", c.Action)
-			}
-
-			if err != nil {
-				break
-			}
-
-			if resp == nil {
-				continue
-			}
-
-			err = websocket.JSON.Send(ws, resp)
-			if err != nil {
-				if err != io.EOF {
-					err = fmt.Errorf("send: %v", err)
-				}
-				break
-			}
-		}
-
-		if err != nil && err != io.EOF {
-			log.Printf("socket error: %v", err)
-		}
+		h.Handle()
 	})
 }
 
-func handlePlayer(players *players, c Command) (interface{}, error) {
+type websocketHandler struct {
+	*websocket.Conn
+	players  *players
+	lib      Library
+	searcher *sameSearcher
+}
+
+func (h *websocketHandler) Handle() {
+	var key string
+	defer h.players.remove(key)
+
+	var err error
+	for {
+		var c Command
+		err = websocket.JSON.Receive(h.Conn, &c)
+		if err != nil {
+			if err != io.EOF {
+				err = fmt.Errorf("receive: %v", err)
+			}
+			break
+		}
+
+		var resp interface{}
+		switch c.Action {
+		// Player actions
+		case KeyAction:
+			key, err = h.key(c, key)
+		case PlayerAction:
+			resp, err = h.player(c)
+
+		// Library actions
+		case FetchAction:
+			resp, err = h.collectionList(c)
+		case SearchAction:
+			resp, err = h.search(c)
+		case FilterListAction:
+			resp, err = h.filterList(c)
+		case FilterPathsAction:
+			resp, err = h.filterPaths(c)
+		case FetchRecentAction:
+			resp = h.fetchRecent(c)
+		default:
+			err = fmt.Errorf("unknown action: %v", c.Action)
+		}
+
+		if err != nil {
+			break
+		}
+
+		if resp == nil {
+			continue
+		}
+
+		err = websocket.JSON.Send(h.Conn, resp)
+		if err != nil {
+			if err != io.EOF {
+				err = fmt.Errorf("send: %v", err)
+			}
+			break
+		}
+	}
+
+	if err != nil && err != io.EOF {
+		log.Printf("socket error: %v", err)
+	}
+}
+
+func (h *websocketHandler) player(c Command) (interface{}, error) {
 	action, err := c.getString("action")
 	if err != nil {
 		return nil, err
@@ -197,7 +211,7 @@ func handlePlayer(players *players, c Command) (interface{}, error) {
 			Data   interface{}
 		}{
 			Action: c.Action,
-			Data:   players.list(),
+			Data:   h.players.list(),
 		}, nil
 	}
 
@@ -206,7 +220,7 @@ func handlePlayer(players *players, c Command) (interface{}, error) {
 		return nil, err
 	}
 
-	p := players.get(key)
+	p := h.players.get(key)
 	if p == nil {
 		return nil, fmt.Errorf("invalid player key: %v", key)
 	}
@@ -255,20 +269,20 @@ func handlePlayer(players *players, c Command) (interface{}, error) {
 	return nil, err
 }
 
-func handleKey(p *players, c Command, ws *websocket.Conn, key string) (string, error) {
+func (h *websocketHandler) key(c Command, key string) (string, error) {
 	key, err := c.getString("key")
 	if err != nil {
 		return "", err
 	}
 
-	p.remove(key)
+	h.players.remove(key)
 	if key != "" {
-		p.add(ValidatedPlayer(WebsocketPlayer(key, ws)))
+		h.players.add(ValidatedPlayer(WebsocketPlayer(key, h.Conn)))
 	}
 	return key, nil
 }
 
-func handleCollectionList(l Library, c Command) (interface{}, error) {
+func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
 	path, err := c.getStringSlice("path")
 	if err != nil {
 		return nil, err
@@ -278,11 +292,11 @@ func handleCollectionList(l Library, c Command) (interface{}, error) {
 		return nil, fmt.Errorf("invalid path: %v\n", path)
 	}
 
-	root := l.collections[path[0]]
+	root := h.lib.collections[path[0]]
 	if root == nil {
 		return nil, fmt.Errorf("unknown collection: %#v", path[0])
 	}
-	g, err := l.Fetch(root, path[1:])
+	g, err := h.lib.Fetch(root, path[1:])
 	if err != nil {
 		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, path[1:])
 	}
@@ -302,13 +316,13 @@ func handleCollectionList(l Library, c Command) (interface{}, error) {
 	}, nil
 }
 
-func handleFilterList(l Library, c Command) (interface{}, error) {
+func (h *websocketHandler) filterList(c Command) (interface{}, error) {
 	filterName, err := c.getString("name")
 	if err != nil {
 		return nil, err
 	}
 
-	filterItems, ok := l.filters[filterName]
+	filterItems, ok := h.lib.filters[filterName]
 	if !ok {
 		return nil, fmt.Errorf("invalid filter name: %#v", filterName)
 	}
@@ -332,7 +346,7 @@ func handleFilterList(l Library, c Command) (interface{}, error) {
 	}, nil
 }
 
-func handleFilterPaths(l Library, c Command) (interface{}, error) {
+func (h *websocketHandler) filterPaths(c Command) (interface{}, error) {
 	path, err := c.getStringSlice("path")
 	if err != nil {
 		return nil, err
@@ -343,7 +357,7 @@ func handleFilterPaths(l Library, c Command) (interface{}, error) {
 		return nil, err
 	}
 
-	filterItems, ok := l.filters[filterName]
+	filterItems, ok := h.lib.filters[filterName]
 	if !ok {
 		return nil, fmt.Errorf("invalid filter name: %#v", filterName)
 	}
@@ -374,29 +388,29 @@ func handleFilterPaths(l Library, c Command) (interface{}, error) {
 			Paths group
 		}{
 			Path:  []string{filterName, name},
-			Paths: l.ExpandPaths(item.Paths()),
+			Paths: h.lib.ExpandPaths(item.Paths()),
 		},
 	}, nil
 }
 
-func handleFetchRecent(l Library, c Command) interface{} {
+func (h *websocketHandler) fetchRecent(c Command) interface{} {
 	return struct {
 		Action string
 		Data   interface{}
 	}{
 		Action: c.Action,
-		Data:   l.ExpandPaths(l.recent),
+		Data:   h.lib.ExpandPaths(h.lib.recent),
 	}
 }
 
-func handleSearch(l Library, r *sameSearcher, c Command) (interface{}, error) {
+func (h *websocketHandler) search(c Command) (interface{}, error) {
 	input, err := c.getString("input")
 	if err != nil {
 		return nil, err
 	}
 
-	paths := r.Search(input)
-	if r.same {
+	paths := h.searcher.Search(input)
+	if h.searcher.same {
 		return nil, nil
 	}
 
@@ -405,6 +419,6 @@ func handleSearch(l Library, r *sameSearcher, c Command) (interface{}, error) {
 		Data   interface{}
 	}{
 		Action: c.Action,
-		Data:   l.ExpandPaths(paths),
+		Data:   h.lib.ExpandPaths(paths),
 	}, nil
 }
