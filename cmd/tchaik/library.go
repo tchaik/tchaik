@@ -12,7 +12,7 @@ import (
 	"github.com/tchaik/tchaik/index"
 )
 
-type LibraryAPI struct {
+type Library struct {
 	index.Library
 
 	collections map[string]index.Collection
@@ -143,7 +143,7 @@ func build(g index.Group, key index.Key) group {
 	return h
 }
 
-func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
+func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	if len(path) == 0 {
 		return build(c, index.Key("Root")), nil
 	}
@@ -200,10 +200,10 @@ func (l *LibraryAPI) Fetch(c index.Collection, path []string) (group, error) {
 	return build(g, k), nil
 }
 
-func (l *LibraryAPI) FileSystem(fs http.FileSystem) http.FileSystem {
+func (l *Library) FileSystem(fs http.FileSystem) http.FileSystem {
 	return &libraryFileSystem{fs, l.Library}
 }
 
-func (l *LibraryAPI) ExpandPaths(paths []index.Path) group {
+func (l *Library) ExpandPaths(paths []index.Path) group {
 	return build(index.NewPathsCollection(l.collections["Root"], paths), index.Key("Root"))
 }

@@ -27,11 +27,11 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 type server struct {
 	fsServeMux
-	libAPI  LibraryAPI
+	lib     Library
 	players *players
 }
 
-func newServer(l LibraryAPI, mediaFileSystem, artworkFileSystem http.FileSystem) *server {
+func newServer(l Library, mediaFileSystem, artworkFileSystem http.FileSystem) *server {
 	mediaFileSystem = l.FileSystem(mediaFileSystem)
 	artworkFileSystem = l.FileSystem(artworkFileSystem)
 
@@ -42,7 +42,7 @@ func newServer(l LibraryAPI, mediaFileSystem, artworkFileSystem http.FileSystem)
 
 	s := &server{
 		fsServeMux: fsServeMux{httpauth.NewServeMux(c, http.NewServeMux())},
-		libAPI:     l,
+		lib:        l,
 		players:    newPlayers(),
 	}
 

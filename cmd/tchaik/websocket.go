@@ -125,7 +125,7 @@ func (s *server) WebsocketHandler() http.Handler {
 		defer s.players.remove(key)
 
 		searcher := &sameSearcher{
-			Searcher: s.libAPI.searcher,
+			Searcher: s.lib.searcher,
 		}
 
 		var err error
@@ -149,15 +149,15 @@ func (s *server) WebsocketHandler() http.Handler {
 
 			// Library actions
 			case FetchAction:
-				resp, err = handleCollectionList(s.libAPI, c)
+				resp, err = handleCollectionList(s.lib, c)
 			case SearchAction:
-				resp, err = handleSearch(s.libAPI, searcher, c)
+				resp, err = handleSearch(s.lib, searcher, c)
 			case FilterListAction:
-				resp, err = handleFilterList(s.libAPI, c)
+				resp, err = handleFilterList(s.lib, c)
 			case FilterPathsAction:
-				resp, err = handleFilterPaths(s.libAPI, c)
+				resp, err = handleFilterPaths(s.lib, c)
 			case FetchRecentAction:
-				resp = handleFetchRecent(s.libAPI, c)
+				resp = handleFetchRecent(s.lib, c)
 			default:
 				err = fmt.Errorf("unknown action: %v", c.Action)
 			}
@@ -268,7 +268,7 @@ func handleKey(p *players, c Command, ws *websocket.Conn, key string) (string, e
 	return key, nil
 }
 
-func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
+func handleCollectionList(l Library, c Command) (interface{}, error) {
 	path, err := c.getStringSlice("path")
 	if err != nil {
 		return nil, err
@@ -302,7 +302,7 @@ func handleCollectionList(l LibraryAPI, c Command) (interface{}, error) {
 	}, nil
 }
 
-func handleFilterList(l LibraryAPI, c Command) (interface{}, error) {
+func handleFilterList(l Library, c Command) (interface{}, error) {
 	filterName, err := c.getString("name")
 	if err != nil {
 		return nil, err
@@ -332,7 +332,7 @@ func handleFilterList(l LibraryAPI, c Command) (interface{}, error) {
 	}, nil
 }
 
-func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
+func handleFilterPaths(l Library, c Command) (interface{}, error) {
 	path, err := c.getStringSlice("path")
 	if err != nil {
 		return nil, err
@@ -379,7 +379,7 @@ func handleFilterPaths(l LibraryAPI, c Command) (interface{}, error) {
 	}, nil
 }
 
-func handleFetchRecent(l LibraryAPI, c Command) interface{} {
+func handleFetchRecent(l Library, c Command) interface{} {
 	return struct {
 		Action string
 		Data   interface{}
@@ -389,7 +389,7 @@ func handleFetchRecent(l LibraryAPI, c Command) interface{} {
 	}
 }
 
-func handleSearch(l LibraryAPI, r *sameSearcher, c Command) (interface{}, error) {
+func handleSearch(l Library, r *sameSearcher, c Command) (interface{}, error) {
 	input, err := c.getString("input")
 	if err != nil {
 		return nil, err

@@ -169,7 +169,7 @@ func main() {
 		artworkFileSystem = store.LogFileSystem("Artwork", artworkFileSystem)
 	}
 
-	libAPI := LibraryAPI{
+	lib := Library{
 		Library: l,
 		collections: map[string]index.Collection{
 			"Root": root,
@@ -181,7 +181,7 @@ func main() {
 		searcher: searcher,
 	}
 
-	s := newServer(libAPI, mediaFileSystem, artworkFileSystem)
+	s := newServer(lib, mediaFileSystem, artworkFileSystem)
 
 	if certFile != "" && keyFile != "" {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
