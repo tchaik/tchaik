@@ -1,6 +1,6 @@
 let rewire = require("rewire");
 
-import CollectionConstants from "../constants/CollectionConstants.js";
+import PlaylistConstants from "../constants/PlaylistConstants.js";
 import CollectionStoreMock from "./CollectionStore-mock.js";
 
 describe("PlaylistStore", () => {
@@ -135,7 +135,7 @@ describe("PlaylistStore", () => {
           dispatcherCallback({
             source: "VIEW_ACTION",
             action: {
-              actionType: CollectionConstants.APPEND_TO_PLAYLIST,
+              actionType: PlaylistConstants.APPEND_TO_PLAYLIST,
               path: ["Root", "19sea9"],
             },
           });

@@ -5,7 +5,6 @@ import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
 import CollectionStore from "./CollectionStore.js";
 
-import CollectionConstants from "../constants/CollectionConstants.js";
 import PlaylistConstants from "../constants/PlaylistConstants.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 import ControlConstants from "../constants/ControlConstants.js";
@@ -404,14 +403,14 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
         _store.emitChange();
         break;
 
-      case CollectionConstants.APPEND_TO_PLAYLIST:
+      case PlaylistConstants.APPEND_TO_PLAYLIST:
         items = getPlaylistItems();
         items.push(buildPlaylistItem(action.path));
         setPlaylistItems(items);
         _store.emitChange();
         break;
 
-      case CollectionConstants.PLAY_NOW:
+      case PlaylistConstants.PLAY_NOW:
         items = getPlaylistItems();
         items.unshift(buildPlaylistItem(action.path));
         setPlaylistItems(items);

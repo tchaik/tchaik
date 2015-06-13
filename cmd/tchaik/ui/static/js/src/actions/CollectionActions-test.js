@@ -2,6 +2,7 @@ var rewire = require("rewire");
 
 import AppDispatcherMock from "../dispatcher/AppDispatcher-mock.js";
 import CollectionConstants from "../constants/CollectionConstants.js";
+import PlaylistConstants from "../constants/PlaylistConstants.js";
 import CollectionStoreMock from "../stores/CollectionStore-mock.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 import WebsocketAPIMock from "../utils/WebsocketAPI-mock.js";
@@ -88,7 +89,7 @@ describe("CollectionActions", () => {
       CollectionActions.appendToPlaylist(PATH);
 
       expect(appDispatcherMock.handleViewAction).to.have.been.calledWith({
-        actionType: CollectionConstants.APPEND_TO_PLAYLIST,
+        actionType: PlaylistConstants.APPEND_TO_PLAYLIST,
         path: PATH,
       });
     });
@@ -99,7 +100,7 @@ describe("CollectionActions", () => {
       CollectionActions.playNow(PATH);
 
       expect(appDispatcherMock.handleViewAction).to.have.been.calledWith({
-        actionType: CollectionConstants.PLAY_NOW,
+        actionType: PlaylistConstants.PLAY_NOW,
         path: PATH,
       });
     });

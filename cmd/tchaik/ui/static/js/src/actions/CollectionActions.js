@@ -6,6 +6,7 @@ import CollectionStore from "../stores/CollectionStore.js";
 
 import CollectionConstants from "../constants/CollectionConstants.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import PlaylistConstants from "../constants/PlaylistConstants.js";
 
 
 var CollectionActions = {
@@ -28,14 +29,14 @@ var CollectionActions = {
 
   appendToPlaylist: function(path) {
     AppDispatcher.handleViewAction({
-      actionType: CollectionConstants.APPEND_TO_PLAYLIST,
+      actionType: PlaylistConstants.APPEND_TO_PLAYLIST,
       path: path,
     });
   },
 
   playNow: function(path) {
     AppDispatcher.handleViewAction({
-      actionType: CollectionConstants.PLAY_NOW,
+      actionType: PlaylistConstants.PLAY_NOW,
       path: path,
     });
   },
