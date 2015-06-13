@@ -181,17 +181,17 @@ func main() {
 		searcher: searcher,
 	}
 
-	s := newServer(lib, mediaFileSystem, artworkFileSystem)
+	h := NewHandler(lib, mediaFileSystem, artworkFileSystem)
 
 	if certFile != "" && keyFile != "" {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
 		fmt.Println("Quit the server with CTRL-C.")
 
-		log.Fatal(http.ListenAndServeTLS(listenAddr, certFile, keyFile, s))
+		log.Fatal(http.ListenAndServeTLS(listenAddr, certFile, keyFile, h))
 	}
 
 	fmt.Printf("Web server is running on http://%v\n", listenAddr)
 	fmt.Println("Quit the server with CTRL-C.")
 
-	log.Fatal(http.ListenAndServe(listenAddr, s))
+	log.Fatal(http.ListenAndServe(listenAddr, h))
 }

@@ -117,15 +117,15 @@ const (
 	FetchRecentAction = "FETCH_RECENT"
 )
 
-func (s *server) WebsocketHandler() http.Handler {
+func NewWebsocketHandler(l Library, p *players) http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
 		h := &websocketHandler{
 			Conn:    ws,
-			players: s.players,
-			lib:     s.lib,
+			lib:     l,
+			players: p,
 			searcher: &sameSearcher{
-				Searcher: s.lib.searcher,
+				Searcher: l.searcher,
 			},
 		}
 		h.Handle()
