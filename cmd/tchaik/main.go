@@ -23,7 +23,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
 
 	"github.com/dhowden/httpauth"
 
@@ -180,53 +179,19 @@ func main() {
 		},
 		recent:   recent,
 		searcher: searcher,
-		players:  newPlayers(),
 	}
 
-	mediaFileSystem = libAPI.FileSystem(mediaFileSystem)
-	artworkFileSystem = libAPI.FileSystem(artworkFileSystem)
-
-	m := buildMainHandler(libAPI, mediaFileSystem, artworkFileSystem)
+	s := newServer(libAPI, mediaFileSystem, artworkFileSystem)
 
 	if certFile != "" && keyFile != "" {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
 		fmt.Println("Quit the server with CTRL-C.")
 
-		log.Fatal(http.ListenAndServeTLS(listenAddr, certFile, keyFile, m))
+		log.Fatal(http.ListenAndServeTLS(listenAddr, certFile, keyFile, s))
 	}
 
 	fmt.Printf("Web server is running on http://%v\n", listenAddr)
 	fmt.Println("Quit the server with CTRL-C.")
 
-	log.Fatal(http.ListenAndServe(listenAddr, m))
-}
-
-type fsServeMux struct {
-	httpauth.ServeMux
-}
-
-func (fsm *fsServeMux) HandleFileSystem(pattern string, fs http.FileSystem) {
-	fsm.ServeMux.Handle(pattern, http.StripPrefix(pattern, http.FileServer(fs)))
-}
-
-func buildMainHandler(l LibraryAPI, mediaFileSystem, artworkFileSystem http.FileSystem) http.Handler {
-	var c httpauth.Checker = httpauth.None{}
-	if auth {
-		c = creds
-	}
-
-	w := fsServeMux{httpauth.NewServeMux(c, http.NewServeMux())}
-	w.HandleFunc("/", rootHandler)
-	w.HandleFileSystem("/static/", http.Dir(staticDir))
-	w.HandleFileSystem("/track/", mediaFileSystem)
-	w.HandleFileSystem("/artwork/", artworkFileSystem)
-	w.HandleFileSystem("/icon/", store.FaviconFileSystem(artworkFileSystem))
-	w.Handle("/socket", l.WebsocketHandler())
-	w.Handle("/api/players/", http.StripPrefix("/api/players/", playersHandler(l)))
-	return w
-}
-
-func rootHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
-	http.ServeFile(w, r, path.Join(staticDir, "index.html"))
+	log.Fatal(http.ListenAndServe(listenAddr, s))
 }

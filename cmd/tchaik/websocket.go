@@ -104,25 +104,28 @@ func (r *sameSearcher) Search(input string) []index.Path {
 }
 
 const (
-	KeyAction         string = "KEY"
-	CtrlAction               = "CTRL"
-	FetchAction              = "FETCH"
-	SearchAction             = "SEARCH"
-	PlayerAction             = "PLAYER"
-	FilterListAction         = "FILTER_LIST"
-	FilterPathsAction        = "FILTER_PATHS"
-	FetchRecentAction        = "FETCH_RECENT"
+	// Player Actions
+	KeyAction    string = "KEY"
+	PlayerAction        = "PLAYER"
+
+	// Library Actions
+	CtrlAction        = "CTRL"
+	FetchAction       = "FETCH"
+	SearchAction      = "SEARCH"
+	FilterListAction  = "FILTER_LIST"
+	FilterPathsAction = "FILTER_PATHS"
+	FetchRecentAction = "FETCH_RECENT"
 )
 
-func (l LibraryAPI) WebsocketHandler() http.Handler {
+func (s *server) WebsocketHandler() http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
 
 		var key string
-		defer l.players.remove(key)
+		defer s.players.remove(key)
 
 		searcher := &sameSearcher{
-			Searcher: l.searcher,
+			Searcher: s.libAPI.searcher,
 		}
 
 		var err error
@@ -138,20 +141,23 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 
 			var resp interface{}
 			switch c.Action {
-			case FetchAction:
-				resp, err = handleCollectionList(l, c)
-			case SearchAction:
-				resp, err = handleSearch(l, searcher, c)
-			case FilterListAction:
-				resp, err = handleFilterList(l, c)
-			case FilterPathsAction:
-				resp, err = handleFilterPaths(l, c)
+			// Player actions
 			case KeyAction:
-				key, err = handleKey(l, c, ws, key)
+				key, err = handleKey(s.players, c, ws, key)
 			case PlayerAction:
-				resp, err = handlePlayer(l, c)
+				resp, err = handlePlayer(s.players, c)
+
+			// Library actions
+			case FetchAction:
+				resp, err = handleCollectionList(s.libAPI, c)
+			case SearchAction:
+				resp, err = handleSearch(s.libAPI, searcher, c)
+			case FilterListAction:
+				resp, err = handleFilterList(s.libAPI, c)
+			case FilterPathsAction:
+				resp, err = handleFilterPaths(s.libAPI, c)
 			case FetchRecentAction:
-				resp = handleFetchRecent(l, c)
+				resp = handleFetchRecent(s.libAPI, c)
 			default:
 				err = fmt.Errorf("unknown action: %v", c.Action)
 			}
@@ -179,7 +185,7 @@ func (l LibraryAPI) WebsocketHandler() http.Handler {
 	})
 }
 
-func handlePlayer(l LibraryAPI, c Command) (interface{}, error) {
+func handlePlayer(players *players, c Command) (interface{}, error) {
 	action, err := c.getString("action")
 	if err != nil {
 		return nil, err
@@ -191,7 +197,7 @@ func handlePlayer(l LibraryAPI, c Command) (interface{}, error) {
 			Data   interface{}
 		}{
 			Action: c.Action,
-			Data:   l.players.list(),
+			Data:   players.list(),
 		}, nil
 	}
 
@@ -200,7 +206,7 @@ func handlePlayer(l LibraryAPI, c Command) (interface{}, error) {
 		return nil, err
 	}
 
-	p := l.players.get(key)
+	p := players.get(key)
 	if p == nil {
 		return nil, fmt.Errorf("invalid player key: %v", key)
 	}
@@ -249,15 +255,15 @@ func handlePlayer(l LibraryAPI, c Command) (interface{}, error) {
 	return nil, err
 }
 
-func handleKey(l LibraryAPI, c Command, ws *websocket.Conn, key string) (string, error) {
+func handleKey(p *players, c Command, ws *websocket.Conn, key string) (string, error) {
 	key, err := c.getString("key")
 	if err != nil {
 		return "", err
 	}
 
-	l.players.remove(key)
+	p.remove(key)
 	if key != "" {
-		l.players.add(ValidatedPlayer(WebsocketPlayer(key, ws)))
+		p.add(ValidatedPlayer(WebsocketPlayer(key, ws)))
 	}
 	return key, nil
 }
