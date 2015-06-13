@@ -137,11 +137,12 @@ type websocketHandler struct {
 	players  *players
 	lib      Library
 	searcher *sameSearcher
+
+	playerKey string
 }
 
 func (h *websocketHandler) Handle() {
-	var key string
-	defer h.players.remove(key)
+	defer h.players.remove(h.playerKey)
 
 	var err error
 	for {
@@ -158,7 +159,7 @@ func (h *websocketHandler) Handle() {
 		switch c.Action {
 		// Player actions
 		case KeyAction:
-			key, err = h.key(c, key)
+			err = h.key(c)
 		case PlayerAction:
 			resp, err = h.player(c)
 
@@ -269,17 +270,18 @@ func (h *websocketHandler) player(c Command) (interface{}, error) {
 	return nil, err
 }
 
-func (h *websocketHandler) key(c Command, key string) (string, error) {
+func (h *websocketHandler) key(c Command) error {
 	key, err := c.getString("key")
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	h.players.remove(key)
+	h.players.remove(h.playerKey)
 	if key != "" {
 		h.players.add(ValidatedPlayer(WebsocketPlayer(key, h.Conn)))
 	}
-	return key, nil
+	h.playerKey = key
+	return nil
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
