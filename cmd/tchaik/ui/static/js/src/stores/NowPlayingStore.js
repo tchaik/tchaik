@@ -196,6 +196,7 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           PlaylistStore.dispatchToken,
         ]);
         setCurrentTrack(PlaylistStore.getCurrentTrack());
+        setCurrentTrackSource("playlist");
         _nowPlayingStore.emitChange();
         break;
 
