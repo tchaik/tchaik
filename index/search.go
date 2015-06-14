@@ -14,9 +14,17 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// Path separator is a string used to separate path components.
+const PathSeparator string = ":"
+
 // Path is type which represents a position in the index heirarchy.  Each level has a key, and so the path
 // is a slice of strings where each element is the key of some index element (group or track).
 type Path []Key
+
+// String implements Stringer.
+func (p Path) String() string {
+	return p.Encode()
+}
 
 // Encode returns a string representation of the Path.
 func (p Path) Encode() string {
@@ -25,7 +33,7 @@ func (p Path) Encode() string {
 		return s
 	}
 	for _, k := range p[:len(p)-1] {
-		s += string(k) + ">>"
+		s += string(k) + PathSeparator
 	}
 	s += string(p[len(p)-1])
 	return s

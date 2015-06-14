@@ -10,11 +10,13 @@ var _commonFields = ["Album", "AlbumArtist", "Artist", "Composer", "Year", "BitR
 
 var _collections = {};
 
-// pathToKey returns a string representation of the path.  The only requirement is that
-// subpaths should be prefixes.
+// pathSeparator is a string used to separate path components.
+const pathSeparator = ":";
+
+// pathToKey returns a string representation of the path.
 function pathToKey(path) {
   if (path) {
-    return path.join(">>");
+    return path.join(pathSeparator);
   }
   return null;
 }

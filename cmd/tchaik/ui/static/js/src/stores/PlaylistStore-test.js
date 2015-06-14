@@ -29,7 +29,7 @@ describe("PlaylistStore", () => {
 
 
     collection = {
-      "Root>>19sea9": {
+      "Root:19sea9": {
         AlbumArtist: "Camo & Krooked",
         Key: "19sea9",
         ListStyle: "",
@@ -61,11 +61,11 @@ describe("PlaylistStore", () => {
       },
     };
     sinon.stub(collectionStoreMock, "getCollection", (path) => {
-      return collection[path.join(">>")];
+      return collection[path.join(":")];
     });
     sinon.stub(collectionStoreMock, "pathToKey", (path) => {
       if (path) {
-        return path.join(">>");
+        return path.join(":");
       }
       return null;
     });
@@ -144,7 +144,7 @@ describe("PlaylistStore", () => {
         it("adds the items to the playlist", () => {
           expect(PlaylistStore.getPlaylist()).to.eql([{
             data: {
-              "Root>>19sea9": {
+              "Root:19sea9": {
                 type: "TYPE_TRACKS",
                 keys: [0, 1],
               },
