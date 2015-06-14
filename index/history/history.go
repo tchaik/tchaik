@@ -56,7 +56,7 @@ type basicStore struct {
 }
 
 func (s *basicStore) persist() error {
-	f, err := os.Open(s.path)
+	f, err := os.Create(s.path)
 	if err != nil {
 		return err
 	}
