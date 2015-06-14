@@ -4,6 +4,7 @@ package history
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"sync"
 	"time"
@@ -38,7 +39,7 @@ func NewStore(path string) (Store, error) {
 	m := make(map[string][]time.Time)
 	dec := json.NewDecoder(f)
 	err = dec.Decode(&m)
-	if err != nil {
+	if err != nil && err != io.EOF {
 		return nil, err
 	}
 
