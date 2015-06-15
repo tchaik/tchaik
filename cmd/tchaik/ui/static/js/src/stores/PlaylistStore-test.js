@@ -130,12 +130,12 @@ describe("PlaylistStore", () => {
 
   describe("Dispatcher callback", () => {
     describe("View actions", () => {
-      describe("APPEND_TO_PLAYLIST", () => {
+      describe("ADD_ITEM", () => {
         beforeEach(() => {
           dispatcherCallback({
             source: "VIEW_ACTION",
             action: {
-              actionType: PlaylistConstants.APPEND_TO_PLAYLIST,
+              actionType: PlaylistConstants.ADD_ITEM,
               path: ["Root", "19sea9"],
             },
           });

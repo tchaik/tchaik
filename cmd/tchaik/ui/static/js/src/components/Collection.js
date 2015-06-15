@@ -160,7 +160,7 @@ export class Group extends React.Component {
   }
 
   _onQueue(e) {
-    CollectionActions.appendToPlaylist(this.props.path);
+    CollectionActions.addItem(this.props.path);
     e.stopPropagation();
   }
 
@@ -384,7 +384,7 @@ class Track extends React.Component {
 
   _onQueue(e) {
     e.stopPropagation();
-    CollectionActions.appendToPlaylist(this.props.path.concat([this.props.Key]));
+    CollectionActions.addItem(this.props.path.concat([this.props.Key]));
   }
 
   _onMore(e) {

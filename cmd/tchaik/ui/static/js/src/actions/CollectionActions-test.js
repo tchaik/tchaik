@@ -84,12 +84,12 @@ describe("CollectionActions", () => {
     });
   });
 
-  describe("function: appendToPlaylist", () => {
+  describe("function: addItem", () => {
     it("should call handleViewAction", () => {
-      CollectionActions.appendToPlaylist(PATH);
+      CollectionActions.addItem(PATH);
 
       expect(appDispatcherMock.handleViewAction).to.have.been.calledWith({
-        actionType: PlaylistConstants.APPEND_TO_PLAYLIST,
+        actionType: PlaylistConstants.ADD_ITEM,
         path: PATH,
       });
     });

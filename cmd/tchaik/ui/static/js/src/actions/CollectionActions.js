@@ -27,9 +27,9 @@ var CollectionActions = {
     });
   },
 
-  appendToPlaylist: function(path) {
+  addItem: function(path) {
     AppDispatcher.handleViewAction({
-      actionType: PlaylistConstants.APPEND_TO_PLAYLIST,
+      actionType: PlaylistConstants.ADD_ITEM,
       path: path,
     });
   },

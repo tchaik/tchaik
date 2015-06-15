@@ -403,7 +403,7 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
         _store.emitChange();
         break;
 
-      case PlaylistConstants.APPEND_TO_PLAYLIST:
+      case PlaylistConstants.ADD_ITEM:
         items = getPlaylistItems();
         items.push(buildPlaylistItem(action.path));
         setPlaylistItems(items);

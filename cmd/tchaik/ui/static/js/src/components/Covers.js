@@ -92,6 +92,6 @@ class Cover extends React.Component {
 
   _onQueue(e) {
     e.stopPropagation();
-    CollectionActions.appendToPlaylist(this.props.path);
+    CollectionActions.addItem(this.props.path);
   }
 }
