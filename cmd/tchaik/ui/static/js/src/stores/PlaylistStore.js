@@ -135,7 +135,7 @@ function reset() {
 }
 
 function setPlaylistCurrentItem(itemIndex) {
-  var current = getPlaylistCurrent();
+  var current = getPlaylistCurrent() || {};
   var items = getPlaylistItems();
   var item = items[itemIndex];
 
