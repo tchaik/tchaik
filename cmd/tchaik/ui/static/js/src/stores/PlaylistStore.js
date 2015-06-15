@@ -228,10 +228,10 @@ function remove(itemIndex, path) {
     return (p1.length === p2.length) && _isPathPrefix(p1, p2);
   }
 
-  function _removeTracks(tracks, _path) {
+  function _removeTracks(root, tracks, _path) {
     var i = 0;
     while (i < tracks.length) {
-      if (_isPathPrefix(tracks[i], _path)) {
+      if (_isPathPrefix(root.concat(tracks[i]), _path)) {
         tracks.splice(i, 1);
         continue;
       }
@@ -265,7 +265,7 @@ function remove(itemIndex, path) {
       break;
     }
 
-    _removeTracks(item.tracks, path);
+    _removeTracks(item.root, item.tracks, path);
     _removePaths(item.paths, item.data, path);
 
     var last = path.pop();
