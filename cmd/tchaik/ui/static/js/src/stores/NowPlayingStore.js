@@ -191,7 +191,7 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         _nowPlayingStore.emitChange();
         break;
 
-      case PlaylistConstants.PLAY_NOW:
+      case PlaylistConstants.ADD_ITEM_PLAY_NOW:
         AppDispatcher.waitFor([
           PlaylistStore.dispatchToken,
         ]);

@@ -89,7 +89,7 @@ class Cover extends React.Component {
 
   _onPlayNow(e) {
     e.stopPropagation();
-    CollectionActions.playNow(this.props.path);
+    CollectionActions.addItemPlayNow(this.props.path);
   }
 
   _onQueue(e) {

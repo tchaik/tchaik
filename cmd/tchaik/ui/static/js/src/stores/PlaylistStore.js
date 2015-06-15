@@ -410,7 +410,7 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
         _store.emitChange();
         break;
 
-      case PlaylistConstants.PLAY_NOW:
+      case PlaylistConstants.ADD_ITEM_PLAY_NOW:
         items = getPlaylistItems();
         items.unshift(buildPlaylistItem(action.path));
         setPlaylistItems(items);

@@ -6,7 +6,7 @@ module.exports = keyMirror({
   NEXT: null,
   PREV: null,
   ADD_ITEM: null,
-  PLAY_NOW: null,
+  ADD_ITEM_PLAY_NOW: null,
   PLAY_ITEM: null,
 
   TYPE_GROUP: null,

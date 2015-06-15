@@ -73,7 +73,7 @@ _playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
       /* falls through */
     case PlaylistConstants.NEXT:
       /* falls through */
-    case PlaylistConstants.PLAY_NOW:
+    case PlaylistConstants.ADD_ITEM_PLAY_NOW:
       /* falls through */
     case NowPlayingConstants.SET_CURRENT_TRACK:
         AppDispatcher.waitFor([
