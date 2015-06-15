@@ -2,7 +2,6 @@ var rewire = require("rewire");
 
 import AppDispatcherMock from "../dispatcher/AppDispatcher-mock.js";
 import CollectionConstants from "../constants/CollectionConstants.js";
-import PlaylistConstants from "../constants/PlaylistConstants.js";
 import CollectionStoreMock from "../stores/CollectionStore-mock.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 import WebsocketAPIMock from "../utils/WebsocketAPI-mock.js";
@@ -84,14 +83,4 @@ describe("CollectionActions", () => {
     });
   });
 
-  describe("function: addItemPlayNow", () => {
-    it("should call handleViewAction", () => {
-      CollectionActions.addItemPlayNow(PATH);
-
-      expect(appDispatcherMock.handleViewAction).to.have.been.calledWith({
-        actionType: PlaylistConstants.ADD_ITEM_PLAY_NOW,
-        path: PATH,
-      });
-    });
-  });
 });

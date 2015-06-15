@@ -18,6 +18,13 @@ var PlaylistActions = {
     });
   },
 
+  addItemPlayNow: function(path) {
+    AppDispatcher.handleViewAction({
+      actionType: PlaylistConstants.ADD_ITEM_PLAY_NOW,
+      path: path,
+    });
+  },
+
   remove: function(itemIndex, path) {
     AppDispatcher.handleViewAction({
       actionType: PlaylistConstants.REMOVE,

@@ -157,7 +157,7 @@ export class Group extends React.Component {
   }
 
   _onPlayNow(e) {
-    CollectionActions.addItemPlayNow(this.props.path);
+    PlaylistActions.addItemPlayNow(this.props.path);
     e.stopPropagation();
   }
 
@@ -381,7 +381,7 @@ class Track extends React.Component {
 
   _onPlayNow(e) {
     e.stopPropagation();
-    CollectionActions.addItemPlayNow(this.props.path.concat([this.props.Key]));
+    PlaylistActions.addItemPlayNow(this.props.path.concat([this.props.Key]));
   }
 
   _onQueue(e) {

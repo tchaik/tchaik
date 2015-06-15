@@ -6,7 +6,6 @@ import CollectionStore from "../stores/CollectionStore.js";
 
 import CollectionConstants from "../constants/CollectionConstants.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
-import PlaylistConstants from "../constants/PlaylistConstants.js";
 
 
 var CollectionActions = {
@@ -24,13 +23,6 @@ var CollectionActions = {
       actionType: NowPlayingConstants.SET_CURRENT_TRACK,
       track: track,
       source: "collection",
-    });
-  },
-
-  addItemPlayNow: function(path) {
-    AppDispatcher.handleViewAction({
-      actionType: PlaylistConstants.ADD_ITEM_PLAY_NOW,
-      path: path,
     });
   },
 
