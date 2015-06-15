@@ -381,12 +381,12 @@ class Track extends React.Component {
 
   _onPlayNow(e) {
     e.stopPropagation();
-    PlaylistActions.addItemPlayNow(this.props.path.concat([this.props.Key]));
+    PlaylistActions.addItemPlayNow(this.props.path);
   }
 
   _onQueue(e) {
     e.stopPropagation();
-    PlaylistActions.addItem(this.props.path.concat([this.props.Key]));
+    PlaylistActions.addItem(this.props.path);
   }
 
   _onMore(e) {
