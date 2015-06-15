@@ -12,6 +12,8 @@ import ArtworkImage from "./ArtworkImage.js";
 import CollectionStore from "../stores/CollectionStore.js";
 import CollectionActions from "../actions/CollectionActions.js";
 
+import PlaylistActions from "../actions/PlaylistActions.js";
+
 import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 
@@ -160,7 +162,7 @@ export class Group extends React.Component {
   }
 
   _onQueue(e) {
-    CollectionActions.addItem(this.props.path);
+    PlaylistActions.addItem(this.props.path);
     e.stopPropagation();
   }
 
@@ -384,7 +386,7 @@ class Track extends React.Component {
 
   _onQueue(e) {
     e.stopPropagation();
-    CollectionActions.addItem(this.props.path.concat([this.props.Key]));
+    PlaylistActions.addItem(this.props.path.concat([this.props.Key]));
   }
 
   _onMore(e) {

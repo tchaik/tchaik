@@ -84,17 +84,6 @@ describe("CollectionActions", () => {
     });
   });
 
-  describe("function: addItem", () => {
-    it("should call handleViewAction", () => {
-      CollectionActions.addItem(PATH);
-
-      expect(appDispatcherMock.handleViewAction).to.have.been.calledWith({
-        actionType: PlaylistConstants.ADD_ITEM,
-        path: PATH,
-      });
-    });
-  });
-
   describe("function: playNow", () => {
     it("should call handleViewAction", () => {
       CollectionActions.playNow(PATH);

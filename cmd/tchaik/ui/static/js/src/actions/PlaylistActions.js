@@ -11,6 +11,13 @@ var PlaylistActions = {
     WebsocketAPI.send(PlaylistConstants.FETCH, {path: path});
   },
 
+  addItem: function(path) {
+    AppDispatcher.handleViewAction({
+      actionType: PlaylistConstants.ADD_ITEM,
+      path: path,
+    });
+  },
+
   remove: function(itemIndex, path) {
     AppDispatcher.handleViewAction({
       actionType: PlaylistConstants.REMOVE,

@@ -8,6 +8,8 @@ import Icon from "./Icon.js";
 import CollectionStore from "../stores/CollectionStore.js";
 import CollectionActions from "../actions/CollectionActions.js";
 
+import PlaylistActions from "../actions/PlaylistActions.js";
+
 
 export default class Covers extends React.Component {
   constructor(props) {
@@ -92,6 +94,6 @@ class Cover extends React.Component {
 
   _onQueue(e) {
     e.stopPropagation();
-    CollectionActions.addItem(this.props.path);
+    PlaylistActions.addItem(this.props.path);
   }
 }

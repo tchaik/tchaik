@@ -27,13 +27,6 @@ var CollectionActions = {
     });
   },
 
-  addItem: function(path) {
-    AppDispatcher.handleViewAction({
-      actionType: PlaylistConstants.ADD_ITEM,
-      path: path,
-    });
-  },
-
   playNow: function(path) {
     AppDispatcher.handleViewAction({
       actionType: PlaylistConstants.PLAY_NOW,
