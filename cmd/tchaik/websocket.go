@@ -13,6 +13,7 @@ import (
 	"golang.org/x/net/websocket"
 
 	"github.com/tchaik/tchaik/index"
+	"github.com/tchaik/tchaik/index/history"
 )
 
 type Command struct {
@@ -108,6 +109,9 @@ const (
 	KeyAction    string = "KEY"
 	PlayerAction        = "PLAYER"
 
+	// Path Actions
+	RecordPlayAction = "RECORD_PLAY"
+
 	// Library Actions
 	CtrlAction        = "CTRL"
 	FetchAction       = "FETCH"
@@ -117,13 +121,14 @@ const (
 	FetchRecentAction = "FETCH_RECENT"
 )
 
-func NewWebsocketHandler(l Library, p *players) http.Handler {
+func NewWebsocketHandler(l Library, p *players, s history.Store) http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
 		h := &websocketHandler{
 			Conn:    ws,
 			lib:     l,
 			players: p,
+			history: s,
 			searcher: &sameSearcher{
 				Searcher: l.searcher,
 			},
@@ -135,6 +140,7 @@ func NewWebsocketHandler(l Library, p *players) http.Handler {
 type websocketHandler struct {
 	*websocket.Conn
 	players  *players
+	history  history.Store
 	lib      Library
 	searcher *sameSearcher
 
@@ -157,11 +163,16 @@ func (h *websocketHandler) Handle() {
 
 		var resp interface{}
 		switch c.Action {
+
 		// Player actions
 		case KeyAction:
 			err = h.key(c)
 		case PlayerAction:
 			resp, err = h.player(c)
+
+		// Path Actions
+		case RecordPlayAction:
+			err = h.recordPlay(c)
 
 		// Library actions
 		case FetchAction:
@@ -282,6 +293,18 @@ func (h *websocketHandler) key(c Command) error {
 	}
 	h.playerKey = key
 	return nil
+}
+
+func (h *websocketHandler) recordPlay(c Command) error {
+	path, err := c.getStringSlice("path")
+	if err != nil {
+		return err
+	}
+	p := make([]index.Key, len(path))
+	for i, x := range path {
+		p[i] = index.Key(x)
+	}
+	return h.history.Add(p)
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {

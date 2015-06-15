@@ -9,6 +9,7 @@ import (
 	"path"
 
 	"github.com/dhowden/httpauth"
+	"github.com/tchaik/tchaik/index/history"
 	"github.com/tchaik/tchaik/store"
 )
 
@@ -25,7 +26,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, path.Join(staticDir, "index.html"))
 }
 
-func NewHandler(l Library, mediaFileSystem, artworkFileSystem http.FileSystem) http.Handler {
+func NewHandler(l Library, hs history.Store, mediaFileSystem, artworkFileSystem http.FileSystem) http.Handler {
 	var c httpauth.Checker = httpauth.None{}
 	if auth {
 		c = creds
@@ -44,7 +45,7 @@ func NewHandler(l Library, mediaFileSystem, artworkFileSystem http.FileSystem) h
 	h.HandleFileSystem("/icon/", store.FaviconFileSystem(artworkFileSystem))
 
 	p := newPlayers()
-	h.Handle("/socket", NewWebsocketHandler(l, p))
+	h.Handle("/socket", NewWebsocketHandler(l, p, hs))
 	h.Handle("/api/players/", http.StripPrefix("/api/players/", &playersHandler{p}))
 
 	return h

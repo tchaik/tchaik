@@ -27,6 +27,7 @@ import (
 	"github.com/dhowden/httpauth"
 
 	"github.com/tchaik/tchaik/index"
+	"github.com/tchaik/tchaik/index/history"
 	"github.com/tchaik/tchaik/index/itl"
 	"github.com/tchaik/tchaik/index/walk"
 	"github.com/tchaik/tchaik/store"
@@ -35,6 +36,8 @@ import (
 
 var debug bool
 var itlXML, tchLib, walkPath string
+
+var playHistoryPath string
 
 var listenAddr string
 var staticDir string
@@ -52,6 +55,8 @@ func init() {
 	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
 	flag.StringVar(&tchLib, "lib", "", "path to Tchaik library file")
 	flag.StringVar(&walkPath, "path", "", "path to directory containing music files (to build index from)")
+
+	flag.StringVar(&playHistoryPath, "play-history", "history.json", "path to play history file")
 
 	flag.StringVar(&staticDir, "static-dir", "ui/static", "Path to the static asset directory")
 
@@ -158,6 +163,14 @@ func main() {
 	searcher := buildSearchIndex(root)
 	fmt.Println("done.")
 
+	fmt.Printf("Loading play history...")
+	hs, err := history.NewStore(playHistoryPath)
+	if err != nil {
+		fmt.Printf("\nerror loading play history: %v", err)
+		os.Exit(1)
+	}
+	fmt.Println("done.")
+
 	mediaFileSystem, artworkFileSystem, err := cmdflag.Stores()
 	if err != nil {
 		fmt.Println("error setting up stores:", err)
@@ -181,7 +194,7 @@ func main() {
 		searcher: searcher,
 	}
 
-	h := NewHandler(lib, mediaFileSystem, artworkFileSystem)
+	h := NewHandler(lib, hs, mediaFileSystem, artworkFileSystem)
 
 	if certFile != "" && keyFile != "" {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
