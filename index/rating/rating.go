@@ -5,6 +5,7 @@ package rating
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"sync"
 
@@ -50,7 +51,7 @@ func NewStore(path string) (Store, error) {
 	m := make(map[string]Value)
 	dec := json.NewDecoder(f)
 	err = dec.Decode(&m)
-	if err != nil {
+	if err != nil && err != io.EOF {
 		return nil, err
 	}
 
@@ -68,7 +69,7 @@ type basicStore struct {
 }
 
 func (s *basicStore) persist() error {
-	f, err := os.Open(s.path)
+	f, err := os.Create(s.path)
 	if err != nil {
 		return err
 	}
