@@ -79,19 +79,36 @@ function buildPlaylistItem(root) {
     var c = CollectionStore.getCollection(rp);
 
     var x = {};
-    if (c.Groups) {
-      x = {
-        type: PlaylistConstants.TYPE_GROUP,
-        keys: c.Groups.map(getGroupKey(p)),
-      };
-    } else if (c.Tracks) {
+    if (!c) {
+      var index = parseInt(rp.pop());
+      p.pop();
+      root.pop();
+      c = CollectionStore.getCollection(rp);
+      if (!c) {
+        console.warn("Error finding collection for path:", rp);
+        return null;
+      }
       x = {
         type: PlaylistConstants.TYPE_TRACKS,
-        keys: c.Tracks.map(getTrackKey(p)),
+        keys: [index],
       };
+      tracks.push(index);
     } else {
-      console.error("expected c.Groups or c.Tracks to be non-null");
+      if (c.Groups) {
+        x = {
+          type: PlaylistConstants.TYPE_GROUP,
+          keys: c.Groups.map(getGroupKey(p)),
+        };
+      } else if (c.Tracks) {
+        x = {
+          type: PlaylistConstants.TYPE_TRACKS,
+          keys: c.Tracks.map(getTrackKey(p)),
+        };
+      } else {
+        console.error("expected c.Groups or c.Tracks to be non-null");
+      }
     }
+
     paths.push(p);
     data[CollectionStore.pathToKey(rp)] = x;
   }
