@@ -10,4 +10,5 @@ module.exports = keyMirror({
   SET_PLAYING: null,
   ENDED: null,
   SET_ERROR: null,
+  RECORD_PLAY: null,
 });

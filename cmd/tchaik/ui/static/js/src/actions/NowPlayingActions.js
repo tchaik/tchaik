@@ -1,5 +1,8 @@
 import AppDispatcher from "../dispatcher/AppDispatcher";
 
+import WebsocketAPI from "../utils/WebsocketAPI.js";
+
+import NowPlayingStore from "../stores/NowPlayingStore.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 
 
@@ -47,6 +50,8 @@ var NowPlayingActions = {
   },
 
   ended: function(source) {
+    WebsocketAPI.send(NowPlayingConstants.RECORD_PLAY, {path: ["T", NowPlayingStore.getTrack().TrackID]});
+
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.ENDED,
       source: source,
