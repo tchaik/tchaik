@@ -117,6 +117,17 @@ function reset() {
   setPlaylistCurrent(current);
 }
 
+function setPlaylistCurrentItem(itemIndex) {
+  var current = getPlaylistCurrent();
+  var items = getPlaylistItems();
+  var item = items[itemIndex];
+
+  current.item = itemIndex;
+  current.track = 0;
+  current.path = item.root.concat(item.tracks[0]);
+  setPlaylistCurrent(current);
+}
+
 function next() {
   var current = getPlaylistCurrent();
   if (current === null) {
@@ -135,10 +146,7 @@ function next() {
   }
 
   if (current.item + 1 < items.length) {
-    item = items[++current.item];
-    current.track = 0;
-    current.path = item.root.concat(item.tracks[0]);
-    setPlaylistCurrent(current);
+    setPlaylistCurrentItem(current.item + 1);
     return;
   }
 
