@@ -84,21 +84,19 @@ div#bottom {
 
         &.glyphicon-play, &.glyphicon-pause {
           font-size: 28px;
-          line-height: 34px;
-          height: 34px;
-          width: 34px;
+          line-height: 44px;
+          height: 44px;
+          width: 44px;
           margin-right: 4px;
           margin-top: 0px;
-          padding: 8px 3px 8px 13px;
-          border: 2px solid #666;
+          padding: 10px 0 10px 20px;
           border-radius: 50%;
           @include fade-in(border-color, 50ms);
-          background-color: rgba(17, 17, 17, 0.2);
+          background-color: rgba(17, 17, 17, 0.5);
           color: #eee;
 
           &:hover {
             color: lighten($light-blue, 10);
-            border-color: lighten($light-blue, 30);
             cursor: pointer;
           }
         }
