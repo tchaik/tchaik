@@ -95,5 +95,8 @@ func (s *basicStore) Set(p index.Path, v Value) error {
 
 // Get implements Store.
 func (s *basicStore) Get(p index.Path) Value {
+	s.RLock()
+	defer s.RUnlock()
+
 	return s.m[fmt.Sprintf("%v", p)]
 }

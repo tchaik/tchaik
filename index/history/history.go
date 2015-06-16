@@ -84,5 +84,8 @@ func (s *basicStore) Add(p index.Path) error {
 
 // Get implements Store.
 func (s *basicStore) Get(p index.Path) []time.Time {
+	s.RLock()
+	defer s.RUnlock()
+
 	return s.m[fmt.Sprintf("%v", p)]
 }
