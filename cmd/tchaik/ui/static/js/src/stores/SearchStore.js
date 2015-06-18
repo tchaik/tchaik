@@ -4,7 +4,10 @@ import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 
 import AppDispatcher from "../dispatcher/AppDispatcher";
 
+import ContainerStore from "./ContainerStore.js";
+
 import SearchConstants from "../constants/SearchConstants.js";
+import ContainerConstants from "../constants/ContainerConstants.js";
 
 
 var _results = [];
@@ -60,6 +63,13 @@ _searchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
       case SearchConstants.SEARCH:
         setInput(action.input);
         _searchResultStore.emitChange();
+        break;
+
+      case ContainerConstants.MODE:
+        if (ContainerStore.getMode() !== ContainerConstants.SEARCH) {
+          setInput("");
+          _searchResultStore.emitChange();
+        }
         break;
     }
   }

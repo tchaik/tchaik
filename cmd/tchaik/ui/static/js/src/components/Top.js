@@ -9,7 +9,6 @@ import SearchStore from "../stores/SearchStore.js";
 import SearchActions from "../actions/SearchActions.js";
 
 import ContainerStore from "../stores/ContainerStore.js";
-import ContainerConstants from "../constants/ContainerConstants.js";
 
 function getTopState() {
   return {
@@ -54,11 +53,7 @@ export default class Top extends React.Component {
   }
 
   _onChange() {
-    var newState = getTopState();
-    if (ContainerStore.getMode() !== ContainerConstants.SEARCH) {
-      newState.searchValue = "";
-    }
-    this.setState(newState);
+    this.setState(getTopState());
   }
 
   _onInputChange(e) {
