@@ -91,7 +91,7 @@ div#bottom {
           padding: 10px 2px 10px 18px;
           border-radius: 50%;
           @include fade-in(border-color, 50ms);
-          background-color: rgba(17, 17, 17, 0.5);
+          background-color: rgba(128, 128, 128, 0.2);
           color: #eee;
 
           &:hover {
