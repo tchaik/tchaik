@@ -30,6 +30,10 @@ export default class Top extends React.Component {
   componentDidMount() {
     SearchStore.addChangeListener(this._onChange);
     ContainerStore.addChangeListener(this._onChange);
+
+    if (this.state.searchValue !== "") {
+      SearchActions.search(this.state.searchValue);
+    }
   }
 
   componentWillUnmount() {
