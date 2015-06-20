@@ -13,8 +13,7 @@ import (
 	"time"
 )
 
-// Library represents the tchaik music library.  Currently we don't have anything
-// better than wrapping around the iTunes library (oh the shame!)
+// Library is an interface which defines methods for listing tracks.
 type Library interface {
 	// Tracks returns a slice of all the tracks in the library.
 	Tracks() []Track

@@ -12,6 +12,7 @@ import (
 	"github.com/tchaik/tchaik/index"
 )
 
+// Library is a type which encompases the components which form a full library.
 type Library struct {
 	index.Library
 
@@ -27,7 +28,7 @@ type libraryFileSystem struct {
 }
 
 // Open implements http.FileSystem and rewrites TrackID values to their corresponding Location
-// values using the index.Library
+// values using the index.Library.
 func (l *libraryFileSystem) Open(path string) (http.File, error) {
 	t, ok := l.Library.Track(strings.Trim(path, "/")) // TrackIDs arrive with leading slash
 	if !ok {
@@ -143,6 +144,7 @@ func build(g index.Group, key index.Key) group {
 	return h
 }
 
+// Fetch returns a group from the collection with the given path.
 func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	if len(path) == 0 {
 		return build(c, index.Key("Root")), nil
@@ -200,10 +202,14 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	return build(g, k), nil
 }
 
+// FileSystem wraps the http.FileSystem in a library lookup which will translate /TrackID
+// requests into their corresponding track paths.
 func (l *Library) FileSystem(fs http.FileSystem) http.FileSystem {
 	return &libraryFileSystem{fs, l.Library}
 }
 
+// ExpandPaths constructs a collection (group) whose sub-groups are taken from the "Root"
+// collection.
 func (l *Library) ExpandPaths(paths []index.Path) group {
 	return build(index.NewPathsCollection(l.collections["Root"], paths), index.Key("Root"))
 }

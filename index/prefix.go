@@ -92,6 +92,7 @@ func buildItems(words [][]string) []item {
 	return items
 }
 
+// ByPrefix is a type which creates a collection of tracks using a common prefix.
 type ByPrefix string
 
 func (p ByPrefix) Collect(t Tracker) Collection {

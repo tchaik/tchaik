@@ -132,6 +132,8 @@ func enumPrefix(s string) (string, int) {
 	return w, r
 }
 
+// trimEnumPrefix trims enumeration prefixes from field on each of the tracks, returning the
+// updated tracks and the determined prefix style.
 func trimEnumPrefix(field string, tracks []Track) ([]Track, string) {
 	if len(tracks) == 0 {
 		return tracks, ""

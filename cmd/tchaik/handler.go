@@ -17,6 +17,8 @@ type fsServeMux struct {
 	httpauth.ServeMux
 }
 
+// HandleFileSystem is a convenience method for adding an http.FileServer handler to an
+// http.ServeMux.
 func (fsm *fsServeMux) HandleFileSystem(pattern string, fs http.FileSystem) {
 	fsm.ServeMux.Handle(pattern, http.StripPrefix(pattern, http.FileServer(fs)))
 }
@@ -26,6 +28,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, path.Join(staticDir, "index.html"))
 }
 
+// NewHandler creates the root http.Handler.
 func NewHandler(l Library, hs history.Store, mediaFileSystem, artworkFileSystem http.FileSystem) http.Handler {
 	var c httpauth.Checker = httpauth.None{}
 	if auth {

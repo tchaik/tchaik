@@ -19,6 +19,8 @@ type S3Client struct {
 	region aws.Region
 }
 
+// NewS3Client creates a new Client implementation which will proxy filesystem calls to an
+// S3 bucket using the given authentication and region information.
 func NewS3Client(bucket string, auth aws.Auth, region aws.Region) *S3Client {
 	return &S3Client{
 		name:   bucket,

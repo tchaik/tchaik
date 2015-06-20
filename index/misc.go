@@ -260,7 +260,7 @@ func (g Attr) Empty() interface{} {
 	return g.empty
 }
 
-// GetString constructs a Attr which will retrieve the string field from an implementation
+// StringAttr constructs a Attr which will retrieve the string field from an implementation
 // of Attr.
 func StringAttr(field string) Attr {
 	return Attr{
@@ -272,7 +272,7 @@ func StringAttr(field string) Attr {
 	}
 }
 
-// GetInt constructs a Attr which will retrieve the int field from an implementation of Attr.
+// IntAttr constructs a Attr which will retrieve the int field from an implementation of Attr.
 func IntAttr(field string) Attr {
 	return Attr{
 		field: field,
@@ -283,8 +283,8 @@ func IntAttr(field string) Attr {
 	}
 }
 
-// FirstTrackStringAttr wraps the given Group adding a string field
-// `field` with the value taken from the first track.
+// FirstTrackAttr wraps the given Group adding a string field `field` with the value taken
+// from the first track.
 func FirstTrackAttr(attr Attr, g Group) Group {
 	t := firstTrack(g)
 	if t == nil {

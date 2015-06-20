@@ -16,6 +16,7 @@ import (
 	"github.com/tchaik/tchaik/index/history"
 )
 
+// Command is a type which is a container for data received from the websocket.
 type Command struct {
 	Action string
 	Data   map[string]interface{}
@@ -121,6 +122,7 @@ const (
 	FetchRecentAction = "FETCH_RECENT"
 )
 
+// NewWebsocketHandler creates a websocket handler for the library, players and history.
 func NewWebsocketHandler(l Library, p *players, s history.Store) http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()

@@ -113,8 +113,8 @@ func names(c Collection) []string {
 	return n
 }
 
-// SortNames sorts the names of the given collection (in place).  In particular, this assumes that
-// g.Names() returns the actual internal representation of the listing.
+// SorkKeysByGroupName sorts the names of the given collection (in place).  In particular, this
+// assumes that g.Names() returns the actual internal representation of the listing.
 func SortKeysByGroupName(c Collection) {
 	sort.Sort(ParallelSort(sort.StringSlice(names(c)), keySlice(c.Keys())))
 }

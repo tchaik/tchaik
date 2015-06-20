@@ -154,6 +154,7 @@ func (v validatedPlayer) MarshalJSON() ([]byte, error) {
 	return nil, nil
 }
 
+// WebsocketPlayer returns a player which will transmit commands on the websocket connection.
 func WebsocketPlayer(key string, ws *websocket.Conn) Player {
 	return &websocketPlayer{
 		Conn: ws,

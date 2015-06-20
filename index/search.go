@@ -225,11 +225,13 @@ func (es *expandSearcher) Search(s string) []Path {
 	return Union(ps...)
 }
 
-// BuildPrefixExpandSearcher
+// BuildPrefixExpandSearcher constructs a prefix expander which wraps the given Searcher
+// by expanding each word in the search input using the WordIndex.
 func BuildPrefixExpandSearcher(s Searcher, w WordIndex, n int) Searcher {
 	return &expandSearcher{BuildPrefixMultiExpander(w.Words(), n), s}
 }
 
+// BuildWordIndex creates a *wordIndex ()
 func BuildWordIndex(c Collection, fields []string) *wordIndex {
 	wi := &wordIndex{
 		fields: fields,
@@ -258,6 +260,8 @@ func (s *wordSearchIntersect) Search(x string) []Path {
 	return OrderedIntersection(paths...)
 }
 
+// FlatSearcher is a Searcher wrapper which flattens input strings (replaces any accented
+// characters with their un-accented equivalents).
 type FlatSearcher struct {
 	Searcher
 }

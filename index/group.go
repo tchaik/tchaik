@@ -21,7 +21,7 @@ func (k Key) String() string {
 }
 
 // Tracker is an interface which defines the Tracks method which returns a list
-// ot Tracks.
+// of Tracks.
 type Tracker interface {
 	Tracks() []Track
 }
@@ -37,7 +37,7 @@ type Group interface {
 	Field(string) interface{}
 }
 
-// Collection represents a reorganisation of Tracks into a series of Groups.
+// Collection is an interface which represents an ordered series of Groups.
 type Collection interface {
 	Group
 
