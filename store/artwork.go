@@ -72,7 +72,8 @@ func (afs artworkFileSystem) Open(path string) (http.File, error) {
 	}, nil
 }
 
-// FaviconFileSystem wraps another FileSystem assumed to contain only images, which then
+// FaviconFileSystem wraps another FileSystem assumed to contain only images, which are then
+// resized to 48px x 48px and returned in .ico format.
 func FaviconFileSystem(fs http.FileSystem) http.FileSystem {
 	return faviconFileSystem{
 		FileSystem: fs,
@@ -83,6 +84,8 @@ type faviconFileSystem struct {
 	http.FileSystem
 }
 
+// Open the given path (assumed to contain an image) and then resize to 48px x 48px and
+// return in .ico format.
 func (ffs faviconFileSystem) Open(path string) (http.File, error) {
 	f, err := ffs.FileSystem.Open(path)
 	if err != nil {
