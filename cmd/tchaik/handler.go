@@ -9,6 +9,7 @@ import (
 	"path"
 
 	"github.com/dhowden/httpauth"
+
 	"github.com/tchaik/tchaik/index/history"
 	"github.com/tchaik/tchaik/store"
 )
@@ -31,8 +32,10 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 // NewHandler creates the root http.Handler.
 func NewHandler(l Library, hs history.Store, mediaFileSystem, artworkFileSystem http.FileSystem) http.Handler {
 	var c httpauth.Checker = httpauth.None{}
-	if auth {
-		c = creds
+	if authUser != "" {
+		c = httpauth.Creds(map[string]string{
+			authUser: authPassword,
+		})
 	}
 	h := fsServeMux{
 		httpauth.NewServeMux(c, http.NewServeMux()),

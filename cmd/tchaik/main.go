@@ -24,8 +24,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/dhowden/httpauth"
-
 	"github.com/tchaik/tchaik/index"
 	"github.com/tchaik/tchaik/index/history"
 	"github.com/tchaik/tchaik/index/itl"
@@ -43,7 +41,7 @@ var listenAddr string
 var staticDir string
 var certFile, keyFile string
 
-var auth bool
+var authUser, authPassword string
 
 func init() {
 	flag.BoolVar(&debug, "debug", false, "print debugging information")
@@ -60,12 +58,9 @@ func init() {
 
 	flag.StringVar(&staticDir, "static-dir", "ui/static", "Path to the static asset directory")
 
-	flag.BoolVar(&auth, "auth", false, "use basic HTTP authentication")
+	flag.StringVar(&authUser, "auth-user", "", "username to use for HTTP authentication (set to enable)")
+	flag.StringVar(&authPassword, "auth-password", "", "password to use for HTTP authentication")
 }
-
-var creds = httpauth.Creds(map[string]string{
-	"user": "password",
-})
 
 func readLibrary() (index.Library, error) {
 	var count int
