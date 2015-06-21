@@ -51,7 +51,7 @@ func (d *dir) absPath(path string) (string, error) {
 	}
 
 	if !strings.HasPrefix(filepath.Dir(path), d.root) {
-		return "", fmt.Errorf("invalid path (outside '%v'): %v", path, filepath.Dir(path))
+		return "", fmt.Errorf("invalid path (outside '%v'): %v", filepath.Dir(path), path)
 	}
 	return path, nil
 }
