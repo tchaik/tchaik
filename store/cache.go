@@ -50,8 +50,13 @@ func (d *dir) absPath(path string) (string, error) {
 		return "", fmt.Errorf("error finding absolute path for: '%v' ('%v'): %v", path, cleanPath, err)
 	}
 
-	if !strings.HasPrefix(filepath.Dir(path), d.root) {
-		return "", fmt.Errorf("invalid path (outside '%v'): %v", filepath.Dir(path), path)
+	absRoot, err := filepath.Abs(d.root)
+	if err != nil {
+		return "", fmt.Errorf("error finding absolute path for root '%v': %v", d.root, err)
+	}
+
+	if !strings.HasPrefix(filepath.Dir(path), absRoot) {
+		return "", fmt.Errorf("invalid path ('%v' is outside '%v'): %v", filepath.Dir(path), absRoot, path)
 	}
 	return path, nil
 }
