@@ -105,7 +105,7 @@ func (c *CachedFileSystem) error(path string) (err error, exists bool) {
 // cache (with errors passed back on the filesystem error channel).
 func (c *CachedFileSystem) Open(path string) (http.File, error) {
 	if err, ok := c.error(path); ok {
-		return nil, err
+		return nil, fmt.Errorf("cached error: %v", err)
 	}
 
 	f, err := c.cache.Open(path)
@@ -115,7 +115,7 @@ func (c *CachedFileSystem) Open(path string) (http.File, error) {
 
 	f, err = c.src.Open(path)
 	if err != nil {
-		c.setError(path, fmt.Errorf("cached error: %v", err))
+		c.setError(path, err)
 		return nil, err
 	}
 
