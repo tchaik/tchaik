@@ -85,6 +85,9 @@ type CachedFileSystem struct {
 	wg    sync.WaitGroup
 }
 
+// setError sets an error for a path.  This is intended to prevent the src being continually
+// queried after returning a non-temporary failure to retrieve a path.
+// TODO: Better handle temporary errors!
 func (c *CachedFileSystem) setError(path string, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
