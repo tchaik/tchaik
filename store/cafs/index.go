@@ -20,12 +20,12 @@ type Index interface {
 	// if the path exists in the index.
 	Get(path string) (string, bool)
 
-	// AddContent adds the path to the index, and returns the path to the file
+	// Add adds the path to the index, and returns the path to the file
 	// and whether the path/content already exists.
-	Add(path string, hash string) bool
+	Add(path string, sum string) bool
 
-	// Exists returns true of the hash is in the index.
-	Exists(hash string) bool
+	// Exists returns true of the sum is in the index.
+	Exists(sum string) bool
 }
 
 type index struct {
@@ -33,9 +33,9 @@ type index struct {
 
 	files map[string]string // path -> sha1
 	index map[string]bool   // {sha1}
-	root  string
 }
 
+// NewIndex creates a new file system index.
 func NewIndex() *index {
 	return &index{
 		files: make(map[string]string),
@@ -86,27 +86,28 @@ func (i *index) Get(path string) (string, bool) {
 }
 
 // Add implements Index.
-func (i *index) Add(path, hash string) bool {
+func (i *index) Add(path, sum string) bool {
 	i.Lock()
 	defer i.Unlock()
 
-	i.files[path] = hash
-	if !i.index[hash] {
-		i.index[hash] = true
+	i.files[path] = sum
+	if !i.index[sum] {
+		i.index[sum] = true
 		return false
 	}
 	return true
 }
 
 // Exists implements Index.
-func (i *index) Exists(hash string) bool {
+func (i *index) Exists(sum string) bool {
 	i.RLock()
 	defer i.RUnlock()
 
-	return i.index[hash]
+	return i.index[sum]
 }
 
-// Add the path+data to the index.
+// Add the path+data to the index.  Returns the content sum and true if the content
+// already existed in the index, false otherwise.
 func AddContent(idx Index, path string, content []byte) (string, bool) {
 	if x, ok := idx.Get(path); ok {
 		return x, true
