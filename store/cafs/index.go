@@ -172,7 +172,7 @@ func (a *file) Close() error {
 			return fmt.Errorf("error copying data into file '%v': %v", path, err)
 		}
 	}
-	err := a.fs.writeIndex()
+	err := a.fs.persist()
 	if err != nil {
 		return err
 	}
@@ -216,7 +216,7 @@ func (s *FileSystem) initIndex() error {
 	return nil
 }
 
-func (s *FileSystem) writeIndex() error {
+func (s *FileSystem) persist() error {
 	f, err := s.fs.Create(".idx")
 	if err != nil {
 		return fmt.Errorf("error creating index: %v", err)
