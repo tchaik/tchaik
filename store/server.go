@@ -30,6 +30,7 @@ type Response struct {
 // ResponseStatus is an enumeration of possible response statuses.
 type ResponseStatus string
 
+// All defined ResponseStatus values.
 const (
 	StatusOK            ResponseStatus = "OK" // The response succeeded, and the file follows.
 	StatusLabelNotFound                = "LF" // The label is invalid (does not exist).
