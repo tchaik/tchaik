@@ -2,8 +2,6 @@
 @import '../variables.scss';
 
 div.playlist {
-  overflow: auto;
-  text-align: left;
   flex: 1;
   background-color: $darker-background;
 
