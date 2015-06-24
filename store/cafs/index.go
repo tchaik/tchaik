@@ -48,7 +48,7 @@ func (i *index) MarshalJSON() ([]byte, error) {
 	defer i.RUnlock()
 
 	exp := struct {
-		Files map[string]string
+		Files map[string]string `json:"files"`
 	}{
 		Files: i.files,
 	}
