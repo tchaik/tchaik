@@ -22,7 +22,7 @@ type Index interface {
 
 	// Add adds the path to the index, and returns the path to the file
 	// and whether the path/content already exists.
-	Add(path string, sum string) bool
+	Add(path string, sum string) (bool, error)
 
 	// Exists returns true of the sum is in the index.
 	Exists(sum string) bool
@@ -33,14 +33,36 @@ type index struct {
 
 	files map[string]string // path -> sha1
 	index map[string]bool   // {sha1}
+
+	fs store.RWFileSystem
 }
 
 // NewIndex creates a new file system index.
-func NewIndex() *index {
-	return &index{
+func NewIndex(fs store.RWFileSystem) (*index, error) {
+	idx := &index{
 		files: make(map[string]string),
 		index: make(map[string]bool),
+		fs:    fs,
 	}
+
+	f, err := fs.Open("index.json")
+	if err != nil {
+		// FIXME: Improve this
+		// Can't guarantee that we will get an IsNotExist(err) here
+		return idx, nil
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, fmt.Errorf("error reading index: %v", err)
+	}
+	err = json.Unmarshal(b, idx)
+	if err != nil {
+		return nil, fmt.Errorf("error decoding index: %v", err)
+	}
+	fmt.Printf("Index initialised: %d files (%d paths)", len(idx.index), len(idx.files))
+	return idx, nil
 }
 
 func (i *index) MarshalJSON() ([]byte, error) {
@@ -86,14 +108,14 @@ func (i *index) Get(path string) (string, bool) {
 }
 
 // Add implements Index.
-func (i *index) Add(path, sum string) bool {
+func (i *index) Add(path, sum string) (bool, error) {
 	i.Lock()
 	defer i.Unlock()
 
 	i.files[path] = sum
 	old := i.index[sum]
 	i.index[sum] = true
-	return old
+	return old, i.persist()
 }
 
 // Exists implements Index.
@@ -104,14 +126,34 @@ func (i *index) Exists(sum string) bool {
 	return i.index[sum]
 }
 
+func (i *index) persist() error {
+	f, err := i.fs.Create("index.json")
+	if err != nil {
+		return fmt.Errorf("error creating index: %v", err)
+	}
+	defer f.Close()
+
+	b, err := json.Marshal(i)
+	if err != nil {
+		return fmt.Errorf("error encoding index: %v", err)
+	}
+
+	_, err = f.Write(b)
+	if err != nil {
+		return fmt.Errorf("error writing index: %v", err)
+	}
+	return nil
+}
+
 // Add the path+data to the index.  Returns the content sum and true if the content
 // already existed in the index, false otherwise.
-func AddContent(idx Index, path string, content []byte) (string, bool) {
+func AddContent(idx Index, path string, content []byte) (string, bool, error) {
 	if x, ok := idx.Get(path); ok {
-		return x, true
+		return x, true, nil
 	}
 	s := fmt.Sprintf("%x", sha1.Sum(content))
-	return s, idx.Add(path, s)
+	ok, err := idx.Add(path, s)
+	return s, ok, err
 }
 
 // FileSystem is a type which defines a content addressable filesystem.
@@ -136,11 +178,11 @@ func (s *FileSystem) Open(path string) (http.File, error) {
 func (s *FileSystem) Wait() error { return nil }
 
 func (s *FileSystem) open(path string) (http.File, error) {
-	return s.fs.Open(path)
+	return s.fs.Open("content/" + path)
 }
 
 func (s *FileSystem) create(path string) (io.WriteCloser, error) {
-	return s.fs.Create(path)
+	return s.fs.Create("content/" + path)
 }
 
 type file struct {
@@ -158,7 +200,7 @@ func (a *file) Close() error {
 		return fmt.Errorf("file already exists: %v", a.path)
 	}
 
-	path, ok := AddContent(a.fs.idx, a.path, a.Bytes())
+	path, ok, err := AddContent(a.fs.idx, a.path, a.Bytes())
 	if !ok {
 		fmt.Println("creating", path)
 		f, err := a.fs.create(path)
@@ -171,11 +213,7 @@ func (a *file) Close() error {
 			return fmt.Errorf("error copying data into file '%v': %v", path, err)
 		}
 	}
-	err := a.fs.persist()
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 // Create a new file with path. We buffer the contents written to the io.WriteCloser
@@ -193,56 +231,14 @@ func (s *FileSystem) Create(path string) (io.WriteCloser, error) {
 	}, nil
 }
 
-// initIndex initialises the cafs index.
-func (s *FileSystem) initIndex() error {
-	f, err := s.open(".idx")
-	if err != nil {
-		// FIXME: Improve this
-		// Can't guarantee that we will get an IsNotExist(err) here
-		return nil
-	}
-	defer f.Close()
-
-	b, err := ioutil.ReadAll(f)
-	if err != nil {
-		return fmt.Errorf("error reading index: %v", err)
-	}
-	err = json.Unmarshal(b, s.idx)
-	if err != nil {
-		return fmt.Errorf("error decoding index: %v", err)
-	}
-	fmt.Printf("Index initialised: %d files (%d paths)", len(s.idx.(*index).index), len(s.idx.(*index).files))
-	return nil
-}
-
-func (s *FileSystem) persist() error {
-	f, err := s.fs.Create(".idx")
-	if err != nil {
-		return fmt.Errorf("error creating index: %v", err)
-	}
-	defer f.Close()
-
-	b, err := json.Marshal(s.idx)
-	if err != nil {
-		return fmt.Errorf("error encoding index: %v", err)
-	}
-
-	_, err = f.Write(b)
-	if err != nil {
-		return fmt.Errorf("error writing index: %v", err)
-	}
-	return nil
-}
-
 // New creates a new content addressable RWFileSystem.
 func New(fs store.RWFileSystem) (*FileSystem, error) {
-	s := &FileSystem{
-		idx: NewIndex(),
-		fs:  fs,
-	}
-	err := s.initIndex()
+	idx, err := NewIndex(fs)
 	if err != nil {
 		return nil, err
 	}
-	return s, nil
+	return &FileSystem{
+		idx: idx,
+		fs:  fs,
+	}, nil
 }
