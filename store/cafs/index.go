@@ -91,11 +91,9 @@ func (i *index) Add(path, sum string) bool {
 	defer i.Unlock()
 
 	i.files[path] = sum
-	if !i.index[sum] {
-		i.index[sum] = true
-		return false
-	}
-	return true
+	old := i.index[sum]
+	i.index[sum] = true
+	return old
 }
 
 // Exists implements Index.
