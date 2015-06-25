@@ -61,7 +61,11 @@ func buildRemoteStore(s *stores) (err error) {
 		c = store.NewClient(remoteStore, "")
 		s.artwork = store.NewFileSystem(store.NewClient(remoteStore, "artwork"))
 	}
+
 	s.media = store.NewRemoteChunkedFileSystem(c, 32*1024)
+	if s.artwork == nil {
+		s.artwork = store.ArtworkFileSystem(s.media)
+	}
 	return nil
 }
 
