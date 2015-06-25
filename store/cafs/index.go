@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"sync"
 
@@ -53,28 +52,16 @@ func NewIndex(fs store.RWFileSystem) (*index, error) {
 	}
 	defer f.Close()
 
-	b, err := ioutil.ReadAll(f)
+	dec := json.NewDecoder(f)
+	err = dec.Decode(&idx)
 	if err != nil {
-		return nil, fmt.Errorf("error reading index: %v", err)
-	}
-	err = json.Unmarshal(b, idx)
-	if err != nil {
+		if err == io.EOF {
+			return idx, nil
+		}
 		return nil, fmt.Errorf("error decoding index: %v", err)
 	}
 	fmt.Printf("Index initialised: %d files (%d paths)", len(idx.index), len(idx.files))
 	return idx, nil
-}
-
-func (i *index) MarshalJSON() ([]byte, error) {
-	i.RLock()
-	defer i.RUnlock()
-
-	exp := struct {
-		Files map[string]string `json:"files"`
-	}{
-		Files: i.files,
-	}
-	return json.Marshal(exp)
 }
 
 func (i *index) UnmarshalJSON(b []byte) error {
@@ -133,7 +120,13 @@ func (i *index) persist() error {
 	}
 	defer f.Close()
 
-	b, err := json.Marshal(i)
+	exp := struct {
+		Files map[string]string `json:"files"`
+	}{
+		Files: i.files,
+	}
+
+	b, err := json.Marshal(exp)
 	if err != nil {
 		return fmt.Errorf("error encoding index: %v", err)
 	}
