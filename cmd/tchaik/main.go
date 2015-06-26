@@ -18,6 +18,7 @@ A common use case is to begin by use using an existing iTunes Library file:
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"log"
@@ -195,7 +196,9 @@ func main() {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
 		fmt.Println("Quit the server with CTRL-C.")
 
-		log.Fatal(http.ListenAndServeTLS(listenAddr, certFile, keyFile, h))
+		tlsConfig := &tls.Config{MinVersion: tls.VersionTLS10}
+		server := &http.Server{Addr: listenAddr, Handler: h, TLSConfig: tlsConfig}
+		log.Fatal(server.ListenAndServeTLS(certFile, keyFile))
 	}
 
 	fmt.Printf("Web server is running on http://%v\n", listenAddr)
