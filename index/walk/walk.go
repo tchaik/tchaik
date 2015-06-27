@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/dhowden/tag"
@@ -16,21 +17,58 @@ import (
 )
 
 var fileExtensions = []string{".mp3", ".m4a", ".flac", ".ogg"}
+var workers = 4
+
+type pathTrack struct {
+	path  string
+	track *track
+}
 
 // NewLibrary constructs an index.Library by walking through the directory tree under
 // the given path.  Any errors are logged to stdout (TODO: fix this!)
 func NewLibrary(path string) index.Library {
-	tracks := make(map[string]*track)
+	trackCh := make(chan pathTrack)
+	errCh := make(chan error)
 	files := walk(path)
-	for p := range files {
-		if validExtension(p) {
-			t, err := processPath(p)
-			if err != nil {
-				log.Printf("error processing '%v': %v\n", p, err)
-				continue
-			}
-			tracks[p] = t
+
+	go func() {
+		for err := range errCh {
+			// FIXME
+			log.Println(err)
 		}
+	}()
+
+	process := func(files <-chan string) {
+		for p := range files {
+			if validExtension(p) {
+				t, err := processPath(p)
+				if err != nil {
+					errCh <- fmt.Errorf("error processing '%v': %v", p, err)
+					continue
+				}
+				trackCh <- pathTrack{path, t}
+			}
+		}
+	}
+
+	wg := &sync.WaitGroup{}
+	wg.Add(workers)
+	for i := 0; i < workers; i++ {
+		go func() {
+			process(files)
+			wg.Done()
+		}()
+	}
+
+	go func() {
+		wg.Wait()
+		close(errCh)
+		close(trackCh)
+	}()
+
+	tracks := make(map[string]*track)
+	for pt := range trackCh {
+		tracks[pt.path] = pt.track
 	}
 
 	return &library{
