@@ -63,7 +63,7 @@ func NewLibrary(path string) index.Library {
 				errCh <- fmt.Errorf("error processing '%v': %v", p, err)
 				continue
 			}
-			trackCh <- pathTrack{path, t}
+			trackCh <- pathTrack{p, t}
 		}
 	}
 
