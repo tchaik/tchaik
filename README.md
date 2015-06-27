@@ -74,16 +74,19 @@ To avoid rescanning your entire collection every time you restart, you can build
 A full list of command line options is available from the `--help` flag:
 
     $ tchaik --help
-    Usage of tchaik:
+    Usage of ./tchaik:
       -add-path-prefix="": add prefix to every path
       -artwork-cache="": path to local artwork cache (content addressable)
-      -auth=false: use basic HTTP authentication
+      -auth-password="": password to use for HTTP authentication
+      -auth-user="": username to use for HTTP authentication (set to enable)
       -debug=false: print debugging information
       -itlXML="": path to iTunes Library XML file
       -lib="": path to Tchaik library file
       -listen="localhost:8080": bind address to http listen
       -local-store="/": local media store, full local path /path/to/root
       -media-cache="": path to local media cache
+      -path="": path to directory containing music files (to build index from)
+      -play-history="history.json": path to play history file
       -remote-store="": remote media store, tchstore server address <hostname>:<port>, or s3://<bucket>/path/to/root for S3
       -static-dir="ui/static": Path to the static asset directory
       -tls-cert="": path to a certificate file, must also specify -tls-key
