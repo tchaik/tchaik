@@ -17,6 +17,24 @@ import (
 )
 
 var fileExtensions = []string{".mp3", ".m4a", ".flac", ".ogg"}
+
+func validFiles(in <-chan string) <-chan string {
+	out := make(chan string)
+	go func() {
+		for path := range in {
+			ext := strings.ToLower(filepath.Ext(filepath.Base(path)))
+			for _, x := range fileExtensions {
+				if ext == x {
+					out <- path
+					break
+				}
+			}
+		}
+		close(out)
+	}()
+	return out
+}
+
 var workers = 4
 
 type pathTrack struct {
@@ -29,7 +47,7 @@ type pathTrack struct {
 func NewLibrary(path string) index.Library {
 	trackCh := make(chan pathTrack)
 	errCh := make(chan error)
-	files := walk(path)
+	files := validFiles(walk(path))
 
 	go func() {
 		for err := range errCh {
@@ -40,14 +58,12 @@ func NewLibrary(path string) index.Library {
 
 	process := func(files <-chan string) {
 		for p := range files {
-			if validExtension(p) {
-				t, err := processPath(p)
-				if err != nil {
-					errCh <- fmt.Errorf("error processing '%v': %v", p, err)
-					continue
-				}
-				trackCh <- pathTrack{path, t}
+			t, err := processPath(p)
+			if err != nil {
+				errCh <- fmt.Errorf("error processing '%v': %v", p, err)
+				continue
 			}
+			trackCh <- pathTrack{path, t}
 		}
 	}
 
@@ -159,16 +175,6 @@ func (m *track) GetTime(name string) time.Time {
 		return m.CreatedTime
 	}
 	return time.Time{}
-}
-
-func validExtension(path string) bool {
-	ext := strings.ToLower(filepath.Ext(filepath.Base(path)))
-	for _, x := range fileExtensions {
-		if ext == x {
-			return true
-		}
-	}
-	return false
 }
 
 func walk(root string) <-chan string {
