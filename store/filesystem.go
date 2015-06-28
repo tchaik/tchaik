@@ -11,7 +11,30 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"golang.org/x/net/context"
 )
+
+// FileSystem is an interface which defines an open method similar to http.FileSystem,
+// but which also includes a context parameter.
+type FileSystem interface {
+	Open(ctx context.Context, path string) (http.File, error)
+}
+
+// NewFileSystem creates a new FileSystem using an http.FileSystem as the underlying
+// storage.
+func NewFileSystem(fs http.FileSystem) FileSystem {
+	return &fileSystem{fs}
+}
+
+type fileSystem struct {
+	http.FileSystem
+}
+
+// Open implements FileSystem.
+func (cfs *fileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	return cfs.FileSystem.Open(path)
+}
 
 // RemoteFileSystem is an extension of the http.FileSystem interface
 // which includes the RemoteOpen method.
