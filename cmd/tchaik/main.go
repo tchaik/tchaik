@@ -183,7 +183,7 @@ func main() {
 	}
 
 	if traceListenAddr != "" {
-		fmt.Println("Starting trace server on http://%v", traceListenAddr)
+		fmt.Printf("Starting trace server on http://%v\n", traceListenAddr)
 		go func() {
 			log.Fatal(http.ListenAndServe(traceListenAddr, nil))
 		}()
