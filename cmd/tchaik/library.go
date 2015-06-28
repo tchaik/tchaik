@@ -9,7 +9,10 @@ import (
 	"net/http"
 	"strings"
 
+	"golang.org/x/net/context"
+
 	"github.com/tchaik/tchaik/index"
+	"github.com/tchaik/tchaik/store"
 )
 
 // Library is a type which encompases the components which form a full library.
@@ -23,13 +26,13 @@ type Library struct {
 }
 
 type libraryFileSystem struct {
-	http.FileSystem
+	store.FileSystem
 	index.Library
 }
 
-// Open implements http.FileSystem and rewrites TrackID values to their corresponding Location
+// Open implements store.FileSystem and rewrites TrackID values to their corresponding Location
 // values using the index.Library.
-func (l *libraryFileSystem) Open(path string) (http.File, error) {
+func (l *libraryFileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	t, ok := l.Library.Track(strings.Trim(path, "/")) // TrackIDs arrive with leading slash
 	if !ok {
 		return nil, fmt.Errorf("could not find track: %v", path)
@@ -39,7 +42,7 @@ func (l *libraryFileSystem) Open(path string) (http.File, error) {
 	if loc == "" {
 		return nil, fmt.Errorf("invalid (empty) location for track: %v", path)
 	}
-	return l.FileSystem.Open(loc)
+	return l.FileSystem.Open(ctx, loc)
 }
 
 type group struct {
@@ -204,7 +207,7 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 
 // FileSystem wraps the http.FileSystem in a library lookup which will translate /TrackID
 // requests into their corresponding track paths.
-func (l *Library) FileSystem(fs http.FileSystem) http.FileSystem {
+func (l *Library) FileSystem(fs store.FileSystem) store.FileSystem {
 	return &libraryFileSystem{fs, l.Library}
 }
 

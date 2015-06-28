@@ -35,7 +35,7 @@ func init() {
 }
 
 type stores struct {
-	media, artwork http.FileSystem
+	media, artwork store.FileSystem
 }
 
 func buildRemoteStore(s *stores) (err error) {
@@ -59,10 +59,10 @@ func buildRemoteStore(s *stores) (err error) {
 		c = store.NewS3Client(bucket, auth, aws.APSoutheast2)
 	} else {
 		c = store.NewClient(remoteStore, "")
-		s.artwork = store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork"))
+		s.artwork = store.NewFileSystem(store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork")))
 	}
 
-	s.media = store.NewRemoteChunkedFileSystem(c, 32*1024)
+	s.media = store.NewFileSystem(store.NewRemoteChunkedFileSystem(c, 32*1024))
 	if s.artwork == nil {
 		s.artwork = store.ArtworkFileSystem(s.media)
 	}
@@ -71,7 +71,7 @@ func buildRemoteStore(s *stores) (err error) {
 
 func buildLocalStore(s *stores) {
 	if localStore != "" {
-		fs := http.Dir(localStore)
+		fs := store.NewFileSystem(http.Dir(localStore))
 		if s.media != nil {
 			s.media = store.MultiFileSystem(fs, s.media)
 		} else {
@@ -127,7 +127,7 @@ func buildArtworkCache(s *stores) error {
 }
 
 // Stores returns a media and artwork filesystem as defined by the command line flags.
-func Stores() (media, artwork http.FileSystem, err error) {
+func Stores() (media, artwork store.FileSystem, err error) {
 	s := &stores{}
 	err = buildRemoteStore(s)
 	if err != nil {

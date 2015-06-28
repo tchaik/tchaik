@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"sync"
 
+	"golang.org/x/net/context"
+
 	"github.com/tchaik/tchaik/store"
 )
 
@@ -44,7 +46,8 @@ func NewIndex(fs store.RWFileSystem) (*index, error) {
 		fs:    fs,
 	}
 
-	f, err := fs.Open("index.json")
+	// FIXME: There needs to be a better context here.
+	f, err := fs.Open(context.TODO(), "index.json")
 	if err != nil {
 		// FIXME: Improve this
 		// Can't guarantee that we will get an IsNotExist(err) here
@@ -114,7 +117,8 @@ func (i *index) Exists(sum string) bool {
 }
 
 func (i *index) persist() error {
-	f, err := i.fs.Create("index.json")
+	// FIXME: There needs to be a better context here.
+	f, err := i.fs.Create(context.TODO(), "index.json")
 	if err != nil {
 		return fmt.Errorf("error creating index: %v", err)
 	}
@@ -159,23 +163,23 @@ type FileSystem struct {
 // Open the file with the given path.  Uses the internal index to identify
 // which file to open.  NB: Stat on the returned file will refer to the
 // internal file.
-func (s *FileSystem) Open(path string) (http.File, error) {
+func (s *FileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	realPath, ok := s.idx.Get(path)
 	if !ok {
 		return nil, fmt.Errorf("no such file: %v", path)
 	}
-	return s.open(realPath)
+	return s.open(ctx, realPath)
 }
 
 // Wait implements RWFileSystem.
 func (s *FileSystem) Wait() error { return nil }
 
-func (s *FileSystem) open(path string) (http.File, error) {
-	return s.fs.Open("content/" + path)
+func (s *FileSystem) open(ctx context.Context, path string) (http.File, error) {
+	return s.fs.Open(ctx, "content/"+path)
 }
 
-func (s *FileSystem) create(path string) (io.WriteCloser, error) {
-	return s.fs.Create("content/" + path)
+func (s *FileSystem) create(ctx context.Context, path string) (io.WriteCloser, error) {
+	return s.fs.Create(ctx, "content/"+path)
 }
 
 type file struct {
@@ -196,7 +200,9 @@ func (a *file) Close() error {
 	path, ok, err := AddContent(a.fs.idx, a.path, a.Bytes())
 	if !ok {
 		fmt.Println("creating", path)
-		f, err := a.fs.create(path)
+		// FIXME: this context needs to actually be associated with the other stuff
+		// Maybe we need to add it into the file struct?
+		f, err := a.fs.create(context.TODO(), path)
 		if err != nil {
 			return fmt.Errorf("error creating file: %v", err)
 		}
@@ -211,7 +217,7 @@ func (a *file) Close() error {
 
 // Create a new file with path. We buffer the contents written to the io.WriteCloser
 // so that the content can be hashed and then written to the underlying RWFileSystem.
-func (s *FileSystem) Create(path string) (io.WriteCloser, error) {
+func (s *FileSystem) Create(ctx context.Context, path string) (io.WriteCloser, error) {
 	_, ok := s.idx.Get(path)
 	if ok {
 		return nil, fmt.Errorf("file already exists for '%v'", path)

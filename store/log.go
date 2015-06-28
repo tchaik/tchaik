@@ -9,11 +9,13 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	"golang.org/x/net/context"
 )
 
 // LogFileSystem returns a wrapper around an http.FileSystem which logs calls
 // to Open.
-func LogFileSystem(prefix string, fs http.FileSystem) http.FileSystem {
+func LogFileSystem(prefix string, fs FileSystem) FileSystem {
 	if prefix != "" {
 		prefix += " "
 	}
@@ -24,13 +26,13 @@ func LogFileSystem(prefix string, fs http.FileSystem) http.FileSystem {
 }
 
 type logFileSystem struct {
-	http.FileSystem
+	FileSystem
 	*log.Logger
 }
 
-// Open implements http.FileSystem.
-func (l logFileSystem) Open(path string) (http.File, error) {
-	f, err := l.FileSystem.Open(path)
+// Open implements FileSystem.
+func (l logFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	f, err := l.FileSystem.Open(ctx, path)
 	if err != nil {
 		l.Printf("open error: %v", err)
 		return nil, err
@@ -57,8 +59,8 @@ type logRWFileSystem struct {
 }
 
 // Open implements RWFileSystem.
-func (l logRWFileSystem) Open(path string) (http.File, error) {
-	f, err := l.RWFileSystem.Open(path)
+func (l logRWFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	f, err := l.RWFileSystem.Open(ctx, path)
 	if err != nil {
 		l.Printf("open error: %v", err)
 		return nil, err
@@ -68,8 +70,8 @@ func (l logRWFileSystem) Open(path string) (http.File, error) {
 }
 
 // Create implements RWFileSystem.
-func (l logRWFileSystem) Create(path string) (io.WriteCloser, error) {
-	f, err := l.RWFileSystem.Create(path)
+func (l logRWFileSystem) Create(ctx context.Context, path string) (io.WriteCloser, error) {
+	f, err := l.RWFileSystem.Create(ctx, path)
 	if err != nil {
 		l.Printf("create error: %v", err)
 	}

@@ -12,16 +12,18 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+
+	"golang.org/x/net/context"
 )
 
 // RWFileSystem is an interface which includes http.FileSystem and a Create method
 // for creating files.
 type RWFileSystem interface {
-	http.FileSystem
+	FileSystem
 
 	// Create a file with associated path, returns an io.WriteCloser.  Only when Close()
 	// returns can it be assumed that the file has been written.
-	Create(path string) (io.WriteCloser, error)
+	Create(ctx context.Context, path string) (io.WriteCloser, error)
 
 	// Wait blocks until any pending write calls have been completed.
 	Wait() error
@@ -30,7 +32,7 @@ type RWFileSystem interface {
 // dir implements RWFileSystem by extending the behaviour of http.Dir to include a Create
 // method which creates files under the root.
 type dir struct {
-	http.FileSystem
+	FileSystem
 
 	root string
 }
@@ -38,7 +40,7 @@ type dir struct {
 // Dir creates a new RWFileSystem with the specified root (similar to http.Dir)
 func Dir(root string) RWFileSystem {
 	return &dir{
-		http.Dir(root),
+		NewFileSystem(http.Dir(root)),
 		root,
 	}
 }
@@ -62,7 +64,7 @@ func (d *dir) absPath(path string) (string, error) {
 }
 
 // Create a file rooted in the Dir file system.
-func (d *dir) Create(path string) (io.WriteCloser, error) {
+func (d *dir) Create(ctx context.Context, path string) (io.WriteCloser, error) {
 	absPath, err := d.absPath(path)
 	if err != nil {
 		return nil, err
@@ -80,7 +82,7 @@ func (d *dir) Wait() error { return nil }
 // CachedFileSystem is an implemetation of http.FileServer which caches the results of
 // calls to src in a RWFileSystem.
 type CachedFileSystem struct {
-	src   http.FileSystem
+	src   FileSystem
 	cache RWFileSystem
 
 	mu       sync.RWMutex // protects errCache
@@ -108,20 +110,20 @@ func (c *CachedFileSystem) error(path string) (err error, exists bool) {
 	return err, ok
 }
 
-// Open implements http.FileSystem.  If the required file isn't in the cache
+// Open implements FileSystem.  If the required file isn't in the cache
 // then the file is opened from the src, and then concurrently copied into the
 // cache (with errors passed back on the filesystem error channel).
-func (c *CachedFileSystem) Open(path string) (http.File, error) {
+func (c *CachedFileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	if err, ok := c.error(path); ok {
 		return nil, fmt.Errorf("cached error: %v", err)
 	}
 
-	f, err := c.cache.Open(path)
+	f, err := c.cache.Open(ctx, path)
 	if err == nil {
 		return f, nil
 	}
 
-	f, err = c.src.Open(path)
+	f, err = c.src.Open(ctx, path)
 	if err != nil {
 		c.setError(path, err)
 		return nil, err
@@ -131,7 +133,7 @@ func (c *CachedFileSystem) Open(path string) (http.File, error) {
 		c.wg.Add(1)
 		defer c.wg.Done()
 
-		src, err := c.src.Open(path)
+		src, err := c.src.Open(ctx, path)
 		if err != nil {
 			c.errCh <- fmt.Errorf("error opening file for second time: %v", err)
 			return
@@ -143,7 +145,7 @@ func (c *CachedFileSystem) Open(path string) (http.File, error) {
 			}
 		}()
 
-		cache, err := c.cache.Create(path)
+		cache, err := c.cache.Create(ctx, path)
 		if err != nil {
 			c.errCh <- fmt.Errorf("error creating file in cache: %v", err)
 			return
@@ -173,7 +175,7 @@ func (c *CachedFileSystem) Wait() error {
 // NewCachedFileSystem implements http.FileSystem and caches every request made to
 // src in cache.  The returned error channel passes back any errors which occur when
 // files are being concurrently copied into the cache.
-func NewCachedFileSystem(src http.FileSystem, cache RWFileSystem) (*CachedFileSystem, <-chan error) {
+func NewCachedFileSystem(src FileSystem, cache RWFileSystem) (*CachedFileSystem, <-chan error) {
 	errCh := make(chan error)
 	return &CachedFileSystem{
 		src:      src,

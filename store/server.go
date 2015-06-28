@@ -10,8 +10,9 @@ import (
 	"io"
 	"log"
 	"net"
-	"net/http"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 // Request is a type which represents an incoming request.
@@ -65,24 +66,24 @@ func (r ResponseStatus) String() string {
 type Server struct {
 	addr string
 
-	fileSystems map[string]http.FileSystem
+	fileSystems map[string]FileSystem
 }
 
 // NewServer creates a new server listening on the given address.
 func NewServer(addr string) *Server {
 	return &Server{
 		addr:        addr,
-		fileSystems: make(map[string]http.FileSystem),
+		fileSystems: make(map[string]FileSystem),
 	}
 }
 
 // SetDefault sets the default (empty-name) file system
-func (s *Server) SetDefault(fs http.FileSystem) {
+func (s *Server) SetDefault(fs FileSystem) {
 	s.fileSystems[""] = fs
 }
 
 // SetFileSystem sets the underlying file system to use for a label.
-func (s *Server) SetFileSystem(label string, fs http.FileSystem) {
+func (s *Server) SetFileSystem(label string, fs FileSystem) {
 	s.fileSystems[label] = fs
 }
 
@@ -132,7 +133,8 @@ func (s *Server) handle(c net.Conn) (err error) {
 		return
 	}
 
-	f, err := fs.Open(r.Path)
+	// FIXME: Transfer the context from the request?
+	f, err := fs.Open(context.TODO(), r.Path)
 	if err != nil {
 		writeStatusResponse(c, StatusNotFound)
 		err = fmt.Errorf("error opening file '%v': %v", r.Path, err)

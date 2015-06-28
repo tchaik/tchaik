@@ -5,6 +5,10 @@ import (
 	"io"
 	"net/http"
 	"sync"
+
+	"golang.org/x/net/context"
+
+	"github.com/tchaik/tchaik/store"
 )
 
 // InvalidPathError is returned by cachine filesystem when a previous attempt has been
@@ -22,18 +26,18 @@ func (e *InvalidPathError) Error() string {
 // aren't in the index are passed to the src and then their associated content is only
 // downloaded if not already present.
 type CachedFileSystem struct {
-	src   http.FileSystem
+	src   store.FileSystem
 	cache *FileSystem
 
 	errCh chan<- error
 	wg    sync.WaitGroup
 }
 
-// Open implements http.FileSystem.  If the required file isn't in the cache
+// Open implements FileSystem.  If the required file isn't in the cache
 // then the file is opened from the src, and then concurrently copied into the
 // cache (with errors passed back on the filesystem error channel).
-func (c *CachedFileSystem) Open(path string) (http.File, error) {
-	f, err := c.cache.Open(path)
+func (c *CachedFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	f, err := c.cache.Open(ctx, path)
 	if err == nil {
 		return f, nil
 	}
@@ -42,7 +46,7 @@ func (c *CachedFileSystem) Open(path string) (http.File, error) {
 		return nil, nil
 	}
 
-	f, err = c.src.Open(path)
+	f, err = c.src.Open(ctx, path)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +62,7 @@ func (c *CachedFileSystem) Open(path string) (http.File, error) {
 		c.cache.idx.Add(path, stat.Name())
 		f.Close()
 
-		f, err = c.cache.Open(path)
+		f, err = c.cache.Open(ctx, path)
 		if err != nil {
 			return nil, fmt.Errorf("error opening file after adding to cache: %v", err)
 		}
@@ -69,7 +73,7 @@ func (c *CachedFileSystem) Open(path string) (http.File, error) {
 		c.wg.Add(1)
 		defer c.wg.Done()
 
-		src, err := c.src.Open(path)
+		src, err := c.src.Open(ctx, path)
 		if err != nil {
 			c.errCh <- fmt.Errorf("error opening file for second time: %v", err)
 			return
@@ -81,7 +85,7 @@ func (c *CachedFileSystem) Open(path string) (http.File, error) {
 			}
 		}()
 
-		cache, err := c.cache.Create(path)
+		cache, err := c.cache.Create(ctx, path)
 		if err != nil {
 			c.errCh <- fmt.Errorf("error creating file in cache: %v", err)
 			return
@@ -112,7 +116,7 @@ func (c *CachedFileSystem) Wait() error {
 // src in cache.  The returned error channel passes back any errors which occur when
 // files are being concurrently copied into the cache.  Both src and cache must be
 // content addressable using the same hashing scheme.
-func NewCachedFileSystem(src http.FileSystem, cache *FileSystem) (http.FileSystem, <-chan error) {
+func NewCachedFileSystem(src store.FileSystem, cache *FileSystem) (store.FileSystem, <-chan error) {
 	errCh := make(chan error)
 	return &CachedFileSystem{
 		src:   src,
