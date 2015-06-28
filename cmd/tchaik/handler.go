@@ -17,7 +17,7 @@ import (
 	"github.com/tchaik/tchaik/store"
 )
 
-// traceFS is a type which implements http.FileSystem and is used at the top-lever to
+// traceFS is a type which implements http.FileSystem and is used at the top-level to
 // intialise a trace which can be passed through to FileSystem implementations.
 type traceFS struct {
 	store.FileSystem
