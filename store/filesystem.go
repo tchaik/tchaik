@@ -37,24 +37,32 @@ func (fs *fileSystem) Open(ctx context.Context, path string) (http.File, error) 
 	return fs.FileSystem.Open(path)
 }
 
-// TraceFileSystem is a type which wraps a FileSystem implementation.  If a trace is associated
+// Trace is a convenience method for adding a tracing wrapper around a FileSystem.
+func Trace(fs FileSystem, name string) FileSystem {
+	return traceFileSystem{
+		fs:   fs,
+		name: name,
+	}
+}
+
+// traceFileSystem is a type which wraps a FileSystem implementation.  If a trace is associated
 // to the context.Context passed to Open, then the trace will be updated to reflect the call.
-type TraceFileSystem struct {
-	FS   FileSystem
-	Name string
+type traceFileSystem struct {
+	fs   FileSystem
+	name string
 }
 
 // Open implements FileSystem.
-func (tfs TraceFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+func (tfs traceFileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	tr, ok := trace.FromContext(ctx)
 	if ok {
-		tr.LazyPrintf("%v: open: %v", tfs.Name, path)
+		tr.LazyPrintf("%v: open: %v", tfs.name, path)
 	}
 
-	f, err := tfs.FS.Open(ctx, path)
+	f, err := tfs.fs.Open(ctx, path)
 	if err != nil {
 		if ok {
-			tr.LazyPrintf("%v: error opening: %v", tfs.Name, path)
+			tr.LazyPrintf("%v: error opening: %v", tfs.name, path)
 		}
 	}
 	return f, err
