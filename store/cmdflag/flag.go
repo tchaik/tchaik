@@ -4,6 +4,8 @@
 
 // Package cmdflag unifies the configuration of stores using command line flags across
 // several tools.
+//
+// FIXME: Need a more coherent way of doing this: it's now a huge mess.
 package cmdflag
 
 import (
@@ -59,26 +61,26 @@ func buildRemoteStore(s *stores) (err error) {
 		c = store.NewS3Client(bucket, auth, aws.APSoutheast2)
 	} else {
 		c = store.NewClient(remoteStore, "")
-		s.artwork = store.NewFileSystem(store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork")))
+		s.artwork = store.NewFileSystem(store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork")), "artwork")
 	}
 
-	s.media = store.NewFileSystem(store.NewRemoteChunkedFileSystem(c, 32*1024))
+	s.media = store.NewFileSystem(store.NewRemoteChunkedFileSystem(c, 32*1024), fmt.Sprintf("remoteStore(%v)", remoteStore))
 	if s.artwork == nil {
-		s.artwork = store.ArtworkFileSystem(s.media)
+		s.artwork = store.Trace(store.ArtworkFileSystem(s.media), "artwork")
 	}
 	return nil
 }
 
 func buildLocalStore(s *stores) {
 	if localStore != "" {
-		fs := store.NewFileSystem(http.Dir(localStore))
+		fs := store.NewFileSystem(http.Dir(localStore), fmt.Sprintf("localstore (%v)", localStore))
 		if s.media != nil {
 			s.media = store.MultiFileSystem(fs, s.media)
 		} else {
 			s.media = fs
 		}
 
-		afs := store.ArtworkFileSystem(fs)
+		afs := store.Trace(store.ArtworkFileSystem(fs), "local artworkstore")
 		if s.artwork != nil {
 			s.artwork = store.MultiFileSystem(afs, s.artwork)
 		} else {

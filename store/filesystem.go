@@ -24,8 +24,8 @@ type FileSystem interface {
 
 // NewFileSystem creates a new FileSystem using an http.FileSystem as the underlying
 // storage.
-func NewFileSystem(fs http.FileSystem) FileSystem {
-	return &fileSystem{fs}
+func NewFileSystem(fs http.FileSystem, name string) FileSystem {
+	return Trace(&fileSystem{fs}, name)
 }
 
 type fileSystem struct {

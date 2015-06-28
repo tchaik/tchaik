@@ -40,7 +40,7 @@ type dir struct {
 // Dir creates a new RWFileSystem with the specified root (similar to http.Dir)
 func Dir(root string) RWFileSystem {
 	return &dir{
-		NewFileSystem(http.Dir(root)),
+		NewFileSystem(http.Dir(root), fmt.Sprintf("local (%v)", root)),
 		root,
 	}
 }
