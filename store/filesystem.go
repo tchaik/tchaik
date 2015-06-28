@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"golang.org/x/net/context"
+	"golang.org/x/net/trace"
 )
 
 // FileSystem is an interface which defines an open method similar to http.FileSystem,
@@ -34,6 +35,29 @@ type fileSystem struct {
 // Open implements FileSystem.
 func (fs *fileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	return fs.FileSystem.Open(path)
+}
+
+// TraceFileSystem is a type which wraps a FileSystem implementation.  If a trace is associated
+// to the context.Context passed to Open, then the trace will be updated to reflect the call.
+type TraceFileSystem struct {
+	FS   FileSystem
+	Name string
+}
+
+// Open implements FileSystem.
+func (tfs TraceFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	tr, ok := trace.FromContext(ctx)
+	if ok {
+		tr.LazyPrintf("%v: open: %v", tfs.Name, path)
+	}
+
+	f, err := tfs.FS.Open(ctx, path)
+	if err != nil {
+		if ok {
+			tr.LazyPrintf("%v: error opening: %v", tfs.Name, path)
+		}
+	}
+	return f, err
 }
 
 // RemoteFileSystem is an extension of the http.FileSystem interface
