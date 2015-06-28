@@ -13,23 +13,24 @@ import (
 	"time"
 )
 
-// FileSystem is an extension of the http.FileSystem interface
-// which includes the RemoteOpen method which returns a *File
-// from which the file data can be fetched.
-type FileSystem interface {
+// RemoteFileSystem is an extension of the http.FileSystem interface
+// which includes the RemoteOpen method.
+type RemoteFileSystem interface {
 	http.FileSystem
+
+	// RemoteOpen returns a File which
 	RemoteOpen(string) (*File, error)
 }
 
-// fileSystem implements FileSystem
-type fileSystem struct {
+// remoteFileSystem implements RemoteFileSystem
+type remoteFileSystem struct {
 	client Client
 }
 
-// NewFileSystem creates a new file system using the given Client to handle
+// NewRemoteFileSystem creates a new file system using the given Client to handle
 // file requests.
-func NewFileSystem(c Client) *fileSystem {
-	return &fileSystem{
+func NewRemoteFileSystem(c Client) RemoteFileSystem {
+	return &remoteFileSystem{
 		client: c,
 	}
 }
@@ -43,7 +44,7 @@ type file struct {
 
 // RemoteOpen returns a *File which represents the remote file, and implements
 // io.ReadCloser which reads the file contents from the remote system.
-func (fs *fileSystem) RemoteOpen(path string) (*File, error) {
+func (fs *remoteFileSystem) RemoteOpen(path string) (*File, error) {
 	rf, err := fs.client.Get(path)
 	if err != nil {
 		return nil, err
@@ -54,7 +55,7 @@ func (fs *fileSystem) RemoteOpen(path string) (*File, error) {
 // Open the given file and return an http.File implementation representing it.  This method
 // will block until the file has been completely fetched (http.File implements io.Seeker
 // which means that for a trivial implementation we need all the underlying data).
-func (fs *fileSystem) Open(path string) (http.File, error) {
+func (fs *remoteFileSystem) Open(path string) (http.File, error) {
 	rf, err := fs.RemoteOpen(path)
 	if err != nil {
 		return nil, err
