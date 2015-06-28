@@ -65,6 +65,12 @@ func (tfs traceFileSystem) Open(ctx context.Context, path string) (http.File, er
 			tr.LazyPrintf("%v: error opening: %v", tfs.name, path)
 		}
 	}
+	if ok {
+		stat, err := f.Stat()
+		if err == nil {
+			tr.LazyPrintf("%v: got file: %v", tfs.name, stat.Name())
+		}
+	}
 	return f, err
 }
 
