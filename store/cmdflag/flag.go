@@ -93,10 +93,7 @@ func buildMediaCache(s *stores) {
 	if mediaFileSystemCache != "" {
 		var errCh <-chan error
 		localCache := store.Dir(mediaFileSystemCache)
-		s.media, errCh = store.NewCachedFileSystem(
-			s.media,
-			localCache,
-		)
+		s.media, errCh = store.NewCachedFileSystem(s.media, localCache)
 		go func() {
 			for err := range errCh {
 				// TODO: pull this out!
