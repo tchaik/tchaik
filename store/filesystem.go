@@ -32,8 +32,8 @@ type fileSystem struct {
 }
 
 // Open implements FileSystem.
-func (cfs *fileSystem) Open(ctx context.Context, path string) (http.File, error) {
-	return cfs.FileSystem.Open(path)
+func (fs *fileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	return fs.FileSystem.Open(path)
 }
 
 // RemoteFileSystem is an extension of the http.FileSystem interface
