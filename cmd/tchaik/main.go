@@ -44,6 +44,8 @@ var certFile, keyFile string
 
 var authUser, authPassword string
 
+var traceListenAddr string
+
 func init() {
 	flag.BoolVar(&debug, "debug", false, "print debugging information")
 
@@ -61,6 +63,8 @@ func init() {
 
 	flag.StringVar(&authUser, "auth-user", "", "username to use for HTTP authentication (set to enable)")
 	flag.StringVar(&authPassword, "auth-password", "", "password to use for HTTP authentication")
+
+	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind address for trace HTTP server")
 }
 
 func readLibrary() (index.Library, error) {
@@ -176,6 +180,13 @@ func main() {
 	if debug {
 		mediaFileSystem = store.LogFileSystem("Media", mediaFileSystem)
 		artworkFileSystem = store.LogFileSystem("Artwork", artworkFileSystem)
+	}
+
+	if traceListenAddr != "" {
+		fmt.Println("Starting trace server on http://%v", traceListenAddr)
+		go func() {
+			log.Fatal(http.ListenAndServe(traceListenAddr, nil))
+		}()
 	}
 
 	lib := Library{

@@ -9,6 +9,7 @@ import (
 	"path"
 
 	"golang.org/x/net/context"
+	"golang.org/x/net/trace"
 
 	"github.com/dhowden/httpauth"
 
@@ -16,17 +17,22 @@ import (
 	"github.com/tchaik/tchaik/store"
 )
 
-// contextFS is a type which implements http.FileSystem and acts as the root of a call
-// to other FileSystem calls - and hence initialises a context.Context to be passed
-// down.
-type contextFS struct {
+// traceFS is a type which implements http.FileSystem and is used at the top-lever to
+// intialise a trace which can be passed through to FileSystem implementations.
+type traceFS struct {
 	store.FileSystem
+	family string
 }
 
 // Open implements http.FileSystem.
-func (c *contextFS) Open(path string) (http.File, error) {
-	ctx := context.Background()
-	return c.FileSystem.Open(ctx, path)
+func (t *traceFS) Open(path string) (http.File, error) {
+	tr := trace.New(t.family, path)
+	ctx := trace.NewContext(context.Background(), tr)
+	f, err := t.FileSystem.Open(ctx, path)
+
+	// TODO: Decide where this should be in general (requests can be on-going).
+	tr.Finish()
+	return f, err
 }
 
 type fsServeMux struct {
@@ -36,7 +42,7 @@ type fsServeMux struct {
 // HandleFileSystem is a convenience method for adding an http.FileServer handler to an
 // http.ServeMux.
 func (fsm *fsServeMux) HandleFileSystem(pattern string, fs store.FileSystem) {
-	fsm.ServeMux.Handle(pattern, http.StripPrefix(pattern, http.FileServer(&contextFS{fs})))
+	fsm.ServeMux.Handle(pattern, http.StripPrefix(pattern, http.FileServer(&traceFS{fs, pattern})))
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
