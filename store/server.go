@@ -134,7 +134,7 @@ func (s *Server) handle(c net.Conn) (err error) {
 	}
 
 	// FIXME: Transfer the context from the request?
-	f, err := fs.Open(context.TODO(), r.Path)
+	f, err := fs.Open(context.Background(), r.Path)
 	if err != nil {
 		writeStatusResponse(c, StatusNotFound)
 		err = fmt.Errorf("error opening file '%v': %v", r.Path, err)

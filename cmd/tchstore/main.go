@@ -29,7 +29,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
+
+	"golang.org/x/net/context"
+	"golang.org/x/net/trace"
 
 	"github.com/tchaik/tchaik/store"
 	"github.com/tchaik/tchaik/store/cmdflag"
@@ -38,9 +42,26 @@ import (
 var listen string
 var debug bool
 
+var traceListenAddr string
+
 func init() {
 	flag.StringVar(&listen, "listen", "localhost:1844", "<addr>:<port> to listen on")
 	flag.BoolVar(&debug, "debug", false, "output extra debugging information")
+
+	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind address for trace HTTP server")
+}
+
+type rootTraceFS struct {
+	store.FileSystem
+	family string
+}
+
+// Open implements store.FileSystem
+func (r *rootTraceFS) Open(ctx context.Context, path string) (http.File, error) {
+	tr := trace.New("request", path)
+	defer tr.Finish()
+
+	return r.FileSystem.Open(trace.NewContext(ctx, tr), path)
 }
 
 func main() {
@@ -56,9 +77,19 @@ func main() {
 		os.Exit(1)
 	}
 
+	mediaFileSystem = &rootTraceFS{mediaFileSystem, "media"}
+	artworkFileSystem = &rootTraceFS{artworkFileSystem, "artwork"}
+
 	if debug {
 		mediaFileSystem = store.LogFileSystem("Media", mediaFileSystem)
 		artworkFileSystem = store.LogFileSystem("Artwork", artworkFileSystem)
+	}
+
+	if traceListenAddr != "" {
+		fmt.Printf("Starting trace server on http://%v\n", traceListenAddr)
+		go func() {
+			log.Fatal(http.ListenAndServe(traceListenAddr, nil))
+		}()
 	}
 
 	s := store.NewServer(listen)
