@@ -142,8 +142,8 @@ func Stores() (media, artwork store.FileSystem, err error) {
 	}
 
 	if trimPathPrefix != "" || addPathPrefix != "" {
-		s.media = store.NewPathRewrite(s.media, trimPathPrefix, addPathPrefix)
-		s.artwork = store.NewPathRewrite(s.artwork, trimPathPrefix, addPathPrefix)
+		s.media = store.PathRewrite(s.media, trimPathPrefix, addPathPrefix)
+		s.artwork = store.PathRewrite(s.artwork, trimPathPrefix, addPathPrefix)
 	}
 	return s.media, s.artwork, nil
 }
