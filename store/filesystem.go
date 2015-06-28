@@ -55,21 +55,18 @@ type traceFileSystem struct {
 // Open implements FileSystem.
 func (tfs traceFileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	tr, ok := trace.FromContext(ctx)
-	if ok {
-		tr.LazyPrintf("%v: open: %v", tfs.name, path)
+	if !ok {
+		return tfs.fs.Open(ctx, path)
 	}
 
+	tr.LazyPrintf("%v: open: %v", tfs.name, path)
 	f, err := tfs.fs.Open(ctx, path)
 	if err != nil {
-		if ok {
-			tr.LazyPrintf("%v: error opening: %v", tfs.name, path)
-		}
+		tr.LazyPrintf("%v: error opening: %v", tfs.name, path)
+		return nil, err
 	}
-	if ok {
-		stat, err := f.Stat()
-		if err == nil {
-			tr.LazyPrintf("%v: got file: %v", tfs.name, stat.Name())
-		}
+	if stat, err := f.Stat(); err == nil {
+		tr.LazyPrintf("%v: got file: %v", tfs.name, stat.Name())
 	}
 	return f, err
 }
