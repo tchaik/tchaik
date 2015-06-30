@@ -208,7 +208,7 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 // FileSystem wraps the http.FileSystem in a library lookup which will translate /TrackID
 // requests into their corresponding track paths.
 func (l *Library) FileSystem(fs store.FileSystem) store.FileSystem {
-	return &libraryFileSystem{fs, l.Library}
+	return store.Trace(&libraryFileSystem{fs, l.Library}, "libraryFileSystem")
 }
 
 // ExpandPaths constructs a collection (group) whose sub-groups are taken from the "Root"
