@@ -61,10 +61,10 @@ func buildRemoteStore(s *stores) (err error) {
 		c = store.NewS3Client(bucket, auth, aws.APSoutheast2)
 	} else {
 		c = store.NewClient(remoteStore, "")
-		s.artwork = store.NewFileSystem(store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork")), "artwork")
+		s.artwork = store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork"))
 	}
 
-	s.media = store.NewFileSystem(store.NewRemoteChunkedFileSystem(c, 32*1024), fmt.Sprintf("remoteStore(%v)", remoteStore))
+	s.media = store.NewRemoteChunkedFileSystem(c, 32*1024)
 	if s.artwork == nil {
 		s.artwork = store.Trace(store.ArtworkFileSystem(s.media), "artwork")
 	}

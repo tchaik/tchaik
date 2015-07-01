@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	"golang.org/x/net/context"
+
 	"github.com/mitchellh/goamz/aws"
 	"github.com/mitchellh/goamz/s3"
 )
@@ -30,7 +32,7 @@ func NewS3Client(bucket string, auth aws.Auth, region aws.Region) *S3Client {
 }
 
 // Get implements Client.
-func (c *S3Client) Get(path string) (*File, error) {
+func (c *S3Client) Get(ctx context.Context, path string) (*File, error) {
 	s3 := s3.New(c.auth, c.region)
 	b := s3.Bucket(c.name)
 

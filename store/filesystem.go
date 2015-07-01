@@ -6,6 +6,7 @@ package store
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -74,10 +75,10 @@ func (tfs traceFileSystem) Open(ctx context.Context, path string) (http.File, er
 // RemoteFileSystem is an extension of the http.FileSystem interface
 // which includes the RemoteOpen method.
 type RemoteFileSystem interface {
-	http.FileSystem
+	FileSystem
 
 	// RemoteOpen returns a File which
-	RemoteOpen(string) (*File, error)
+	RemoteOpen(context.Context, string) (*File, error)
 }
 
 // remoteFileSystem implements RemoteFileSystem
@@ -102,8 +103,8 @@ type file struct {
 
 // RemoteOpen returns a *File which represents the remote file, and implements
 // io.ReadCloser which reads the file contents from the remote system.
-func (fs *remoteFileSystem) RemoteOpen(path string) (*File, error) {
-	rf, err := fs.client.Get(path)
+func (fs *remoteFileSystem) RemoteOpen(ctx context.Context, path string) (*File, error) {
+	rf, err := fs.client.Get(ctx, path)
 	if err != nil {
 		return nil, err
 	}
@@ -113,8 +114,8 @@ func (fs *remoteFileSystem) RemoteOpen(path string) (*File, error) {
 // Open the given file and return an http.File implementation representing it.  This method
 // will block until the file has been completely fetched (http.File implements io.Seeker
 // which means that for a trivial implementation we need all the underlying data).
-func (fs *remoteFileSystem) Open(path string) (http.File, error) {
-	rf, err := fs.RemoteOpen(path)
+func (fs *remoteFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	rf, err := fs.RemoteOpen(ctx, path)
 	if err != nil {
 		return nil, err
 	}

@@ -10,13 +10,15 @@ import (
 	"io"
 	"net"
 	"time"
+
+	"golang.org/x/net/context"
 )
 
 // Client is an interface which defines the Get method used to fetch files
 // from remote hosts.
 type Client interface {
 	// Get reaches out to a remote server with a request for the given path.
-	Get(path string) (*File, error)
+	Get(ctx context.Context, path string) (*File, error)
 
 	// Put reaches out to a remote server with a put (write) request.
 	// Put(path string)
@@ -50,7 +52,7 @@ type readCloser struct {
 }
 
 // Implements Client.
-func (c *client) Get(path string) (*File, error) {
+func (c *client) Get(ctx context.Context, path string) (*File, error) {
 	conn, err := net.Dial("tcp", c.addr)
 	if err != nil {
 		return nil, err

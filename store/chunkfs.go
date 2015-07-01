@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"sync"
+
+	"golang.org/x/net/context"
 )
 
 // wrapper around a fileSource so that multiple callers can use a single
@@ -93,13 +95,13 @@ func (rcfs *remoteChunkedFileSystem) removeSource(path string) {
 // any operations will block until it is available.  Multiple calls to Open with the same
 // path will receive independant http.File implementations using the same underlying
 // data source (the file will only be fetched once).
-func (rcfs *remoteChunkedFileSystem) Open(path string) (http.File, error) {
+func (rcfs *remoteChunkedFileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	cf, ok := rcfs.chunkedFile(path)
 	if ok {
 		return cf, nil
 	}
 
-	f, err := rcfs.client.Get(path)
+	f, err := rcfs.client.Get(ctx, path)
 	if err != nil {
 		return nil, err
 	}
