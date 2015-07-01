@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"golang.org/x/net/context"
+	"golang.org/x/net/trace"
 )
 
 // Client is an interface which defines the Get method used to fetch files
@@ -51,8 +52,20 @@ type readCloser struct {
 	io.Closer
 }
 
-// Implements Client.
-func (c *client) Get(ctx context.Context, path string) (*File, error) {
+// Get implements Client.
+func (c *client) Get(ctx context.Context, path string) (f *File, err error) {
+	tr, ok := trace.FromContext(ctx)
+	if ok {
+		tr.LazyPrintf("(%v, %#v) get '%v'", c.addr, c.label, path)
+		defer func() {
+			if err != nil {
+				tr.LazyPrintf("(%v, %#v) error: %v", c.addr, c.label, err)
+				return
+			}
+			tr.LazyPrintf("(%v, %#v) returned: %v", c.addr, c.label, f.Name)
+		}()
+	}
+
 	conn, err := net.Dial("tcp", c.addr)
 	if err != nil {
 		return nil, err
