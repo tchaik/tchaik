@@ -122,37 +122,32 @@ func (s *Server) handle(c net.Conn) (err error) {
 	var r Request
 	err = dec.Decode(&r)
 	if err != nil {
-		err = fmt.Errorf("error decoding request: %v", err)
-		return
+		return fmt.Errorf("error decoding request: %v", err)
 	}
 
 	fs, ok := s.fileSystems[r.Label]
 	if !ok {
 		writeStatusResponse(c, StatusNotFound)
-		err = fmt.Errorf("invalid label: %v", r.Label)
-		return
+		return fmt.Errorf("invalid label: %v", r.Label)
 	}
 
 	// FIXME: Transfer the context from the request?
 	f, err := fs.Open(context.Background(), r.Path)
 	if err != nil {
 		writeStatusResponse(c, StatusNotFound)
-		err = fmt.Errorf("error opening file '%v': %v", r.Path, err)
-		return
+		return fmt.Errorf("error opening file '%v': %v", r.Path, err)
 	}
 	defer f.Close()
 
 	stat, err := f.Stat()
 	if err != nil {
 		writeStatusResponse(c, StatusFileError)
-		err = fmt.Errorf("error stating file: '%v': %v", r.Path, err)
-		return
+		return fmt.Errorf("error stating file: '%v': %v", r.Path, err)
 	}
 
 	if stat.IsDir() {
 		writeStatusResponse(c, StatusDirectory)
-		err = fmt.Errorf("can't retrieve dir: '%v'", r.Path)
-		return
+		return fmt.Errorf("can't retrieve dir: '%v'", r.Path)
 	}
 
 	resp := Response{
@@ -164,8 +159,7 @@ func (s *Server) handle(c net.Conn) (err error) {
 	writeResponse(c, resp)
 	n, err := io.Copy(c, f)
 	if err != nil {
-		err = fmt.Errorf("error copying data from file '%v': %v", r.Path, err)
-		return
+		return fmt.Errorf("error copying data from file '%v': %v", r.Path, err)
 	}
 	log.Printf("%#v: %v (%v, %d bytes)", r.Label, r.Path, stat.Name(), n)
 	return
