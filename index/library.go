@@ -129,25 +129,25 @@ func ReadFrom(r io.Reader) (Library, error) {
 
 // track is the default implementation of the Track interface.
 type track struct {
-	TrackID     string `json:",omitempty"`
-	Name        string `json:",omitempty"`
-	Album       string `json:",omitempty"`
-	AlbumArtist string `json:",omitempty"`
-	Artist      string `json:",omitempty"`
-	Composer    string `json:",omitempty"`
-	Genre       string `json:",omitempty"`
-	Location    string `json:",omitempty"`
+	TrackID     string `json:"trackId,omitempty"`
+	Name        string `json:"name,omitempty"`
+	Album       string `json:"album,omitempty"`
+	AlbumArtist string `json:"albumArtist,omitempty"`
+	Artist      string `json:"artist,omitempty"`
+	Composer    string `json:"composer,omitempty"`
+	Genre       string `json:"genre,omitempty"`
+	Location    string `json:"location,omitempty"`
 
-	TotalTime   int `json:",omitempty"`
-	Year        int `json:",omitempty"`
-	DiscNumber  int `json:",omitempty"`
-	TrackNumber int `json:",omitempty"`
-	TrackCount  int `json:",omitempty"`
-	DiscCount   int `json:",omitempty"`
-	BitRate     int `json:",omitempty"`
+	TotalTime   int `json:"totalTime,omitempty"`
+	Year        int `json:"year,omitempty"`
+	DiscNumber  int `json:"discNumber,omitempty"`
+	TrackNumber int `json:"trackNumber,omitempty"`
+	TrackCount  int `json:"trackCount,omitempty"`
+	DiscCount   int `json:"discCount,omitempty"`
+	BitRate     int `json:"bitRate,omitempty"`
 
-	DateAdded    time.Time `json:",omitempty"`
-	DateModified time.Time `json:",omitempty"`
+	DateAdded    time.Time `json:dateAdded",omitempty"`
+	DateModified time.Time `json:dateModified",omitempty"`
 }
 
 // GetString implements Track.
