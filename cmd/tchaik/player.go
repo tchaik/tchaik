@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"golang.org/x/net/websocket"
 )
@@ -134,7 +135,7 @@ func (v InvalidValueError) Error() string { return string(v) }
 // SetVolume implements Player.
 func (v validatedPlayer) SetVolume(f float64) error {
 	if f < 0.0 || f > 1.0 {
-		return InvalidValueError("invalid volume value: must be between 0.0 and 1.0")
+		return InvalidValueError(fmt.Sprintf("invalid volume value '%v': must be between 0.0 and 1.0", f))
 	}
 	return v.Player.SetVolume(f)
 }
@@ -142,7 +143,7 @@ func (v validatedPlayer) SetVolume(f float64) error {
 // SetTime implements Player.
 func (v validatedPlayer) SetTime(f float64) error {
 	if f < 0.0 {
-		return InvalidValueError("invalid time value: must be greater than 0.0")
+		return InvalidValueError(fmt.Sprintf("invalid time value '%v': must be greater than 0.0", f))
 	}
 	return v.Player.SetTime(f)
 }
