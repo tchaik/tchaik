@@ -129,25 +129,25 @@ func ReadFrom(r io.Reader) (Library, error) {
 
 // track is the default implementation of the Track interface.
 type track struct {
-	TrackID     string
-	Name        string
-	Album       string
-	AlbumArtist string
-	Artist      string
-	Composer    string
-	Genre       string
-	Location    string
+	TrackID     string `json:",omitempty"`
+	Name        string `json:",omitempty"`
+	Album       string `json:",omitempty"`
+	AlbumArtist string `json:",omitempty"`
+	Artist      string `json:",omitempty"`
+	Composer    string `json:",omitempty"`
+	Genre       string `json:",omitempty"`
+	Location    string `json:",omitempty"`
 
-	TotalTime   int
-	Year        int
-	DiscNumber  int
-	TrackNumber int
-	TrackCount  int
-	DiscCount   int
-	BitRate     int
+	TotalTime   int `json:",omitempty"`
+	Year        int `json:",omitempty"`
+	DiscNumber  int `json:",omitempty"`
+	TrackNumber int `json:",omitempty"`
+	TrackCount  int `json:",omitempty"`
+	DiscCount   int `json:",omitempty"`
+	BitRate     int `json:",omitempty"`
 
-	DateAdded    time.Time
-	DateModified time.Time
+	DateAdded    time.Time `json:",omitempty"`
+	DateModified time.Time `json:",omitempty"`
 }
 
 // GetString implements Track.
