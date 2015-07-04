@@ -239,40 +239,30 @@ func (h *websocketHandler) player(c Command) (interface{}, error) {
 		return nil, fmt.Errorf("invalid player key: %v", key)
 	}
 
-	switch action {
-	case "PLAY":
-		err = p.Play()
+	a, ok := websocketToAction(action)
+	if !ok {
+		return nil, InvalidActionError(action)
+	}
 
-	case "PAUSE":
-		err = p.Pause()
+	switch a {
+	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute:
+		err = p.Do(a)
 
-	case "NEXT":
-		err = p.NextTrack()
-
-	case "PREV":
-		err = p.PreviousTrack()
-
-	case "TOGGLE_PLAY_PAUSE":
-		err = p.TogglePlayPause()
-
-	case "TOGGLE_MUTE":
-		err = p.ToggleMute()
-
-	case "SET_VOLUME":
+	case ActionSetVolume:
 		var f float64
 		f, err = c.getFloat("value")
 		if err == nil {
 			err = p.SetVolume(f)
 		}
 
-	case "SET_MUTE":
+	case ActionSetMute:
 		var b bool
 		b, err = c.getBool("value")
 		if err == nil {
 			err = p.SetMute(b)
 		}
 
-	case "SET_TIME":
+	case ActionSetTime:
 		var f float64
 		f, err = c.getFloat("value")
 		if err == nil {

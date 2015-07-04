@@ -169,26 +169,11 @@ func (playersHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	switch putData.Action {
-	case "play":
-		err = p.Play()
+	switch a := Action(putData.Action); a {
+	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute:
+		err = p.Do(a)
 
-	case "pause":
-		err = p.Pause()
-
-	case "next":
-		err = p.NextTrack()
-
-	case "prev":
-		err = p.PreviousTrack()
-
-	case "togglePlayPause":
-		err = p.TogglePlayPause()
-
-	case "toggleMute":
-		err = p.ToggleMute()
-
-	case "setVolume":
+	case ActionSetVolume:
 		f, ok := putData.Value.(float64)
 		if !ok {
 			err = InvalidValueError("invalid volume value: expected float")
@@ -196,7 +181,7 @@ func (playersHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 		}
 		err = p.SetVolume(f)
 
-	case "setMute":
+	case ActionSetMute:
 		b, ok := putData.Value.(bool)
 		if !ok {
 			err = InvalidValueError("invalid mute value: expected boolean")
@@ -204,7 +189,7 @@ func (playersHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 		}
 		err = p.SetMute(b)
 
-	case "setTime":
+	case ActionSetTime:
 		f, ok := putData.Value.(float64)
 		if !ok {
 			err = InvalidValueError("invalid time value: expected float")
@@ -213,10 +198,14 @@ func (playersHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 		err = p.SetTime(f)
 
 	default:
-		err = InvalidValueError("invalid action")
+		err = InvalidActionError(a)
 	}
 
 	if err != nil {
+		if err, ok := err.(InvalidActionError); ok {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 		if err, ok := err.(InvalidValueError); ok {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

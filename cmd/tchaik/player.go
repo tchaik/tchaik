@@ -11,24 +11,33 @@ import (
 	"golang.org/x/net/websocket"
 )
 
+// Action is a type which represents an enumeration of available player actions.
+type Action string
+
+// Actions which don't need values.
+const (
+	ActionPlay            Action = "play"
+	ActionPause                  = "pause"
+	ActionNext                   = "next"
+	ActionPrev                   = "prev"
+	ActionTogglePlayPause        = "togglePlayPause"
+	ActionToggleMute             = "toggleMute"
+)
+
+// Player actions which require values.
+const (
+	ActionSetVolume Action = "setVolume"
+	ActionSetMute          = "setMute"
+	ActionSetTime          = "setTime"
+)
+
 // Player is an interface which defines methods for controlling a player.
 type Player interface {
 	// Key returns a unique identifier for this Player.
 	Key() string
 
-	// Play the current track.
-	Play() error
-	// Pause the current track.
-	Pause() error
-	// NextTrack jumps to the next track.
-	NextTrack() error
-	// PreviousTrack jumps to the previous track.
-	PreviousTrack() error
-
-	// Toggle play/pause.
-	TogglePlayPause() error
-	// Toggle mute on/off.
-	ToggleMute() error
+	// Do sends a Action to the player.
+	Do(a Action) error
 
 	// SetMute enabled/disables mute.
 	SetMute(bool) error
@@ -53,18 +62,6 @@ func MultiPlayer(key string, players ...Player) Player {
 	}
 }
 
-type cmdFn func(Player) error
-
-func (m multiPlayer) applyCmdFn(fn cmdFn) error {
-	for _, p := range m.players {
-		err := fn(p)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 type setFloatFn func(Player, float64) error
 
 func (m multiPlayer) applySetFloatFn(fn setFloatFn, f float64) error {
@@ -79,12 +76,15 @@ func (m multiPlayer) applySetFloatFn(fn setFloatFn, f float64) error {
 
 func (m multiPlayer) Key() string { return m.key }
 
-func (m multiPlayer) Play() error            { return m.applyCmdFn(Player.Play) }
-func (m multiPlayer) Pause() error           { return m.applyCmdFn(Player.Pause) }
-func (m multiPlayer) NextTrack() error       { return m.applyCmdFn(Player.NextTrack) }
-func (m multiPlayer) PreviousTrack() error   { return m.applyCmdFn(Player.PreviousTrack) }
-func (m multiPlayer) TogglePlayPause() error { return m.applyCmdFn(Player.TogglePlayPause) }
-func (m multiPlayer) ToggleMute() error      { return m.applyCmdFn(Player.ToggleMute) }
+func (m multiPlayer) Do(a Action) error {
+	for _, p := range m.players {
+		err := p.Do(a)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func (m multiPlayer) SetVolume(f float64) error { return m.applySetFloatFn(Player.SetVolume, f) }
 func (m multiPlayer) SetTime(f float64) error   { return m.applySetFloatFn(Player.SetTime, f) }
@@ -168,7 +168,7 @@ type websocketPlayer struct {
 	key string
 }
 
-func (w *websocketPlayer) sendCtrlAction(data interface{}) error {
+func (w *websocketPlayer) sendAction(data interface{}) error {
 	return websocket.JSON.Send(w.Conn, struct {
 		Action string
 		Data   interface{}
@@ -179,7 +179,7 @@ func (w *websocketPlayer) sendCtrlAction(data interface{}) error {
 }
 
 func (w *websocketPlayer) sendCtrlValue(key string, value interface{}) error {
-	return w.sendCtrlAction(struct {
+	return w.sendAction(struct {
 		Key   string
 		Value interface{}
 	}{
@@ -190,12 +190,41 @@ func (w *websocketPlayer) sendCtrlValue(key string, value interface{}) error {
 
 func (w websocketPlayer) Key() string { return w.key }
 
-func (w websocketPlayer) Play() error            { return w.sendCtrlAction("PLAY") }
-func (w websocketPlayer) Pause() error           { return w.sendCtrlAction("PAUSE") }
-func (w websocketPlayer) NextTrack() error       { return w.sendCtrlAction("NEXT") }
-func (w websocketPlayer) PreviousTrack() error   { return w.sendCtrlAction("PREV") }
-func (w websocketPlayer) TogglePlayPause() error { return w.sendCtrlAction("TOGGLE_PLAY_PAUSE") }
-func (w websocketPlayer) ToggleMute() error      { return w.sendCtrlAction("TOGGLE_MUTE") }
+var websocketActions = map[Action]string{
+	ActionPlay:            "PLAY",
+	ActionPause:           "PAUSE",
+	ActionNext:            "NEXT",
+	ActionPrev:            "PREV",
+	ActionTogglePlayPause: "TOGGLE_PLAY_PAUSE",
+	ActionToggleMute:      "TOGGLE_MUTE",
+
+	ActionSetVolume: "SET_VOLUME",
+	ActionSetMute:   "SET_MUTE",
+	ActionSetTime:   "SET_TIME",
+}
+
+func websocketToAction(a string) (Action, bool) {
+	for k, v := range websocketActions {
+		if v == a {
+			return k, true
+		}
+	}
+	return Action(""), false
+}
+
+type InvalidActionError string
+
+func (i InvalidActionError) Error() string {
+	return fmt.Sprintf("invalid player action: '%s'", string(i))
+}
+
+func (w websocketPlayer) Do(a Action) error {
+	s, ok := websocketActions[a]
+	if !ok {
+		return InvalidActionError(a)
+	}
+	return w.sendAction(s)
+}
 
 func (w websocketPlayer) SetMute(b bool) error      { return w.sendCtrlValue("mute", b) }
 func (w websocketPlayer) SetVolume(f float64) error { return w.sendCtrlValue("volume", f) }
