@@ -146,8 +146,8 @@ type track struct {
 	DiscCount   int `json:"discCount,omitempty"`
 	BitRate     int `json:"bitRate,omitempty"`
 
-	DateAdded    time.Time `json:dateAdded",omitempty"`
-	DateModified time.Time `json:dateModified",omitempty"`
+	DateAdded    time.Time `json:"dateAdded,omitempty"`
+	DateModified time.Time `json:"dateModified,omitempty"`
 }
 
 // GetString implements Track.
