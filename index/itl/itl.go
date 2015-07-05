@@ -73,8 +73,7 @@ func decodeLocation(l string) (string, error) {
 func (t *itlTrack) GetString(name string) string {
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println(name)
-			panic(r)
+			panic(fmt.Sprintf("panic attempting to read string field '%v': %v", name, r))
 		}
 	}()
 
