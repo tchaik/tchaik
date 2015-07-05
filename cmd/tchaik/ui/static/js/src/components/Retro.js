@@ -28,7 +28,7 @@ export default class Retro extends React.Component {
     var artworkImage = null;
     var imagePath = null;
     if (this.state.track) {
-      imagePath = `/artwork/${this.state.track.TrackID}`;
+      imagePath = `/artwork/${this.state.track.ID}`;
       artworkImage = <ArtworkImage path={imagePath} />;
     }
 

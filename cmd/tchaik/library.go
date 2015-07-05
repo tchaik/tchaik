@@ -30,10 +30,10 @@ type libraryFileSystem struct {
 	index.Library
 }
 
-// Open implements store.FileSystem and rewrites TrackID values to their corresponding Location
+// Open implements store.FileSystem and rewrites ID values to their corresponding Location
 // values using the index.Library.
 func (l *libraryFileSystem) Open(ctx context.Context, path string) (http.File, error) {
-	t, ok := l.Library.Track(strings.Trim(path, "/")) // TrackIDs arrive with leading slash
+	t, ok := l.Library.Track(strings.Trim(path, "/")) // IDs arrive with leading slash
 	if !ok {
 		return nil, fmt.Errorf("could not find track: %v", path)
 	}
@@ -55,14 +55,14 @@ type group struct {
 	BitRate     interface{} `json:",omitempty"`
 	DiscNumber  interface{} `json:",omitempty"`
 	ListStyle   interface{} `json:",omitempty"`
-	TrackID     interface{} `json:",omitempty"`
+	ID          interface{} `json:",omitempty"`
 	Year        interface{} `json:",omitempty"`
 	Groups      []group     `json:",omitempty"`
 	Tracks      []track     `json:",omitempty"`
 }
 
 type track struct {
-	TrackID     string `json:",omitempty"`
+	ID          string `json:",omitempty"`
 	Name        string `json:",omitempty"`
 	Album       string `json:",omitempty"`
 	Artist      string `json:",omitempty"`
@@ -108,7 +108,7 @@ func build(g index.Group, key index.Key) group {
 		BitRate:     g.Field("BitRate"),
 		DiscNumber:  g.Field("DiscNumber"),
 		ListStyle:   g.Field("ListStyle"),
-		TrackID:     g.Field("TrackID"),
+		ID:          g.Field("ID"),
 	}
 
 	if c, ok := g.(index.Collection); ok {
@@ -131,7 +131,7 @@ func build(g index.Group, key index.Key) group {
 
 	for _, t := range g.Tracks() {
 		h.Tracks = append(h.Tracks, track{
-			TrackID:   t.GetString("TrackID"),
+			ID:        t.GetString("ID"),
 			Name:      t.GetString("Name"),
 			TotalTime: t.GetInt("TotalTime"),
 			// Potentially common fields (don't want to re-transmit everything)
@@ -200,12 +200,12 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	if g == nil {
 		return group{}, fmt.Errorf("could not find group")
 	}
-	g = index.FirstTrackAttr(index.StringAttr("TrackID"), g)
+	g = index.FirstTrackAttr(index.StringAttr("ID"), g)
 
 	return build(g, k), nil
 }
 
-// FileSystem wraps the http.FileSystem in a library lookup which will translate /TrackID
+// FileSystem wraps the http.FileSystem in a library lookup which will translate /ID
 // requests into their corresponding track paths.
 func (l *Library) FileSystem(fs store.FileSystem) store.FileSystem {
 	return store.Trace(&libraryFileSystem{fs, l.Library}, "libraryFileSystem")

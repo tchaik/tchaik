@@ -35,7 +35,7 @@ describe("PlaylistStore", () => {
         ListStyle: "",
         Name: "Above & Beyond",
         TotalTime: 0,
-        TrackID: "5557b3238ec1cdbd69db5e049954488446cce05e",
+        ID: "5557b3238ec1cdbd69db5e049954488446cce05e",
         Tracks: [
           {
             AlbumArtist: "Camo & Krooked",
@@ -44,7 +44,7 @@ describe("PlaylistStore", () => {
             GroupName: "Above & Beyond",
             Key: "0",
             Name: "You Cry",
-            TrackID: "5557b3238ec1cdbd69db5e049954488446cce05e",
+            ID: "5557b3238ec1cdbd69db5e049954488446cce05e",
             Year: 2010,
           },
           {
@@ -54,7 +54,7 @@ describe("PlaylistStore", () => {
             GroupName: "Above & Beyond",
             Key: "1",
             Name: "Walk on Air",
-            TrackID: "ffa00899e388b81cd3f2a0a971743aeffa447fe6",
+            ID: "ffa00899e388b81cd3f2a0a971743aeffa447fe6",
             Year: 2010,
           },
         ],

@@ -117,7 +117,7 @@ function _onNowPlayingControl(type, value) {
 function update() {
   var track = NowPlayingStore.getTrack();
   if (track) {
-    var source = `/track/${track.TrackID}`;
+    var source = `/track/${track.ID}`;
     var orig = src();
     if (orig !== source) {
       setSrc(source);

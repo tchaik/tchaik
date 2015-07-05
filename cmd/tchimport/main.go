@@ -14,7 +14,7 @@ for each track (so a much smaller memory footprint).
 Alternatively you can specify a path which will be transversed. All supported audio files within this path
 (.mp3, .m4a, .flac - ID3.v1,2.{2,3,4}, MP4 and FLAC) will be scanned for metadata. Only tracks which have readable
 metadata will be added to the library.  Any errors are logged to stdout. As no other unique identifying data is know,
-the SHA1 sum of the file path is used as the TrackID.
+the SHA1 sum of the file path is used as the ID.
 
   tchimport -path <directory-path> -out lib.tch
 */
@@ -66,7 +66,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = writeLibrary(index.Convert(l, "TrackID"))
+	err = writeLibrary(index.Convert(l, "ID"))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

@@ -84,7 +84,7 @@ func (t *itlTrack) GetString(name string) string {
 			panic(fmt.Sprintf("error in decodeLocation: %v", err))
 		}
 		return loc
-	case "TrackID":
+	case "ID":
 		return strconv.Itoa(t.TrackID)
 	case "Name":
 		return html.UnescapeString(t.Name)
@@ -119,7 +119,7 @@ func (t *itlTrack) GetString(name string) string {
 // GetInt fetches the given int field in the Track, panics if field doesn't exist.
 func (t *itlTrack) GetInt(name string) int {
 	switch name {
-	case "TrackID": // NB: This should really be read as a string
+	case "ID": // NB: This should really be read as a string
 		return t.TrackID
 	case "DiscNumber":
 		return t.DiscNumber

@@ -126,7 +126,7 @@ class Controls extends React.Component {
       return;
     }
     document.title = currentTrack.Name;
-    favicon.href = `/icon/${currentTrack.TrackID}`;
+    favicon.href = `/icon/${currentTrack.ID}`;
   }
 
   _togglePlayPause() {

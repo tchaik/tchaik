@@ -72,7 +72,7 @@ class Cover extends React.Component {
   render() {
     return (
       <div className="cover">
-        <ArtworkImage path={`/artwork/${this.state.item.TrackID}`} />
+        <ArtworkImage path={`/artwork/${this.state.item.ID}`} />
         <span className="controls">
           <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="list" title="Queue" onClick={this._onQueue} />

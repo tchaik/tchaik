@@ -70,14 +70,14 @@ export default class NowPlaying extends React.Component {
 
     return (
       <div className={className}>
-        <ArtworkImage path={`/artwork/${track.TrackID}`} onClick={this._onClickArtwork}/>
+        <ArtworkImage path={`/artwork/${track.ID}`} onClick={this._onClickArtwork}/>
         <div className="track-info">
           <div className="container">
             <div className="title">
               {track.Name}
               <span className="hover-show">
                 <BitRate track={track} />
-                <a className="goto" href={`#track_${track.TrackID}`}>
+                <a className="goto" href={`#track_${track.ID}`}>
                   <Icon icon="share-alt" />
                 </a>
               </span>

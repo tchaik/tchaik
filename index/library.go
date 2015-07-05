@@ -35,7 +35,7 @@ type Track interface {
 
 // Convert reads all the data exported by the Library and writes into the standard
 // tchaik Library implementation.
-// NB: The identifier field is set to be the value of TrackID on every track, regardless
+// NB: The identifier field is set to be the value of ID on every track, regardless
 // of whether this value has already been set in the input Library.
 func Convert(l Library, id string) *library {
 	allTracks := l.Tracks()
@@ -45,7 +45,7 @@ func Convert(l Library, id string) *library {
 		identifier := t.GetString(id)
 		tracks[identifier] = &track{
 			// string fields
-			TrackID:     identifier,
+			ID:          identifier,
 			Name:        t.GetString("Name"),
 			Album:       t.GetString("Album"),
 			AlbumArtist: t.GetString("AlbumArtist"),
@@ -129,7 +129,7 @@ func ReadFrom(r io.Reader) (Library, error) {
 
 // track is the default implementation of the Track interface.
 type track struct {
-	TrackID     string `json:"trackId,omitempty"`
+	ID          string `json:"id,omitempty"`
 	Name        string `json:"name,omitempty"`
 	Album       string `json:"album,omitempty"`
 	AlbumArtist string `json:"albumArtist,omitempty"`
@@ -153,8 +153,8 @@ type track struct {
 // GetString implements Track.
 func (t *track) GetString(name string) string {
 	switch name {
-	case "TrackID":
-		return t.TrackID
+	case "ID":
+		return t.ID
 	case "Name":
 		return t.Name
 	case "Album":

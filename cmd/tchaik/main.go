@@ -121,7 +121,7 @@ func readLibrary() (index.Library, error) {
 	}
 
 	fmt.Printf("Building Tchaik Library...")
-	lib = index.Convert(lib, "TrackID")
+	lib = index.Convert(lib, "ID")
 	fmt.Println("done.")
 	return lib, nil
 }

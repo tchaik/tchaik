@@ -140,7 +140,7 @@ func (m *track) GetString(name string) string {
 		return m.Genre()
 	case "Location":
 		return m.Location
-	case "TrackID":
+	case "ID":
 		sum := sha1.Sum([]byte(m.Location))
 		return string(fmt.Sprintf("%x", sum))
 	}

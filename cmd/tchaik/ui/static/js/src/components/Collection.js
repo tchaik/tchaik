@@ -98,8 +98,8 @@ export class Group extends React.Component {
         </span>
       );
 
-      if (this.state.common.TrackID && this.props.depth === 1) {
-        image = <ArtworkImage path={`/artwork/${common.TrackID}`} onClick={this._onClickImage}/>;
+      if (this.state.common.ID && this.props.depth === 1) {
+        image = <ArtworkImage path={`/artwork/${common.ID}`} onClick={this._onClickImage}/>;
       }
     }
 
@@ -209,7 +209,7 @@ class GroupContent extends React.Component {
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var fields = ["TotalTime", "AlbumArtist", "Artist", "TrackID", "Composer", "Year"];
+      var fields = ["TotalTime", "AlbumArtist", "Artist", "ID", "Composer", "Year"];
       fields.forEach(function(f) {
         if (item[f]) {
           common[f] = item[f];
@@ -268,7 +268,7 @@ class TrackList extends React.Component {
 
     var ols = [];
     var buildTrack = function(track) {
-      return <Track key={track.TrackID} data={track} path={this.props.path.concat([track.Key])} />;
+      return <Track key={track.ID} data={track} path={this.props.path.concat([track.Key])} />;
     }.bind(this);
 
     for (var i = 0; i < discIndices.length; i++) {
@@ -295,10 +295,10 @@ TrackList.propTypes = {
 };
 
 
-function isCurrent(trackId) {
+function isCurrent(id) {
   var t = NowPlayingStore.getTrack();
   if (t) {
-    return t.TrackID === trackId;
+    return t.ID === id;
   }
   return false;
 }
@@ -309,7 +309,7 @@ class Track extends React.Component {
     super(props);
 
     this.state = {
-      current: isCurrent(this.props.data.TrackID),
+      current: isCurrent(this.props.data.ID),
       playing: NowPlayingStore.getPlaying(),
       expanded: false,
     };
@@ -355,7 +355,7 @@ class Track extends React.Component {
 
     return (
       <li className={classNames(liClasses)} onClick={this._onClick}>
-        <span id={`track_${this.props.data.TrackID}`} className="name">{this.props.data.Name}</span>
+        <span id={`track_${this.props.data.ID}`} className="name">{this.props.data.Name}</span>
         <TimeFormatter className="duration" time={durationSecs} />
         <span className="controls">
           <Icon icon="option-vertical" title="More" onClick={this._onMore} />
@@ -369,7 +369,7 @@ class Track extends React.Component {
 
   _onChange() {
     this.setState({
-      current: isCurrent(this.props.data.TrackID),
+      current: isCurrent(this.props.data.ID),
       playing: NowPlayingStore.getPlaying(),
     });
   }

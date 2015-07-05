@@ -93,7 +93,7 @@ func readLibrary() (index.Library, error) {
 			return nil, fmt.Errorf("error parsing iTunes library file: %v", err)
 		}
 
-		l = index.Convert(il, "TrackID")
+		l = index.Convert(il, "ID")
 		return l, nil
 	}
 
