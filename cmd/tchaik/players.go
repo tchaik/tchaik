@@ -159,43 +159,52 @@ func (playersHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 	dec := json.NewDecoder(r.Body)
 	defer r.Body.Close()
 
-	putData := struct {
+	data := struct {
 		Action string
 		Value  interface{}
 	}{}
-	err := dec.Decode(&putData)
+	err := dec.Decode(&data)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error parsing JSON: %v", err), http.StatusBadRequest)
 		return
 	}
 
-	switch a := Action(putData.Action); a {
+	a := Action(data.Action)
+	switch a {
 	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute:
 		err = p.Do(a)
 
-	case ActionSetVolume:
-		f, ok := putData.Value.(float64)
-		if !ok {
-			err = InvalidValueError("invalid volume value: expected float")
+	case ActionSetVolume, ActionSetMute, ActionSetTime:
+		if data.Value == nil {
+			err = InvalidValueError("value required")
 			break
 		}
-		err = p.SetVolume(f)
 
-	case ActionSetMute:
-		b, ok := putData.Value.(bool)
-		if !ok {
-			err = InvalidValueError("invalid mute value: expected boolean")
-			break
-		}
-		err = p.SetMute(b)
+		switch a {
+		case ActionSetVolume:
+			f, ok := data.Value.(float64)
+			if !ok {
+				err = InvalidValueError("invalid volume value: expected float")
+				break
+			}
+			err = p.SetVolume(f)
 
-	case ActionSetTime:
-		f, ok := putData.Value.(float64)
-		if !ok {
-			err = InvalidValueError("invalid time value: expected float")
-			break
+		case ActionSetMute:
+			b, ok := data.Value.(bool)
+			if !ok {
+				err = InvalidValueError("invalid mute value: expected boolean")
+				break
+			}
+			err = p.SetMute(b)
+
+		case ActionSetTime:
+			f, ok := data.Value.(float64)
+			if !ok {
+				err = InvalidValueError("invalid time value: expected float")
+				break
+			}
+			err = p.SetTime(f)
 		}
-		err = p.SetTime(f)
 
 	default:
 		err = InvalidActionError(a)
