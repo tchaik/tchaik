@@ -51,55 +51,61 @@ func main() {
 		os.Exit(1)
 	}
 
+	err := handleParams()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+}
+
+func handleParams() error {
 	if keys {
-		list, err := getPlayerKeys()
+		pks, err := getPlayerKeys()
 		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
+			return err
 		}
 
-		for _, k := range list {
-			fmt.Println(k)
+		b, err := json.MarshalIndent(pks, "", "  ")
+		if err != nil {
+			return fmt.Errorf("error marshalling keys: %v\n", err)
 		}
-		return
+		fmt.Println(string(b))
+		return nil
 	}
 
 	if key == "" {
 		key = os.Getenv(PlayerKeyEnv)
 	}
 	if key == "" {
-		fmt.Printf("must use -key or set %v\n", PlayerKeyEnv)
-		os.Exit(1)
+		return fmt.Errorf("must use -key or set %v\n", PlayerKeyEnv)
 	}
 
 	if create != "" {
 		err := handleCreate(key, create)
 		if err != nil {
-			fmt.Printf("error creating player key: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("error creating player key: %v\n", err)
 		}
-		return
+		return nil
 	}
 
 	if action != "" {
 		err := handleAction(action, value)
 		if err != nil {
-			fmt.Printf("error handling action: %v\n", err)
-			os.Exit(1)
+			return fmt.Errorf("error handling action: %v\n", err)
 		}
+		return nil
 	}
 
 	player, err := getPlayer(key)
 	if err != nil {
-		fmt.Printf("error fetching key: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("error fetching key: %v\n", err)
 	}
 	b, err := json.MarshalIndent(player, "", "  ")
 	if err != nil {
-		fmt.Printf("error marshalling player: %v\n", err)
-		os.Exit(1)
+		return fmt.Errorf("error marshalling player: %v\n", err)
 	}
 	fmt.Println(string(b))
+	return nil
 }
 
 func handleCreate(key, create string) error {
@@ -148,7 +154,11 @@ func handleAction(action, value string) error {
 	return sendPlayerAction(nil)
 }
 
-func getPlayerKeys() ([]string, error) {
+type PlayerKeys struct {
+	Keys []string `json:"keys"`
+}
+
+func getPlayerKeys() (*PlayerKeys, error) {
 	resp, err := http.Get(fmt.Sprintf("%v/api/players/", host))
 	if err != nil {
 		return nil, fmt.Errorf("error performing request: %v", err)
@@ -164,14 +174,12 @@ func getPlayerKeys() ([]string, error) {
 		return nil, fmt.Errorf("error: %v", string(body))
 	}
 
-	data := struct {
-		Keys []string `json:"keys"`
-	}{}
-	err = json.Unmarshal(body, &data)
+	var keys PlayerKeys
+	err = json.Unmarshal(body, &keys)
 	if err != nil {
 		return nil, fmt.Errorf("error unmarshalling response: %v", err)
 	}
-	return data.Keys, nil
+	return &keys, nil
 }
 
 type Player struct {
