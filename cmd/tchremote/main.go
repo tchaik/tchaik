@@ -29,6 +29,7 @@ var key string
 var keys bool
 var action string
 var value string
+var create string
 
 func init() {
 	flag.StringVar(&host, "addr", "", fmt.Sprintf("schema://host(:port) address of the REST API (or set %v)", HostEnv))
@@ -36,6 +37,7 @@ func init() {
 	flag.BoolVar(&keys, "keys", false, "list all the keys on the host")
 	flag.StringVar(&action, "action", "", "action to send to the player (requires -key, some require -value)")
 	flag.StringVar(&value, "value", "", "value to send to the player")
+	flag.StringVar(&create, "create", "", "create a multi-player for the given -key")
 }
 
 func main() {
@@ -70,11 +72,59 @@ func main() {
 		os.Exit(1)
 	}
 
-	err := handleAction(action, value)
+	if create != "" {
+		err := handleCreate(key, create)
+		if err != nil {
+			fmt.Printf("error creating player key: %v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
+
+	if action != "" {
+		err := handleAction(action, value)
+		if err != nil {
+			fmt.Printf("error handling action: %v\n", err)
+			os.Exit(1)
+		}
+	}
+
+	player, err := getPlayer(key)
 	if err != nil {
-		fmt.Printf("error handling action: %v", err)
+		fmt.Printf("error fetching key: %v\n", err)
 		os.Exit(1)
 	}
+	b, err := json.MarshalIndent(player, "", "  ")
+	if err != nil {
+		fmt.Printf("error marshalling player: %v\n", err)
+		os.Exit(1)
+	}
+	fmt.Println(string(b))
+}
+
+func handleCreate(key, create string) error {
+	keys := strings.Split(create, ",")
+	data := struct {
+		Key        string   `json:"key"`
+		PlayerKeys []string `json:"playerKeys"`
+	}{
+		Key:        key,
+		PlayerKeys: keys,
+	}
+	b, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	resp, err := http.Post(fmt.Sprintf("%v/api/players/", host), "application/json", bytes.NewBuffer(b))
+	if err != nil {
+		return fmt.Errorf("error performing request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		return fmt.Errorf("error creating player key: %v", err)
+	}
+	return nil
 }
 
 func handleAction(action, value string) error {
@@ -122,6 +172,31 @@ func getPlayerKeys() ([]string, error) {
 		return nil, fmt.Errorf("error unmarshalling response: %v", err)
 	}
 	return data.Keys, nil
+}
+
+type Player struct {
+	Key        string   `json:"key"`
+	PlayerKeys []string `json:"playerKeys"`
+}
+
+func getPlayer(key string) (*Player, error) {
+	resp, err := http.Get(fmt.Sprintf("%v/api/players/%v", host, key))
+	if err != nil {
+		return nil, fmt.Errorf("error performing request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading response body: %v", err)
+	}
+
+	var data Player
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshalling response: %v", err)
+	}
+	return &data, nil
 }
 
 func sendPlayerAction(value interface{}) error {
