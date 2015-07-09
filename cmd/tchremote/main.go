@@ -80,32 +80,33 @@ func handleParams() error {
 		return fmt.Errorf("must use -key or set %v\n", PlayerKeyEnv)
 	}
 
-	if create != "" {
-		err := handleCreate(key, create)
+	var err error
+	switch {
+	case create != "":
+		err = handleCreate(key, create)
 		if err != nil {
-			return fmt.Errorf("error creating player key: %v\n", err)
+			err = fmt.Errorf("error creating player key: %v\n", err)
 		}
-		return nil
-	}
-
-	if action != "" {
-		err := handleAction(action, value)
+	case action != "":
+		err = handleAction(action, value)
 		if err != nil {
-			return fmt.Errorf("error handling action: %v\n", err)
+			err = fmt.Errorf("error handling action: %v\n", err)
 		}
-		return nil
+	default:
+		var p *Player
+		p, err = getPlayer(key)
+		if err != nil {
+			err = fmt.Errorf("error fetching key: %v\n", err)
+			break
+		}
+		b, err := json.MarshalIndent(p, "", "  ")
+		if err != nil {
+			err = fmt.Errorf("error marshalling player: %v\n", err)
+			break
+		}
+		fmt.Println(string(b))
 	}
-
-	player, err := getPlayer(key)
-	if err != nil {
-		return fmt.Errorf("error fetching key: %v\n", err)
-	}
-	b, err := json.MarshalIndent(player, "", "  ")
-	if err != nil {
-		return fmt.Errorf("error marshalling player: %v\n", err)
-	}
-	fmt.Println(string(b))
-	return nil
+	return err
 }
 
 func handleCreate(key, create string) error {
