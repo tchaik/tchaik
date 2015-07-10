@@ -30,6 +30,7 @@ var keys bool
 var action string
 var value string
 var create string
+var delete bool
 
 func init() {
 	flag.StringVar(&host, "addr", "", fmt.Sprintf("schema://host(:port) address of the REST API (or set %v)", HostEnv))
@@ -38,6 +39,7 @@ func init() {
 	flag.StringVar(&action, "action", "", "action to send to the player (requires -key, some require -value)")
 	flag.StringVar(&value, "value", "", "value to send to the player")
 	flag.StringVar(&create, "create", "", "create a multi-player for the given -key")
+	flag.BoolVar(&delete, "delete", false, "delete the player for -key")
 }
 
 func main() {
@@ -92,6 +94,11 @@ func handleParams() error {
 		if err != nil {
 			err = fmt.Errorf("error handling action: %v\n", err)
 		}
+	case delete:
+		err = handleDelete(key)
+		if err != nil {
+			err = fmt.Errorf("error deleting key: %v\n", err)
+		}
 	default:
 		var p *Player
 		p, err = getPlayer(key)
@@ -130,6 +137,29 @@ func handleCreate(key, create string) error {
 
 	if resp.StatusCode != http.StatusCreated {
 		return fmt.Errorf("error creating player key: %v", err)
+	}
+	return nil
+}
+
+func handleDelete(key string) error {
+	requestURL := fmt.Sprintf("%v/api/players/%v", host, key)
+	req, err := http.NewRequest("DELETE", requestURL, nil)
+	if err != nil {
+		return fmt.Errorf("error creating request: %v", err)
+	}
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("error performing request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusNoContent {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return fmt.Errorf("error reading response body: %v", err)
+		}
+		return fmt.Errorf("error: %v", strings.TrimSpace(string(body)))
 	}
 	return nil
 }
