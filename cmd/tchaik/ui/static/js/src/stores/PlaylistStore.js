@@ -275,10 +275,12 @@ function remove(itemIndex, path) {
   var items = getPlaylistItems();
   var item = items[itemIndex];
 
+  var removedItem = false;
   var data;
   do {
     if (_pathsEqual(path, item.root)) {
       _removeItem(items, itemIndex);
+      removedItem = true;
       break;
     }
 
@@ -293,8 +295,14 @@ function remove(itemIndex, path) {
     data.keys.splice(data.keys.indexOf(last), 1);
   } while(data.keys.length === 0 && path.length > 1);
 
-  setPlaylistCurrent(null);
   setPlaylistItems(items);
+  var current = getPlaylistCurrent();
+  if (removedItem) {
+    if (current.item === itemIndex) {
+      current = null;
+    }
+    setPlaylistCurrent(current);
+  }
 }
 
 function setCurrent(itemIndex, path) {
