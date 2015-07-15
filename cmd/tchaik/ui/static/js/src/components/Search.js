@@ -44,7 +44,7 @@ class Results extends React.Component {
     if (list.length === 0) {
       return (
         <div className="collection">
-          <div className="no-results"><Icon icon="headphones" />No results found</div>
+          <div className="no-results"><Icon icon="audiotrack" />No results found</div>
         </div>
       );
     }

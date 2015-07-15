@@ -15,11 +15,11 @@ div#top {
   }
 
   .menu-button {
-    margin-top: 14px;
+    margin-top: 10px;
     margin-left: 25px;
 
-    .glyphicon {
-      font-size: 20px;
+    .icon {
+      font-size: 30px;
       color: #999;
       cursor: pointer;
 
@@ -50,11 +50,10 @@ div#top {
     justify-content: center;
     flex: 1;
 
-    span.glyphicon-search {
+    .icon {
       top: 0;
       color: white;
       margin-right: -46px;
-      font-size: 18px;
     }
 
     input {

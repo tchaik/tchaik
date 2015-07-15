@@ -78,7 +78,7 @@ export default class NowPlaying extends React.Component {
               <span className="hover-show">
                 <BitRate track={track} />
                 <a className="goto" href={`#track_${track.ID}`}>
-                  <Icon icon="share-alt" />
+                  <Icon icon="reply" />
                 </a>
               </span>
             </div>

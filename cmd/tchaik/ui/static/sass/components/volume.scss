@@ -7,12 +7,13 @@
   justify-content: flex-end;
   align-items: center;
 
-  span.glyphicon {
+  span.icon {
+    text-alignment: left;
     color: #bbb;
     padding: 10px 0;
     margin-left: 12px;
     margin-top: -10px;
-    font-size: 22px;
+    font-size: 28px;
 
     &:hover {
       color: white;

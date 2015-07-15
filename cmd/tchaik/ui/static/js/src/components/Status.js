@@ -37,10 +37,11 @@ export default class StatusView extends React.Component {
       "closed": !this.state.open,
     };
     var title = this.state.open ? "Online" : "Offline";
+    var icon = this.state.open ? "on" : "off";
 
     return (
       <span className={classNames(classes)} onClick={this._onClick}>
-        <Icon icon="flash" title={title} />
+        <Icon icon={"flash_" + icon} title={title} />
       </span>
     );
   }

@@ -74,8 +74,8 @@ class Cover extends React.Component {
       <div className="cover">
         <ArtworkImage path={`/artwork/${this.state.item.ID}`} />
         <span className="controls">
-          <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
-          <Icon icon="list" title="Queue" onClick={this._onQueue} />
+          <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
+          <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />
         </span>
       </div>
     );

@@ -14,7 +14,7 @@ export default class MenuButton extends React.Component {
   render() {
     return (
       <div className="menu-button" onClick={this._onClick}>
-        <Icon icon="menu-hamburger"/>
+        <Icon icon="menu" />
       </div>
     );
   }

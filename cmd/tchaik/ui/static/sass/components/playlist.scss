@@ -12,9 +12,9 @@ div.playlist {
     color: #fff;
     text-align: center;
 
-    span.glyphicon {
-      font-size: 24px;
-      margin-right: 20px;
+    .icon {
+      font-size: 28px;
+      margin-right: 10px;
     }
   }
 
@@ -98,22 +98,23 @@ div.playlist {
       float: right;
     }
 
-    span.glyphicon-remove {
-      color: #666;
+    span.icon {
+      color: #666;;
+
       &:hover {
         color: #ddd;
       }
     }
   }
 
-  span.glyphicon-remove {
+  span.icon {
     float: right;
     margin-left: 5px;
     color: #333;
+    cursor: pointer;
 
     &:hover {
       color: #ccc;
-      cursor: pointer;
     }
   }
 
@@ -134,8 +135,8 @@ div.playlist {
 
       li {
         font-size: 11px;
-        line-height: 15px;
-        padding: 8px;
+        line-height: 20px;
+        padding: 6px;
         border-bottom: 1px solid #232323;
         color: #bbb;
         text-overflow: ellipsis;
@@ -170,7 +171,7 @@ div.playlist {
               color: $light-blue;
             }
 
-            span.glyphicon-remove, span.duration {
+            .icon {
               color: $light-blue;
             }
           }
@@ -182,11 +183,11 @@ div.playlist {
 
         &.is-playing, &.is-playing:hover {
           &::before {
-            font-family: 'Glyphicons Halflings';
-            content: '\e038';
-            font-size: 16px;
-            line-height: 10px;
-            vertical-align: -35%;
+            font-family: 'Material Icons';
+            content: '\e050';
+            font-size: 20px;
+            line-height: 20px;
+            vertical-align: -30%;
           }
         }
 
@@ -195,29 +196,34 @@ div.playlist {
           color: #999;
         }
 
+        span.icon {
+          font-size: 16px;
+          float: right;
+        }
+
         &:hover {
           background-color: #111;
           color: #eee;
 
           &::before {
             color: #ddd;
-            font-family: 'Glyphicons Halflings';
-            content: '\e072';
-            font-size: 12px;
-            line-height: 10px;
-            vertical-align: -20%;
+            font-family: 'Material Icons';
+            content: '\e037';
+            font-size: 20px;
+            line-height: 20px;
+            vertical-align: -30%;
           }
 
-          span.glyphicon-remove {
+          span.icon {
             color: #999;
           }
 
-          span.duration {
+          span.icon {
             color: #ddd;
           }
         }
 
-        span.glyphicon-remove:hover {
+        span.icon:hover {
           color: #eee;
         }
       }

@@ -45,7 +45,7 @@ export default class PlayerKeyView extends React.Component {
     var title = this.state.set ? "Player Key: Set" : "";
     return (
       <span className={classNames(classes)}>
-        <Icon icon="transfer" title={title} />
+        <Icon icon="settings_remote" title={title} />
       </span>
     );
   }

@@ -13,9 +13,9 @@ div.collection {
     color: #fff;
     text-align: center;
 
-    span.glyphicon-headphones {
-      font-size: 24px;
-      margin-right: 20px;
+    .icon {
+      font-size: 30px;
+      margin-right: 10px;
     }
   }
 
@@ -85,7 +85,7 @@ div.collection {
       div.header {
         span.name {
           font-weight: 300;
-          font-size: 18px;
+          font-size: 20px;
           color: white;
         }
 
@@ -109,7 +109,12 @@ div.collection {
         color: #666;
       }
 
-      span.glyphicon {
+      span.icon {
+        &.material-icons {
+          font-size: 24px;
+          line-height: 14px;
+        }
+
         padding-left: 10px;
         color: #999;
         font-size: 14px;
@@ -178,7 +183,8 @@ div.collection {
         }
 
         li {
-          padding: 8px 0;
+          padding: 6px 0;
+          line-height: 20px;
           font-size: 13px;
           cursor: pointer;
 
@@ -208,9 +214,12 @@ div.collection {
           span.controls {
             display: none;
 
-            span.glyphicon {
+            span.icon {
               padding-left: 10px;
               color: #666;
+              font-size: 20px;
+              margin-top: -10px;
+              vertical-align: -webkit-baseline-middle;
 
               &:hover {
                 color: white;
@@ -252,11 +261,11 @@ div.collection {
 
             &.playing {
               &::before {
-                font-family: 'Glyphicons Halflings';
-                content: '\e038';
-                font-size: 16px;
-                line-height: 10px;
-                vertical-align: -34%;
+                font-family: 'Material Icons';
+                content: '\e050';
+                font-size: 20px;
+                line-height: 20px;
+                vertical-align: -30%;
               }
             }
           }
@@ -288,11 +297,11 @@ div.collection {
 
             &::before {
               color: #ddd;
-              font-family: 'Glyphicons Halflings';
-              content: '\e072';
-              font-size: 12px;
-              line-height: 10px;
-              vertical-align: -20%;
+              font-family: 'Material Icons';
+              content: '\e037';
+              font-size: 20px;
+              line-height: 20px;
+              vertical-align: -30%;
             }
           }
         }

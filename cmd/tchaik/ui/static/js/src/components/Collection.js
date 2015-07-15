@@ -73,7 +73,7 @@ export class Group extends React.Component {
       if (this.state.common.TotalTime) {
         duration = (
           <span>
-            <Icon icon="time" /><TimeFormatter className="duration" time={parseInt(common.TotalTime / 1000)} />
+            <Icon icon="schedule"/><TimeFormatter className="duration" time={parseInt(common.TotalTime / 1000)} />
           </span>
         );
       }
@@ -93,8 +93,8 @@ export class Group extends React.Component {
       play = (
         <span className="controls">
           {duration}
-          <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
-          <Icon icon="list" title="Queue" onClick={this._onQueue} />
+          <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
+          <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />
         </span>
       );
 
@@ -358,9 +358,9 @@ class Track extends React.Component {
         <span id={`track_${this.props.data.ID}`} className="name">{this.props.data.Name}</span>
         <TimeFormatter className="duration" time={durationSecs} />
         <span className="controls">
-          <Icon icon="option-vertical" title="More" onClick={this._onMore} />
-          <Icon icon="play" title="Play Now" onClick={this._onPlayNow} />
-          <Icon icon="list" title="Queue" onClick={this._onQueue} />
+          <Icon icon="more_vert"title="More" onClick={this._onMore} />
+          <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
+          <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />
         </span>
         {expanded}
       </li>

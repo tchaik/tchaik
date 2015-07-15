@@ -39,7 +39,7 @@ export default class Playlist extends React.Component {
     if (items.length === 0) {
       return (
         <div className="playlist">
-          <div className="no-items"><Icon icon="list-alt" />Empty playlist</div>
+          <div className="no-items"><Icon icon="queue_music" />Empty playlist</div>
         </div>
       );
     }
@@ -178,7 +178,7 @@ class Group extends React.Component {
               <div className="attributes duration">{duration}</div>
             </div>
             <div className="controls">
-              <Icon icon="remove" onClick={this._onClickRemove} />
+              <Icon icon="clear"onClick={this._onClickRemove} />
             </div>
           </div>
         </div>
@@ -379,7 +379,7 @@ class Track extends React.Component {
       <li onClick={this._onClick} style={{"counterReset": "li " + (this.props.index + 1)}} className={classNames(style)}>
         <span id={"track_" + this.props.data.ID} className="name">{this.props.data.Name}</span>
         <span className="info">
-          <Icon icon="remove" onClick={this._onClickRemove} />
+          <Icon icon="clear"onClick={this._onClickRemove} />
           <TimeFormatter className="duration" time={durationSecs} />
         </span>
       </li>

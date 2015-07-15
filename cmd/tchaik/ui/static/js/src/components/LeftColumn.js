@@ -60,20 +60,6 @@ class ToolbarItem extends React.Component {
   }
 }
 
-class LinkItem extends React.Component {
-  render() {
-    return (
-      <a className="menu-item" href={this.props.href} target="_blank">
-        <span className="item">
-          <Icon icon={this.props.icon} fa={true} />
-        </span>
-        <span className="title">{this.props.title}</span>
-      </a>
-    );
-  }
-}
-
-
 function leftColumnState() {
   return {
     mode: ContainerStore.getMode(),
@@ -105,16 +91,13 @@ export default class LeftColumn extends React.Component {
       <div className={classes}>
         <div className="top">
           <ul className="menu">
-            <ToolbarItem mode={ContainerConstants.ALL} icon="headphones" title="Library" />
-            <ToolbarItem mode={ContainerConstants.ARTISTS} icon="list" title="Artists" />
-            <ToolbarItem mode={ContainerConstants.COVERS} icon="th-large" title="Covers" />
-            <ToolbarItem mode={ContainerConstants.RECENT} icon="time" title="Recently Added" />
-            <ToolbarItem mode={ContainerConstants.RETRO} icon="cd" title="Retro" />
-            <ToolbarItem mode={ContainerConstants.SETTINGS} icon="cog" title="Settings" />
+            <ToolbarItem mode={ContainerConstants.ALL} icon="library_music" title="Library" />
+            <ToolbarItem mode={ContainerConstants.ARTISTS} icon="group" title="Artists" />
+            <ToolbarItem mode={ContainerConstants.COVERS} icon="view_module" title="Covers" />
+            <ToolbarItem mode={ContainerConstants.RECENT} icon="schedule" title="Recently Added" />
+            <ToolbarItem mode={ContainerConstants.RETRO} icon="album" title="Retro" />
+            <ToolbarItem mode={ContainerConstants.SETTINGS} icon="settings" title="Settings" />
           </ul>
-          <div className="links">
-            <LinkItem title="GitHub" href="https://github.com/tchaik/tchaik" icon="github" />
-          </div>
         </div>
         <div className="middle"></div>
         <div className="bottom">

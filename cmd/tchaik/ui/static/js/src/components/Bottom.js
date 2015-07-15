@@ -58,7 +58,7 @@ class RightColumnToggle extends React.Component {
   render() {
     return (
       <div className="right-column-toggle">
-        <Icon icon="list-alt" onClick={this._onClick} />
+        <Icon icon="queue_music"onClick={this._onClick} />
       </div>
     );
   }
@@ -98,13 +98,13 @@ class Controls extends React.Component {
   }
 
   render() {
-    var prevClasses = {"enabled": this.state.canPrev};
-    var nextClasses = {"enabled": this.state.canNext};
+    var prevClasses = {"skip": true, "enabled": this.state.canPrev};
+    var nextClasses = {"skip": true, "enabled": this.state.canNext};
     return (
       <div className="controls">
-        <Icon icon="step-backward" extraClasses={prevClasses} onClick={this._onBackward} />
-        <span><Icon icon={this.state.playing ? "pause" : "play"} onClick={this._togglePlayPause} /></span>
-        <Icon icon="step-forward" extraClasses={nextClasses} onClick={this._onForward} />
+        <Icon icon="skip_previous"extraClasses={prevClasses} onClick={this._onBackward} />
+        <span><Icon icon={this.state.playing ? "pause_circle_filled" : "play_circle_filled"}extraClasses={{"play-pause": true}} onClick={this._togglePlayPause} /></span>
+        <Icon icon="skip_next"extraClasses={nextClasses} onClick={this._onForward} />
       </div>
     );
   }

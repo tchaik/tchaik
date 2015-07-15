@@ -44,7 +44,7 @@ export default class Volume extends React.Component {
     var volume = this.state.volume;
     var classSuffix;
     if (volume === 0.00) {
-      classSuffix = "off";
+      classSuffix = "mute";
     } else if (volume < 0.5) {
       classSuffix = "down";
     } else {
@@ -60,7 +60,7 @@ export default class Volume extends React.Component {
           <div className="marker" />
           <div className="rest" style={{width: rest}} />
         </div>
-        <Icon icon={"volume-" + classSuffix} onClick={this._toggleMute} />
+        <Icon icon={"volume_" + classSuffix}onClick={this._toggleMute} />
       </div>
     );
   }
