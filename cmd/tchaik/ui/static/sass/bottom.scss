@@ -65,6 +65,7 @@ div#bottom {
         margin: 8px;
         @include user-select(none);
         @include fade-in(color);
+        cursor: pointer;
 
         &.skip {
           font-size: 26px;
@@ -85,8 +86,7 @@ div#bottom {
           color: white;
 
           &:hover {
-            color: rgba(128, 128, 128, 1.0);
-            cursor: pointer;
+            color: lighten($light-blue, 10);
           }
         }
       }
