@@ -116,6 +116,10 @@ func (t *itlTrack) GetString(name string) string {
 	return html.UnescapeString(f.String())
 }
 
+func (t *itlTrack) GetStrings(name string) []string {
+	panic(fmt.Sprintf("field '%v' is not a []string", name))
+}
+
 // GetInt fetches the given int field in the Track, panics if field doesn't exist.
 func (t *itlTrack) GetInt(name string) int {
 	switch name {

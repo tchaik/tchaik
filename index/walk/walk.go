@@ -147,6 +147,10 @@ func (m *track) GetString(name string) string {
 	return ""
 }
 
+func (m *track) GetStrings(name string) []string {
+	return nil
+}
+
 func (m *track) GetInt(name string) int {
 	switch name {
 	case "Year":

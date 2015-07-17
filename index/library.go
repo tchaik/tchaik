@@ -27,8 +27,13 @@ type Library interface {
 type Track interface {
 	// GetString returns the string attribute with given name.
 	GetString(string) string
+
+	// GetStrings returns the list of strings with given name.
+	GetStrings(string) []string
+
 	// GetInt returns the int attribute with given name.
 	GetInt(string) int
+
 	// GetTime returns the time attribute with given name.
 	GetTime(string) time.Time
 }
@@ -171,6 +176,11 @@ func (t *track) GetString(name string) string {
 		return t.Location
 	}
 	panic(fmt.Sprintf("unknown string field '%v'", name))
+}
+
+// GetStrings implements Track.
+func (t *track) GetStrings(name string) []string {
+	panic(fmt.Sprintf("unknown strings field '%v", name))
 }
 
 // GetInt implements Track.

@@ -29,6 +29,10 @@ func (f testTrack) GetString(k string) string {
 	return ""
 }
 
+func (f testTrack) GetStrings(k string) []string {
+	return nil
+}
+
 func (f testTrack) GetInt(k string) int {
 	switch k {
 	case "TrackNumber":
