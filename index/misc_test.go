@@ -404,6 +404,15 @@ func TestFirstTrackAttr(t *testing.T) {
 		field Attr
 		out   interface{}
 	}{
+		// One group with no tracks
+		{
+			in: group{
+				name: "Group One",
+			},
+			field: StringAttr("Name"),
+			out:   nil,
+		},
+
 		// One group with one track
 		{
 			in: group{
