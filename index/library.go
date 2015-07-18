@@ -23,8 +23,8 @@ type Library interface {
 	Track(identifier string) (Track, bool)
 }
 
-// Track is an interface which defines a music file.  To simplify the API, all methods
-// panic if a caller tries to access an undefined attribute.
+// Track is an interface which defines methods for retrieving track metadata.  Methods return
+// zero values if attributes are unset and panic on undefined attributes and type mismatches.
 type Track interface {
 	// GetString returns a string value for the given attribute name.  Panics
 	// if no such string attribute exists.
