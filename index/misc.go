@@ -162,7 +162,7 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 
 	for _, a := range attrs {
 		f := a.Field()
-		if v, ok := flds[f]; ok && v == a.Empty() {
+		if v, ok := flds[f]; ok && a.eq(v, a.Empty()) {
 			delete(flds, f)
 		}
 	}
@@ -315,7 +315,7 @@ func FirstTrackAttr(attr Attr, g Group) Group {
 	}
 
 	v := attr.fn(t)
-	if v == attr.Empty() {
+	if attr.eq(v, attr.Empty()) {
 		return g
 	}
 	m := map[string]interface{}{
