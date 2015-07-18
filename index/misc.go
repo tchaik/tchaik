@@ -260,8 +260,8 @@ func (g Attr) Empty() interface{} {
 	return g.empty
 }
 
-// StringAttr constructs a Attr which will retrieve the string field from an implementation
-// of Attr.
+// StringAttr constructs an Attr which will retrieve the string field from an implementation
+// of Track.
 func StringAttr(field string) Attr {
 	return Attr{
 		field: field,
@@ -272,7 +272,7 @@ func StringAttr(field string) Attr {
 	}
 }
 
-// IntAttr constructs a Attr which will retrieve the int field from an implementation of Attr.
+// IntAttr constructs an Attr which will retrieve the int field from an implementation of Track.
 func IntAttr(field string) Attr {
 	return Attr{
 		field: field,
