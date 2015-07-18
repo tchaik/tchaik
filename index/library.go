@@ -183,6 +183,18 @@ func (t *track) GetString(name string) string {
 	panic(fmt.Sprintf("unknown string field '%v'", name))
 }
 
+// DefaultGetStrings is a function which returns the default value for a GetStrings
+// attribute which is based on an existing GetString attribute.  In particular, we handle
+// the case where an empty 'GetString' attribute would be "", whereas the corresponding
+// 'GetStrings' method should return 'nil' and not '[]string{""}'.
+func DefaultGetStrings(t Track, f string) []string {
+	v := t.GetString(f)
+	if v != "" {
+		return []string{v}
+	}
+	return nil
+}
+
 // GetStrings implements Track.
 func (t *track) GetStrings(name string) []string {
 	switch name {
