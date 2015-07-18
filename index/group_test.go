@@ -32,7 +32,7 @@ func (f testTrack) GetString(k string) string {
 func (f testTrack) GetStrings(k string) []string {
 	switch k {
 	case "Artist", "AlbumArtist", "Composer":
-		return []string{f.GetString(k)}
+		return DefaultGetStrings(f, k)
 	}
 	return nil
 }

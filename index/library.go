@@ -199,7 +199,7 @@ func DefaultGetStrings(t Track, f string) []string {
 func (t *track) GetStrings(name string) []string {
 	switch name {
 	case "Artist", "AlbumArtist", "Composer":
-		return []string{t.GetString(name)}
+		return DefaultGetStrings(t, name)
 	}
 	panic(fmt.Sprintf("unknown strings field '%v", name))
 }

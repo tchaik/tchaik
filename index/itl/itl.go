@@ -121,7 +121,7 @@ func (t *itlTrack) GetString(name string) string {
 func (t *itlTrack) GetStrings(name string) []string {
 	switch name {
 	case "Artist", "AlbumArtist", "Composer":
-		return []string{t.GetString(name)}
+		return index.DefaultGetStrings(t, name)
 	}
 	panic(fmt.Sprintf("field '%v' is not a []string", name))
 }
