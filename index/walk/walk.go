@@ -97,11 +97,13 @@ type library struct {
 	tracks map[string]*track
 }
 
+// Track implements index.Library.
 func (l *library) Track(id string) (index.Track, bool) {
 	t, ok := l.tracks[id]
 	return t, ok
 }
 
+// Tracks implements index.Library.
 func (l *library) Tracks() []index.Track {
 	tracks := make([]index.Track, 0, len(l.tracks))
 	for _, t := range l.tracks {
@@ -118,6 +120,7 @@ type track struct {
 	CreatedTime time.Time
 }
 
+// GetString implements index.Track.
 func (m *track) GetString(name string) string {
 	switch name {
 	case "Name":
@@ -147,6 +150,7 @@ func (m *track) GetString(name string) string {
 	return ""
 }
 
+// GetStrings implements index.Track.
 func (m *track) GetStrings(name string) []string {
 	switch name {
 	case "Artist", "AlbumArtist", "Composer":
@@ -155,6 +159,7 @@ func (m *track) GetStrings(name string) []string {
 	return nil
 }
 
+// GetInt implements index.Track.
 func (m *track) GetInt(name string) int {
 	switch name {
 	case "Year":
@@ -175,6 +180,7 @@ func (m *track) GetInt(name string) int {
 	return 0
 }
 
+// GetTime implements index.Track.
 func (m *track) GetTime(name string) time.Time {
 	switch name {
 	case "DateModified":

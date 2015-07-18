@@ -23,18 +23,23 @@ type Library interface {
 	Track(identifier string) (Track, bool)
 }
 
-// Track is an interface which defines a music file.
+// Track is an interface which defines a music file.  To simplify the API, all methods
+// panic if a caller tries to access an undefined attribute.
 type Track interface {
-	// GetString returns the string attribute with given name.
+	// GetString returns a string value for the given attribute name.  Panics
+	// if no such string attribute exists.
 	GetString(string) string
 
-	// GetStrings returns the list of strings with given name.
+	// GetStrings returns a list of strings for the given attribute name.
+	// Panics if no such attribute exists.
 	GetStrings(string) []string
 
-	// GetInt returns the int attribute with given name.
+	// GetInt returns an int value for the given attribute name.  Panics if no such
+	// attribute exists.
 	GetInt(string) int
 
-	// GetTime returns the time attribute with given name.
+	// GetTime returns a time.Time value for the given attribute name. Panics if no
+	// such attribute exists.
 	GetTime(string) time.Time
 }
 

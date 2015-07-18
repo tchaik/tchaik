@@ -116,6 +116,8 @@ func (t *itlTrack) GetString(name string) string {
 	return html.UnescapeString(f.String())
 }
 
+// GetStrings implements index.Track (will panic if the field doesn't exist as a list
+// of strings).
 func (t *itlTrack) GetStrings(name string) []string {
 	switch name {
 	case "Artist", "AlbumArtist", "Composer":
