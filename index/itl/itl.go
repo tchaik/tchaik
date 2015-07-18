@@ -117,6 +117,10 @@ func (t *itlTrack) GetString(name string) string {
 }
 
 func (t *itlTrack) GetStrings(name string) []string {
+	switch name {
+	case "Artist", "AlbumArtist":
+		return []string{t.GetString(name)}
+	}
 	panic(fmt.Sprintf("field '%v' is not a []string", name))
 }
 
