@@ -149,7 +149,7 @@ func (m *track) GetString(name string) string {
 
 func (m *track) GetStrings(name string) []string {
 	switch name {
-	case "Artist", "AlbumArtist":
+	case "Artist", "AlbumArtist", "Composer":
 		return []string{m.GetString(name)}
 	}
 	return nil

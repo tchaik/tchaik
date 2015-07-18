@@ -181,7 +181,7 @@ func (t *track) GetString(name string) string {
 // GetStrings implements Track.
 func (t *track) GetStrings(name string) []string {
 	switch name {
-	case "Artist", "AlbumArtist":
+	case "Artist", "AlbumArtist", "Composer":
 		return []string{t.GetString(name)}
 	}
 	panic(fmt.Sprintf("unknown strings field '%v", name))
