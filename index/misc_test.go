@@ -413,6 +413,14 @@ func TestFirstTrackAttr(t *testing.T) {
 			out:   nil,
 		},
 
+		{
+			in: group{
+				name: "Group One",
+			},
+			field: StringsAttr("Artist"),
+			out:   nil,
+		},
+
 		// One group with one track
 		{
 			in: group{
@@ -425,6 +433,19 @@ func TestFirstTrackAttr(t *testing.T) {
 			},
 			field: StringAttr("Name"),
 			out:   "Track One",
+		},
+
+		{
+			in: group{
+				name: "Group One",
+				tracks: []Track{
+					testTrack{
+						Artist: "Track One",
+					},
+				},
+			},
+			field: StringsAttr("Artist"),
+			out:   []string{"Track One"},
 		},
 
 		// One group with two tracks, empty first field
@@ -518,7 +539,7 @@ func TestFirstTrackAttr(t *testing.T) {
 		g := FirstTrackAttr(tt.field, tt.in)
 		got := g.Field(tt.field.Field())
 
-		if got != tt.out {
+		if !reflect.DeepEqual(got, tt.out) {
 			t.Errorf("[%d] got %#v, expected %#v", ii, got, tt.out)
 		}
 	}
