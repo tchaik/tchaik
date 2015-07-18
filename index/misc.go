@@ -115,7 +115,7 @@ func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
 				for _, a := range attrs {
 					f := a.Field()
 					v := g1.Field(f)
-					if flds[f] != v {
+					if !a.eq(flds[f], v) {
 						flds[f] = a.Empty()
 					}
 				}
@@ -152,7 +152,7 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 			for _, t := range tracks[1:] {
 				for _, a := range attrs {
 					f := a.Field()
-					if flds[f] != a.fn(t) {
+					if !a.eq(flds[f], a.fn(t)) {
 						flds[f] = a.Empty()
 					}
 				}
@@ -247,6 +247,7 @@ func fieldsGroup(m map[string]interface{}, g Group) Group {
 type Attr struct {
 	field string
 	empty interface{}
+	eq    func(x, y interface{}) bool
 	fn    func(t Track) interface{}
 }
 
@@ -266,9 +267,8 @@ func StringAttr(field string) Attr {
 	return Attr{
 		field: field,
 		empty: "",
-		fn: func(t Track) interface{} {
-			return t.GetString(field)
-		},
+		eq:    func(x, y interface{}) bool { return x == y },
+		fn:    func(t Track) interface{} { return t.GetString(field) },
 	}
 }
 
@@ -277,9 +277,8 @@ func IntAttr(field string) Attr {
 	return Attr{
 		field: field,
 		empty: 0,
-		fn: func(t Track) interface{} {
-			return t.GetInt(field)
-		},
+		eq:    func(x, y interface{}) bool { return x == y },
+		fn:    func(t Track) interface{} { return t.GetInt(field) },
 	}
 }
 
