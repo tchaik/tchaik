@@ -272,6 +272,30 @@ func StringAttr(field string) Attr {
 	}
 }
 
+// StringsAttr returns an Attr which will retrieve the strings field from an implementation of Track.
+func StringsAttr(field string) Attr {
+	return Attr{
+		field: field,
+		empty: nil,
+		eq: func(x, y interface{}) bool {
+			xs := x.([]string) // NB: panics here are acceptable: should not be called on a non-'Strings' field.
+			ys := y.([]string)
+			if len(xs) != len(ys) {
+				return false
+			}
+			for i, xss := range xs {
+				if ys[i] != xss {
+					return false
+				}
+			}
+			return true
+		},
+		fn: func(t Track) interface{} {
+			return t.GetStrings(field)
+		},
+	}
+}
+
 // IntAttr constructs an Attr which will retrieve the int field from an implementation of Track.
 func IntAttr(field string) Attr {
 	return Attr{
