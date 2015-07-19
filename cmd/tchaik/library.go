@@ -62,21 +62,21 @@ type group struct {
 }
 
 type track struct {
-	ID          string `json:",omitempty"`
-	Name        string `json:",omitempty"`
-	Album       string `json:",omitempty"`
-	Artist      string `json:",omitempty"`
-	AlbumArtist string `json:",omitempty"`
-	Composer    string `json:",omitempty"`
-	Year        int    `json:",omitempty"`
-	DiscNumber  int    `json:",omitempty"`
-	TotalTime   int    `json:",omitempty"`
-	BitRate     int    `json:",omitempty"`
+	ID          string   `json:",omitempty"`
+	Name        string   `json:",omitempty"`
+	Album       string   `json:",omitempty"`
+	Artist      []string `json:",omitempty"`
+	AlbumArtist []string `json:",omitempty"`
+	Composer    []string `json:",omitempty"`
+	Year        int      `json:",omitempty"`
+	DiscNumber  int      `json:",omitempty"`
+	TotalTime   int      `json:",omitempty"`
+	BitRate     int      `json:",omitempty"`
 }
 
 func buildCollection(h group, c index.Collection) group {
 	getField := func(f string, g index.Group, c index.Collection) interface{} {
-		if g.Field(f) == c.Field(f) {
+		if index.StringSliceEqual(g.Field(f), c.Field(f)) {
 			return nil
 		}
 		return g.Field(f)
@@ -84,8 +84,8 @@ func buildCollection(h group, c index.Collection) group {
 
 	for _, k := range c.Keys() {
 		g := c.Get(k)
-		g = index.FirstTrackAttr(index.StringAttr("AlbumArtist"), g)
-		g = index.CommonGroupAttr([]index.Attr{index.StringAttr("Artist")}, g)
+		g = index.FirstTrackAttr(index.StringsAttr("AlbumArtist"), g)
+		g = index.CommonGroupAttr([]index.Attr{index.StringsAttr("Artist")}, g)
 		h.Groups = append(h.Groups, group{
 			Name:        g.Name(),
 			Key:         k,
@@ -122,6 +122,13 @@ func build(g index.Group, key index.Key) group {
 		return t.GetString(field)
 	}
 
+	getStrings := func(t index.Track, field string) []string {
+		if g.Field(field) != nil {
+			return nil
+		}
+		return t.GetStrings(field)
+	}
+
 	getInt := func(t index.Track, field string) int {
 		if g.Field(field) != nil {
 			return 0
@@ -135,10 +142,10 @@ func build(g index.Group, key index.Key) group {
 			Name:      t.GetString("Name"),
 			TotalTime: t.GetInt("TotalTime"),
 			// Potentially common fields (don't want to re-transmit everything)
+			Artist:      getStrings(t, "Artist"),
+			AlbumArtist: getStrings(t, "AlbumArtist"),
+			Composer:    getStrings(t, "Composer"),
 			Album:       getString(t, "Album"),
-			Artist:      getString(t, "Artist"),
-			AlbumArtist: getString(t, "AlbumArtist"),
-			Composer:    getString(t, "Composer"),
 			Year:        getInt(t, "Year"),
 			DiscNumber:  getInt(t, "DiscNumber"),
 			BitRate:     getInt(t, "BitRate"),
@@ -167,9 +174,9 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	g = index.SumGroupIntAttr("TotalTime", g)
 	commonFields := []index.Attr{
 		index.StringAttr("Album"),
-		index.StringAttr("Artist"),
-		index.StringAttr("AlbumArtist"),
-		index.StringAttr("Composer"),
+		index.StringsAttr("Artist"),
+		index.StringsAttr("AlbumArtist"),
+		index.StringsAttr("Composer"),
 		index.IntAttr("Year"),
 		index.IntAttr("BitRate"),
 		index.IntAttr("DiscNumber"),

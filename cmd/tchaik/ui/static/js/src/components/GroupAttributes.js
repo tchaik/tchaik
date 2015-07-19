@@ -22,8 +22,16 @@ export default class GroupAttributes extends React.Component {
     var _this = this;
     var list = dedupArray(this.props.list);
     list = list.map(function(attr) {
+      let links = null;
+      if (Array.isArray(attr)) {
+        links = attr.map(function(x) {
+          return <a onClick={_this._onClickAttribute.bind(_this, x)}>{x}</a>;
+        });
+      } else {
+        links = <a onClick={_this._onClickAttribute.bind(_this, attr)}>{attr}</a>;
+      }
       return [
-        <a onClick={_this._onClickAttribute.bind(_this, attr)}>{attr}</a>,
+        links,
         <span className="bull">&bull;</span>,
       ];
     });
