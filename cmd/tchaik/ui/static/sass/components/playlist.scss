@@ -5,6 +5,17 @@ div.playlist {
   flex: 1;
   background-color: $darker-background;
 
+  span.icon {
+    float: right;
+    margin-left: 5px;
+    color: #333;
+    cursor: pointer;
+
+    &:hover {
+      color: #ccc;
+    }
+  }
+
   div.no-items {
     padding: 20px;
     font-size: 24px;
@@ -15,6 +26,13 @@ div.playlist {
     .icon {
       font-size: 28px;
       margin-right: 10px;
+      color: #fff;
+      margin-left: 0;
+      cursor: inherit;
+
+      &:hover {
+        color: inherit;
+      }
     }
   }
 
@@ -104,17 +122,6 @@ div.playlist {
       &:hover {
         color: #ddd;
       }
-    }
-  }
-
-  span.icon {
-    float: right;
-    margin-left: 5px;
-    color: #333;
-    cursor: pointer;
-
-    &:hover {
-      color: #ccc;
     }
   }
 
