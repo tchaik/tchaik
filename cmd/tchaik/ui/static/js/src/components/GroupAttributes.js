@@ -17,24 +17,26 @@ function dedupArray(arr) {
   return result;
 }
 
+function attributeLink(_this, x) {
+  return [
+    <a onClick={_this._onClickAttribute.bind(_this, x)}>{x}</a>,
+    <span className="bull">&bull;</span>,
+  ];
+}
+
 export default class GroupAttributes extends React.Component {
   render() {
     var _this = this;
     var list = dedupArray(this.props.list);
     list = list.map(function(attr) {
-      let links = null;
       if (Array.isArray(attr)) {
-        links = attr.map(function(x) {
-          return <a onClick={_this._onClickAttribute.bind(_this, x)}>{x}</a>;
+        return attr.map(function(x) {
+          return attributeLink(_this, x);
         });
-      } else {
-        links = <a onClick={_this._onClickAttribute.bind(_this, attr)}>{attr}</a>;
       }
-      return [
-        links,
-        <span className="bull">&bull;</span>,
-      ];
+      return attributeLink(_this, attr);
     });
+
     if (list.length > 0) {
       list[list.length - 1].pop();
     }
