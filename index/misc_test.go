@@ -464,6 +464,21 @@ func TestFirstTrackAttr(t *testing.T) {
 			out:   nil,
 		},
 
+		{
+			in: group{
+				name: "Group One",
+				tracks: []Track{
+					testTrack{},
+					testTrack{
+						Name:   "Track Two",
+						Artist: "Artist One",
+					},
+				},
+			},
+			field: StringsAttr("Artist"),
+			out:   []string(nil),
+		},
+
 		// One collection, one group, one track
 		{
 			in: testCol{
