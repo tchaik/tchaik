@@ -4,16 +4,26 @@ import React from "react";
 
 import SearchActions from "../actions/SearchActions.js";
 
-function dedupArray(arr) {
-  var t = {};
-  var result = [];
+
+function _dedupArray(arr, t, result) {
   arr.forEach(function(item) {
+    if (Array.isArray(item)) {
+      _dedupArray(item, t, result);
+      return;
+    }
     if (t.hasOwnProperty(item)) {
       return;
     }
     t[item] = true;
     result.push(item);
   });
+  return result;
+}
+
+function dedupArray(arr) {
+  let t = {};
+  let result = [];
+  _dedupArray(arr, t, result);
   return result;
 }
 
@@ -29,11 +39,6 @@ export default class GroupAttributes extends React.Component {
     var _this = this;
     var list = dedupArray(this.props.list);
     list = list.map(function(attr) {
-      if (Array.isArray(attr)) {
-        return attr.map(function(x) {
-          return attributeLink(_this, x);
-        });
-      }
       return attributeLink(_this, attr);
     });
 
