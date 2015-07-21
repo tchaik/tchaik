@@ -17,6 +17,9 @@ func (g *subGrpTrks) Tracks() []Track {
 // splitMultiple applies strings.Split to `x` with each strings in `s`
 // recursively.
 func splitMultiple(x string, s []string) []string {
+	if len(x) == 0 {
+		return nil
+	}
 	if len(s) == 0 {
 		return []string{x}
 	}

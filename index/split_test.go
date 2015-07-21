@@ -14,7 +14,7 @@ func TestSplitMultiple(t *testing.T) {
 		{
 			"",
 			nil,
-			[]string{""},
+			nil,
 		},
 		{
 			"One",
