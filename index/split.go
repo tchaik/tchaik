@@ -67,7 +67,7 @@ func (s *stringsTrack) GetStrings(k string) []string {
 	return v
 }
 
-var splitNameSeparator = []string{"/", ",", ";", "&", "and"}
+var splitNameSeparator = []string{"/", ",", ";", ":", "&", "and"}
 
 func splitNameList(fields []string, tracks []Track) []Track {
 	result := make([]Track, len(tracks))
