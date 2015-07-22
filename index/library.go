@@ -18,8 +18,8 @@ type Library interface {
 	// Tracks returns a slice of all the tracks in the library.
 	Tracks() []Track
 
-	// Track returns the track from the given identifier, second return value true
-	// if successful.
+	// Track returns the track from the given identifier and true if successful,
+	// false otherwise.
 	Track(identifier string) (Track, bool)
 }
 
