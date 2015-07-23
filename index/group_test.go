@@ -13,6 +13,7 @@ import (
 type testTrack struct {
 	Name, Album, Artist, Composer           string
 	TrackNumber, DiscNumber, Duration, Year int
+	stringsMap                              map[string][]string
 }
 
 func (f testTrack) GetString(k string) string {
@@ -30,6 +31,11 @@ func (f testTrack) GetString(k string) string {
 }
 
 func (f testTrack) GetStrings(k string) []string {
+	v, ok := f.stringsMap[k]
+	if ok {
+		return v
+	}
+
 	switch k {
 	case "Artist", "AlbumArtist", "Composer":
 		return DefaultGetStrings(f, k)

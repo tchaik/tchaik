@@ -209,6 +209,43 @@ func TestCommonGroupAttr(t *testing.T) {
 			out:    []interface{}{nil, nil},
 		},
 
+		// One group with one track, set strings field
+		{
+			in: group{
+				name: "Group One",
+				tracks: []Track{
+					testTrack{
+						stringsMap: map[string][]string{
+							"Artist": []string{"First Artist", "Second Artist"},
+						},
+					},
+				},
+			},
+			fields: []Attr{StringsAttr("Artist")},
+			out:    []interface{}{[]string{"First Artist", "Second Artist"}},
+		},
+
+		// One group with two tracks, check intersection of artists list
+		{
+			in: group{
+				name: "Group One",
+				tracks: []Track{
+					testTrack{
+						stringsMap: map[string][]string{
+							"Artist": []string{"First Artist", "Second Artist"},
+						},
+					},
+					testTrack{
+						stringsMap: map[string][]string{
+							"Artist": []string{"First Artist"},
+						},
+					},
+				},
+			},
+			fields: []Attr{StringsAttr("Artist")},
+			out:    []interface{}{[]string{"First Artist"}},
+		},
+
 		// One group with two tracks, empty first string & int fields
 		{
 			in: group{

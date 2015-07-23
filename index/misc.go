@@ -114,10 +114,7 @@ func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
 
 				for _, a := range attrs {
 					f := a.Field()
-					v := g1.Field(f)
-					if !a.eq(flds[f], v) {
-						flds[f] = a.Empty()
-					}
+					flds[f] = a.intersect(flds[f], g1.Field(f))
 				}
 			}
 		}
@@ -152,9 +149,7 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 			for _, t := range tracks[1:] {
 				for _, a := range attrs {
 					f := a.Field()
-					if !a.eq(flds[f], a.fn(t)) {
-						flds[f] = a.Empty()
-					}
+					flds[f] = a.intersect(flds[f], a.fn(t))
 				}
 			}
 		}
@@ -245,10 +240,11 @@ func fieldsGroup(m map[string]interface{}, g Group) Group {
 // Attr is a type which wraps a closure to get an attribute from an implementation of the
 // Attr interface.
 type Attr struct {
-	field string
-	empty interface{}
-	eq    func(x, y interface{}) bool
-	fn    func(t Track) interface{}
+	field     string
+	empty     interface{}
+	eq        func(x, y interface{}) bool
+	fn        func(t Track) interface{}
+	intersect func(x, y interface{}) interface{}
 }
 
 // Field returns the underlying field name.
@@ -267,8 +263,18 @@ func StringAttr(field string) Attr {
 	return Attr{
 		field: field,
 		empty: "",
-		eq:    func(x, y interface{}) bool { return x == y },
-		fn:    func(t Track) interface{} { return t.GetString(field) },
+		eq: func(x, y interface{}) bool {
+			return x == y
+		},
+		intersect: func(x, y interface{}) interface{} {
+			if x == y {
+				return x
+			}
+			return ""
+		},
+		fn: func(t Track) interface{} {
+			return t.GetString(field)
+		},
 	}
 }
 
@@ -293,12 +299,39 @@ func StringSliceEqual(x, y interface{}) bool {
 	return true
 }
 
+// StringSliceIntersect computes the intersection of two string slices (ignoring ordering).
+func StringSliceIntersect(s, t []string) []string {
+	var res []string
+	m := make(map[string]bool)
+	for _, x := range s {
+		m[x] = true
+	}
+	for _, y := range t {
+		if m[y] {
+			res = append(res, y)
+		}
+	}
+	return res
+}
+
+// StringsIntersect computes the intersection of the two interface values assumed to be
+// of type []string.
+func StringsIntersect(x, y interface{}) interface{} {
+	if x == nil || y == nil {
+		return nil
+	}
+	xs := x.([]string)
+	ys := y.([]string)
+	return StringSliceIntersect(xs, ys)
+}
+
 // StringsAttr returns an Attr which will retrieve the strings field from an implementation of Track.
 func StringsAttr(field string) Attr {
 	return Attr{
-		field: field,
-		empty: nil,
-		eq:    StringSliceEqual,
+		field:     field,
+		empty:     nil,
+		eq:        StringSliceEqual,
+		intersect: StringsIntersect,
 		fn: func(t Track) interface{} {
 			return t.GetStrings(field)
 		},
@@ -310,8 +343,14 @@ func IntAttr(field string) Attr {
 	return Attr{
 		field: field,
 		empty: 0,
-		eq:    func(x, y interface{}) bool { return x == y },
-		fn:    func(t Track) interface{} { return t.GetInt(field) },
+		intersect: func(x, y interface{}) interface{} {
+			if x == y {
+				return x
+			}
+			return 0
+		},
+		eq: func(x, y interface{}) bool { return x == y },
+		fn: func(t Track) interface{} { return t.GetInt(field) },
 	}
 }
 
