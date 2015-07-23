@@ -263,6 +263,11 @@ func (g Attr) IsEmpty(x interface{}) bool {
 	return g.isEmpty(x)
 }
 
+// Value returns the value of the attribute for the given track.
+func (g Attr) Value(t Track) interface{} {
+	return g.fn(t)
+}
+
 // StringAttr constructs an Attr which will retrieve the string field from an implementation
 // of Track.
 func StringAttr(field string) Attr {
