@@ -9,18 +9,18 @@ import "sort"
 // LessFn is a function type used for evaluating
 type LessFn func(s, t Track) bool
 
-type trackSorter struct {
+type trackSlice struct {
 	fn     LessFn
 	tracks []Track
 }
 
-func (o *trackSorter) Len() int           { return len(o.tracks) }
-func (o *trackSorter) Swap(i, j int)      { o.tracks[i], o.tracks[j] = o.tracks[j], o.tracks[i] }
-func (o *trackSorter) Less(i, j int) bool { return o.fn(o.tracks[i], o.tracks[j]) }
+func (o *trackSlice) Len() int           { return len(o.tracks) }
+func (o *trackSlice) Swap(i, j int)      { o.tracks[i], o.tracks[j] = o.tracks[j], o.tracks[i] }
+func (o *trackSlice) Less(i, j int) bool { return o.fn(o.tracks[i], o.tracks[j]) }
 
 // Sort sorts the slice of tracks using the given LessFn.
 func Sort(tracks []Track, f LessFn) {
-	o := &trackSorter{f, tracks}
+	o := &trackSlice{f, tracks}
 	sort.Sort(o)
 }
 
