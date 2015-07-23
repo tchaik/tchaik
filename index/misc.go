@@ -252,11 +252,6 @@ func (g Attr) Field() string {
 	return g.field
 }
 
-// Empty returns the empty value of the underlying field (the empty value of the field type).
-func (g Attr) Empty() interface{} {
-	return g.empty
-}
-
 // IsEmpty returns true iff the given value represents the empty value of the underlying attribute
 // type.
 func (g Attr) IsEmpty(x interface{}) bool {
