@@ -142,14 +142,14 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 		t0 := tracks[0]
 		for _, a := range attrs {
 			f := a.Field()
-			flds[f] = a.fn(t0)
+			flds[f] = a.Value(t0)
 		}
 
 		if len(tracks) > 1 {
 			for _, t := range tracks[1:] {
 				for _, a := range attrs {
 					f := a.Field()
-					flds[f] = a.intersect(flds[f], a.fn(t))
+					flds[f] = a.intersect(flds[f], a.Value(t))
 				}
 			}
 		}
@@ -379,7 +379,7 @@ func FirstTrackAttr(attr Attr, g Group) Group {
 		return g
 	}
 
-	v := attr.fn(t)
+	v := attr.Value(t)
 	if attr.IsEmpty(v) {
 		return g
 	}

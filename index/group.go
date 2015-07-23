@@ -324,7 +324,7 @@ func (a ByAttr) Collect(tracker Tracker) Collection {
 	}
 	gg := newCol(name)
 	for _, t := range tracker.Tracks() {
-		gg.add(fmt.Sprintf("%v", ga.fn(t)), t)
+		gg.add(fmt.Sprintf("%v", ga.Value(t)), t)
 	}
 	return gg
 }
