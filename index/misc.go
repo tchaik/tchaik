@@ -122,7 +122,7 @@ func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
 
 	for _, a := range attrs {
 		f := a.Field()
-		if v, ok := flds[f]; ok && v == a.Empty() {
+		if v, ok := flds[f]; ok && a.IsEmpty(v) {
 			delete(flds, f)
 		}
 	}
@@ -157,7 +157,7 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 
 	for _, a := range attrs {
 		f := a.Field()
-		if v, ok := flds[f]; ok && a.eq(v, a.Empty()) {
+		if v, ok := flds[f]; ok && a.IsEmpty(v) {
 			delete(flds, f)
 		}
 	}
@@ -242,7 +242,7 @@ func fieldsGroup(m map[string]interface{}, g Group) Group {
 type Attr struct {
 	field     string
 	empty     interface{}
-	eq        func(x, y interface{}) bool
+	isEmpty   func(x interface{}) bool
 	fn        func(t Track) interface{}
 	intersect func(x, y interface{}) interface{}
 }
@@ -257,14 +257,20 @@ func (g Attr) Empty() interface{} {
 	return g.empty
 }
 
+// IsEmpty returns true iff the given value represents the empty value of the underlying attribute
+// type.
+func (g Attr) IsEmpty(x interface{}) bool {
+	return g.isEmpty(x)
+}
+
 // StringAttr constructs an Attr which will retrieve the string field from an implementation
 // of Track.
 func StringAttr(field string) Attr {
 	return Attr{
 		field: field,
 		empty: "",
-		eq: func(x, y interface{}) bool {
-			return x == y
+		isEmpty: func(x interface{}) bool {
+			return x == ""
 		},
 		intersect: func(x, y interface{}) interface{} {
 			if x == y {
@@ -330,8 +336,14 @@ func StringsAttr(field string) Attr {
 	return Attr{
 		field:     field,
 		empty:     nil,
-		eq:        StringSliceEqual,
 		intersect: StringsIntersect,
+		isEmpty: func(x interface{}) bool {
+			if x == nil {
+				return true
+			}
+			xs := x.([]string)
+			return len(xs) == 0
+		},
 		fn: func(t Track) interface{} {
 			return t.GetStrings(field)
 		},
@@ -341,15 +353,15 @@ func StringsAttr(field string) Attr {
 // IntAttr constructs an Attr which will retrieve the int field from an implementation of Track.
 func IntAttr(field string) Attr {
 	return Attr{
-		field: field,
-		empty: 0,
+		field:   field,
+		empty:   0,
+		isEmpty: func(x interface{}) bool { return x == 0 },
 		intersect: func(x, y interface{}) interface{} {
 			if x == y {
 				return x
 			}
 			return 0
 		},
-		eq: func(x, y interface{}) bool { return x == y },
 		fn: func(t Track) interface{} { return t.GetInt(field) },
 	}
 }
@@ -363,7 +375,7 @@ func FirstTrackAttr(attr Attr, g Group) Group {
 	}
 
 	v := attr.fn(t)
-	if attr.eq(v, attr.Empty()) {
+	if attr.IsEmpty(v) {
 		return g
 	}
 	m := map[string]interface{}{

@@ -513,7 +513,7 @@ func TestFirstTrackAttr(t *testing.T) {
 				},
 			},
 			field: StringsAttr("Artist"),
-			out:   []string(nil),
+			out:   nil,
 		},
 
 		// One collection, one group, one track
