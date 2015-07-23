@@ -10,6 +10,8 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"sort"
+
+	"github.com/tchaik/tchaik/index/attr"
 )
 
 // Key represents a unique value used to represent a group within a collection.
@@ -312,19 +314,25 @@ func Recent(c Collection, n int) []Path {
 	return result
 }
 
-// ByAttr is a type which implements Collector, and groups elements by the value of
-// the attribute given by the underlying Attr instance.
-type ByAttr Attr
+// By is a function which returns a Collector to group a collection using the given
+// attribute.
+func By(a attr.Interface) Collector {
+	return groupBy{a}
+}
 
-func (a ByAttr) Collect(tracker Tracker) Collection {
-	ga := Attr(a)
-	name := "by " + ga.Field()
+type groupBy struct {
+	attr.Interface
+}
+
+// Collect implements Collector
+func (a groupBy) Collect(tracker Tracker) Collection {
+	name := "by " + a.Field()
 	if tg, ok := tracker.(Group); ok {
 		name = tg.Name()
 	}
 	gg := newCol(name)
 	for _, t := range tracker.Tracks() {
-		gg.add(fmt.Sprintf("%v", ga.Value(t)), t)
+		gg.add(fmt.Sprintf("%v", a.Value(t)), t)
 	}
 	return gg
 }

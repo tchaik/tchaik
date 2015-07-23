@@ -4,6 +4,8 @@
 
 package index
 
+import "github.com/tchaik/tchaik/index/attr"
+
 // subColFlds is a Collection wrapper which overrides the Field
 // method.
 type subColFlds struct {
@@ -84,35 +86,35 @@ func sumGroupIntAttr(field string, g Group) Group {
 // CommonGroupAttr recurses through the Group and assigns fields on all sub groups
 // which are common amoungst their children (Groups or Tracks).  If there is no common
 // field, then the associated Field value is not set.
-func CommonGroupAttr(attrs []Attr, g Group) Group {
+func CommonGroupAttr(a []attr.Interface, g Group) Group {
 	if c, ok := g.(Collection); ok {
-		return commonCollectionTrackAttr(attrs, c)
+		return commonCollectionTrackAttr(a, c)
 	}
-	return commonGroupTrackAttr(attrs, g)
+	return commonGroupTrackAttr(a, g)
 }
 
-func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
+func commonCollectionTrackAttr(l []attr.Interface, c Collection) Collection {
 	grps := make(map[Key]Group, len(c.Keys()))
-	flds := make(map[string]interface{}, len(attrs))
+	flds := make(map[string]interface{}, len(l))
 
 	keys := c.Keys()
 	if len(keys) > 0 {
 		k0 := keys[0]
 		g0 := c.Get(k0)
-		g0 = CommonGroupAttr(attrs, g0)
+		g0 = CommonGroupAttr(l, g0)
 		grps[k0] = g0
 
-		for _, a := range attrs {
+		for _, a := range l {
 			flds[a.Field()] = g0.Field(a.Field())
 		}
 
 		if len(keys) > 1 {
 			for _, k := range keys[1:] {
 				g1 := c.Get(k)
-				g1 = CommonGroupAttr(attrs, g1)
+				g1 = CommonGroupAttr(l, g1)
 				grps[k] = g1
 
-				for _, a := range attrs {
+				for _, a := range l {
 					f := a.Field()
 					flds[f] = a.Intersect(flds[f], g1.Field(f))
 				}
@@ -120,7 +122,7 @@ func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
 		}
 	}
 
-	for _, a := range attrs {
+	for _, a := range l {
 		f := a.Field()
 		if v, ok := flds[f]; ok && a.IsEmpty(v) {
 			delete(flds, f)
@@ -134,20 +136,20 @@ func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
 	}
 }
 
-func commonGroupTrackAttr(attrs []Attr, g Group) Group {
-	flds := make(map[string]interface{}, len(attrs))
+func commonGroupTrackAttr(l []attr.Interface, g Group) Group {
+	flds := make(map[string]interface{}, len(l))
 	tracks := g.Tracks()
 
 	if len(tracks) > 0 {
 		t0 := tracks[0]
-		for _, a := range attrs {
+		for _, a := range l {
 			f := a.Field()
 			flds[f] = a.Value(t0)
 		}
 
 		if len(tracks) > 1 {
 			for _, t := range tracks[1:] {
-				for _, a := range attrs {
+				for _, a := range l {
 					f := a.Field()
 					flds[f] = a.Intersect(flds[f], a.Value(t))
 				}
@@ -155,7 +157,7 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 		}
 	}
 
-	for _, a := range attrs {
+	for _, a := range l {
 		f := a.Field()
 		if v, ok := flds[f]; ok && a.IsEmpty(v) {
 			delete(flds, f)
@@ -237,58 +239,6 @@ func fieldsGroup(m map[string]interface{}, g Group) Group {
 	}
 }
 
-// Attr is a type which wraps a closure to get an attribute from an implementation of the
-// Attr interface.
-type Attr struct {
-	field     string
-	empty     interface{}
-	isEmpty   func(x interface{}) bool
-	fn        func(t Track) interface{}
-	intersect func(x, y interface{}) interface{}
-}
-
-// Field returns the underlying field name.
-func (g Attr) Field() string {
-	return g.field
-}
-
-// IsEmpty returns true iff the given value represents the empty value of the underlying attribute
-// type.
-func (g Attr) IsEmpty(x interface{}) bool {
-	return g.isEmpty(x)
-}
-
-// Value returns the value of the attribute for the given track.
-func (g Attr) Value(t Track) interface{} {
-	return g.fn(t)
-}
-
-// Intersect returns the intersection of the two attribute values.
-func (g Attr) Intersect(x, y interface{}) interface{} {
-	return g.intersect(x, y)
-}
-
-// StringAttr constructs an Attr which will retrieve the string field from an implementation
-// of Track.
-func StringAttr(field string) Attr {
-	return Attr{
-		field: field,
-		empty: "",
-		isEmpty: func(x interface{}) bool {
-			return x == ""
-		},
-		intersect: func(x, y interface{}) interface{} {
-			if x == y {
-				return x
-			}
-			return ""
-		},
-		fn: func(t Track) interface{} {
-			return t.GetString(field)
-		},
-	}
-}
-
 // StringSliceEqual is a function used to compare two interface{} types which are assumed
 // to be of type []string (or interface{}(nil)).
 func StringSliceEqual(x, y interface{}) bool {
@@ -310,81 +260,20 @@ func StringSliceEqual(x, y interface{}) bool {
 	return true
 }
 
-// StringSliceIntersect computes the intersection of two string slices (ignoring ordering).
-func StringSliceIntersect(s, t []string) []string {
-	var res []string
-	m := make(map[string]bool)
-	for _, x := range s {
-		m[x] = true
-	}
-	for _, y := range t {
-		if m[y] {
-			res = append(res, y)
-		}
-	}
-	return res
-}
-
-// StringsIntersect computes the intersection of the two interface values assumed to be
-// of type []string.
-func StringsIntersect(x, y interface{}) interface{} {
-	if x == nil || y == nil {
-		return nil
-	}
-	xs := x.([]string)
-	ys := y.([]string)
-	return StringSliceIntersect(xs, ys)
-}
-
-// StringsAttr returns an Attr which will retrieve the strings field from an implementation of Track.
-func StringsAttr(field string) Attr {
-	return Attr{
-		field:     field,
-		empty:     nil,
-		intersect: StringsIntersect,
-		isEmpty: func(x interface{}) bool {
-			if x == nil {
-				return true
-			}
-			xs := x.([]string)
-			return len(xs) == 0
-		},
-		fn: func(t Track) interface{} {
-			return t.GetStrings(field)
-		},
-	}
-}
-
-// IntAttr constructs an Attr which will retrieve the int field from an implementation of Track.
-func IntAttr(field string) Attr {
-	return Attr{
-		field:   field,
-		empty:   0,
-		isEmpty: func(x interface{}) bool { return x == 0 },
-		intersect: func(x, y interface{}) interface{} {
-			if x == y {
-				return x
-			}
-			return 0
-		},
-		fn: func(t Track) interface{} { return t.GetInt(field) },
-	}
-}
-
 // FirstTrackAttr wraps the given Group adding a string field `field` with the value taken
 // from the first track.
-func FirstTrackAttr(attr Attr, g Group) Group {
+func FirstTrackAttr(a attr.Interface, g Group) Group {
 	t := firstTrack(g)
 	if t == nil {
 		return g
 	}
 
-	v := attr.Value(t)
-	if attr.IsEmpty(v) {
+	v := a.Value(t)
+	if a.IsEmpty(v) {
 		return g
 	}
 	m := map[string]interface{}{
-		attr.field: v,
+		a.Field(): v,
 	}
 	return fieldsGroup(m, g)
 }

@@ -26,6 +26,7 @@ import (
 	"os"
 
 	"github.com/tchaik/tchaik/index"
+	"github.com/tchaik/tchaik/index/attr"
 	"github.com/tchaik/tchaik/index/history"
 	"github.com/tchaik/tchaik/index/itl"
 	"github.com/tchaik/tchaik/index/walk"
@@ -127,7 +128,7 @@ func readLibrary() (index.Library, error) {
 }
 
 func buildRootCollection(l index.Library) index.Collection {
-	root := index.Collect(l, index.ByAttr(index.StringAttr("Album")))
+	root := index.Collect(l, index.By(attr.String("Album")))
 	index.SortKeysByGroupName(root)
 	return root
 }

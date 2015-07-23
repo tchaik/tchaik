@@ -7,6 +7,8 @@ package index
 import (
 	"reflect"
 	"testing"
+
+	"github.com/tchaik/tchaik/index/attr"
 )
 
 type testCol struct {
@@ -164,7 +166,7 @@ func TestSumGroupIntAttr(t *testing.T) {
 func TestCommonGroupAttr(t *testing.T) {
 	table := []struct {
 		in     Group
-		fields []Attr
+		fields []attr.Interface
 		out    []interface{}
 	}{
 		// One group with one track, unset common field
@@ -177,7 +179,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist")},
+			fields: []attr.Interface{attr.String("Artist")},
 			out:    []interface{}{nil},
 		},
 
@@ -191,7 +193,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{IntAttr("Year")},
+			fields: []attr.Interface{attr.Int("Year")},
 			out:    []interface{}{nil},
 		},
 
@@ -205,7 +207,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist"), IntAttr("Year")},
+			fields: []attr.Interface{attr.String("Artist"), attr.Int("Year")},
 			out:    []interface{}{nil, nil},
 		},
 
@@ -221,7 +223,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringsAttr("Artist")},
+			fields: []attr.Interface{attr.Strings("Artist")},
 			out:    []interface{}{[]string{"First Artist", "Second Artist"}},
 		},
 
@@ -242,7 +244,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringsAttr("Artist")},
+			fields: []attr.Interface{attr.Strings("Artist")},
 			out:    []interface{}{[]string{"First Artist"}},
 		},
 
@@ -261,7 +263,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist"), IntAttr("Year")},
+			fields: []attr.Interface{attr.String("Artist"), attr.Int("Year")},
 			out:    []interface{}{nil, nil},
 		},
 
@@ -279,7 +281,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{IntAttr("Year")},
+			fields: []attr.Interface{attr.Int("Year")},
 			out:    []interface{}{nil},
 		},
 
@@ -296,7 +298,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist"), IntAttr("Year")},
+			fields: []attr.Interface{attr.String("Artist"), attr.Int("Year")},
 			out:    []interface{}{"Artist One", 1984},
 		},
 
@@ -312,7 +314,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist"), StringAttr("Composer")},
+			fields: []attr.Interface{attr.String("Artist"), attr.String("Composer")},
 			out:    []interface{}{"Artist One", "Composer One"},
 		},
 
@@ -333,7 +335,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist"), StringAttr("Composer")},
+			fields: []attr.Interface{attr.String("Artist"), attr.String("Composer")},
 			out:    []interface{}{nil, "Composer One"},
 		},
 
@@ -354,7 +356,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist"), StringAttr("Composer")},
+			fields: []attr.Interface{attr.String("Artist"), attr.String("Composer")},
 			out:    []interface{}{"Artist One", nil},
 		},
 
@@ -417,7 +419,7 @@ func TestCommonGroupAttr(t *testing.T) {
 					},
 				},
 			},
-			fields: []Attr{StringAttr("Artist"), IntAttr("Year")},
+			fields: []attr.Interface{attr.String("Artist"), attr.Int("Year")},
 			out:    []interface{}{"Artist One", nil},
 		},
 	}
@@ -438,7 +440,7 @@ func TestCommonGroupAttr(t *testing.T) {
 func TestFirstTrackAttr(t *testing.T) {
 	table := []struct {
 		in    Group
-		field Attr
+		field attr.Interface
 		out   interface{}
 	}{
 		// One group with no tracks
@@ -446,7 +448,7 @@ func TestFirstTrackAttr(t *testing.T) {
 			in: group{
 				name: "Group One",
 			},
-			field: StringAttr("Name"),
+			field: attr.String("Name"),
 			out:   nil,
 		},
 
@@ -454,7 +456,7 @@ func TestFirstTrackAttr(t *testing.T) {
 			in: group{
 				name: "Group One",
 			},
-			field: StringsAttr("Artist"),
+			field: attr.Strings("Artist"),
 			out:   nil,
 		},
 
@@ -468,7 +470,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: StringAttr("Name"),
+			field: attr.String("Name"),
 			out:   "Track One",
 		},
 
@@ -481,7 +483,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: StringsAttr("Artist"),
+			field: attr.Strings("Artist"),
 			out:   []string{"Track One"},
 		},
 
@@ -497,7 +499,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: StringAttr("Artist"),
+			field: attr.String("Artist"),
 			out:   nil,
 		},
 
@@ -512,7 +514,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: StringsAttr("Artist"),
+			field: attr.Strings("Artist"),
 			out:   nil,
 		},
 
@@ -532,7 +534,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: StringAttr("Name"),
+			field: attr.String("Name"),
 			out:   "Track One",
 		},
 
@@ -546,7 +548,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: IntAttr("Duration"),
+			field: attr.Int("Duration"),
 			out:   1234,
 		},
 
@@ -562,7 +564,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: IntAttr("Duration"),
+			field: attr.Int("Duration"),
 			out:   nil,
 		},
 
@@ -582,7 +584,7 @@ func TestFirstTrackAttr(t *testing.T) {
 					},
 				},
 			},
-			field: IntAttr("Duration"),
+			field: attr.Int("Duration"),
 			out:   1234,
 		},
 	}

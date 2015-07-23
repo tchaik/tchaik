@@ -12,6 +12,7 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/tchaik/tchaik/index"
+	"github.com/tchaik/tchaik/index/attr"
 	"github.com/tchaik/tchaik/store"
 )
 
@@ -84,8 +85,8 @@ func buildCollection(h group, c index.Collection) group {
 
 	for _, k := range c.Keys() {
 		g := c.Get(k)
-		g = index.FirstTrackAttr(index.StringsAttr("AlbumArtist"), g)
-		g = index.CommonGroupAttr([]index.Attr{index.StringsAttr("Artist")}, g)
+		g = index.FirstTrackAttr(attr.Strings("AlbumArtist"), g)
+		g = index.CommonGroupAttr([]attr.Interface{attr.Strings("Artist")}, g)
 		h.Groups = append(h.Groups, group{
 			Name:        g.Name(),
 			Key:         k,
@@ -173,14 +174,14 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	c = index.Collect(g, index.ByPrefix("Name"))
 	g = index.SubTransform(c, index.TrimEnumPrefix)
 	g = index.SumGroupIntAttr("TotalTime", g)
-	commonFields := []index.Attr{
-		index.StringAttr("Album"),
-		index.StringsAttr("Artist"),
-		index.StringsAttr("AlbumArtist"),
-		index.StringsAttr("Composer"),
-		index.IntAttr("Year"),
-		index.IntAttr("BitRate"),
-		index.IntAttr("DiscNumber"),
+	commonFields := []attr.Interface{
+		attr.String("Album"),
+		attr.Strings("Artist"),
+		attr.Strings("AlbumArtist"),
+		attr.Strings("Composer"),
+		attr.Int("Year"),
+		attr.Int("BitRate"),
+		attr.Int("DiscNumber"),
 	}
 	g = index.CommonGroupAttr(commonFields, g)
 	g = index.RemoveEmptyCollections(g)
@@ -208,7 +209,7 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	if g == nil {
 		return group{}, fmt.Errorf("could not find group")
 	}
-	g = index.FirstTrackAttr(index.StringAttr("ID"), g)
+	g = index.FirstTrackAttr(attr.String("ID"), g)
 
 	return build(g, k), nil
 }

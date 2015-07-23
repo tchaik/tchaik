@@ -8,6 +8,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/tchaik/tchaik/index/attr"
 )
 
 type testTrack struct {
@@ -88,7 +90,7 @@ func TestByAttr(t *testing.T) {
 		"Album B": {trackListing[2], trackListing[3]},
 	}
 
-	attrGroup := ByAttr(StringAttr("Album")).Collect(testTracker(trackListing[:]))
+	attrGroup := By(attr.String("Album")).Collect(testTracker(trackListing[:]))
 	SortKeysByGroupName(attrGroup)
 
 	nkm := nameKeyMap(attrGroup)
@@ -127,7 +129,7 @@ func TestSubCollect(t *testing.T) {
 	}
 	expectedAlbums := []string{album1, album2}
 
-	albums := ByAttr(StringAttr("Album")).Collect(testTracker(trackListing[:]))
+	albums := By(attr.String("Album")).Collect(testTracker(trackListing[:]))
 	SortKeysByGroupName(albums)
 	albNames := names(albums)
 
