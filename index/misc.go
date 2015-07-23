@@ -114,7 +114,7 @@ func commonCollectionTrackAttr(attrs []Attr, c Collection) Collection {
 
 				for _, a := range attrs {
 					f := a.Field()
-					flds[f] = a.intersect(flds[f], g1.Field(f))
+					flds[f] = a.Intersect(flds[f], g1.Field(f))
 				}
 			}
 		}
@@ -149,7 +149,7 @@ func commonGroupTrackAttr(attrs []Attr, g Group) Group {
 			for _, t := range tracks[1:] {
 				for _, a := range attrs {
 					f := a.Field()
-					flds[f] = a.intersect(flds[f], a.Value(t))
+					flds[f] = a.Intersect(flds[f], a.Value(t))
 				}
 			}
 		}
