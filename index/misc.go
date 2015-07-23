@@ -268,6 +268,11 @@ func (g Attr) Value(t Track) interface{} {
 	return g.fn(t)
 }
 
+// Intersect returns the intersection of the two attribute values.
+func (g Attr) Intersect(x, y interface{}) interface{} {
+	return g.intersect(x, y)
+}
+
 // StringAttr constructs an Attr which will retrieve the string field from an implementation
 // of Track.
 func StringAttr(field string) Attr {
