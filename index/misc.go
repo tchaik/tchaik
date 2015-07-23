@@ -239,27 +239,6 @@ func fieldsGroup(m map[string]interface{}, g Group) Group {
 	}
 }
 
-// StringSliceEqual is a function used to compare two interface{} types which are assumed
-// to be of type []string (or interface{}(nil)).
-func StringSliceEqual(x, y interface{}) bool {
-	// Annoyingly we have to cater for zero values from map[string]interface{}
-	// which don't have the correct type wrapping the nil.
-	if x == nil || y == nil {
-		return x == nil && y == nil
-	}
-	xs := x.([]string) // NB: panics here are acceptable: should not be called on a non-'Strings' field.
-	ys := y.([]string)
-	if len(xs) != len(ys) {
-		return false
-	}
-	for i, xss := range xs {
-		if ys[i] != xss {
-			return false
-		}
-	}
-	return true
-}
-
 // FirstTrackAttr wraps the given Group adding a string field `field` with the value taken
 // from the first track.
 func FirstTrackAttr(a attr.Interface, g Group) Group {
