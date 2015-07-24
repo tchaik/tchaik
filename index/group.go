@@ -326,7 +326,7 @@ type groupBy struct {
 
 // Collect implements Collector
 func (a groupBy) Collect(tracker Tracker) Collection {
-	name := "by " + a.Field()
+	name := "by " + a.Name()
 	if tg, ok := tracker.(Group); ok {
 		name = tg.Name()
 	}

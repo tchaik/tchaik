@@ -105,7 +105,7 @@ func commonCollectionTrackAttr(l []attr.Interface, c Collection) Collection {
 		grps[k0] = g0
 
 		for _, a := range l {
-			flds[a.Field()] = g0.Field(a.Field())
+			flds[a.Name()] = g0.Field(a.Name())
 		}
 
 		if len(keys) > 1 {
@@ -115,7 +115,7 @@ func commonCollectionTrackAttr(l []attr.Interface, c Collection) Collection {
 				grps[k] = g1
 
 				for _, a := range l {
-					f := a.Field()
+					f := a.Name()
 					flds[f] = a.Intersect(flds[f], g1.Field(f))
 				}
 			}
@@ -123,7 +123,7 @@ func commonCollectionTrackAttr(l []attr.Interface, c Collection) Collection {
 	}
 
 	for _, a := range l {
-		f := a.Field()
+		f := a.Name()
 		if v, ok := flds[f]; ok && a.IsEmpty(v) {
 			delete(flds, f)
 		}
@@ -143,14 +143,14 @@ func commonGroupTrackAttr(l []attr.Interface, g Group) Group {
 	if len(tracks) > 0 {
 		t0 := tracks[0]
 		for _, a := range l {
-			f := a.Field()
+			f := a.Name()
 			flds[f] = a.Value(t0)
 		}
 
 		if len(tracks) > 1 {
 			for _, t := range tracks[1:] {
 				for _, a := range l {
-					f := a.Field()
+					f := a.Name()
 					flds[f] = a.Intersect(flds[f], a.Value(t))
 				}
 			}
@@ -158,7 +158,7 @@ func commonGroupTrackAttr(l []attr.Interface, g Group) Group {
 	}
 
 	for _, a := range l {
-		f := a.Field()
+		f := a.Name()
 		if v, ok := flds[f]; ok && a.IsEmpty(v) {
 			delete(flds, f)
 		}
@@ -252,7 +252,7 @@ func FirstTrackAttr(a attr.Interface, g Group) Group {
 		return g
 	}
 	m := map[string]interface{}{
-		a.Field(): v,
+		a.Name(): v,
 	}
 	return fieldsGroup(m, g)
 }

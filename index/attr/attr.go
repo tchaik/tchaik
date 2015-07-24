@@ -15,8 +15,8 @@ type Getter interface {
 
 // Interface is a type which defines behaviour necessary to implement a typed attribute.
 type Interface interface {
-	// Field returns the name of the attribute.
-	Field() string
+	// Name returns the name of the attribute.
+	Name() string
 
 	// IsEmpty returns true iff `x` is a representation of the empty value of this attribute.
 	IsEmpty(x interface{}) bool
@@ -30,14 +30,14 @@ type Interface interface {
 }
 
 type valueType struct {
-	field string
+	name  string
 	empty interface{}
 	get   func(Getter) interface{}
 }
 
-// Field implements Interface.
-func (v *valueType) Field() string {
-	return v.field
+// Name implements Interface.
+func (v *valueType) Name() string {
+	return v.name
 }
 
 // IsEmpty implements Interface.
@@ -62,7 +62,7 @@ func (v *valueType) Intersect(x, y interface{}) interface{} {
 // attribute of an implementation of Getter.
 func String(f string) Interface {
 	return &valueType{
-		field: f,
+		name:  f,
 		empty: "",
 		get: func(g Getter) interface{} {
 			return g.GetString(f)
@@ -74,7 +74,7 @@ func String(f string) Interface {
 // attribute of an implementation of Getter.
 func Int(f string) Interface {
 	return &valueType{
-		field: f,
+		name:  f,
 		empty: 0,
 		get: func(g Getter) interface{} {
 			return g.GetInt(f)
@@ -110,7 +110,7 @@ func (p *stringsType) Intersect(x, y interface{}) interface{} {
 func Strings(f string) Interface {
 	return &stringsType{
 		valueType{
-			field: f,
+			name:  f,
 			empty: nil,
 			get: func(g Getter) interface{} {
 				return g.GetStrings(f)

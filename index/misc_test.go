@@ -428,7 +428,7 @@ func TestCommonGroupAttr(t *testing.T) {
 		g := CommonGroupAttr(tt.fields, tt.in)
 		got := make([]interface{}, len(tt.out))
 		for i, f := range tt.fields {
-			got[i] = g.Field(f.Field())
+			got[i] = g.Field(f.Name())
 		}
 
 		if !reflect.DeepEqual(got, tt.out) {
@@ -591,7 +591,7 @@ func TestFirstTrackAttr(t *testing.T) {
 
 	for ii, tt := range table {
 		g := FirstTrackAttr(tt.field, tt.in)
-		got := g.Field(tt.field.Field())
+		got := g.Field(tt.field.Name())
 
 		if !reflect.DeepEqual(got, tt.out) {
 			t.Errorf("[%d] got %#v, expected %#v", ii, got, tt.out)
