@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package attr defines types and helpers for accessing typed attributes.
 package attr
 
 // Getter is an interface which is implemented by types which want to export typed
@@ -14,9 +15,17 @@ type Getter interface {
 
 // Interface is a type which defines behaviour necessary to implement a typed attribute.
 type Interface interface {
+	// Field returns the name of the attribute.
 	Field() string
+
+	// IsEmpty returns true iff `x` is a representation of the empty value of this attribute.
 	IsEmpty(x interface{}) bool
-	Value(Getter) interface{}
+
+	// Value returns the value of this attribute in `g`.
+	Value(g Getter) interface{}
+
+	// Intersect returns the intersection of `x` and `y`, assumed to be the type of the
+	// attribute.
 	Intersect(x, y interface{}) interface{}
 }
 
@@ -45,6 +54,8 @@ func (v *valueType) Intersect(x, y interface{}) interface{} {
 	return v.empty
 }
 
+// String constructs an implementation of Interface with the field name `f` to access a string
+// attribute of an implementation of Getter.
 func String(f string) Interface {
 	return &valueType{
 		field: f,
@@ -55,6 +66,8 @@ func String(f string) Interface {
 	}
 }
 
+// Int constructs an implementation of Interface with the field name `f` to access an int
+// attribute of an implementation of Getter.
 func Int(f string) Interface {
 	return &valueType{
 		field: f,
@@ -86,6 +99,8 @@ func (p *stringsType) Intersect(x, y interface{}) interface{} {
 	return stringSliceIntersect(xs, ys)
 }
 
+// Strings constructs an implementation of Interface with the field name `f` to access a string slice
+// attribute of an implementation of Getter.
 func Strings(f string) Interface {
 	return &stringsType{
 		valueType{
