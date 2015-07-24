@@ -35,18 +35,22 @@ type valueType struct {
 	get   func(Getter) interface{}
 }
 
+// Field implements Interface.
 func (v *valueType) Field() string {
 	return v.field
 }
 
+// IsEmpty implements Interface.
 func (v *valueType) IsEmpty(x interface{}) bool {
 	return v.empty == x
 }
 
+// Value implements Interface.
 func (v *valueType) Value(g Getter) interface{} {
 	return v.get(g)
 }
 
+// Intersect implements Interface.
 func (v *valueType) Intersect(x, y interface{}) interface{} {
 	if x == y {
 		return x
@@ -82,6 +86,7 @@ type stringsType struct {
 	valueType
 }
 
+// IsEmpty implements Interface.
 func (p *stringsType) IsEmpty(x interface{}) bool {
 	if x == nil {
 		return true
@@ -90,6 +95,7 @@ func (p *stringsType) IsEmpty(x interface{}) bool {
 	return len(xs) == 0
 }
 
+// Intersect implements Interface.
 func (p *stringsType) Intersect(x, y interface{}) interface{} {
 	if x == nil || y == nil {
 		return nil
