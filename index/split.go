@@ -45,15 +45,16 @@ func splitMultiple(x string, s []string) []string {
 	return res
 }
 
-// SplitNameList is a transform function which goes through the tracks
-// in the group and
-func SplitNameList(fields ...string) func(Group) Group {
+// ListSepeartors is the list of strings used to separate String fields into 'Strings' fields.
+var ListSeparators = []string{"/", ",", ";", ":", "&", "and"}
+
+// SplitList returns a transform which splits lists of names in 'String' fields of Tracks
+// into 'Strings' fields.  The String values are split by ListSeparators.
+func SplitList(fields ...string) TransformFn {
 	return func(g Group) Group {
-		tracks := g.Tracks()
-		nt := splitNameList(fields, tracks)
 		return &subGrpTrks{
 			Group:  g,
-			tracks: nt,
+			tracks: splitNameList(fields, g.Tracks()),
 		}
 	}
 }
@@ -71,14 +72,12 @@ func (s *stringsTrack) GetStrings(k string) []string {
 	return v
 }
 
-var splitNameSeparator = []string{"/", ",", ";", ":", "&", "and"}
-
 func splitNameList(fields []string, tracks []Track) []Track {
 	result := make([]Track, len(tracks))
 	for i, t := range tracks {
 		m := make(map[string][]string)
 		for _, f := range fields {
-			m[f] = splitMultiple(t.GetString(f), splitNameSeparator)
+			m[f] = splitMultiple(t.GetString(f), ListSeparators)
 		}
 		result[i] = &stringsTrack{
 			Track: t,
