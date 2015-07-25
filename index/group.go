@@ -14,14 +14,6 @@ import (
 	"github.com/tchaik/tchaik/index/attr"
 )
 
-// Key represents a unique value used to represent a group within a collection.
-type Key string
-
-// String returns the string representation of the key.
-func (k Key) String() string {
-	return string(k)
-}
-
 // Tracker is an interface which defines the Tracks method which returns a list
 // of Tracks.
 type Tracker interface {
