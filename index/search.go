@@ -26,12 +26,13 @@ func (p Path) String() string {
 	return p.Encode()
 }
 
-// Encode returns a string representation of the Path.
+// Encode returns a string representation of the Path, that is a PathSeparator'ed string where each
+// component is a Key from the Path.
 func (p Path) Encode() string {
-	s := ""
 	if len(p) == 0 {
-		return s
+		return ""
 	}
+	s := ""
 	for _, k := range p[:len(p)-1] {
 		s += string(k) + PathSeparator
 	}
@@ -266,6 +267,7 @@ type FlatSearcher struct {
 	Searcher
 }
 
+// Search implements Searcher.
 func (f FlatSearcher) Search(s string) []Path {
 	return f.Searcher.Search(removeNonAlphaNumeric(s))
 }

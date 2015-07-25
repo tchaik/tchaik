@@ -56,7 +56,7 @@ func Collect(t Tracker, c Collector) Collection {
 }
 
 // NewCollection creates a new collection from a source collection `c` which will have the groups
-// represented by the given list of paths.  All the paths are assumed to be unique, an of at least
+// represented by the given list of paths.  All the paths are assumed to be unique, and of at least
 // length 2.
 func NewPathsCollection(src Collection, paths []Path) Collection {
 	keys := make([]Key, len(paths))
@@ -77,9 +77,13 @@ type pathsCollection struct {
 	keys []Key
 }
 
-func (c pathsCollection) Keys() []Key  { return c.keys }
+// Keys implements Collection.
+func (c pathsCollection) Keys() []Key { return c.keys }
+
+// Name implements Group.
 func (c pathsCollection) Name() string { return c.name }
 
+// Field implements Group.
 func (c pathsCollection) Field(string) interface{} { return nil }
 
 func (c pathsCollection) Tracks() []Track {
@@ -190,7 +194,7 @@ func (sg subCol) Field(f string) interface{} {
 	return sg.Collection.Field(f)
 }
 
-// SubCollect applies the given Collector to each of the "leaf-Groups"
+// SubCollect applies the given Collector to each of the "leaf" Groups
 // in the Collection.
 func SubCollect(c Collection, r Collector) Collection {
 	keys := c.Keys()
@@ -223,7 +227,8 @@ func walkCollection(c Collection, p Path, f WalkFn) {
 	}
 }
 
-// Walk transverses the Group g and calls the WalkFn f on each Track.
+// Walk transverses the Group and calls the WalkFn on each Track.  The Path is assumed to be
+// the path of the Group.
 func Walk(g Group, p Path, f WalkFn) {
 	if gc, ok := g.(Collection); ok {
 		walkCollection(gc, p, f)
@@ -234,12 +239,16 @@ func Walk(g Group, p Path, f WalkFn) {
 	}
 }
 
+// FilterItem is an interface which defines behaviour for creating arbitrary filters where each
+// filtered item is a list of Paths.
 type FilterItem interface {
 	Name() string
 	Fields() map[string]interface{}
 	Paths() []Path
 }
 
+// FilterItemSlice is a convenience type which implements sort.Interface and is used to sort
+// slices of FilterItem.
 type FilterItemSlice []FilterItem
 
 func (f FilterItemSlice) Len() int           { return len(f) }
@@ -252,10 +261,16 @@ type filterItem struct {
 	paths  []Path
 }
 
-func (f *filterItem) Name() string                   { return f.name }
-func (f *filterItem) Fields() map[string]interface{} { return f.fields }
-func (f *filterItem) Paths() []Path                  { return f.paths }
+// Name implements FilterItem.
+func (f *filterItem) Name() string { return f.name }
 
+// Fields implements FilterItem.
+func (f *filterItem) Fields() map[string]interface{} { return f.fields }
+
+// Paths implements FilterItem.
+func (f *filterItem) Paths() []Path { return f.paths }
+
+// Filter creates a slice of FilterItems, each FilterItem is a
 func Filter(c Collection, field string) []FilterItem {
 	m := make(map[string][]Path)
 	walkfn := func(t Track, p Path) {
