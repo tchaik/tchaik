@@ -280,16 +280,19 @@ func WordsIntersectSearcher(s Searcher) Searcher {
 	}
 }
 
-type countKeyPath struct {
+// stringFreq is a helper type to count the number of occurances of a string.
+type stringFreq struct {
 	n int
 	k string
 }
 
-type countKeyPathSlice []countKeyPath
+// stringFreqSlice is a convenience type for sorting a slice of stringFreqs by the frequency,
+// and then the alphabetical order of the strings.
+type stringFreqSlice []stringFreq
 
-func (c countKeyPathSlice) Len() int      { return len(c) }
-func (c countKeyPathSlice) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
-func (c countKeyPathSlice) Less(i, j int) bool {
+func (c stringFreqSlice) Len() int      { return len(c) }
+func (c stringFreqSlice) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
+func (c stringFreqSlice) Less(i, j int) bool {
 	if c[i].n < c[j].n {
 		return true
 	}
@@ -339,13 +342,13 @@ func OrderedIntersection(paths ...[]Path) []Path {
 	}
 
 	result := make([]Path, 0, len(cnt))
-	count := make([]countKeyPath, 0, len(cnt))
+	count := make([]stringFreq, 0, len(cnt))
 	for k, v := range cnt {
 		result = append(result, enc[k])
-		count = append(count, countKeyPath{v, k})
+		count = append(count, stringFreq{v, k})
 	}
 
-	sort.Sort(ParallelSort(sort.Reverse(countKeyPathSlice(count)), PathSlice(result)))
+	sort.Sort(ParallelSort(sort.Reverse(stringFreqSlice(count)), PathSlice(result)))
 	return result
 }
 
