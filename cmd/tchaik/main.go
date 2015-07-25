@@ -134,7 +134,7 @@ func buildRootCollection(l index.Library) index.Collection {
 }
 
 func buildSearchIndex(c index.Collection) index.Searcher {
-	wi := index.BuildWordIndex(c, []string{"Composer", "Artist", "Album", "Name"})
+	wi := index.BuildCollectionWordIndex(c, []string{"Composer", "Artist", "Album", "Name"})
 	return index.FlatSearcher{
 		Searcher: index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10)),
 	}
