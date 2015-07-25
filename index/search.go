@@ -39,7 +39,7 @@ func (p Path) Encode() string {
 	return s
 }
 
-// PathSlice is a wrapper type implementing sort.Interface (and index.Swapper)
+// PathSlice is a wrapper type implementing sort.Interface (and index.Swapper).
 type PathSlice []Path
 
 // Swap implements sort.Interface (and index.Swapper).
@@ -150,7 +150,7 @@ func (s *wordIndex) AddGroup(g Group, p Path) {
 
 // Expander is an interface which implements the Expand method.
 type Expander interface {
-	// Expand the given string, returning the result and true if succesful, or false
+	// Expand the given string, returning the result and true if successful, or false
 	// otherwise.
 	Expand(string) ([]string, bool)
 }
