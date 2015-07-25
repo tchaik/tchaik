@@ -22,10 +22,18 @@ type Command struct {
 	Data   map[string]interface{}
 }
 
-func (c Command) getString(f string) (string, error) {
+func (c Command) get(f string) (interface{}, error) {
 	raw, ok := c.Data[f]
 	if !ok {
-		return "", fmt.Errorf("expected '%s' in data map", f)
+		return nil, fmt.Errorf("expected '%s' in data map", f)
+	}
+	return raw, nil
+}
+
+func (c Command) getString(f string) (string, error) {
+	raw, err := c.get(f)
+	if err != nil {
+		return "", err
 	}
 
 	value, ok := raw.(string)
@@ -36,9 +44,9 @@ func (c Command) getString(f string) (string, error) {
 }
 
 func (c Command) getFloat(f string) (float64, error) {
-	raw, ok := c.Data[f]
-	if !ok {
-		return 0.0, fmt.Errorf("expected '%s' in data map", f)
+	raw, err := c.get(f)
+	if err != nil {
+		return 0.0, err
 	}
 
 	value, ok := raw.(float64)
@@ -49,9 +57,9 @@ func (c Command) getFloat(f string) (float64, error) {
 }
 
 func (c Command) getBool(f string) (bool, error) {
-	raw, ok := c.Data[f]
-	if !ok {
-		return false, fmt.Errorf("expected '%s' in data map", f)
+	raw, err := c.get(f)
+	if err != nil {
+		return false, err
 	}
 
 	value, ok := raw.(bool)
@@ -62,9 +70,9 @@ func (c Command) getBool(f string) (bool, error) {
 }
 
 func (c Command) getStringSlice(f string) ([]string, error) {
-	raw, ok := c.Data[f]
-	if !ok {
-		return nil, fmt.Errorf("expected '%s' in data map", f)
+	raw, err := c.get(f)
+	if err != nil {
+		return nil, err
 	}
 
 	rawSlice, ok := raw.([]interface{})
