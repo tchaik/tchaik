@@ -46,6 +46,8 @@ type Searcher interface {
 
 // WordIndex is an interface which defines the Words method.
 type WordIndex interface {
+	Searcher
+
 	// Words returns all the words in the index.
 	Words() []string
 }
@@ -80,33 +82,6 @@ func (s *wordIndex) AddString(x string, p Path) {
 	w := strings.Fields(x)
 	for _, x := range w {
 		s.AddWord(x, p)
-	}
-}
-
-func (s *wordIndex) AddCollection(c Collection, p Path) {
-	for _, k := range c.Keys() {
-		np := make(Path, len(p), len(p)+1)
-		copy(np, p)
-		np = append(np, k)
-		s.AddGroup(c.Get(k), np)
-	}
-}
-
-// AddGroup adds the given group to the word index, using the Path as root
-func (s *wordIndex) AddGroup(g Group, p Path) {
-	if c, ok := g.(Collection); ok {
-		s.AddCollection(c, p)
-		return
-	}
-	// for i, t := range g.Tracks() {
-	for _, t := range g.Tracks() {
-		// np := make(Path, len(p), len(p)+1)
-		// copy(p, np)
-		// np = append(np, strconv.Itoa(i))
-		for _, f := range s.fields {
-			// s.AddString(t.GetString(f), np)
-			s.AddString(t.GetString(f), p)
-		}
 	}
 }
 
@@ -193,14 +168,51 @@ func BuildPrefixExpandSearcher(s Searcher, w WordIndex, n int) Searcher {
 	return &expandSearcher{BuildPrefixMultiExpander(w.Words(), n), s}
 }
 
-// BuildWordIndex creates a *wordIndex ()
-func BuildWordIndex(c Collection, fields []string) *wordIndex {
-	wi := &wordIndex{
-		fields: fields,
-		words:  make(map[string][]Path),
+type trackWordIndex struct {
+	*wordIndex
+
+	fields []string
+}
+
+// AddCollection recursively adds all Groups within the collection to the word index.
+func (w *trackWordIndex) AddCollection(c Collection, p Path) {
+	for _, k := range c.Keys() {
+		np := make(Path, len(p), len(p)+1)
+		copy(np, p)
+		np = append(np, k)
+		w.AddGroup(c.Get(k), np)
 	}
-	wi.AddGroup(c, Path([]Key{"Root"}))
-	return wi
+}
+
+// AddGroup adds the Group tracks to the word index, using the Path as root.
+func (w *trackWordIndex) AddGroup(g Group, p Path) {
+	if c, ok := g.(Collection); ok {
+		w.AddCollection(c, p)
+		return
+	}
+	// for i, t := range g.Tracks() {
+	for _, t := range g.Tracks() {
+		// np := make(Path, len(p), len(p)+1)
+		// copy(p, np)
+		// np = append(np, strconv.Itoa(i))
+		for _, f := range w.fields {
+			// s.AddString(t.GetString(f), np)
+			w.AddString(t.GetString(f), p)
+		}
+	}
+}
+
+// BuildCollectionWordIndex creates a WordIndex using the given Collection, taking data from
+// the given fields.
+func BuildCollectionWordIndex(c Collection, fields []string) WordIndex {
+	w := &trackWordIndex{
+		wordIndex: &wordIndex{
+			words: make(map[string][]Path),
+		},
+		fields: fields,
+	}
+	w.AddGroup(c, Path([]Key{"Root"}))
+	return w
 }
 
 type wordSearchIntersect struct {
@@ -222,6 +234,16 @@ func (s *wordSearchIntersect) Search(x string) []Path {
 	return OrderedIntersection(paths...)
 }
 
+// WordsSearchIntersect calls Search on the Searcher for each word in the input string
+// and then returns the ordered intersection (Paths are ordered by the number of times
+// they appear.
+func WordsIntersectSearcher(s Searcher) Searcher {
+	return &wordSearchIntersect{
+		Searcher: s,
+		min:      3,
+	}
+}
+
 // FlatSearcher is a Searcher wrapper which flattens input strings (replaces any accented
 // characters with their un-accented equivalents).
 type FlatSearcher struct {
@@ -231,14 +253,4 @@ type FlatSearcher struct {
 // Search implements Searcher.
 func (f FlatSearcher) Search(s string) []Path {
 	return f.Searcher.Search(removeNonAlphaNumeric(s))
-}
-
-// WordsSearchIntersect calls Search on the Searcher for each word in the input string
-// and then returns the ordered intersection (Paths are ordered by the number of times
-// they appear.
-func WordsIntersectSearcher(s Searcher) Searcher {
-	return &wordSearchIntersect{
-		Searcher: s,
-		min:      3,
-	}
 }
