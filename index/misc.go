@@ -4,7 +4,7 @@
 
 package index
 
-import "github.com/tchaik/tchaik/index/attr"
+import "tchaik.com/index/attr"
 
 // subColFlds is a Collection wrapper which overrides the Field
 // method.

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tchaik/tchaik/index/attr"
+	"tchaik.com/index/attr"
 )
 
 type testTrack struct {

@@ -9,7 +9,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/tchaik/tchaik/index"
+	"tchaik.com/index"
 )
 
 // Value is a type which represents a rating value.

@@ -9,7 +9,7 @@ import (
 	"os"
 	"sync"
 
-	"github.com/tchaik/tchaik/index"
+	"tchaik.com/index"
 )
 
 // Store is an interface which defines methods necessary for setting and getting favourites for

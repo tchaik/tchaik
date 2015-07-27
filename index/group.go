@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/tchaik/tchaik/index/attr"
+	"tchaik.com/index/attr"
 )
 
 // Tracker is an interface which defines the Tracks method which returns a list

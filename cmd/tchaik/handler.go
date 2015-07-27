@@ -13,9 +13,9 @@ import (
 
 	"github.com/dhowden/httpauth"
 
-	"github.com/tchaik/tchaik/index/history"
-	"github.com/tchaik/tchaik/player"
-	"github.com/tchaik/tchaik/store"
+	"tchaik.com/index/history"
+	"tchaik.com/player"
+	"tchaik.com/store"
 )
 
 // traceFS is a type which implements http.FileSystem and is used at the top-level to

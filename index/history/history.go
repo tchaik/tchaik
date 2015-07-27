@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tchaik/tchaik/index"
+	"tchaik.com/index"
 )
 
 // Store is an interface which defines methods necessary for fetching/adding to play history for

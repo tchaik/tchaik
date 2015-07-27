@@ -25,13 +25,13 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/tchaik/tchaik/index"
-	"github.com/tchaik/tchaik/index/attr"
-	"github.com/tchaik/tchaik/index/history"
-	"github.com/tchaik/tchaik/index/itl"
-	"github.com/tchaik/tchaik/index/walk"
-	"github.com/tchaik/tchaik/store"
-	"github.com/tchaik/tchaik/store/cmdflag"
+	"tchaik.com/index"
+	"tchaik.com/index/attr"
+	"tchaik.com/index/history"
+	"tchaik.com/index/itl"
+	"tchaik.com/index/walk"
+	"tchaik.com/store"
+	"tchaik.com/store/cmdflag"
 )
 
 var debug bool
@@ -171,6 +171,14 @@ func main() {
 		os.Exit(1)
 	}
 	fmt.Println("done.")
+
+	// fmt.Printf("Loading playlists...")
+	// ps, err := playlist.NewStore(playListPath)
+	// if err != nil {
+	// 	fmt.Printf("\nerror loading playlists: %v", err)
+	// 	os.Exit(1)
+	// }
+	// fmt.Println("done")
 
 	mediaFileSystem, artworkFileSystem, err := cmdflag.Stores()
 	if err != nil {
