@@ -14,6 +14,7 @@ import (
 	"github.com/dhowden/httpauth"
 
 	"github.com/tchaik/tchaik/index/history"
+	"github.com/tchaik/tchaik/player"
 	"github.com/tchaik/tchaik/store"
 )
 
@@ -71,9 +72,9 @@ func NewHandler(l Library, hs history.Store, mediaFileSystem, artworkFileSystem 
 	h.HandleFileSystem("/artwork/", artworkFileSystem)
 	h.HandleFileSystem("/icon/", store.FaviconFileSystem(artworkFileSystem))
 
-	p := newPlayers()
+	p := player.NewPlayers()
 	h.Handle("/socket", NewWebsocketHandler(l, p, hs))
-	h.Handle("/api/players/", http.StripPrefix("/api/players/", &playersHandler{p}))
+	h.Handle("/api/players/", http.StripPrefix("/api/players/", player.NewHTTPHandler(p)))
 
 	return h
 }

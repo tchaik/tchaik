@@ -14,6 +14,7 @@ import (
 
 	"github.com/tchaik/tchaik/index"
 	"github.com/tchaik/tchaik/index/history"
+	"github.com/tchaik/tchaik/player"
 )
 
 // Command is a type which is a container for data received from the websocket.
@@ -131,7 +132,7 @@ const (
 )
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
-func NewWebsocketHandler(l Library, p *players, s history.Store) http.Handler {
+func NewWebsocketHandler(l Library, p *player.Players, s history.Store) http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
 		h := &websocketHandler{
@@ -149,7 +150,7 @@ func NewWebsocketHandler(l Library, p *players, s history.Store) http.Handler {
 
 type websocketHandler struct {
 	*websocket.Conn
-	players  *players
+	players  *player.Players
 	history  history.Store
 	lib      Library
 	searcher *sameSearcher
@@ -158,7 +159,7 @@ type websocketHandler struct {
 }
 
 func (h *websocketHandler) Handle() {
-	defer h.players.remove(h.playerKey)
+	defer h.players.Remove(h.playerKey)
 
 	var err error
 	for {
@@ -233,7 +234,7 @@ func (h *websocketHandler) player(c Command) (interface{}, error) {
 			Data   interface{}
 		}{
 			Action: c.Action,
-			Data:   h.players.list(),
+			Data:   h.players.List(),
 		}, nil
 	}
 
@@ -242,35 +243,35 @@ func (h *websocketHandler) player(c Command) (interface{}, error) {
 		return nil, err
 	}
 
-	p := h.players.get(key)
+	p := h.players.Get(key)
 	if p == nil {
 		return nil, fmt.Errorf("invalid player key: %v", key)
 	}
 
-	a, ok := websocketToAction(action)
+	a, ok := player.WebsocketToAction(action)
 	if !ok {
-		return nil, InvalidActionError(action)
+		return nil, player.InvalidActionError(action)
 	}
 
 	switch a {
-	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute:
+	case player.ActionPlay, player.ActionPause, player.ActionNext, player.ActionPrev, player.ActionTogglePlayPause, player.ActionToggleMute:
 		err = p.Do(a)
 
-	case ActionSetVolume:
+	case player.ActionSetVolume:
 		var f float64
 		f, err = c.getFloat("value")
 		if err == nil {
 			err = p.SetVolume(f)
 		}
 
-	case ActionSetMute:
+	case player.ActionSetMute:
 		var b bool
 		b, err = c.getBool("value")
 		if err == nil {
 			err = p.SetMute(b)
 		}
 
-	case ActionSetTime:
+	case player.ActionSetTime:
 		var f float64
 		f, err = c.getFloat("value")
 		if err == nil {
@@ -287,9 +288,9 @@ func (h *websocketHandler) key(c Command) error {
 		return err
 	}
 
-	h.players.remove(h.playerKey)
+	h.players.Remove(h.playerKey)
 	if key != "" {
-		h.players.add(ValidatedPlayer(WebsocketPlayer(key, h.Conn)))
+		h.players.Add(player.ValidatedPlayer(player.WebsocketPlayer(key, h.Conn)))
 	}
 	h.playerKey = key
 	return nil
