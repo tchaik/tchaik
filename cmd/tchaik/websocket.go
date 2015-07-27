@@ -290,7 +290,7 @@ func (h *websocketHandler) key(c Command) error {
 
 	h.players.Remove(h.playerKey)
 	if key != "" {
-		h.players.Add(player.ValidatedPlayer(player.WebsocketPlayer(key, h.Conn)))
+		h.players.Add(player.Validated(player.WebsocketPlayer(key, h.Conn)))
 	}
 	h.playerKey = key
 	return nil
