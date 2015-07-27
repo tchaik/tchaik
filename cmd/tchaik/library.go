@@ -213,9 +213,9 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 		if !ok {
 			return group{}, fmt.Errorf("retrieved Group is not a Collection")
 		}
+
 		k = index.Key(p)
 		g = c.Get(k)
-
 		if g == nil {
 			return group{}, fmt.Errorf("invalid path near '%v'", path[1:][i])
 		}
