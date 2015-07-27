@@ -24,13 +24,13 @@ If you haven't setup Go before, you need to first set a `GOPATH` (see [https://g
 
 To fetch and build the code for Tchaik:
 
-    $ go get github.com/tchaik/tchaik/...
+    $ go get tchaik.com/cmd/...
 
 This will fetch the code and build the command line tools into `$GOPATH/bin` (assumed to be in your `PATH` already).
 
 Building the UI:
 
-    $ cd $GOPATH/src/github.com/tchaik/tchaik/cmd/tchaik/ui
+    $ cd $GOPATH/src/tchaik.com/cmd/tchaik/ui
     $ npm install
     $ gulp
 
@@ -44,7 +44,7 @@ Then browse to `http://localhost:3000/` to use tchaik.
 
 To start Tchaik you first need to move into the `cmd/tchaik` directory:
 
-    $ cd $GOPATH/src/github.com/tchaik/tchaik/cmd/tchaik
+    $ cd $GOPATH/src/tchaik.com/cmd/tchaik
 
 ## Importing an iTunes Library
 
@@ -100,7 +100,7 @@ Set `-local-store` to the local path that contains your media files.  You can us
 
 ### -remote-store
 
-Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/github.com/tchaik/tchaik/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<bucket>/path/to/root`.  Set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client.
+Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<bucket>/path/to/root`.  Set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client.
 
 ### -media-cache
 
