@@ -19,6 +19,51 @@ type RepAction struct {
 	Value  interface{} `json:",omitempty"`
 }
 
+// Apply applies the action in RepAction to the Player.
+func (r RepAction) Apply(p Player) (err error) {
+	a := Action(r.Action)
+	switch a {
+	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute:
+		err = p.Do(a)
+
+	case ActionSetVolume, ActionSetMute, ActionSetTime:
+		if r.Value == nil {
+			err = InvalidValueError("value required")
+			break
+		}
+
+		switch a {
+		case ActionSetVolume:
+			f, ok := r.Value.(float64)
+			if !ok {
+				err = InvalidValueError("invalid volume value: expected float")
+				break
+			}
+			err = p.SetVolume(f)
+
+		case ActionSetMute:
+			b, ok := r.Value.(bool)
+			if !ok {
+				err = InvalidValueError("invalid mute value: expected boolean")
+				break
+			}
+			err = p.SetMute(b)
+
+		case ActionSetTime:
+			f, ok := r.Value.(float64)
+			if !ok {
+				err = InvalidValueError("invalid time value: expected float")
+				break
+			}
+			err = p.SetTime(f)
+		}
+
+	default:
+		err = InvalidActionError(a)
+	}
+	return
+}
+
 type rep struct {
 	key string
 	fn  RepFn
