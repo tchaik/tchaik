@@ -248,38 +248,11 @@ func (h *websocketHandler) player(c Command) (interface{}, error) {
 		return nil, fmt.Errorf("invalid player key: %v", key)
 	}
 
-	a, ok := player.RepActionToAction(action)
-	if !ok {
-		return nil, player.InvalidActionError(action)
+	r := player.RepAction{
+		Action: action,
+		Value:  c.Data["value"],
 	}
-
-	switch a {
-	case player.ActionPlay, player.ActionPause, player.ActionNext, player.ActionPrev, player.ActionTogglePlayPause, player.ActionToggleMute:
-		err = p.Do(a)
-
-	case player.ActionSetVolume:
-		var f float64
-		f, err = c.getFloat("value")
-		if err == nil {
-			err = p.SetVolume(f)
-		}
-
-	case player.ActionSetMute:
-		var b bool
-		b, err = c.getBool("value")
-		if err == nil {
-			err = p.SetMute(b)
-		}
-
-	case player.ActionSetTime:
-		var f float64
-		f, err = c.getFloat("value")
-		if err == nil {
-			err = p.SetTime(f)
-		}
-	}
-
-	return nil, err
+	return nil, r.Apply(p)
 }
 
 func (h *websocketHandler) key(c Command) error {
