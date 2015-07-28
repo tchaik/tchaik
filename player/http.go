@@ -13,15 +13,18 @@ import (
 	"sync"
 )
 
+// Players is a collection of players which are identified by key.
 type Players struct {
 	sync.RWMutex
 	m map[string]Player
 }
 
+// NewPlayers creates a Players.
 func NewPlayers() *Players {
 	return &Players{m: make(map[string]Player)}
 }
 
+// Add the Player to the Players.
 func (s *Players) Add(p Player) {
 	s.Lock()
 	defer s.Unlock()
@@ -29,6 +32,7 @@ func (s *Players) Add(p Player) {
 	s.m[p.Key()] = p
 }
 
+// Remove the Player from Players (by key).
 func (s *Players) Remove(key string) {
 	s.Lock()
 	defer s.Unlock()
@@ -36,6 +40,7 @@ func (s *Players) Remove(key string) {
 	delete(s.m, key)
 }
 
+// Get the Player identified by the key.
 func (s *Players) Get(key string) Player {
 	s.RLock()
 	defer s.RUnlock()
@@ -43,6 +48,7 @@ func (s *Players) Get(key string) Player {
 	return s.m[key]
 }
 
+// List all Player keys in Players.
 func (s *Players) List() []string {
 	s.RLock()
 	defer s.RUnlock()
@@ -54,6 +60,7 @@ func (s *Players) List() []string {
 	return keys
 }
 
+// MarshalJSON implements json.Marshaler
 func (s *Players) MarshalJSON() ([]byte, error) {
 	keys := s.List()
 	return json.Marshal(struct {
@@ -63,6 +70,8 @@ func (s *Players) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// NewHTTPHandler returns an http.Handler which defines a REST API for interacting with
+// Players.
 func NewHTTPHandler(p *Players) http.Handler {
 	return &httpHandler{
 		players: p,
@@ -73,6 +82,7 @@ type httpHandler struct {
 	players *Players
 }
 
+// ServeHTTP implements http.Handler.
 func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "" {
 		switch r.Method {
