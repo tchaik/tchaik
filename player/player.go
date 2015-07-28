@@ -8,6 +8,7 @@ package player
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
 )
 
 // Action is a type which represents an enumeration of available player actions.
