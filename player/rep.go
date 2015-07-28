@@ -13,6 +13,12 @@ import (
 // with a standardised command structure when Player methods are used.
 type RepFn func(interface{})
 
+// RepAction is a representation of a player action as it would be transmitted.
+type RepAction struct {
+	Action string      `json:"action"`
+	Value  interface{} `json:",omitempty"`
+}
+
 type rep struct {
 	key string
 	fn  RepFn
@@ -28,18 +34,17 @@ func NewRep(key string, fn RepFn) Player {
 	}
 }
 
-func (r rep) sendAction(data interface{}) error {
-	r.fn(data)
+func (r rep) sendAction(action string) error {
+	r.fn(RepAction{
+		Action: action,
+	})
 	return nil
 }
 
-func (r rep) sendCtrlValue(key string, value interface{}) error {
-	r.sendAction(struct {
-		Key   string
-		Value interface{}
-	}{
-		Key:   key,
-		Value: value,
+func (r rep) sendActionValue(action string, value interface{}) error {
+	r.fn(RepAction{
+		Action: action,
+		Value:  value,
 	})
 	return nil
 }
@@ -82,9 +87,9 @@ func (r rep) Do(a Action) error {
 	return r.sendAction(s)
 }
 
-func (r rep) SetMute(b bool) error      { return r.sendCtrlValue("mute", b) }
-func (r rep) SetVolume(f float64) error { return r.sendCtrlValue("volume", f) }
-func (r rep) SetTime(f float64) error   { return r.sendCtrlValue("time", f) }
+func (r rep) SetMute(b bool) error      { return r.sendActionValue("mute", b) }
+func (r rep) SetVolume(f float64) error { return r.sendActionValue("volume", f) }
+func (r rep) SetTime(f float64) error   { return r.sendActionValue("time", f) }
 
 func (r rep) MarshalJSON() ([]byte, error) {
 	rep := struct {
