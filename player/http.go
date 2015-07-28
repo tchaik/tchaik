@@ -109,7 +109,7 @@ func (h *httpHandler) createPlayer(w http.ResponseWriter, r *http.Request) {
 		}
 		players = append(players, p)
 	}
-	h.players.Add(MultiPlayer(postData.Key, players...))
+	h.players.Add(Multi(postData.Key, players...))
 	w.WriteHeader(http.StatusCreated)
 }
 

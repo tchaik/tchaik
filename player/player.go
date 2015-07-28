@@ -47,16 +47,16 @@ type Player interface {
 	SetTime(float64) error
 }
 
-type multiPlayer struct {
+type multi struct {
 	key     string
 	players []Player
 }
 
-// MultiPlayer returns a player that will apply calls to all provided Players
+// Multi returns a Player that will apply calls to all provided Players
 // in sequence.  If an error is returning by a Player then it is returned
 // immediately.
-func MultiPlayer(key string, players ...Player) Player {
-	return multiPlayer{
+func Multi(key string, players ...Player) Player {
+	return multi{
 		key:     key,
 		players: players,
 	}
@@ -64,7 +64,7 @@ func MultiPlayer(key string, players ...Player) Player {
 
 type setFloatFn func(Player, float64) error
 
-func (m multiPlayer) applySetFloatFn(fn setFloatFn, f float64) error {
+func (m multi) applySetFloatFn(fn setFloatFn, f float64) error {
 	for _, p := range m.players {
 		err := fn(p, f)
 		if err != nil {
@@ -74,9 +74,9 @@ func (m multiPlayer) applySetFloatFn(fn setFloatFn, f float64) error {
 	return nil
 }
 
-func (m multiPlayer) Key() string { return m.key }
+func (m multi) Key() string { return m.key }
 
-func (m multiPlayer) Do(a Action) error {
+func (m multi) Do(a Action) error {
 	for _, p := range m.players {
 		err := p.Do(a)
 		if err != nil {
@@ -86,10 +86,10 @@ func (m multiPlayer) Do(a Action) error {
 	return nil
 }
 
-func (m multiPlayer) SetVolume(f float64) error { return m.applySetFloatFn(Player.SetVolume, f) }
-func (m multiPlayer) SetTime(f float64) error   { return m.applySetFloatFn(Player.SetTime, f) }
+func (m multi) SetVolume(f float64) error { return m.applySetFloatFn(Player.SetVolume, f) }
+func (m multi) SetTime(f float64) error   { return m.applySetFloatFn(Player.SetTime, f) }
 
-func (m multiPlayer) SetMute(b bool) error {
+func (m multi) SetMute(b bool) error {
 	for _, p := range m.players {
 		err := p.SetMute(b)
 		if err != nil {
@@ -99,7 +99,7 @@ func (m multiPlayer) SetMute(b bool) error {
 	return nil
 }
 
-func (m multiPlayer) MarshalJSON() ([]byte, error) {
+func (m multi) MarshalJSON() ([]byte, error) {
 	playerKeys := make([]string, len(m.players))
 	for i, p := range m.players {
 		playerKeys[i] = p.Key()
