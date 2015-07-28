@@ -117,57 +117,14 @@ func (h *httpHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 	dec := json.NewDecoder(r.Body)
 	defer r.Body.Close()
 
-	data := struct {
-		Action string
-		Value  interface{}
-	}{}
+	var data RepAction
 	err := dec.Decode(&data)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error parsing JSON: %v", err), http.StatusBadRequest)
 		return
 	}
 
-	a := Action(data.Action)
-	switch a {
-	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute:
-		err = p.Do(a)
-
-	case ActionSetVolume, ActionSetMute, ActionSetTime:
-		if data.Value == nil {
-			err = InvalidValueError("value required")
-			break
-		}
-
-		switch a {
-		case ActionSetVolume:
-			f, ok := data.Value.(float64)
-			if !ok {
-				err = InvalidValueError("invalid volume value: expected float")
-				break
-			}
-			err = p.SetVolume(f)
-
-		case ActionSetMute:
-			b, ok := data.Value.(bool)
-			if !ok {
-				err = InvalidValueError("invalid mute value: expected boolean")
-				break
-			}
-			err = p.SetMute(b)
-
-		case ActionSetTime:
-			f, ok := data.Value.(float64)
-			if !ok {
-				err = InvalidValueError("invalid time value: expected float")
-				break
-			}
-			err = p.SetTime(f)
-		}
-
-	default:
-		err = InvalidActionError(a)
-	}
-
+	err = data.Apply(p)
 	if err != nil {
 		if err, ok := err.(InvalidActionError); ok {
 			http.Error(w, err.Error(), http.StatusBadRequest)
