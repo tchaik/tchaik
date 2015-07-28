@@ -248,7 +248,7 @@ func (h *websocketHandler) player(c Command) (interface{}, error) {
 		return nil, fmt.Errorf("invalid player key: %v", key)
 	}
 
-	a, ok := player.WebsocketToAction(action)
+	a, ok := player.RepActionToAction(action)
 	if !ok {
 		return nil, player.InvalidActionError(action)
 	}
@@ -290,7 +290,7 @@ func (h *websocketHandler) key(c Command) error {
 
 	h.players.Remove(h.playerKey)
 	if key != "" {
-		h.players.Add(player.Validated(player.WebsocketPlayer(key, h.Conn)))
+		h.players.Add(player.Validated(WebsocketPlayer(key, h.Conn)))
 	}
 	h.playerKey = key
 	return nil
@@ -447,4 +447,19 @@ func (h *websocketHandler) search(c Command) (interface{}, error) {
 		Action: c.Action,
 		Data:   h.lib.ExpandPaths(paths),
 	}, nil
+}
+
+// WebsocketPlayer creates a player.Player which sends commands down the websocket.Conn when
+// player.Player methods are called.
+func WebsocketPlayer(key string, ws *websocket.Conn) player.Player {
+	repFn := func(data interface{}) {
+		websocket.JSON.Send(ws, struct {
+			Action string
+			Data   interface{}
+		}{
+			Action: CtrlAction,
+			Data:   data,
+		})
+	}
+	return player.NewRep(key, repFn)
 }
