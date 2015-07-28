@@ -63,32 +63,25 @@ _volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
 
   if (source === "SERVER_ACTION") {
     if (action.actionType === CtrlConstants.CTRL) {
-      switch (action.data) {
+      switch (action.data.action) {
 
         case CtrlConstants.TOGGLE_MUTE:
           setVolumeMute(!volumeMute());
           _volumeStore.emitChange();
           break;
 
+        case "volume":
+          setVolume(action.data.Value);
+          _volumeStore.emitChange();
+          break;
+
+        case "mute":
+          setVolumeMute(action.data.Value);
+          _volumeStore.emitChange();
+          break;
+
         default:
           break;
-      }
-
-      if (action.data.Key) {
-        switch (action.data.Key) {
-          case "volume":
-            setVolume(action.data.Value);
-            _volumeStore.emitChange();
-            break;
-
-          case "mute":
-            setVolumeMute(action.data.Value);
-            _volumeStore.emitChange();
-            break;
-
-          default:
-            break;
-        }
       }
     }
   }

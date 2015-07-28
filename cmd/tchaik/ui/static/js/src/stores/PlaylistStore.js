@@ -398,7 +398,7 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
 
   if (source === "SERVER_ACTION") {
     if (action.actionType === ControlConstants.CTRL) {
-      switch (action.data) {
+      switch (action.data.action) {
         case ControlConstants.NEXT:
           next();
           _store.emitChange();

@@ -116,7 +116,7 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
   if (source === "SERVER_ACTION") {
     if (action.actionType === CtrlConstants.CTRL) {
-      switch (action.data) {
+      switch (action.data.action) {
 
         case CtrlConstants.PLAY:
           setPlaying(true);
@@ -141,21 +141,13 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           _nowPlayingStore.emitChange();
           break;
 
-        default:
+        case "time":
+          _nowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.data.Value);
           break;
-      }
 
-      if (action.data.Key) {
-        switch (action.data.Key) {
-
-          case "time":
-            _nowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.data.Value);
-            break;
-
-          default:
-            console.log("Unknown key:", action.data.Key);
-            break;
-        }
+        default:
+          console.log("Unknown action:", action.data.action);
+          break;
       }
     }
   }
