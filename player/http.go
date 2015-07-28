@@ -13,63 +13,6 @@ import (
 	"sync"
 )
 
-// Players is a collection of players which are identified by key.
-type Players struct {
-	sync.RWMutex
-	m map[string]Player
-}
-
-// NewPlayers creates a Players.
-func NewPlayers() *Players {
-	return &Players{m: make(map[string]Player)}
-}
-
-// Add the Player to the Players.
-func (s *Players) Add(p Player) {
-	s.Lock()
-	defer s.Unlock()
-
-	s.m[p.Key()] = p
-}
-
-// Remove the Player from Players (by key).
-func (s *Players) Remove(key string) {
-	s.Lock()
-	defer s.Unlock()
-
-	delete(s.m, key)
-}
-
-// Get the Player identified by the key.
-func (s *Players) Get(key string) Player {
-	s.RLock()
-	defer s.RUnlock()
-
-	return s.m[key]
-}
-
-// List all Player keys in Players.
-func (s *Players) List() []string {
-	s.RLock()
-	defer s.RUnlock()
-
-	keys := make([]string, 0, len(s.m))
-	for k := range s.m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
-// MarshalJSON implements json.Marshaler
-func (s *Players) MarshalJSON() ([]byte, error) {
-	keys := s.List()
-	return json.Marshal(struct {
-		Keys []string `json:"keys"`
-	}{
-		Keys: keys,
-	})
-}
-
 // NewHTTPHandler returns an http.Handler which defines a REST API for interacting with
 // Players.
 func NewHTTPHandler(p *Players) http.Handler {
