@@ -10,7 +10,6 @@ import (
 	"log"
 	"net/http"
 	"strings"
-	"sync"
 )
 
 // NewHTTPHandler returns an http.Handler which defines a REST API for interacting with
