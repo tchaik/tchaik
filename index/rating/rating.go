@@ -3,10 +3,7 @@
 package rating
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"os"
 	"sync"
 
 	"tchaik.com/index"
@@ -36,52 +33,23 @@ type Store interface {
 // source of data. Note: we do not enforce any locking on the underlying file, which is read
 // once to initialise the store, and then overwritten after each call to Set.
 func NewStore(path string) (Store, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		if !os.IsNotExist(err) {
-			return nil, err
-		}
-		f, err = os.Create(path)
-		if err != nil {
-			return nil, err
-		}
-	}
-	defer f.Close()
-
 	m := make(map[string]Value)
-	dec := json.NewDecoder(f)
-	err = dec.Decode(&m)
-	if err != nil && err != io.EOF {
+	s, err := index.NewPersistStore(path, &m)
+	if err != nil {
 		return nil, err
 	}
 
 	return &basicStore{
-		m:    m,
-		path: path,
+		m:     m,
+		store: s,
 	}, nil
 }
 
 type basicStore struct {
 	sync.RWMutex
 
-	m    map[string]Value
-	path string
-}
-
-func (s *basicStore) persist() error {
-	f, err := os.Create(s.path)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	b, err := json.Marshal(s.m)
-	if err != nil {
-		return err
-	}
-
-	_, err = f.Write(b)
-	return err
+	m     map[string]Value
+	store index.PersistStore
 }
 
 // Set implements Store.
@@ -90,7 +58,7 @@ func (s *basicStore) Set(p index.Path, v Value) error {
 	defer s.Unlock()
 
 	s.m[fmt.Sprintf("%v", p)] = v
-	return s.persist()
+	return s.store.Persist(&s.m)
 }
 
 // Get implements Store.
