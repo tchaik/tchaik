@@ -27,13 +27,13 @@ func NewStore(path string) (Store, error) {
 		return nil, err
 	}
 
-	return &basicStore{
+	return &store{
 		m:     m,
 		store: s,
 	}, nil
 }
 
-type basicStore struct {
+type store struct {
 	sync.RWMutex
 
 	m     map[string][]time.Time
@@ -41,7 +41,7 @@ type basicStore struct {
 }
 
 // Add implements Store.
-func (s *basicStore) Add(p index.Path) error {
+func (s *store) Add(p index.Path) error {
 	s.Lock()
 	defer s.Unlock()
 
@@ -51,7 +51,7 @@ func (s *basicStore) Add(p index.Path) error {
 }
 
 // Get implements Store.
-func (s *basicStore) Get(p index.Path) []time.Time {
+func (s *store) Get(p index.Path) []time.Time {
 	s.RLock()
 	defer s.RUnlock()
 
