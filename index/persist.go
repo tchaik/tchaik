@@ -36,6 +36,7 @@ func NewPersistStore(path string, data interface{}) (PersistStore, error) {
 	return PersistStore(path), nil
 }
 
+// Persist writes the data to the underlying data store, overwriting any previous data.
 func (p PersistStore) Persist(data interface{}) error {
 	f, err := os.Create(string(p))
 	if err != nil {
