@@ -31,5 +31,6 @@ a {
 
 @import './components/index.scss';
 
-// FIXME: node-sass doesn't seem to like this?
-// @include webkit-scrollbar(div#container, #333);
+/* FIXME: node-sass doesn't seem to like this?
+@include webkit-scrollbar(div#container, #333);
+*/

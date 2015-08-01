@@ -24,8 +24,8 @@ div#bottom {
   div.bottom-container {
     height: 100%;
 
-    // This is required so that the play progress doesn't overflow when it's at
-    // the end.
+    /* This is required so that the play progress doesn't overflow when it's at
+       the end. */
     width: 100%;
     position: fixed;
   }
