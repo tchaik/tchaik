@@ -1,7 +1,14 @@
-var path = require("path");
 var webpack = require("webpack");
 
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+var autoprefixer = require("autoprefixer-core");
+var csswring = require("csswring");
+var postcssNested = require("postcss-nested");
+var postcssSassyMixins = require("postcss-sassy-mixins");
+var postcssSimpleVars = require("postcss-simple-vars");
+var postcssImport = require("postcss-import");
+var postcssColorFunction = require("postcss-color-function");
 
 module.exports = {
   plugins: [
@@ -26,13 +33,25 @@ module.exports = {
       {
         test: /\.scss$/,
         loader: ExtractTextPlugin.extract(
-          "css?sourceMap!sass?outputStyle=expanded&sourceMap&" +
-          "includePaths[]=" +
-            (path.resolve(__dirname, "./bower_components")) + "&" +
-          "includePaths[]=" +
-            (path.resolve(__dirname, "./node_modules"))
+          "style-loader", "css-loader!postcss-loader"
         ),
       },
     ],
+  },
+
+  postcss: function() {
+    return [
+      autoprefixer,
+      csswring,
+      postcssImport({
+        onImport: function (files) {
+          files.forEach(this.addDependency);
+        }.bind(this),
+      }),
+      postcssSassyMixins,
+      postcssNested,
+      postcssSimpleVars,
+      postcssColorFunction,
+    ];
   },
 };
