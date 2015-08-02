@@ -3,7 +3,6 @@ var webpack = require("webpack");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var autoprefixer = require("autoprefixer-core");
-var csswring = require("csswring");
 var postcssNested = require("postcss-nested");
 var postcssSassyMixins = require("postcss-sassy-mixins");
 var postcssSimpleVars = require("postcss-simple-vars");
@@ -42,7 +41,6 @@ module.exports = {
 
   postcss: function() {
     return [
-      csswring,
       postcssImport({
         onImport: function (files) {
           files.forEach(this.addDependency);
