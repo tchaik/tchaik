@@ -1,6 +1,14 @@
 @import './variables.scss';
 @import './mixins.scss';
 
+@import './top.scss';
+@import './bottom.scss';
+@import './control-bar.scss';
+@import './right-column.scss';
+@import './main-container.scss';
+
+@import './components/index.scss';
+
 html {
   height: 100%;
   width: 100%;
@@ -22,11 +30,3 @@ body {
 a {
   cursor: pointer;
 }
-
-@import './top.scss';
-@import './bottom.scss';
-@import './control-bar.scss';
-@import './right-column.scss';
-@import './main-container.scss';
-
-@import './components/index.scss';
