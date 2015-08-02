@@ -59,7 +59,7 @@ div#bottom {
       padding-right: 10px;
       display: flex;
       align-items: center;
-      height: $bottom-row-height - $progressbar-height;
+      height: calc($bottom-row-height - $progressbar-height);
 
       span.icon {
         margin: 8px;
@@ -113,7 +113,7 @@ div#bottom {
         &.visible {
           display: inline;
           flex-shrink: 0;
-          max-height: $bottom-row-height - $progressbar-height;
+          max-height: calc($bottom-row-height - $progressbar-height);
         }
       }
 

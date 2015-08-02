@@ -13,7 +13,7 @@ div.control-bar {
   transition: margin-left .25s ease-in-out;
 
   &.hidden {
-    margin-left: -$left-column-width - 2px;
+    margin-left: calc(-$left-column-width - 2px);
   }
 
   span.icon {
