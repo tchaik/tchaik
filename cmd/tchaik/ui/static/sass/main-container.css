@@ -1,14 +1,14 @@
-@import './variables.scss';
+@import './variables.css';
 
 div#container {
   overflow: auto;
   flex: 1;
 
-  @import './components/collection.scss';
-  @import './components/covers.scss';
-  @import './components/filter.scss';
-  @import './components/settings.scss';
-  @import './components/retro.scss';
+  @import './components/collection.css';
+  @import './components/covers.css';
+  @import './components/filter.css';
+  @import './components/settings.css';
+  @import './components/retro.css';
 }
 
 div#middle {

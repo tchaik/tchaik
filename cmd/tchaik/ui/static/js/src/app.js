@@ -1,7 +1,7 @@
 "use strict";
 
-require("../../sass/screen.scss");
-require("../../sass/material-icons.scss");
+require("../../sass/screen.css");
+require("../../sass/material-icons.css");
 
 var React = require("react");
 

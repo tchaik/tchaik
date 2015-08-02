@@ -1,13 +1,13 @@
-@import './variables.scss';
-@import './mixins.scss';
+@import './variables.css';
+@import './mixins.css';
 
-@import './top.scss';
-@import './bottom.scss';
-@import './control-bar.scss';
-@import './right-column.scss';
-@import './main-container.scss';
+@import './top.css';
+@import './bottom.css';
+@import './control-bar.css';
+@import './right-column.css';
+@import './main-container.css';
 
-@import './components/index.scss';
+@import './components/index.css';
 
 html {
   height: 100%;

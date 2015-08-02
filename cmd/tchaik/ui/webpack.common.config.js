@@ -31,7 +31,7 @@ module.exports = {
         loaders: ["react-hot-loader", "babel-loader?stage=0", "eslint-loader"],
       },
       {
-        test: /\.scss$/,
+        test: /\.css$/,
         loader: ExtractTextPlugin.extract(
           "style-loader", "css-loader!postcss-loader"
         ),

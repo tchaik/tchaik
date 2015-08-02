@@ -1,5 +1,5 @@
-@import '../mixins.scss';
-@import '../variables.scss';
+@import '../mixins.css';
+@import '../variables.css';
 
 div.playlist {
   flex: 1;
