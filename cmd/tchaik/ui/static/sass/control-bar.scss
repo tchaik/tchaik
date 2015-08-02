@@ -64,7 +64,7 @@ div.control-bar {
     cursor: pointer;
 
     &.selected {
-      background-color: rgba(white, 0.05);
+      background-color: color(white a(0.05));
 
       span.icon {
         color: lighten($light-blue, 15);
@@ -94,7 +94,7 @@ div.control-bar {
     }
 
     &:hover {
-      background-color: rgba(white, 0.1);
+      background-color: color(white a(0.1));
 
       .title {
         color: white;

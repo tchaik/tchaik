@@ -14,7 +14,7 @@ $darker-background: #1C1C1C;
 $search-box-background: color(white a(0.1));
 $search-box-background-focus: color(white a(0.2));
 
-$transparent: rgba(black, 0);
+$transparent: color(black a(0));
 $transparent-bar-background: color($light-background a(0.4));
 $transparent-bar-light-background: color($light-background a(0.3));
 $transparent-bar-dark-background: color($darker-background a(0.8));

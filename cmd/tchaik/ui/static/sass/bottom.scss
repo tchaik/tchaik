@@ -8,7 +8,7 @@ div#bottom {
   right: 0;
   color: white;
   background-color: $transparent-bar-background;
-  box-shadow: 5px -4px 5px rgba(black, 0.2);
+  box-shadow: 5px -4px 5px color(black a(0.2));
 
   .hover-show {
     opacity: 0;
