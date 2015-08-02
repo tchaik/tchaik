@@ -2,5 +2,4 @@ build
 interim
 .module-cache
 .sass-cache
-cmd/tchaik/ui/static/css
 node_modules
