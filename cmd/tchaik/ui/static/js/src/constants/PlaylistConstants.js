@@ -8,6 +8,7 @@ module.exports = keyMirror({
   ADD_ITEM: null,
   ADD_ITEM_PLAY_NOW: null,
   PLAY_ITEM: null,
+  CLEAR_PLAYLIST: null,
 
   TYPE_GROUP: null,
   TYPE_TRACKS: null,
