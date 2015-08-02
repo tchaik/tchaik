@@ -42,7 +42,6 @@ module.exports = {
 
   postcss: function() {
     return [
-      autoprefixer,
       csswring,
       postcssImport({
         onImport: function (files) {
@@ -54,6 +53,7 @@ module.exports = {
       postcssSimpleVars,
       postcssColorFunction,
       postcssColorRGBAFallback,
+      autoprefixer,
     ];
   },
 };
