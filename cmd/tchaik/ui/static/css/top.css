@@ -69,7 +69,6 @@ div#top {
       width: 100%;
 
       @include fade-in(background-color);
-      @include fade-in(border-color);
 
       &:active, &:focus, &:hover {
         background-color: $search-box-background-focus;
