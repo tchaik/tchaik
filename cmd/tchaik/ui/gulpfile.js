@@ -8,10 +8,6 @@ var webpack = require("webpack");
 var WebpackDevServer = require("webpack-dev-server");
 
 var paths = {
-  sass: {
-    src: ["static/css/**/*.css"],
-    dest: "static/css",
-  },
   js: {
     tests: "static/js/src/**/*-test.js",
     entry: "./static/js/src/app.js",
