@@ -456,6 +456,12 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
         _store.emitChange();
         break;
 
+      case PlaylistConstants.CLEAR_PLAYLIST:
+        setPlaylistItems([]);
+        setPlaylistCurrent(null);
+        _store.emitChange();
+        break;
+
       default:
         break;
     }
