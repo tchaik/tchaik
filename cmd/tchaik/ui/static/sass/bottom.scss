@@ -75,7 +75,7 @@ div#bottom {
             color: white;
 
             &:hover {
-              color: lighten($light-blue, 10);
+              color: color($light-blue l(+10%));
               cursor: pointer;
             }
           }
@@ -86,7 +86,7 @@ div#bottom {
           color: white;
 
           &:hover {
-            color: lighten($light-blue, 10);
+            color: color($light-blue l(+10%));
           }
         }
       }

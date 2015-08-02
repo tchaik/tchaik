@@ -24,15 +24,15 @@ div.control-bar {
   span.item {
     &.status {
       &.closed {
-        background-color: lighten(#FF00BF, 10);
+        background-color: color(#FF00BF l(+10%));
         color: white;
 
         &:hover {
           background-color: white;
-          color: lighten(#FF00BF, 10);
+          color: color(#FF00BF l(+10%));
         };
       }
-      color: lighten(#00FFBF, 10);
+      color: color(#00FFBF l(+10%));
     }
 
     &.key {
@@ -67,7 +67,7 @@ div.control-bar {
       background-color: color(white a(0.05));
 
       span.icon {
-        color: lighten($light-blue, 15);
+        color: color($light-blue l(+15%));
       }
 
       .title {
@@ -76,7 +76,7 @@ div.control-bar {
 
       &:hover {
         span.icon {
-          color: lighten($light-blue, 15);
+          color: color($light-blue l(+15%));
         }
       }
     }

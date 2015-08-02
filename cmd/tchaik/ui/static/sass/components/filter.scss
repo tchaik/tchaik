@@ -26,7 +26,7 @@ div.filter {
         font-weight: 500;
 
         &.selected {
-          color: lighten($light-blue, 15);
+          color: color($light-blue l(+15%));
           background-color: $light-background;
         }
 

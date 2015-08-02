@@ -51,17 +51,17 @@ div.settings {
     margin: 0 10px;
 
     &.reset {
-      border-color: lighten(#936, 15);
+      border-color: color(#936 l(+15%));
       background-color: #936;
 
       &:hover {
-        border-color: lighten(#936, 20);
-        background-color: lighten(#936, 5);
+        border-color: color(#936 l(+20%));
+        background-color: color(#936 l(+5%));
       }
     }
 
     &.set {
-      border-color: lighten(#396, 15);
+      border-color: color(#396 l(+15%));
       background-color: #396;
     }
   }
