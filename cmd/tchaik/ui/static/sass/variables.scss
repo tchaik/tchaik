@@ -11,11 +11,11 @@ $lighter-background: #272727;
 $light-background: #1E1E1E;
 $darker-background: #1C1C1C;
 
-$search-box-background: rgba(#fff, 0.1);
-$search-box-background-focus: rgba(#fff, 0.2);
+$search-box-background: color(white a(0.1));
+$search-box-background-focus: color(white a(0.2));
 
 $transparent: rgba(black, 0);
-$transparent-bar-background: rgba($light-background, 0.4);
-$transparent-bar-light-background: rgba($light-background, 0.3);
-$transparent-bar-dark-background: rgba($darker-background, 0.8);
-$transparent-bar-dark-background-highlight: rgba(#000, 0.3);
+$transparent-bar-background: color($light-background a(0.4));
+$transparent-bar-light-background: color($light-background a(0.3));
+$transparent-bar-dark-background: color($darker-background a(0.8));
+$transparent-bar-dark-background-highlight: color(black a(0.3));
