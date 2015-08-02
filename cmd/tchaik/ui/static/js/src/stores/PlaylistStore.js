@@ -301,6 +301,9 @@ function remove(itemIndex, path) {
     if (current && current.item === itemIndex) {
       current = null;
     }
+    if (current !== null && current.item > itemIndex) {
+      current.item -= 1;
+    }
     setPlaylistCurrent(current);
   }
 }
@@ -453,6 +456,12 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
 
       case PlaylistConstants.PLAY_ITEM:
         setCurrent(action.itemIndex, action.path);
+        _store.emitChange();
+        break;
+
+      case PlaylistConstants.CLEAR_PLAYLIST:
+        setPlaylistItems([]);
+        setPlaylistCurrent(null);
         _store.emitChange();
         break;
 
