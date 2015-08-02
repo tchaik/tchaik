@@ -298,7 +298,8 @@ function remove(itemIndex, path) {
   setPlaylistItems(items);
   var current = getPlaylistCurrent();
   if (removedItem) {
-    if (current && current.item === itemIndex) {
+    if ((current && current.item === itemIndex) ||
+        current.item >= getPlaylistItems().length) {
       current = null;
     }
     setPlaylistCurrent(current);
