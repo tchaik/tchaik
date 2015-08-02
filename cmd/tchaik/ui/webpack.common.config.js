@@ -9,6 +9,7 @@ var postcssSassyMixins = require("postcss-sassy-mixins");
 var postcssSimpleVars = require("postcss-simple-vars");
 var postcssImport = require("postcss-import");
 var postcssColorFunction = require("postcss-color-function");
+var postcssColorRGBAFallback = require("postcss-color-rgba-fallback");
 
 module.exports = {
   plugins: [
@@ -52,6 +53,7 @@ module.exports = {
       postcssNested,
       postcssSimpleVars,
       postcssColorFunction,
+      postcssColorRGBAFallback,
     ];
   },
 };
