@@ -45,6 +45,12 @@ var PlaylistActions = {
     });
   },
 
+  clear: function() {
+    AppDispatcher.handleViewAction({
+      actionType: PlaylistConstants.CLEAR_PLAYLIST,
+    });
+  },
+
   play: function(itemIndex, path, data) {
     AppDispatcher.handleViewAction({
       actionType: PlaylistConstants.PLAY_ITEM,
