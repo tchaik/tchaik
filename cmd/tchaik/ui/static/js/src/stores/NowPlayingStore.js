@@ -103,10 +103,20 @@ function handlePrevAction() {
 }
 
 function handleNextAction() {
+  var playlistItems = PlaylistStore.getPlaylist();
+  var playlistCurrent = PlaylistStore.getCurrent();
   AppDispatcher.waitFor([
     PlaylistStore.dispatchToken,
   ]);
   setCurrentTrack(PlaylistStore.getCurrentTrack());
+
+  // if we have not reached the last item on the playlist, playback
+  // should still be active
+  if (playlistCurrent) {
+    if (!playing() && playlistCurrent.item < playlistItems.length) {
+      setPlaying(true);
+    }
+  }
   _nowPlayingStore.emitChange();
 }
 
