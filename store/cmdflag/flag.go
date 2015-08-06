@@ -27,7 +27,7 @@ var trimPathPrefix, addPathPrefix string
 
 func init() {
 	flag.StringVar(&localStore, "local-store", "/", "local media store, full local path /path/to/root")
-	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, or s3://<bucket>/path/to/root for S3")
+	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, s3://<bucket>/path/to/root for S3, or gs://<bucket>/path/to/root for Google Cloud Storage")
 
 	flag.StringVar(&artworkFileSystemCache, "artwork-cache", "", "path to local artwork cache (content addressable)")
 	flag.StringVar(&mediaFileSystemCache, "media-cache", "", "path to local media cache")
@@ -44,13 +44,15 @@ func buildRemoteStore(s *stores) (err error) {
 	if remoteStore == "" {
 		return nil
 	}
+
 	var c store.Client
-	if strings.HasPrefix(remoteStore, "s3://") {
+	switch {
+	case strings.HasPrefix(remoteStore, "s3://"):
 		path := strings.TrimPrefix(remoteStore, "s3://")
 		bucketPathSplit := strings.Split(path, "/")
 
 		if len(bucketPathSplit) == 0 {
-			return fmt.Errorf("invalid S3 path: %#v\n", remoteStore)
+			return fmt.Errorf("invalid S3 path: %#v", remoteStore)
 		}
 		bucket := bucketPathSplit[0]
 		var auth aws.Auth
@@ -59,7 +61,21 @@ func buildRemoteStore(s *stores) (err error) {
 			return fmt.Errorf("error getting AWS credentials: %v", err)
 		}
 		c = store.NewS3Client(bucket, auth, aws.APSoutheast2)
-	} else {
+
+	case strings.HasPrefix(remoteStore, "gs://"):
+		path := strings.TrimPrefix(remoteStore, "gs://")
+		bucketPathSplit := strings.Split(path, "/")
+
+		if len(bucketPathSplit) == 0 {
+			return fmt.Errorf("invalid Google Cloud Storage path: %#v", remoteStore)
+		}
+		bucket := bucketPathSplit[0]
+		if len(bucket) == 0 {
+			return fmt.Errorf("invalid Google Cloud Storage path: %#v", remoteStore)
+		}
+		c = store.NewCloudStorageClient(bucket)
+
+	default:
 		c = store.NewClient(remoteStore, "")
 		s.artwork = store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork"))
 	}
