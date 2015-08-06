@@ -42,12 +42,12 @@ func (c *CloudStorageClient) Get(ctx context.Context, path string) (*File, error
 
 	res, err := service.Objects.Get(c.name, path).Do()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error fetching '%v' from '%v': %v", path, c.name, err)
 	}
 
 	resp, err := client.Get(res.MediaLink)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error fetching MediaLink '%v': %v", res.MediaLink, err)
 	}
 
 	modTime, _ := time.Parse(http.TimeFormat, res.Updated)
