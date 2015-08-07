@@ -92,6 +92,7 @@ A full list of command line options is available from the `--help` flag:
       -static-dir="ui/static": Path to the static asset directory
       -tls-cert="": path to a certificate file, must also specify -tls-key
       -tls-key="": path to a certificate key file, must also specify -tls-cert
+      -trace-listen="": bind address for trace HTTP server
       -trim-path-prefix="": remove prefix from every path
 
 ### -local-store
@@ -109,6 +110,10 @@ Set `-media-cache` to cache all files loaded from `-remote-store` (or `-local-st
 ### -artwork-cache
 
 Set `-artwork-cache` to create/use a content addressable filesystem for track artwork.  An index file will be created in the path on first use.  The folder should initially be empty to ensure that no other files interfere with the system.
+
+### -trace-listen
+
+Set `-trace-listen` to a suitable bind address (i.e. `localhost:4040`) to start an HTTP server which defines the `/debug/requests` endpoint used to inspect server requests.  Currently we only support tracing for media (track/artwork/icon) requests.  See [https://godoc.org/golang.org/x/net/trace](https://godoc.org/golang.org/x/net/trace) for more details. 
 
 # Get Involved!
 
