@@ -60,7 +60,7 @@ func buildRemoteStore(s *stores) (err error) {
 		if err != nil {
 			return fmt.Errorf("error getting AWS credentials: %v", err)
 		}
-		c = store.NewS3Client(bucket, auth, aws.APSoutheast2)
+		c = store.TraceClient(store.NewS3Client(bucket, auth, aws.APSoutheast2), "S3")
 
 	case strings.HasPrefix(remoteStore, "gs://"):
 		path := strings.TrimPrefix(remoteStore, "gs://")
@@ -73,10 +73,10 @@ func buildRemoteStore(s *stores) (err error) {
 		if len(bucket) == 0 {
 			return fmt.Errorf("invalid Google Cloud Storage path: %#v", remoteStore)
 		}
-		c = store.NewCloudStorageClient(bucket)
+		c = store.TraceClient(store.NewCloudStorageClient(bucket), "CloudStorage")
 
 	default:
-		c = store.NewClient(remoteStore, "")
+		c = store.TraceClient(store.NewClient(remoteStore, ""), "tchstore")
 		s.artwork = store.NewRemoteFileSystem(store.NewClient(remoteStore, "artwork"))
 	}
 
