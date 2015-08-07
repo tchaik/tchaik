@@ -111,3 +111,35 @@ func (c *client) Get(ctx context.Context, path string) (f *File, err error) {
 		Size:       resp.Size,
 	}, nil
 }
+
+// TraceClient creates a convenience method adding a tracing wrapper around a Client.
+func TraceClient(c Client, name string) Client {
+	return &traceClient{
+		Client: c,
+		name:   name,
+	}
+}
+
+// traceClient is a type which wraps a Client implementation.  If a trace is associated
+// to the context.Context passed to Get, then the trace will be updated to reflect the call.
+type traceClient struct {
+	Client
+	name string
+}
+
+// Open implements Client.
+func (tc traceClient) Get(ctx context.Context, path string) (*File, error) {
+	tr, ok := trace.FromContext(ctx)
+	if !ok {
+		return tc.Client.Get(ctx, path)
+	}
+
+	tr.LazyPrintf("%v: Get: %v", tc.name, path)
+	f, err := tc.Client.Get(ctx, path)
+	if err != nil {
+		tr.LazyPrintf("%v: error opening: %v", tc.name, path)
+		return nil, err
+	}
+	tr.LazyPrintf("%v: got file: %v", tc.name, f.Name)
+	return f, err
+}
