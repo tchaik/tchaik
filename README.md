@@ -9,7 +9,7 @@ Tchaik is an open source music organisation and streaming system.  The backend i
 
 * Automatic prefix grouping and enumeration detection (ideal for classical music: properly groups big works together).
 * Multiplatform web-based UI and REST-like API for controlling player.
-* Multiple storage and caching options: Amazon S3, local and remote file stores.
+* Multiple storage and caching options: Amazon S3, Google Cloud Storage, local and remote file stores.
 * Import music library from iTunes or build from directory-tree of audio tracks.
 
 # Requirements
@@ -88,7 +88,7 @@ A full list of command line options is available from the `--help` flag:
       -media-cache="": path to local media cache
       -path="": path to directory containing music files (to build index from)
       -play-history="history.json": path to play history file
-      -remote-store="": remote media store, tchstore server address <hostname>:<port>, or s3://<bucket>/path/to/root for S3
+      -remote-store="": remote media store, tchstore server address <hostname>:<port>, s3://<bucket>/path/to/root for S3, or gs://<bucket>/path/to/root for Google Cloud Storage
       -static-dir="ui/static": Path to the static asset directory
       -tls-cert="": path to a certificate file, must also specify -tls-key
       -tls-key="": path to a certificate key file, must also specify -tls-cert
@@ -100,7 +100,7 @@ Set `-local-store` to the local path that contains your media files.  You can us
 
 ### -remote-store
 
-Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<bucket>/path/to/root`.  Set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client.
+Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<bucket>/path/to/root` (set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client), or Google Cloud Storage paths: `gs://<bucket>/path/to/root` (set the GOOGLE_APPLICATION_CREDENTIALS to point at your JSON credentials file).
 
 ### -media-cache
 
