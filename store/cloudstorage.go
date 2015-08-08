@@ -18,7 +18,7 @@ import (
 // Cloud Storage buckets.
 type CloudStorageClient struct {
 	projID string
-	name   string
+	bucket string
 }
 
 // NewCloudStorageClient creates a new Client implementation which will proxy filesystem calls to
@@ -26,7 +26,7 @@ type CloudStorageClient struct {
 func NewCloudStorageClient(projID, bucket string) *CloudStorageClient {
 	return &CloudStorageClient{
 		projID: projID,
-		name:   bucket,
+		bucket: bucket,
 	}
 }
 
@@ -40,14 +40,14 @@ func (c *CloudStorageClient) Get(ctx context.Context, path string) (*File, error
 	// this seems over the top...
 	ctx = cloud.WithContext(ctx, c.projID, client)
 
-	obj, err := storage.StatObject(ctx, c.name, path)
+	obj, err := storage.StatObject(ctx, c.bucket, path)
 	if err != nil {
 		return nil, fmt.Errorf("unable to stat object: %v", err)
 	}
 
-	r, err := storage.NewReader(ctx, c.name, path)
+	r, err := storage.NewReader(ctx, c.bucket, path)
 	if err != nil {
-		return nil, fmt.Errorf("error fetching '%v' from '%v': %v", path, c.name, err)
+		return nil, fmt.Errorf("error fetching '%v' from '%v': %v", path, c.bucket, err)
 	}
 
 	return &File{

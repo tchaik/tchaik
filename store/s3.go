@@ -16,7 +16,7 @@ import (
 
 // S3Client implements Client and handles fetching Files from S3 buckets.
 type S3Client struct {
-	name   string
+	bucket string
 	auth   aws.Auth
 	region aws.Region
 }
@@ -25,7 +25,7 @@ type S3Client struct {
 // S3 bucket using the given authentication and region information.
 func NewS3Client(bucket string, auth aws.Auth, region aws.Region) *S3Client {
 	return &S3Client{
-		name:   bucket,
+		bucket: bucket,
 		auth:   auth,
 		region: region,
 	}
@@ -34,7 +34,7 @@ func NewS3Client(bucket string, auth aws.Auth, region aws.Region) *S3Client {
 // Get implements Client.
 func (c *S3Client) Get(ctx context.Context, path string) (*File, error) {
 	s3 := s3.New(c.auth, c.region)
-	b := s3.Bucket(c.name)
+	b := s3.Bucket(c.bucket)
 
 	k, err := b.GetKey(path)
 	if err != nil {
