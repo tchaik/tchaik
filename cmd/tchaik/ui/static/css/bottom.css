@@ -50,6 +50,25 @@ div#bottom {
     }
   }
 
+  .clearPlaylist {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    .icon {
+      color: #bbb;
+      padding: 10px 0;
+      margin-left: 12px;
+      margin-top: -10px;
+      font-size: 28px;
+
+      &:hover {
+        color: white;
+        cursor: pointer;
+      }
+    }
+  }
+
   div.now-playing {
     position: relative;
     width: 100%;

@@ -33,10 +33,31 @@ export default class Bottom extends React.Component {
           <div className="right">
             <Volume />
             <RightColumnToggle />
+            <PlaylistClear />
           </div>
         </div>
       </div>
     );
+  }
+}
+
+class PlaylistClear extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this._onClick = this._onClick.bind(this);
+  }
+
+  render() {
+    return (
+      <div title="Clear playlist" className="clearPlaylist">
+        <Icon icon="clear"onClick={this._onClick} />
+      </div>
+    );
+  }
+
+  _onClick() {
+    PlaylistActions.clear();
   }
 }
 
@@ -57,7 +78,7 @@ class RightColumnToggle extends React.Component {
 
   render() {
     return (
-      <div className="right-column-toggle">
+      <div title="Toggle playlist view" className="right-column-toggle">
         <Icon icon="queue_music"onClick={this._onClick} />
       </div>
     );
