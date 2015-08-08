@@ -78,6 +78,9 @@ func buildRemoteStore(s *stores) (err error) {
 		if len(projIDBucketSplit) != 2 {
 			return fmt.Errorf("invalid Google Cloud Storage path prefix (<project-id>:<bucket>): %#v", projIDBucket)
 		}
+		if len(projIDBucketSplit[0]) == 0 {
+			return fmt.Errorf("invalid Google Cloud Storage path prefix (<project-id>:<bucket>): empty project-id: %#v", projIDBucket)
+		}
 		c = store.TraceClient(store.NewCloudStorageClient(projIDBucketSplit[0], projIDBucketSplit[1]), "CloudStorage")
 
 	default:
