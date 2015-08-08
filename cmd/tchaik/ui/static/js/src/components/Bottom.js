@@ -51,7 +51,7 @@ class PlaylistClear extends React.Component {
   render() {
     return (
       <div title="Clear playlist" className="clearPlaylist">
-        <Icon icon="clear"onClick={this._onClick} />
+        <Icon icon="clear" onClick={this._onClick} />
       </div>
     );
   }
