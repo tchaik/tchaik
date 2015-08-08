@@ -27,7 +27,7 @@ var trimPathPrefix, addPathPrefix string
 
 func init() {
 	flag.StringVar(&localStore, "local-store", "/", "local media store, full local path /path/to/root")
-	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, s3://<bucket>/path/to/root for S3, or gs://<bucket>/path/to/root for Google Cloud Storage")
+	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, s3://<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage")
 
 	flag.StringVar(&artworkFileSystemCache, "artwork-cache", "", "path to local artwork cache (content addressable)")
 	flag.StringVar(&mediaFileSystemCache, "media-cache", "", "path to local media cache")
@@ -69,11 +69,16 @@ func buildRemoteStore(s *stores) (err error) {
 		if len(bucketPathSplit) == 0 {
 			return fmt.Errorf("invalid Google Cloud Storage path: %#v", remoteStore)
 		}
-		bucket := bucketPathSplit[0]
-		if len(bucket) == 0 {
+		projIDBucket := bucketPathSplit[0]
+		if len(projIDBucket) == 0 {
 			return fmt.Errorf("invalid Google Cloud Storage path: %#v", remoteStore)
 		}
-		c = store.TraceClient(store.NewCloudStorageClient(bucket), "CloudStorage")
+
+		projIDBucketSplit := strings.Split(projIDBucket, ":")
+		if len(projIDBucketSplit) != 2 {
+			return fmt.Errorf("invalid Google Cloud Storage path prefix (<project-id>:<bucket>): %#v", projIDBucket)
+		}
+		c = store.TraceClient(store.NewCloudStorageClient(projIDBucketSplit[0], projIDBucketSplit[1]), "CloudStorage")
 
 	default:
 		c = store.TraceClient(store.NewClient(remoteStore, ""), "tchstore")
