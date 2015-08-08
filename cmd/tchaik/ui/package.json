@@ -34,7 +34,7 @@
     "postcss-nested": "^0.3.2",
     "postcss-sassy-mixins": "^1.0.0",
     "postcss-simple-vars": "^0.3.0",
-    "react": "^0.13.1",
+    "react": "^0.13.3",
     "react-hot-loader": "^1.2.7",
     "rewire": "^2.3.3",
     "rewire-webpack": "^1.0.0",
