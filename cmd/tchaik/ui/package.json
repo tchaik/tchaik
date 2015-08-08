@@ -36,7 +36,6 @@
     "postcss-simple-vars": "^0.3.0",
     "react": "^0.13.1",
     "react-hot-loader": "^1.2.7",
-    "react-tools": "^0.13.3",
     "rewire": "^2.3.3",
     "rewire-webpack": "^1.0.0",
     "style-loader": "^0.12.2",
