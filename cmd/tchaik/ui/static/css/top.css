@@ -8,6 +8,7 @@ div#top {
   color: white;
   z-index: 1;
   height: $top-row-height;
+  background-color: black;
 
   div.top-container {
     width: 100%;
