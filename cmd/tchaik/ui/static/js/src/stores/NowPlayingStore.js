@@ -202,6 +202,13 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         _nowPlayingStore.emitChange();
         break;
 
+      case PlaylistConstants.PLAY_ITEM:
+        if (!playing()) {
+          setPlaying(true);
+        }
+        _nowPlayingStore.emitChange();
+        break;
+
       default:
         break;
     }
