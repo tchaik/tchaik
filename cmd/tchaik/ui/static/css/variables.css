@@ -11,7 +11,7 @@ $lighter-background: #272727;
 $light-background: #1E1E1E;
 $darker-background: #1C1C1C;
 
-$search-box-background: color(white a(0.1));
+$search-box-background: color(white a(0.15));
 $search-box-background-focus: color(white a(0.2));
 
 $transparent: color(black a(0));
