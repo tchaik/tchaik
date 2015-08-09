@@ -24,6 +24,7 @@ div.playlist {
     text-align: center;
 
     .icon {
+      float: inherit;
       font-size: 28px;
       margin-right: 10px;
       color: #fff;
