@@ -76,7 +76,7 @@ div.playlist {
 
         .name {
           color: white;
-          font-weight: 200;
+          font-weight: 300;
           font-size: 14px;
         }
       }
@@ -101,7 +101,7 @@ div.playlist {
         }
 
         span {
-          font-weight: 200;
+          font-weight: 300;
 
           &.bull {
             margin-left: 4px;

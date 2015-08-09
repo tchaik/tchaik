@@ -143,7 +143,7 @@ div.collection {
       div.attributes {
         color: #888;
         font-size: 13px;
-        font-weight: 200;
+        font-weight: 300;
         margin-top: 4px;
 
         a:hover {
@@ -235,7 +235,7 @@ div.collection {
             div.attributes {
               color: #888;
               font-size: 11px;
-              font-weight: 200;
+              font-weight: 300;
               margin-top: 4px;
 
               a:hover {
