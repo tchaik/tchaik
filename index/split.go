@@ -46,7 +46,7 @@ func splitMultiple(x string, s []string) []string {
 }
 
 // ListSepeartors is the list of strings used to separate String fields into 'Strings' fields.
-var ListSeparators = []string{"/", ",", ";", ":", "&", "and"}
+var ListSeparators = []string{"/", ",", ";", ":", "&", " and "}
 
 // SplitList returns a transform which splits lists of names in 'String' fields of Tracks
 // into 'Strings' fields.  The String values are split by ListSeparators.
