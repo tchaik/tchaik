@@ -9,6 +9,7 @@ div#top {
   z-index: 1;
   height: $top-row-height;
   background-color: black;
+  box-shadow: 0 0 5px 0 black;
 
   div.top-container {
     width: 100%;
