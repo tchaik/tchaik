@@ -35,6 +35,11 @@ func TestSplitMultiple(t *testing.T) {
 			[]string{",", "&"},
 			[]string{"One", "Two", "Three"},
 		},
+		{
+			"Vernon Handley",
+			ListSeparators,
+			[]string{"Vernon Handley"},
+		},
 	}
 
 	for ii, tt := range tests {
