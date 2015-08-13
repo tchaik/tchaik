@@ -26,7 +26,7 @@ func (r RepAction) Apply(p Player) (err error) {
 	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute, ActionToggleRepeat:
 		err = p.Do(a)
 
-	case ActionSetVolume, ActionSetMute, ActionSetTime:
+	case ActionSetVolume, ActionSetMute, ActionSetTime, ActionSetRepeat:
 		if r.Value == nil {
 			err = InvalidValueError("value required")
 			break
@@ -48,6 +48,14 @@ func (r RepAction) Apply(p Player) (err error) {
 				break
 			}
 			err = p.SetMute(b)
+
+		case ActionSetRepeat:
+			b, ok := r.Value.(bool)
+			if !ok {
+				err = InvalidValueError("invalid repeat value: expected boolean")
+				break
+			}
+			err = p.SetRepeat(b)
 
 		case ActionSetTime:
 			f, ok := r.Value.(float64)
@@ -107,6 +115,7 @@ var RepActions = map[Action]string{
 
 	ActionSetVolume: "SET_VOLUME",
 	ActionSetMute:   "SET_MUTE",
+	ActionSetRepeat: "SET_REPEAT",
 	ActionSetTime:   "SET_TIME",
 }
 
@@ -134,6 +143,7 @@ func (r rep) Do(a Action) error {
 }
 
 func (r rep) SetMute(b bool) error      { return r.sendActionValue("mute", b) }
+func (r rep) SetRepeat(b bool) error    { return r.sendActionValue("repeat", b) }
 func (r rep) SetVolume(f float64) error { return r.sendActionValue("volume", f) }
 func (r rep) SetTime(f float64) error   { return r.sendActionValue("time", f) }
 

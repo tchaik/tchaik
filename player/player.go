@@ -29,6 +29,7 @@ const (
 const (
 	ActionSetVolume Action = "setVolume"
 	ActionSetMute          = "setMute"
+	ActionSetRepeat        = "setRepeat"
 	ActionSetTime          = "setTime"
 )
 
@@ -42,6 +43,8 @@ type Player interface {
 
 	// SetMute enabled/disables mute.
 	SetMute(bool) error
+	// SetRepeat enable/disables a repeat of the current track.
+	SetRepeat(bool) error
 	// SetVolume sets the volume (value should be between 0.0 and 1.0).
 	SetVolume(float64) error
 	// SetTime sets the current play position
@@ -64,10 +67,21 @@ func Multi(key string, players ...Player) Player {
 }
 
 type setFloatFn func(Player, float64) error
+type setBoolFn func(Player, bool) error
 
 func (m multi) applySetFloatFn(fn setFloatFn, f float64) error {
 	for _, p := range m.players {
 		err := fn(p, f)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (m multi) applySetBoolFn(fn setBoolFn, v bool) error {
+	for _, p := range m.players {
+		err := fn(p, v)
 		if err != nil {
 			return err
 		}
@@ -89,16 +103,8 @@ func (m multi) Do(a Action) error {
 
 func (m multi) SetVolume(f float64) error { return m.applySetFloatFn(Player.SetVolume, f) }
 func (m multi) SetTime(f float64) error   { return m.applySetFloatFn(Player.SetTime, f) }
-
-func (m multi) SetMute(b bool) error {
-	for _, p := range m.players {
-		err := p.SetMute(b)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
+func (m multi) SetMute(v bool) error      { return m.applySetBoolFn(Player.SetMute, v) }
+func (m multi) SetRepeat(v bool) error    { return m.applySetBoolFn(Player.SetRepeat, v) }
 
 func (m multi) MarshalJSON() ([]byte, error) {
 	playerKeys := make([]string, len(m.players))

@@ -181,6 +181,11 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           _nowPlayingStore.emitChange();
           break;
 
+        case "repeat":
+          setRepeat(action.data.Value);
+          _nowPlayingStore.emitChange();
+          break;
+
         case "time":
           _nowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.data.Value);
           break;
