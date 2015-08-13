@@ -11,6 +11,7 @@ module.exports = keyMirror({
   VOLUP: null,
   VOLDOWN: null,
 
+  TOGGLE_REPEAT: null,
   TOGGLE_PLAY_PAUSE: null,
   TOGGLE_MUTE: null,
 

@@ -21,6 +21,7 @@ const (
 	ActionNext                   = "next"
 	ActionPrev                   = "prev"
 	ActionTogglePlayPause        = "togglePlayPause"
+	ActionToggleRepeat           = "toggleRepeat"
 	ActionToggleMute             = "toggleMute"
 )
 

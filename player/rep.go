@@ -23,7 +23,7 @@ type RepAction struct {
 func (r RepAction) Apply(p Player) (err error) {
 	a := Action(r.Action)
 	switch a {
-	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute:
+	case ActionPlay, ActionPause, ActionNext, ActionPrev, ActionTogglePlayPause, ActionToggleMute, ActionToggleRepeat:
 		err = p.Do(a)
 
 	case ActionSetVolume, ActionSetMute, ActionSetTime:
@@ -102,6 +102,7 @@ var RepActions = map[Action]string{
 	ActionNext:            "NEXT",
 	ActionPrev:            "PREV",
 	ActionTogglePlayPause: "TOGGLE_PLAY_PAUSE",
+	ActionToggleRepeat:    "TOGGLE_REPEAT",
 	ActionToggleMute:      "TOGGLE_MUTE",
 
 	ActionSetVolume: "SET_VOLUME",
