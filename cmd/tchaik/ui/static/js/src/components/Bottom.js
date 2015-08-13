@@ -119,7 +119,6 @@ class Controls extends React.Component {
     this.setState({
       canNext: PlaylistStore.canNext(),
       canPrev: PlaylistStore.canPrev(),
-      repeat: NowPlayingStore.getRepeat(),
     });
   }
 
