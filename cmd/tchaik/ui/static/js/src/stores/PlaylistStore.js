@@ -423,6 +423,9 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
 
       case NowPlayingConstants.ENDED:
+        if (action.repeat === true) {
+          break;
+        }
         if (action.source !== "playlist") {
           break;
         }

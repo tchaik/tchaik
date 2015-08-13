@@ -14,6 +14,7 @@ import CtrlConstants from "../constants/ControlConstants.js";
 var CONTROL_EVENT = "control";
 
 var currentPlaying = null;
+var currentRepeat = null;
 
 function setCurrentTrackSource(source) {
   localStorage.setItem("currentTrackSource", source);
@@ -39,6 +40,14 @@ function _playing() {
   return JSON.parse(v);
 }
 
+function _repeat() {
+  var v = localStorage.getItem("repeat");
+  if (v === null) {
+    return false;
+  }
+  return JSON.parse(v);
+}
+
 function playing() {
   if (currentPlaying === null) {
     currentPlaying = _playing();
@@ -46,9 +55,21 @@ function playing() {
   return currentPlaying;
 }
 
+function repeat() {
+  if (currentRepeat === null) {
+    currentRepeat = _repeat();
+  }
+  return currentRepeat;
+}
+
 function setPlaying(v) {
   currentPlaying = v;
   localStorage.setItem("playing", JSON.stringify(v));
+}
+
+function setRepeat(v) {
+  currentRepeat = v;
+  localStorage.setItem("repeat", JSON.stringify(v));
 }
 
 function currentTrack() {
@@ -63,6 +84,10 @@ function currentTrack() {
 class NowPlayingStore extends ChangeEmitter {
   getPlaying() {
     return playing();
+  }
+
+  getRepeat() {
+    return repeat();
   }
 
   getTrack() {
@@ -170,6 +195,14 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         break;
 
       case NowPlayingConstants.ENDED:
+        if (action.repeat === true) {
+          setRepeat(false);
+          _nowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, 0);
+          setPlaying(true);
+          _nowPlayingStore.emitChange();
+          break;
+        }
+
         if (action.source !== "playlist") {
           break;
         }
@@ -180,6 +213,11 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
 
       case NowPlayingConstants.SET_PLAYING:
         setPlaying(action.playing);
+        _nowPlayingStore.emitChange();
+        break;
+
+      case NowPlayingConstants.SET_REPEAT:
+        setRepeat(action.repeat);
         _nowPlayingStore.emitChange();
         break;
 

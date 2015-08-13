@@ -81,7 +81,7 @@ function onPlayerEvent(evt) {
     break;
 
   case "ended":
-    NowPlayingActions.ended(NowPlayingStore.getSource());
+    NowPlayingActions.ended(NowPlayingStore.getSource(), NowPlayingStore.getRepeat());
     break;
 
   case "timeupdate":

@@ -49,12 +49,13 @@ var NowPlayingActions = {
     });
   },
 
-  ended: function(source) {
+  ended: function(source, repeat) {
     WebsocketAPI.send(NowPlayingConstants.RECORD_PLAY, {path: ["T", NowPlayingStore.getTrack().ID]});
 
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.ENDED,
       source: source,
+      repeat: repeat,
     });
   },
 
@@ -75,6 +76,13 @@ var NowPlayingActions = {
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.SET_PLAYING,
       playing: v,
+    });
+  },
+
+  repeat: function(v) {
+    AppDispatcher.handleViewAction({
+      actionType: NowPlayingConstants.SET_REPEAT,
+      repeat: v,
     });
   },
 

@@ -77,6 +77,7 @@ class Controls extends React.Component {
 
     this.state = {
       playing: NowPlayingStore.getPlaying(),
+      repeat: NowPlayingStore.getRepeat(),
       canNext: PlaylistStore.canNext(),
       canPrev: PlaylistStore.canPrev(),
     };
@@ -86,6 +87,7 @@ class Controls extends React.Component {
     this._togglePlayPause = this._togglePlayPause.bind(this);
     this._onBackward = this._onBackward.bind(this);
     this._onForward = this._onForward.bind(this);
+    this._toggleRepeat = this._toggleRepeat.bind(this);
   }
 
   componentDidMount() {
@@ -101,11 +103,14 @@ class Controls extends React.Component {
   render() {
     var prevClasses = {"skip": true, "enabled": this.state.canPrev};
     var nextClasses = {"skip": true, "enabled": this.state.canNext};
+    var repeatClasses = {"skip": true, "enabled": this.state.playing, "active": this.state.repeat};
+    var repeatName = (this.state.repeat) ? "repeat_one" : "repeat";
     return (
       <div className="controls">
-        <Icon icon="skip_previous"extraClasses={prevClasses} onClick={this._onBackward} />
+        <Icon icon="skip_previous" extraClasses={prevClasses} onClick={this._onBackward} />
         <span><Icon icon={this.state.playing ? "pause_circle_filled" : "play_circle_filled"}extraClasses={{"play-pause": true}} onClick={this._togglePlayPause} /></span>
-        <Icon icon="skip_next"extraClasses={nextClasses} onClick={this._onForward} />
+        <Icon icon="skip_next" extraClasses={nextClasses} onClick={this._onForward} />
+        <Icon icon={repeatName} extraClasses={repeatClasses} onClick={this._toggleRepeat} />
       </div>
     );
   }
@@ -114,11 +119,15 @@ class Controls extends React.Component {
     this.setState({
       canNext: PlaylistStore.canNext(),
       canPrev: PlaylistStore.canPrev(),
+      repeat: NowPlayingStore.getRepeat(),
     });
   }
 
   _onChange() {
-    this.setState({playing: NowPlayingStore.getPlaying()});
+    this.setState({
+      playing: NowPlayingStore.getPlaying(),
+      repeat: NowPlayingStore.getRepeat(),
+    });
 
     var favicon = document.querySelector("head link[rel=\"shortcut icon\"]");
     var currentTrack = NowPlayingStore.getTrack();
@@ -173,6 +182,13 @@ class Controls extends React.Component {
 
   _onForward() {
     PlaylistActions.next();
+  }
+
+  _toggleRepeat() {
+    NowPlayingActions.repeat(!this.state.repeat);
+    this.setState({
+      repeat: !this.state.repeat,
+    });
   }
 
 }
