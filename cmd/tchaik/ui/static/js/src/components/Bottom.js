@@ -85,6 +85,7 @@ class Controls extends React.Component {
     this._onChange = this._onChange.bind(this);
     this._togglePlayPause = this._togglePlayPause.bind(this);
     this._onBackward = this._onBackward.bind(this);
+    this._onForward = this._onForward.bind(this);
   }
 
   componentDidMount() {
