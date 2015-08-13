@@ -78,6 +78,7 @@ class Controls extends React.Component {
     this.state = {
       playing: NowPlayingStore.getPlaying(),
       repeat: NowPlayingStore.getRepeat(),
+      track: NowPlayingStore.getTrack(),
       canNext: PlaylistStore.canNext(),
       canPrev: PlaylistStore.canPrev(),
     };
@@ -103,7 +104,7 @@ class Controls extends React.Component {
   render() {
     var prevClasses = {"skip": true, "enabled": this.state.canPrev};
     var nextClasses = {"skip": true, "enabled": this.state.canNext};
-    var repeatClasses = {"skip": true, "enabled": this.state.playing, "active": this.state.repeat};
+    var repeatClasses = {"skip": true, "enabled": (this.state.track !== null), "active": this.state.repeat};
     var repeatName = (this.state.repeat) ? "repeat_one" : "repeat";
     return (
       <div className="controls">
@@ -126,6 +127,7 @@ class Controls extends React.Component {
     this.setState({
       playing: NowPlayingStore.getPlaying(),
       repeat: NowPlayingStore.getRepeat(),
+      track: NowPlayingStore.getTrack(),
     });
 
     var favicon = document.querySelector("head link[rel=\"shortcut icon\"]");
