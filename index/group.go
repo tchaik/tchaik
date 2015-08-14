@@ -45,6 +45,21 @@ func Collect(t Tracker, c Collector) Collection {
 	return c.Collect(t)
 }
 
+// CollectionPaths creates a slice of Paths which contains the path for each immediate Group
+// in the Ccollection.
+func CollectionPaths(c Collection, root Path) []Path {
+	keys := c.Keys()
+	paths := make([]Path, len(keys))
+	for _, k := range keys {
+		p := make(Path, len(root)+1)
+		copy(p, root)
+		p[len(root)] = k
+
+		paths = append(paths, p)
+	}
+	return paths
+}
+
 // NewCollection creates a new collection from a source collection `c` which will have the groups
 // represented by the given list of paths.  All the paths are assumed to be unique, and of at least
 // length 2.

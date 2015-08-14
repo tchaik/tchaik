@@ -8,6 +8,7 @@ export default keyMirror({
   SEARCH: null,
   COVERS: null,
   RECENT: null,
+  FAVOURITE: null,
   SETTINGS: null,
   RETRO: null,
 });

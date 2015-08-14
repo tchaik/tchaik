@@ -13,6 +13,7 @@ import (
 	"golang.org/x/net/websocket"
 
 	"tchaik.com/index"
+	"tchaik.com/index/favourite"
 	"tchaik.com/index/history"
 	"tchaik.com/player"
 )
@@ -124,12 +125,13 @@ const (
 	SetFavouriteAction = "SET_FAVOURITE"
 
 	// Library Actions
-	CtrlAction        = "CTRL"
-	FetchAction       = "FETCH"
-	SearchAction      = "SEARCH"
-	FilterListAction  = "FILTER_LIST"
-	FilterPathsAction = "FILTER_PATHS"
-	FetchRecentAction = "FETCH_RECENT"
+	CtrlAction           = "CTRL"
+	FetchAction          = "FETCH"
+	SearchAction         = "SEARCH"
+	FilterListAction     = "FILTER_LIST"
+	FilterPathsAction    = "FILTER_PATHS"
+	FetchRecentAction    = "FETCH_RECENT"
+	FetchFavouriteAction = "FETCH_FAVOURITE"
 )
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
@@ -200,6 +202,8 @@ func (h *websocketHandler) Handle() {
 			resp, err = h.filterPaths(c)
 		case FetchRecentAction:
 			resp = h.fetchRecent(c)
+		case FetchFavouriteAction:
+			resp = h.fetchFavourite(c)
 		default:
 			err = fmt.Errorf("unknown action: %v", c.Action)
 		}
@@ -419,6 +423,19 @@ func (h *websocketHandler) fetchRecent(c Command) interface{} {
 	}{
 		Action: c.Action,
 		Data:   h.lib.ExpandPaths(h.lib.recent),
+	}
+}
+
+func (h *websocketHandler) fetchFavourite(c Command) interface{} {
+	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
+	filter := favourite.Filter{Store: h.lib.favourites}
+
+	return struct {
+		Action string
+		Data   interface{}
+	}{
+		Action: c.Action,
+		Data:   h.lib.ExpandPaths(filter.Filter(paths)),
 	}
 }
 
