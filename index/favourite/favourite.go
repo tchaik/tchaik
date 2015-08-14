@@ -46,7 +46,12 @@ func (s *store) Set(p index.Path, v bool) error {
 	s.Lock()
 	defer s.Unlock()
 
-	s.m[fmt.Sprintf("%v", p)] = v
+	k := fmt.Sprintf("%v", p)
+	if v {
+		s.m[k] = true
+	} else {
+		delete(s.m, k)
+	}
 	return s.store.Persist(&s.m)
 }
 
