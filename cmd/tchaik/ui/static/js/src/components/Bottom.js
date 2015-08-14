@@ -109,7 +109,7 @@ class Controls extends React.Component {
     return (
       <div className="controls">
         <Icon icon="skip_previous" extraClasses={prevClasses} onClick={this._onBackward} />
-        <span><Icon icon={this.state.playing ? "pause_circle_filled" : "play_circle_filled"}extraClasses={{"play-pause": true}} onClick={this._togglePlayPause} /></span>
+        <span><Icon icon={this.state.playing ? "pause_circle_filled" : "play_circle_filled"}extraClasses={{"play-pause": true, "enabled": (this.state.track !== null)}} onClick={this._togglePlayPause} /></span>
         <Icon icon="skip_next" extraClasses={nextClasses} onClick={this._onForward} />
         <Icon icon={repeatName} extraClasses={repeatClasses} onClick={this._toggleRepeat} />
       </div>

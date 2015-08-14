@@ -66,28 +66,23 @@ div#bottom {
         @include user-select(none);
         @include fade-in(color);
         cursor: pointer;
+        color: #666;
 
         &.skip {
           font-size: 26px;
-          color: #666;
+        }
 
-          &.enabled {
-            color: white;
+        &.enabled {
+          color: white;
 
-            &:hover {
-              color: color($light-blue l(+10%));
-              cursor: pointer;
-            }
+          &:hover {
+            color: color($light-blue l(+10%));
+            cursor: pointer;
           }
         }
 
         &.play-pause {
           font-size: 60px;
-          color: white;
-
-          &:hover {
-            color: color($light-blue l(+10%));
-          }
         }
       }
     }
