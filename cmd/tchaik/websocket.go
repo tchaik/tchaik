@@ -120,7 +120,8 @@ const (
 	PlayerAction        = "PLAYER"
 
 	// Path Actions
-	RecordPlayAction = "RECORD_PLAY"
+	RecordPlayAction   = "RECORD_PLAY"
+	SetFavouriteAction = "SET_FAVOURITE"
 
 	// Library Actions
 	CtrlAction        = "CTRL"
@@ -184,6 +185,9 @@ func (h *websocketHandler) Handle() {
 		// Path Actions
 		case RecordPlayAction:
 			err = h.recordPlay(c)
+
+		case SetFavouriteAction:
+			err = h.setFavourite(c)
 
 		// Library actions
 		case FetchAction:
@@ -279,6 +283,22 @@ func (h *websocketHandler) recordPlay(c Command) error {
 		p[i] = index.Key(x)
 	}
 	return h.history.Add(p)
+}
+
+func (h *websocketHandler) setFavourite(c Command) error {
+	path, err := c.getStringSlice("path")
+	if err != nil {
+		return err
+	}
+	value, err := c.getBool("value")
+	if err != nil {
+		return err
+	}
+	p := make([]index.Key, len(path))
+	for i, x := range path {
+		p[i] = index.Key(x)
+	}
+	return h.lib.favourites.Set(p, value)
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {

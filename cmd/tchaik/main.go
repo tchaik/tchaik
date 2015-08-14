@@ -27,6 +27,7 @@ import (
 
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
+	"tchaik.com/index/favourite"
 	"tchaik.com/index/history"
 	"tchaik.com/index/itl"
 	"tchaik.com/index/walk"
@@ -37,7 +38,7 @@ import (
 var debug bool
 var itlXML, tchLib, walkPath string
 
-var playHistoryPath string
+var playHistoryPath, favouritesPath string
 
 var listenAddr string
 var staticDir string
@@ -59,6 +60,7 @@ func init() {
 	flag.StringVar(&walkPath, "path", "", "path to directory containing music files (to build index from)")
 
 	flag.StringVar(&playHistoryPath, "play-history", "history.json", "path to play history file")
+	flag.StringVar(&favouritesPath, "favourites", "favourites.json", "path to favourites file")
 
 	flag.StringVar(&staticDir, "static-dir", "ui/static", "Path to the static asset directory")
 
@@ -172,6 +174,14 @@ func main() {
 	}
 	fmt.Println("done.")
 
+	fmt.Printf("Loading favourites...")
+	favourites, err := favourite.NewStore(favouritesPath)
+	if err != nil {
+		fmt.Printf("\nerror loading favourites: %v", err)
+		os.Exit(1)
+	}
+	fmt.Println("done.")
+
 	// fmt.Printf("Loading playlists...")
 	// ps, err := playlist.NewStore(playListPath)
 	// if err != nil {
@@ -206,8 +216,9 @@ func main() {
 		filters: map[string][]index.FilterItem{
 			"Artist": artists,
 		},
-		recent:   recent,
-		searcher: searcher,
+		recent:     recent,
+		searcher:   searcher,
+		favourites: favourites,
 	}
 
 	h := NewHandler(lib, hs, mediaFileSystem, artworkFileSystem)

@@ -26,6 +26,13 @@ var CollectionActions = {
     });
   },
 
+  setFavourite: function(path, value) {
+    WebsocketAPI.send(CollectionConstants.SET_FAVOURITE, {
+      path: path,
+      value: value,
+    });
+  },
+
 };
 
 export default CollectionActions;

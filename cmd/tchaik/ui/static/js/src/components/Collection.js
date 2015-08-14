@@ -34,20 +34,27 @@ export class Group extends React.Component {
 
     this.state = {
       expanded: (this.props.depth !== 1),
+      favourite: false,
       common: {},
     };
 
     this.setCommon = this.setCommon.bind(this);
+    this.setFavourite = this.setFavourite.bind(this);
 
     this._onClick = this._onClick.bind(this);
     this._onClickHeader = this._onClickHeader.bind(this);
     this._onClickImage = this._onClickImage.bind(this);
     this._onPlayNow = this._onPlayNow.bind(this);
     this._onQueue = this._onQueue.bind(this);
+    this._toggleFavourite = this._toggleFavourite.bind(this);
   }
 
   setCommon(c) {
     this.setState({common: c});
+  }
+
+  setFavourite(v) {
+    this.setState({favourite: v});
   }
 
   render() {
@@ -59,7 +66,7 @@ export class Group extends React.Component {
 
     if (this.state.expanded) {
       content = [
-        <GroupContent path={this.props.path} depth={this.props.depth} setCommon={this.setCommon} key="GroupContent0" />,
+        <GroupContent path={this.props.path} depth={this.props.depth} setCommon={this.setCommon} setFavourite={this.setFavourite} key="GroupContent0" />,
       ];
 
       if (this.props.depth === 1) {
@@ -90,11 +97,14 @@ export class Group extends React.Component {
         attributes = <GroupAttributes list={attributeArr} />;
       }
 
+      var favouriteIcon = this.state.favourite ? "favorite" : "favorite_border";
+
       play = (
         <span className="controls">
           {duration}
           <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />
+          <Icon icon={favouriteIcon} title="Favourite" onClick={this._toggleFavourite} />
         </span>
       );
 
@@ -166,6 +176,12 @@ export class Group extends React.Component {
     e.stopPropagation();
   }
 
+  _toggleFavourite(e) {
+    CollectionActions.setFavourite(this.props.path, !this.state.favourite);
+    e.stopPropagation();
+    this.setState({favourite: !this.state.favourite});
+  }
+
 }
 
 Group.propTypes = {
@@ -218,6 +234,9 @@ class GroupContent extends React.Component {
 
       if (Object.keys(common).length > 0 && this.props.setCommon) {
         this.props.setCommon(common);
+      }
+      if (this.props.setFavourite) {
+        this.props.setFavourite(item.Favourite);
       }
       this.setState({item: item});
     }

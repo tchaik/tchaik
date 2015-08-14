@@ -13,6 +13,7 @@ import (
 
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
+	"tchaik.com/index/favourite"
 	"tchaik.com/store"
 )
 
@@ -24,6 +25,7 @@ type Library struct {
 	filters     map[string][]index.FilterItem
 	recent      []index.Path
 	searcher    index.Searcher
+	favourites  favourite.Store
 }
 
 type libraryFileSystem struct {
@@ -60,6 +62,7 @@ type group struct {
 	Year        interface{} `json:",omitempty"`
 	Groups      []group     `json:",omitempty"`
 	Tracks      []track     `json:",omitempty"`
+	Favourite   bool        `json:",omitempty"`
 }
 
 type track struct {
@@ -73,6 +76,7 @@ type track struct {
 	DiscNumber  int      `json:",omitempty"`
 	TotalTime   int      `json:",omitempty"`
 	BitRate     int      `json:",omitempty"`
+	Favourite   bool     `json:",omitempty"`
 }
 
 // StringSliceEqual is a function used to compare two interface{} types which are assumed
@@ -232,7 +236,20 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	}
 	g = index.FirstTrackAttr(attr.String("ID"), g)
 
-	return build(g, k), nil
+	return l.annotateFavourites(path, build(g, k)), nil
+}
+
+func (l *Library) annotateFavourites(path []string, g group) group {
+	keyPath := make(index.Path, len(path)+1)
+	keyPath[0] = "Root"
+	for i, p := range path {
+		keyPath[i+1] = index.Key(p)
+	}
+
+	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
+		g.Favourite = l.favourites.Get(keyPath)
+	}
+	return g
 }
 
 // FileSystem wraps the http.FileSystem in a library lookup which will translate /ID
