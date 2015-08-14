@@ -31,6 +31,8 @@ var CollectionActions = {
       path: path,
       value: value,
     });
+
+    WebsocketAPI.send(CollectionConstants.FETCH, {path: path});
   },
 
 };
