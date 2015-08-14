@@ -79,10 +79,6 @@ div#bottom {
               cursor: pointer;
             }
           }
-
-          &.active {
-            color: color($light-blue l(+10%));
-          }
         }
 
         &.play-pause {
