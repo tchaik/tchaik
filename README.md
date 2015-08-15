@@ -115,6 +115,10 @@ Set `-artwork-cache` to create/use a content addressable filesystem for track ar
 
 Set `-trace-listen` to a suitable bind address (i.e. `localhost:4040`) to start an HTTP server which defines the `/debug/requests` endpoint used to inspect server requests.  Currently we only support tracing for media (track/artwork/icon) requests.  See [https://godoc.org/golang.org/x/net/trace](https://godoc.org/golang.org/x/net/trace) for more details. 
 
+# Windows Support
+
+The default value for parameter `-local-store` is `/` which does not work on Windows.  When all library music is organised under a common path you can set `-local-store` and `-trim-path-prefix` to get around this (for instance `-local-store C:\Path\To\Music -trim-path-prefix C:\Path\To\Music`).
+
 # Get Involved!
 
 Development is on-going and the codebase is changing very quickly.  If you're interested in contributing then it's safest to jump into our gitter room and chat to people before getting started!
