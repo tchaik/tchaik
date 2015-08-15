@@ -4,6 +4,7 @@ var _ = require("lodash");
 var eslint = require("gulp-eslint");
 var gutil = require("gulp-util");
 var karma = require("gulp-karma");
+var uglify = require("gulp-uglify");
 var webpack = require("webpack");
 var WebpackDevServer = require("webpack-dev-server");
 
@@ -96,6 +97,12 @@ gulp.task("karma:dev", function() {
   return setupKarma({
     action: "watch",
   });
+});
+
+gulp.task("compress", function() {
+  return gulp.src(paths.js.dest + "/" + paths.js.bundleName)
+    .pipe(uglify())
+    .pipe(gulp.dest(paths.js.dest));
 });
 
 gulp.task("default", ["webpack", "eslint"]);
