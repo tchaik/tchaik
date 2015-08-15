@@ -7,6 +7,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"golang.org/x/net/context"
@@ -45,6 +46,7 @@ func (l *libraryFileSystem) Open(ctx context.Context, path string) (http.File, e
 	if loc == "" {
 		return nil, fmt.Errorf("invalid (empty) location for track: %v", path)
 	}
+	loc = filepath.ToSlash(loc)
 	return l.FileSystem.Open(ctx, loc)
 }
 
