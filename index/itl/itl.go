@@ -36,7 +36,7 @@ type itlLibrary struct {
 func (l *itlLibrary) Tracks() []index.Track {
 	tracks := make([]index.Track, 0, len(l.Library.Tracks))
 	for _, t := range l.Library.Tracks {
-		if strings.HasSuffix(t.Kind, "audio file") {
+		if t.TrackType == "File" && strings.HasSuffix(t.Kind, "audio file") {
 			x := t
 			tracks = append(tracks, &itlTrack{&x})
 		}
