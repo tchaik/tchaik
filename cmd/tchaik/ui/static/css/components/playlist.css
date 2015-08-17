@@ -40,14 +40,6 @@ div.playlist {
   div.group {
     font-size: 12px;
 
-    div.group {
-      div.group-info-container {
-        img.visible {
-          display: none;
-        }
-      }
-    }
-
     div.group-info-container {
       display: flex;
       border-top: 1px solid #333;

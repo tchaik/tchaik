@@ -101,7 +101,7 @@ class RootGroup extends React.Component {
     }
 
     return (
-      <Group item={this.state.item} path={this.props.path} itemIndex={this.props.itemIndex} />
+      <Group root={true} item={this.state.item} path={this.props.path} itemIndex={this.props.itemIndex} />
     );
   }
 
@@ -139,7 +139,7 @@ class Group extends React.Component {
     };
 
     var image = null;
-    if (this.state.common.ID) {
+    if (this.props.root && this.state.common.ID) {
       image = <ArtworkImage path={`/artwork/${this.state.common.ID}`} />;
     }
 
@@ -170,7 +170,7 @@ class Group extends React.Component {
     return (
       <div className={classNames(groupClasses)}>
         <div className="group-info-container" onClick={this._onClick}>
-        {image}
+          {image}
           <div className="group-info">
             <div className="group-details">
               <div className="name">{this.props.item.Name}</div>
@@ -201,6 +201,7 @@ Group.propTypes = {
   path: React.PropTypes.array.isRequired,
   itemIndex: React.PropTypes.number.isRequired,
   item: React.PropTypes.object.isRequired,
+  root: React.PropTypes.bool,
 };
 
 
