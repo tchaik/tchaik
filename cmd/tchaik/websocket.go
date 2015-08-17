@@ -428,7 +428,7 @@ func (h *websocketHandler) fetchRecent(c Command) interface{} {
 
 func (h *websocketHandler) fetchFavourite(c Command) interface{} {
 	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
-	filter := favourite.Filter{Store: h.lib.favourites}
+	filter := favourite.RootFilter{Store: h.lib.favourites}
 
 	return struct {
 		Action string
