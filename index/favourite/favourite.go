@@ -14,8 +14,12 @@ import (
 type Store interface {
 	// Set the rating for the path.
 	Set(index.Path, bool) error
+
 	// Get the rating for the path.
 	Get(index.Path) bool
+
+	// List retuns a list of paths in the favourite Store.
+	List() []index.Path
 }
 
 // NewStore creates a basic implementation of a favourites store, using the given path as the
@@ -61,4 +65,13 @@ func (s *store) Get(p index.Path) bool {
 	defer s.RUnlock()
 
 	return s.m[fmt.Sprintf("%v", p)]
+}
+
+// List implements Store.
+func (s *store) List() []index.Path {
+	result := make([]index.Path, 0, len(s.m))
+	for k := range s.m {
+		result = append(result, index.NewPath(k))
+	}
+	return result
 }
