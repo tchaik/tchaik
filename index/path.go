@@ -4,7 +4,10 @@
 
 package index
 
-import "sort"
+import (
+	"sort"
+	"strings"
+)
 
 // PathSeparator is a string used to separate path components.
 const PathSeparator string = ":"
@@ -29,15 +32,21 @@ func (p Path) String() string {
 // Encode returns a string representation of the Path, that is a PathSeparator'ed string where each
 // component is a Key from the Path.
 func (p Path) Encode() string {
-	if len(p) == 0 {
-		return ""
+	l := make([]string, len(p))
+	for i, k := range p {
+		l[i] = string(k)
 	}
-	s := ""
-	for _, k := range p[:len(p)-1] {
-		s += string(k) + PathSeparator
+	return strings.Join(l, PathSeparator)
+}
+
+// NewPath creates a Path from the string representation.
+func NewPath(x string) Path {
+	split := strings.Split(x, PathSeparator)
+	p := make([]Key, len(split))
+	for i, s := range split {
+		p[i] = Key(s)
 	}
-	s += string(p[len(p)-1])
-	return s
+	return Path(p)
 }
 
 // PathSlice is a wrapper type implementing sort.Interface (and index.Swapper).
