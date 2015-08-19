@@ -35,11 +35,13 @@ export class Group extends React.Component {
     this.state = {
       expanded: (this.props.depth !== 1),
       favourite: false,
+      checklist: false,
       common: {},
     };
 
     this.setCommon = this.setCommon.bind(this);
     this.setFavourite = this.setFavourite.bind(this);
+    this.setChecklist = this.setChecklist.bind(this);
 
     this._onClick = this._onClick.bind(this);
     this._onClickHeader = this._onClickHeader.bind(this);
@@ -47,6 +49,7 @@ export class Group extends React.Component {
     this._onPlayNow = this._onPlayNow.bind(this);
     this._onQueue = this._onQueue.bind(this);
     this._toggleFavourite = this._toggleFavourite.bind(this);
+    this._toggleChecklist = this._toggleChecklist.bind(this);
   }
 
   setCommon(c) {
@@ -55,6 +58,10 @@ export class Group extends React.Component {
 
   setFavourite(v) {
     this.setState({favourite: v});
+  }
+
+  setChecklist(v) {
+    this.setState({checklist: v});
   }
 
   render() {
@@ -66,7 +73,7 @@ export class Group extends React.Component {
 
     if (this.state.expanded) {
       content = [
-        <GroupContent path={this.props.path} depth={this.props.depth} setCommon={this.setCommon} setFavourite={this.setFavourite} key="GroupContent0" />,
+        <GroupContent path={this.props.path} depth={this.props.depth} setCommon={this.setCommon} setFavourite={this.setFavourite} setChecklist={this.setChecklist} key="GroupContent0" />,
       ];
 
       if (this.props.depth === 1) {
@@ -98,6 +105,8 @@ export class Group extends React.Component {
       }
 
       var favouriteIcon = this.state.favourite ? "favorite" : "favorite_border";
+      var checklistIcon = this.state.checklist ? "check_circle" : "check";
+      var checklistTitle = this.state.checklist ? "Remove from Checklist" : "Add to Checklist";
 
       play = (
         <span className="controls">
@@ -105,6 +114,7 @@ export class Group extends React.Component {
           <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />
           <Icon icon={favouriteIcon} title="Favourite" onClick={this._toggleFavourite} />
+          <Icon icon={checklistIcon} title={checklistTitle} extraClasses={{enabled: this.state.checklist}} onClick={this._toggleChecklist} />
         </span>
       );
 
@@ -182,6 +192,12 @@ export class Group extends React.Component {
     this.setState({favourite: !this.state.favourite});
   }
 
+  _toggleChecklist(e) {
+    CollectionActions.setChecklist(this.props.path, !this.state.checklist);
+    e.stopPropagation();
+    this.setState({checklist: !this.state.checklist});
+  }
+
 }
 
 Group.propTypes = {
@@ -237,6 +253,9 @@ class GroupContent extends React.Component {
       }
       if (this.props.setFavourite) {
         this.props.setFavourite(item.Favourite);
+      }
+      if (this.props.setChecklist) {
+        this.props.setChecklist(item.Checklist);
       }
       this.setState({item: item});
     }

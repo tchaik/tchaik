@@ -10,6 +10,7 @@ import Covers from "./Covers.js";
 import Filter from "./Filter.js";
 import Recent from "./Recent.js";
 import Favourite from "./Favourite.js";
+import Checklist from "./Checklist.js";
 import Settings from "./Settings.js";
 import Retro from "./Retro.js";
 
@@ -55,6 +56,9 @@ export default class Container extends React.Component {
       break;
     case ContainerConstants.FAVOURITE:
       content = <Favourite />;
+      break;
+    case ContainerConstants.CHECKLIST:
+      content = <Checklist />;
       break;
     case ContainerConstants.SETTINGS:
       content = <Settings />;

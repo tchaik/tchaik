@@ -96,6 +96,7 @@ export default class LeftColumn extends React.Component {
             <ToolbarItem mode={ContainerConstants.COVERS} icon="view_module" title="Covers" />
             <ToolbarItem mode={ContainerConstants.RECENT} icon="schedule" title="Recently Added" />
             <ToolbarItem mode={ContainerConstants.FAVOURITE} icon="favorite" title="Favourite" />
+            <ToolbarItem mode={ContainerConstants.CHECKLIST} icon="done_all" title="Checklist" />
             <ToolbarItem mode={ContainerConstants.RETRO} icon="album" title="Retro" />
             <ToolbarItem mode={ContainerConstants.SETTINGS} icon="settings" title="Settings" />
           </ul>

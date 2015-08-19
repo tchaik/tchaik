@@ -35,6 +35,15 @@ var CollectionActions = {
     WebsocketAPI.send(CollectionConstants.FETCH, {path: path});
   },
 
+  setChecklist: function(path, value) {
+    WebsocketAPI.send(CollectionConstants.SET_CHECKLIST, {
+      path: path,
+      value: value,
+    });
+
+    WebsocketAPI.send(CollectionConstants.FETCH, {path: path});
+  },
+
 };
 
 export default CollectionActions;
