@@ -14,6 +14,7 @@ import (
 
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
+	"tchaik.com/index/checklist"
 	"tchaik.com/index/favourite"
 	"tchaik.com/store"
 )
@@ -27,6 +28,7 @@ type Library struct {
 	recent      []index.Path
 	searcher    index.Searcher
 	favourites  favourite.Store
+	checklist   checklist.Store
 }
 
 type libraryFileSystem struct {

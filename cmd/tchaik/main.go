@@ -27,6 +27,7 @@ import (
 
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
+	"tchaik.com/index/checklist"
 	"tchaik.com/index/favourite"
 	"tchaik.com/index/history"
 	"tchaik.com/index/itl"
@@ -38,7 +39,7 @@ import (
 var debug bool
 var itlXML, tchLib, walkPath string
 
-var playHistoryPath, favouritesPath string
+var playHistoryPath, favouritesPath, checklistPath string
 
 var listenAddr string
 var staticDir string
@@ -61,6 +62,7 @@ func init() {
 
 	flag.StringVar(&playHistoryPath, "play-history", "history.json", "path to play history file")
 	flag.StringVar(&favouritesPath, "favourites", "favourites.json", "path to favourites file")
+	flag.StringVar(&checklistPath, "checklist", "checklist.json", "path to checklist file")
 
 	flag.StringVar(&staticDir, "static-dir", "ui/static", "Path to the static asset directory")
 
@@ -182,6 +184,14 @@ func main() {
 	}
 	fmt.Println("done.")
 
+	fmt.Printf("Loading checklist...")
+	checklist, err := checklist.NewStore(checklistPath)
+	if err != nil {
+		fmt.Printf("\nerror loading checklist: %v", err)
+		os.Exit(1)
+	}
+	fmt.Println("done.")
+
 	// fmt.Printf("Loading playlists...")
 	// ps, err := playlist.NewStore(playListPath)
 	// if err != nil {
@@ -219,6 +229,7 @@ func main() {
 		recent:     recent,
 		searcher:   searcher,
 		favourites: favourites,
+		checklist:  checklist,
 	}
 
 	h := NewHandler(lib, hs, mediaFileSystem, artworkFileSystem)
