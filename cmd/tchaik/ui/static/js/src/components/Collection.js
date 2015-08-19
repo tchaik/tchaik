@@ -87,7 +87,8 @@ export class Group extends React.Component {
       if (this.state.common.TotalTime) {
         duration = (
           <span>
-            <Icon icon="schedule"/><TimeFormatter className="duration" time={parseInt(common.TotalTime / 1000)} />
+            <Icon icon="schedule" extraClasses={{duration: true}}/>
+            <TimeFormatter className="time" time={parseInt(common.TotalTime / 1000)} />
           </span>
         );
       }

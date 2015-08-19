@@ -126,17 +126,28 @@ div.collection {
         &.glyphicon-time {
           color: #666;
         }
+
+        &.duration {
+          font-size: 16px;
+          vertical-align: 3px;
+          color: #999;
+
+          &:hover {
+            color: #999;
+          }
+        }
       }
 
       span.controls {
         float: right;
       }
 
-      span.duration {
+      span.time {
         margin-left: 5px;
         font-weight: normal;
         color: #666;
-        font-size: 12px;
+        font-size: 13px;
+        vertical-align: 6px;
       }
 
       div.attributes {
