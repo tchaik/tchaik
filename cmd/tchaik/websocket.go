@@ -134,6 +134,7 @@ const (
 	FilterPathsAction    = "FILTER_PATHS"
 	FetchRecentAction    = "FETCH_RECENT"
 	FetchFavouriteAction = "FETCH_FAVOURITE"
+	FetchChecklistAction = "FETCH_CHECKLIST"
 )
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
@@ -209,6 +210,8 @@ func (h *websocketHandler) Handle() {
 			resp = h.fetchRecent(c)
 		case FetchFavouriteAction:
 			resp = h.fetchFavourite(c)
+		case FetchChecklistAction:
+			resp = h.fetchChecklist(c)
 		default:
 			err = fmt.Errorf("unknown action: %v", c.Action)
 		}
@@ -450,6 +453,19 @@ func (h *websocketHandler) fetchRecent(c Command) interface{} {
 func (h *websocketHandler) fetchFavourite(c Command) interface{} {
 	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
 	filter := favourite.RootFilter{Store: h.lib.favourites}
+
+	return struct {
+		Action string
+		Data   interface{}
+	}{
+		Action: c.Action,
+		Data:   h.lib.ExpandPaths(filter.Filter(paths)),
+	}
+}
+
+func (h *websocketHandler) fetchChecklist(c Command) interface{} {
+	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
+	filter := checklist.RootFilter{Store: h.lib.checklist}
 
 	return struct {
 		Action string
