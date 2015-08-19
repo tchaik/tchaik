@@ -67,6 +67,7 @@ type group struct {
 	Groups      []group     `json:",omitempty"`
 	Tracks      []track     `json:",omitempty"`
 	Favourite   bool        `json:",omitempty"`
+	Checklist   bool        `json:",omitempty"`
 }
 
 type track struct {
@@ -81,6 +82,7 @@ type track struct {
 	TotalTime   int      `json:",omitempty"`
 	BitRate     int      `json:",omitempty"`
 	Favourite   bool     `json:",omitempty"`
+	Checklist   bool     `json:",omitempty"`
 }
 
 // StringSliceEqual is a function used to compare two interface{} types which are assumed
@@ -240,7 +242,7 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	}
 	g = index.FirstTrackAttr(attr.String("ID"), g)
 
-	return l.annotateFavourites(path, build(g, k)), nil
+	return l.annotateChecklist(path, l.annotateFavourites(path, build(g, k))), nil
 }
 
 func (l *Library) annotateFavourites(path []string, g group) group {
@@ -252,6 +254,19 @@ func (l *Library) annotateFavourites(path []string, g group) group {
 
 	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
 		g.Favourite = l.favourites.Get(keyPath)
+	}
+	return g
+}
+
+func (l *Library) annotateChecklist(path []string, g group) group {
+	keyPath := make(index.Path, len(path)+1)
+	keyPath[0] = "Root"
+	for i, p := range path {
+		keyPath[i+1] = index.Key(p)
+	}
+
+	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
+		g.Checklist = l.checklist.Get(keyPath)
 	}
 	return g
 }
