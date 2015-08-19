@@ -13,6 +13,7 @@ import (
 	"golang.org/x/net/websocket"
 
 	"tchaik.com/index"
+	"tchaik.com/index/checklist"
 	"tchaik.com/index/favourite"
 	"tchaik.com/index/history"
 	"tchaik.com/player"
@@ -123,6 +124,7 @@ const (
 	// Path Actions
 	RecordPlayAction   = "RECORD_PLAY"
 	SetFavouriteAction = "SET_FAVOURITE"
+	SetChecklistAction = "SET_CHECKLIST"
 
 	// Library Actions
 	CtrlAction           = "CTRL"
@@ -190,6 +192,9 @@ func (h *websocketHandler) Handle() {
 
 		case SetFavouriteAction:
 			err = h.setFavourite(c)
+
+		case SetChecklistAction:
+			err = h.setChecklist(c)
 
 		// Library actions
 		case FetchAction:
@@ -303,6 +308,22 @@ func (h *websocketHandler) setFavourite(c Command) error {
 		p[i] = index.Key(x)
 	}
 	return h.lib.favourites.Set(p, value)
+}
+
+func (h *websocketHandler) setChecklist(c Command) error {
+	path, err := c.getStringSlice("path")
+	if err != nil {
+		return err
+	}
+	value, err := c.getBool("value")
+	if err != nil {
+		return err
+	}
+	p := make([]index.Key, len(path))
+	for i, x := range path {
+		p[i] = index.Key(x)
+	}
+	return h.lib.checklist.Set(p, value)
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
