@@ -114,7 +114,7 @@ export class Group extends React.Component {
           {duration}
           <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />
-          <Icon icon={favouriteIcon} title="Favourite" onClick={this._toggleFavourite} />
+          <Icon icon={favouriteIcon} title="Favourite" extraClasses={{enabled: this.state.favourite}} onClick={this._toggleFavourite} />
           <Icon icon={checklistIcon} title={checklistTitle} extraClasses={{enabled: this.state.checklist}} onClick={this._toggleChecklist} />
         </span>
       );
