@@ -49,6 +49,15 @@ func NewPath(x string) Path {
 	return Path(p)
 }
 
+// PathFromStringSlice creates a path from the given []string.
+func PathFromStringSlice(s []string) Path {
+	p := make([]Key, len(s))
+	for i, x := range s {
+		p[i] = Key(x)
+	}
+	return p
+}
+
 // PathSlice is a wrapper type implementing sort.Interface (and index.Swapper).
 type PathSlice []Path
 
