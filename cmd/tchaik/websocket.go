@@ -72,7 +72,7 @@ func (c Command) getBool(f string) (bool, error) {
 	return value, nil
 }
 
-func (c Command) getStringSlice(f string) ([]string, error) {
+func (c Command) getPath(f string) (index.Path, error) {
 	raw, err := c.get(f)
 	if err != nil {
 		return nil, err
@@ -83,15 +83,15 @@ func (c Command) getStringSlice(f string) ([]string, error) {
 		return nil, fmt.Errorf("expected '%s' to be a list of strings, got '%T'", f, raw)
 	}
 
-	result := make([]string, len(rawSlice))
+	path := make([]index.Key, len(rawSlice))
 	for i, x := range rawSlice {
 		s, ok := x.(string)
 		if !ok {
 			return nil, fmt.Errorf("expected '%s' to contain objects of type 'string', got '%T'", f, x)
 		}
-		result[i] = s
+		path[i] = index.Key(s)
 	}
-	return result, nil
+	return path, nil
 }
 
 type sameSearcher struct {
@@ -293,35 +293,27 @@ func (h *websocketHandler) key(c Command) error {
 }
 
 func (h *websocketHandler) recordPlay(c Command) error {
-	path, err := c.getStringSlice("path")
+	p, err := c.getPath("path")
 	if err != nil {
 		return err
-	}
-	p := make([]index.Key, len(path))
-	for i, x := range path {
-		p[i] = index.Key(x)
 	}
 	return h.history.Add(p)
 }
 
 func (h *websocketHandler) setFavourite(c Command) error {
-	path, err := c.getStringSlice("path")
+	p, err := c.getPath("path")
 	if err != nil {
 		return err
 	}
 	value, err := c.getBool("value")
 	if err != nil {
 		return err
-	}
-	p := make([]index.Key, len(path))
-	for i, x := range path {
-		p[i] = index.Key(x)
 	}
 	return h.lib.favourites.Set(p, value)
 }
 
 func (h *websocketHandler) setChecklist(c Command) error {
-	path, err := c.getStringSlice("path")
+	p, err := c.getPath("path")
 	if err != nil {
 		return err
 	}
@@ -329,15 +321,11 @@ func (h *websocketHandler) setChecklist(c Command) error {
 	if err != nil {
 		return err
 	}
-	p := make([]index.Key, len(path))
-	for i, x := range path {
-		p[i] = index.Key(x)
-	}
 	return h.lib.checklist.Set(p, value)
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
-	path, err := c.getStringSlice("path")
+	path, err := c.getPath("path")
 	if err != nil {
 		return nil, err
 	}
@@ -346,7 +334,7 @@ func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
 		return nil, fmt.Errorf("invalid path: %v\n", path)
 	}
 
-	root := h.lib.collections[path[0]]
+	root := h.lib.collections[string(path[0])]
 	if root == nil {
 		return nil, fmt.Errorf("unknown collection: %#v", path[0])
 	}
@@ -361,7 +349,7 @@ func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
 	}{
 		c.Action,
 		struct {
-			Path []string
+			Path index.Path
 			Item group
 		}{
 			path,
@@ -401,7 +389,7 @@ func (h *websocketHandler) filterList(c Command) (interface{}, error) {
 }
 
 func (h *websocketHandler) filterPaths(c Command) (interface{}, error) {
-	path, err := c.getStringSlice("path")
+	path, err := c.getPath("path")
 	if err != nil {
 		return nil, err
 	}
@@ -419,7 +407,7 @@ func (h *websocketHandler) filterPaths(c Command) (interface{}, error) {
 	if len(path) != 1 {
 		return nil, fmt.Errorf("invalid path: %#v", path)
 	}
-	name := path[0]
+	name := string(path[0])
 
 	var item index.FilterItem
 	for _, x := range filterItems {
@@ -438,10 +426,10 @@ func (h *websocketHandler) filterPaths(c Command) (interface{}, error) {
 	}{
 		Action: c.Action,
 		Data: struct {
-			Path  []string
+			Path  index.Path
 			Paths group
 		}{
-			Path:  []string{filterName, name},
+			Path:  index.PathFromStringSlice([]string{filterName, name}),
 			Paths: h.lib.ExpandPaths(item.Paths()),
 		},
 	}, nil

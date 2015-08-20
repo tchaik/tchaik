@@ -187,7 +187,7 @@ func build(g index.Group, key index.Key) group {
 }
 
 // Fetch returns a group from the collection with the given path.
-func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
+func (l *Library) Fetch(c index.Collection, path index.Path) (group, error) {
 	if len(path) == 0 {
 		return build(c, index.Key("Root")), nil
 	}
@@ -245,7 +245,7 @@ func (l *Library) Fetch(c index.Collection, path []string) (group, error) {
 	return l.annotateChecklist(path, l.annotateFavourites(path, build(g, k))), nil
 }
 
-func (l *Library) annotateFavourites(path []string, g group) group {
+func (l *Library) annotateFavourites(path index.Path, g group) group {
 	keyPath := make(index.Path, len(path)+1)
 	keyPath[0] = "Root"
 	for i, p := range path {
@@ -258,7 +258,7 @@ func (l *Library) annotateFavourites(path []string, g group) group {
 	return g
 }
 
-func (l *Library) annotateChecklist(path []string, g group) group {
+func (l *Library) annotateChecklist(path index.Path, g group) group {
 	keyPath := make(index.Path, len(path)+1)
 	keyPath[0] = "Root"
 	for i, p := range path {
