@@ -118,23 +118,23 @@ func (r *sameSearcher) Search(input string) []index.Path {
 
 const (
 	// Player Actions
-	KeyAction    string = "KEY"
-	PlayerAction        = "PLAYER"
+	ActionKey    string = "KEY"
+	ActionPlayer        = "PLAYER"
 
 	// Path Actions
-	RecordPlayAction   = "RECORD_PLAY"
-	SetFavouriteAction = "SET_FAVOURITE"
-	SetChecklistAction = "SET_CHECKLIST"
+	ActionRecordPlay   = "RECORD_PLAY"
+	ActionSetFavourite = "SET_FAVOURITE"
+	ActionSetChecklist = "SET_CHECKLIST"
 
 	// Library Actions
-	CtrlAction           = "CTRL"
-	FetchAction          = "FETCH"
-	SearchAction         = "SEARCH"
-	FilterListAction     = "FILTER_LIST"
-	FilterPathsAction    = "FILTER_PATHS"
-	FetchRecentAction    = "FETCH_RECENT"
-	FetchFavouriteAction = "FETCH_FAVOURITE"
-	FetchChecklistAction = "FETCH_CHECKLIST"
+	ActionCtrl           = "CTRL"
+	ActionFetch          = "FETCH"
+	ActionSearch         = "SEARCH"
+	ActionFilterList     = "FILTER_LIST"
+	ActionFilterPaths    = "FILTER_PATHS"
+	ActionFetchRecent    = "FETCH_RECENT"
+	ActionFetchFavourite = "FETCH_FAVOURITE"
+	ActionFetchChecklist = "FETCH_CHECKLIST"
 )
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
@@ -180,38 +180,45 @@ func (h *websocketHandler) Handle() {
 
 		var resp interface{}
 		switch c.Action {
-
 		// Player actions
-		case KeyAction:
+		case ActionKey:
 			err = h.key(c)
-		case PlayerAction:
+
+		case ActionPlayer:
 			resp, err = h.player(c)
 
 		// Path Actions
-		case RecordPlayAction:
+		case ActionRecordPlay:
 			err = h.recordPlay(c)
 
-		case SetFavouriteAction:
+		case ActionSetFavourite:
 			err = h.setFavourite(c)
 
-		case SetChecklistAction:
+		case ActionSetChecklist:
 			err = h.setChecklist(c)
 
 		// Library actions
-		case FetchAction:
+		case ActionFetch:
 			resp, err = h.collectionList(c)
-		case SearchAction:
+
+		case ActionSearch:
 			resp, err = h.search(c)
-		case FilterListAction:
+
+		case ActionFilterList:
 			resp, err = h.filterList(c)
-		case FilterPathsAction:
+
+		case ActionFilterPaths:
 			resp, err = h.filterPaths(c)
-		case FetchRecentAction:
+
+		case ActionFetchRecent:
 			resp = h.fetchRecent(c)
-		case FetchFavouriteAction:
+
+		case ActionFetchFavourite:
 			resp = h.fetchFavourite(c)
-		case FetchChecklistAction:
+
+		case ActionFetchChecklist:
 			resp = h.fetchChecklist(c)
+
 		default:
 			err = fmt.Errorf("unknown action: %v", c.Action)
 		}
@@ -504,7 +511,7 @@ func WebsocketPlayer(key string, ws *websocket.Conn) player.Player {
 			Action string
 			Data   interface{}
 		}{
-			Action: CtrlAction,
+			Action: ActionCtrl,
 			Data:   data,
 		})
 	}
