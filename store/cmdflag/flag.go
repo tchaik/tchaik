@@ -27,7 +27,7 @@ var trimPathPrefix, addPathPrefix string
 
 func init() {
 	flag.StringVar(&localStore, "local-store", "/", "local media store, full local path /path/to/root")
-	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, s3://<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage")
+	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage")
 
 	flag.StringVar(&artworkFileSystemCache, "artwork-cache", "", "path to local artwork cache (content addressable)")
 	flag.StringVar(&mediaFileSystemCache, "media-cache", "", "path to local media cache")
@@ -54,13 +54,26 @@ func buildRemoteStore(s *stores) (err error) {
 		if len(bucketPathSplit) == 0 {
 			return fmt.Errorf("invalid S3 path: %#v", remoteStore)
 		}
-		bucket := bucketPathSplit[0]
+		regionBucket := bucketPathSplit[0]
 		var auth aws.Auth
 		auth, err = aws.GetAuth("", "") // Extract credentials from the current instance.
 		if err != nil {
 			return fmt.Errorf("error getting AWS credentials: %v", err)
 		}
-		c = store.TraceClient(store.NewS3Client(bucket, auth, aws.APSoutheast2), fmt.Sprintf("S3 (%v)", bucket))
+
+		regionBucketSplit := strings.Split(regionBucket, ":")
+		if len(regionBucketSplit) != 2 {
+			return fmt.Errorf("invalid S3 path prefix (<region>:<bucket>): %#v", regionBucket)
+		}
+		if len(regionBucketSplit[0]) == 0 {
+			return fmt.Errorf("invalid S3 path prefix (<region>:<bucket>): empty region: %#v", regionBucket)
+		}
+
+		region, ok := aws.Regions[regionBucketSplit[0]]
+		if !ok {
+			return fmt.Errorf("invalid S3 region: %#v", regionBucketSplit[0])
+		}
+		c = store.TraceClient(store.NewS3Client(regionBucketSplit[1], auth, region), fmt.Sprintf("S3 (%v)", regionBucket))
 
 	case strings.HasPrefix(remoteStore, "gs://"):
 		path := strings.TrimPrefix(remoteStore, "gs://")
