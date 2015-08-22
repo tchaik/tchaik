@@ -76,24 +76,46 @@ A full list of command line options is available from the `--help` flag:
 
     $ tchaik --help
     Usage of ./tchaik:
-      -add-path-prefix="": add prefix to every path
-      -artwork-cache="": path to local artwork cache (content addressable)
-      -auth-password="": password to use for HTTP authentication
-      -auth-user="": username to use for HTTP authentication (set to enable)
-      -debug=false: print debugging information
-      -itlXML="": path to iTunes Library XML file
-      -lib="": path to Tchaik library file
-      -listen="localhost:8080": bind address to http listen
-      -local-store="/": local media store, full local path /path/to/root
-      -media-cache="": path to local media cache
-      -path="": path to directory containing music files (to build index from)
-      -play-history="history.json": path to play history file
-      -remote-store="": remote media store, tchstore server address <hostname>:<port>, s3://<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage
-      -static-dir="ui/static": Path to the static asset directory
-      -tls-cert="": path to a certificate file, must also specify -tls-key
-      -tls-key="": path to a certificate key file, must also specify -tls-cert
-      -trace-listen="": bind address for trace HTTP server
-      -trim-path-prefix="": remove prefix from every path
+      -add-path-prefix string
+        	add prefix to every path
+      -artwork-cache string
+        	path to local artwork cache (content addressable)
+      -auth-password string
+        	password to use for HTTP authentication
+      -auth-user string
+        	username to use for HTTP authentication (set to enable)
+      -checklist string
+        	path to checklist file (default "checklist.json")
+      -debug
+        	print debugging information
+      -favourites string
+        	path to favourites file (default "favourites.json")
+      -itlXML string
+        	path to iTunes Library XML file
+      -lib string
+        	path to Tchaik library file
+      -listen string
+        	bind address to http listen (default "localhost:8080")
+      -local-store string
+        	local media store, full local path /path/to/root (default "/")
+      -media-cache string
+        	path to local media cache
+      -path string
+        	path to directory containing music files (to build index from)
+      -play-history string
+        	path to play history file (default "history.json")
+      -remote-store string
+        	remote media store, tchstore server address <hostname>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage
+      -static-dir string
+        	Path to the static asset directory (default "ui/static")
+      -tls-cert string
+        	path to a certificate file, must also specify -tls-key
+      -tls-key string
+        	path to a certificate key file, must also specify -tls-cert
+      -trace-listen string
+        	bind address for trace HTTP server
+      -trim-path-prefix string
+        	remove prefix from every path
 
 ### -local-store
 
@@ -101,7 +123,7 @@ Set `-local-store` to the local path that contains your media files.  You can us
 
 ### -remote-store
 
-Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<bucket>/path/to/root` (set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client), or Google Cloud Storage paths: `gs://<project-id>:<bucket>/path/to/root` (set the GOOGLE_APPLICATION_CREDENTIALS to point at your JSON credentials file).
+Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<region>:<bucket>/path/to/root` (set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client), or Google Cloud Storage paths: `gs://<project-id>:<bucket>/path/to/root` (set the GOOGLE_APPLICATION_CREDENTIALS to point at your JSON credentials file).
 
 ### -media-cache
 
