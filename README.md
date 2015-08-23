@@ -14,7 +14,7 @@ Tchaik is an open source music organisation and streaming system.  The backend i
 
 # Requirements
 
-* [Go 1.4+](http://golang.org/dl/) (recent changes have only been tested on 1.4.2).
+* [Go 1.4+](http://golang.org/dl/) (recent changes have only been tested on 1.5).
 * [NodeJS](https://nodejs.org/), [NPM](https://www.npmjs.com/) and [Gulp](http://gulpjs.com/) installed globally (for building the UI).
 * Recent version of Chrome (Firefox may also work, though hasn't been fully tested).
 
@@ -76,45 +76,45 @@ A full list of command line options is available from the `--help` flag:
 
     $ tchaik --help
     Usage of ./tchaik:
-      -add-path-prefix string
+      -add-path-prefix prefix
         	add prefix to every path
-      -artwork-cache string
+      -artwork-cache path
         	path to local artwork cache (content addressable)
-      -auth-password string
+      -auth-password password
         	password to use for HTTP authentication
-      -auth-user string
-        	username to use for HTTP authentication (set to enable)
-      -checklist string
-        	path to checklist file (default "checklist.json")
+      -auth-user user
+        	user to use for HTTP authentication (set to enable)
+      -checklist file
+        	checklist file (default "checklist.json")
       -debug
         	print debugging information
-      -favourites string
-        	path to favourites file (default "favourites.json")
-      -itlXML string
-        	path to iTunes Library XML file
-      -lib string
-        	path to Tchaik library file
-      -listen string
-        	bind address to http listen (default "localhost:8080")
-      -local-store string
-        	local media store, full local path /path/to/root (default "/")
-      -media-cache string
+      -favourites file
+        	favourites file (default "favourites.json")
+      -itlXML file
+        	iTunes Library XML file
+      -lib file
+        	Tchaik library file
+      -listen address
+        	bind address for main HTTP server (default "localhost:8080")
+      -local-store path
+        	path to local media store (prefixes all paths) (default "/")
+      -media-cache path
         	path to local media cache
-      -path string
-        	path to directory containing music files (to build index from)
-      -play-history string
-        	path to play history file (default "history.json")
-      -remote-store string
-        	remote media store, tchstore server address <hostname>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage
-      -static-dir string
-        	Path to the static asset directory (default "ui/static")
-      -tls-cert string
-        	path to a certificate file, must also specify -tls-key
-      -tls-key string
-        	path to a certificate key file, must also specify -tls-cert
-      -trace-listen string
+      -path directory
+        	directory containing music files
+      -play-history file
+        	play history file (default "history.json")
+      -remote-store address
+        	address for remote media store: tchstore server <host>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage
+      -static-dir directory
+        	static asset directory (default "ui/static")
+      -tls-cert file
+        	certificate file, must also specify -tls-key
+      -tls-key file
+        	certificate key file, must also specify -tls-cert
+      -trace-listen address
         	bind address for trace HTTP server
-      -trim-path-prefix string
+      -trim-path-prefix prefix
         	remove prefix from every path
 
 ### -local-store
