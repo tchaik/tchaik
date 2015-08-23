@@ -34,9 +34,9 @@ var itlXML, path string
 var out string
 
 func init() {
-	flag.StringVar(&itlXML, "itlXML", "", "iTunes Music Library XML file")
-	flag.StringVar(&path, "path", "", "directory path containing audio files")
-	flag.StringVar(&out, "out", "", "output file (Tchaik library binary format)")
+	flag.StringVar(&itlXML, "itlXML", "", "iTunes Music Library XML `file`")
+	flag.StringVar(&path, "path", "", "`directory` containing music files")
+	flag.StringVar(&out, "out", "", "output `file` (Tchaik library binary format)")
 }
 
 func main() {

@@ -45,10 +45,10 @@ var debug bool
 var traceListenAddr string
 
 func init() {
-	flag.StringVar(&listen, "listen", "localhost:1844", "<addr>:<port> to listen on")
+	flag.StringVar(&listen, "listen", "localhost:1844", "`address` (<host>:<port>) to listen on")
 	flag.BoolVar(&debug, "debug", false, "output extra debugging information")
 
-	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind address for trace HTTP server")
+	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind `address` for trace HTTP server")
 }
 
 type rootTraceFS struct {

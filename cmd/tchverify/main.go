@@ -26,11 +26,11 @@ var itlXML, tchLib string
 var trimPathPrefix, addPathPrefix string
 
 func init() {
-	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
-	flag.StringVar(&tchLib, "lib", "", "path to Tchaik library file")
+	flag.StringVar(&itlXML, "itlXML", "", "iTunes Library XML `file`")
+	flag.StringVar(&tchLib, "lib", "", "Tchaik library `file`")
 
-	flag.StringVar(&trimPathPrefix, "trim-path-prefix", "", "remove prefix from every path")
-	flag.StringVar(&addPathPrefix, "add-path-prefix", "", "add prefix to every path")
+	flag.StringVar(&trimPathPrefix, "trim-path-prefix", "", "remove `prefix` from every path")
+	flag.StringVar(&addPathPrefix, "add-path-prefix", "", "add `prefix` to every path")
 }
 
 func main() {
