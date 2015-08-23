@@ -33,12 +33,12 @@ var create string
 var delete bool
 
 func init() {
-	flag.StringVar(&host, "addr", "", fmt.Sprintf("schema://host(:port) address of the REST API (or set %v)", HostEnv))
-	flag.StringVar(&key, "key", "", fmt.Sprintf("the key which identifies the player to send actions to (or set %v)", PlayerKeyEnv))
+	flag.StringVar(&host, "addr", "", fmt.Sprintf("schema://host(:port) `address` of the REST API (or set %v)", HostEnv))
+	flag.StringVar(&key, "key", "", fmt.Sprintf("`key` which identifies the player to send actions to (or set %v)", PlayerKeyEnv))
 	flag.BoolVar(&keys, "keys", false, "list all the keys on the host")
-	flag.StringVar(&action, "action", "", "action to send to the player (requires -key, some require -value)")
-	flag.StringVar(&value, "value", "", "value to send to the player")
-	flag.StringVar(&create, "create", "", "create a multi-player for the given -key")
+	flag.StringVar(&action, "action", "", "`action` to send to the player (requires -key, some require -value)")
+	flag.StringVar(&value, "value", "", "`value` to send to the player")
+	flag.StringVar(&create, "create", "", "create a multi-player from a comma-separeted `list` for the given -key")
 	flag.BoolVar(&delete, "delete", false, "delete the player for -key")
 }
 
