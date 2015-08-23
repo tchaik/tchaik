@@ -26,14 +26,14 @@ var mediaFileSystemCache, artworkFileSystemCache string
 var trimPathPrefix, addPathPrefix string
 
 func init() {
-	flag.StringVar(&localStore, "local-store", "/", "local media store, full local path /path/to/root")
-	flag.StringVar(&remoteStore, "remote-store", "", "remote media store, tchstore server address <hostname>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage")
+	flag.StringVar(&localStore, "local-store", "/", "`path` to local media store (prefixes all paths)")
+	flag.StringVar(&remoteStore, "remote-store", "", "`address` for remote media store: tchstore server <host>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage")
 
-	flag.StringVar(&artworkFileSystemCache, "artwork-cache", "", "path to local artwork cache (content addressable)")
-	flag.StringVar(&mediaFileSystemCache, "media-cache", "", "path to local media cache")
+	flag.StringVar(&artworkFileSystemCache, "artwork-cache", "", "`path` to local artwork cache (content addressable)")
+	flag.StringVar(&mediaFileSystemCache, "media-cache", "", "`path` to local media cache")
 
-	flag.StringVar(&trimPathPrefix, "trim-path-prefix", "", "remove prefix from every path")
-	flag.StringVar(&addPathPrefix, "add-path-prefix", "", "add prefix to every path")
+	flag.StringVar(&trimPathPrefix, "trim-path-prefix", "", "remove `prefix` from every path")
+	flag.StringVar(&addPathPrefix, "add-path-prefix", "", "add `prefix` to every path")
 }
 
 type stores struct {
