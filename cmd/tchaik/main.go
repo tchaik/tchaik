@@ -52,24 +52,24 @@ var traceListenAddr string
 func init() {
 	flag.BoolVar(&debug, "debug", false, "print debugging information")
 
-	flag.StringVar(&listenAddr, "listen", "localhost:8080", "bind address to http listen")
-	flag.StringVar(&certFile, "tls-cert", "", "path to a certificate file, must also specify -tls-key")
-	flag.StringVar(&keyFile, "tls-key", "", "path to a certificate key file, must also specify -tls-cert")
+	flag.StringVar(&listenAddr, "listen", "localhost:8080", "bind `address` for main HTTP server")
+	flag.StringVar(&certFile, "tls-cert", "", "certificate `file`, must also specify -tls-key")
+	flag.StringVar(&keyFile, "tls-key", "", "certificate key `file`, must also specify -tls-cert")
 
-	flag.StringVar(&itlXML, "itlXML", "", "path to iTunes Library XML file")
-	flag.StringVar(&tchLib, "lib", "", "path to Tchaik library file")
-	flag.StringVar(&walkPath, "path", "", "path to directory containing music files (to build index from)")
+	flag.StringVar(&itlXML, "itlXML", "", "iTunes Library XML `file`")
+	flag.StringVar(&tchLib, "lib", "", "Tchaik library `file`")
+	flag.StringVar(&walkPath, "path", "", "`directory` containing music files")
 
-	flag.StringVar(&playHistoryPath, "play-history", "history.json", "path to play history file")
-	flag.StringVar(&favouritesPath, "favourites", "favourites.json", "path to favourites file")
-	flag.StringVar(&checklistPath, "checklist", "checklist.json", "path to checklist file")
+	flag.StringVar(&playHistoryPath, "play-history", "history.json", "play history `file`")
+	flag.StringVar(&favouritesPath, "favourites", "favourites.json", "favourites `file`")
+	flag.StringVar(&checklistPath, "checklist", "checklist.json", "checklist `file`")
 
-	flag.StringVar(&staticDir, "static-dir", "ui/static", "Path to the static asset directory")
+	flag.StringVar(&staticDir, "static-dir", "ui/static", "static asset `directory`")
 
-	flag.StringVar(&authUser, "auth-user", "", "username to use for HTTP authentication (set to enable)")
-	flag.StringVar(&authPassword, "auth-password", "", "password to use for HTTP authentication")
+	flag.StringVar(&authUser, "auth-user", "", "`user` to use for HTTP authentication (set to enable)")
+	flag.StringVar(&authPassword, "auth-password", "", "`password` to use for HTTP authentication")
 
-	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind address for trace HTTP server")
+	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind `address` for trace HTTP server")
 }
 
 func readLibrary() (index.Library, error) {
