@@ -245,27 +245,23 @@ func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
 }
 
 func (l *Library) annotateFavourites(p index.Path, g group) group {
-	keyPath := make(index.Path, len(p)+1)
-	keyPath[0] = "Root"
-	for i, k := range p {
-		keyPath[i+1] = k
-	}
+	fullPath := make(index.Path, len(p)+1)
+	fullPath[0] = "Root"
+	copy(fullPath[1:], p)
 
 	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
-		g.Favourite = l.favourites.Get(keyPath)
+		g.Favourite = l.favourites.Get(fullPath)
 	}
 	return g
 }
 
 func (l *Library) annotateChecklist(p index.Path, g group) group {
-	keyPath := make(index.Path, len(p)+1)
-	keyPath[0] = "Root"
-	for i, k := range p {
-		keyPath[i+1] = k
-	}
+	fullPath := make(index.Path, len(p)+1)
+	fullPath[0] = "Root"
+	copy(fullPath[1:], p)
 
 	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
-		g.Checklist = l.checklist.Get(keyPath)
+		g.Checklist = l.checklist.Get(fullPath)
 	}
 	return g
 }
