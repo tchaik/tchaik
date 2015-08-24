@@ -187,17 +187,17 @@ func build(g index.Group, key index.Key) group {
 }
 
 // Fetch returns a group from the collection with the given path.
-func (l *Library) Fetch(c index.Collection, path index.Path) (group, error) {
-	if len(path) == 0 {
+func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
+	if len(p) == 0 {
 		return build(c, index.Key("Root")), nil
 	}
 
 	var g index.Group = c
-	k := index.Key(path[0])
+	k := index.Key(p[0])
 	g = c.Get(k)
 
 	if g == nil {
-		return group{}, fmt.Errorf("invalid path: near '%v'", path[0])
+		return group{}, fmt.Errorf("invalid path: near '%v'", p[0])
 	}
 
 	index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
@@ -217,21 +217,20 @@ func (l *Library) Fetch(c index.Collection, path index.Path) (group, error) {
 	g = index.CommonGroupAttr(commonFields, g)
 	g = index.RemoveEmptyCollections(g)
 
-	for i, p := range path[1:] {
+	for i, k := range p[1:] {
 		var ok bool
 		c, ok = g.(index.Collection)
 		if !ok {
 			return group{}, fmt.Errorf("retrieved Group is not a Collection")
 		}
 
-		k = index.Key(p)
 		g = c.Get(k)
 		if g == nil {
-			return group{}, fmt.Errorf("invalid path near '%v'", path[1:][i])
+			return group{}, fmt.Errorf("invalid path near '%v'", p[1:][i])
 		}
 
 		if _, ok = g.(index.Collection); !ok {
-			if i == len(path[1:])-1 {
+			if i == len(p[1:])-1 {
 				break
 			}
 			return group{}, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
@@ -242,14 +241,14 @@ func (l *Library) Fetch(c index.Collection, path index.Path) (group, error) {
 	}
 	g = index.FirstTrackAttr(attr.String("ID"), g)
 
-	return l.annotateChecklist(path, l.annotateFavourites(path, build(g, k))), nil
+	return l.annotateChecklist(p, l.annotateFavourites(p, build(g, k))), nil
 }
 
-func (l *Library) annotateFavourites(path index.Path, g group) group {
-	keyPath := make(index.Path, len(path)+1)
+func (l *Library) annotateFavourites(p index.Path, g group) group {
+	keyPath := make(index.Path, len(p)+1)
 	keyPath[0] = "Root"
-	for i, p := range path {
-		keyPath[i+1] = index.Key(p)
+	for i, k := range p {
+		keyPath[i+1] = k
 	}
 
 	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
@@ -258,11 +257,11 @@ func (l *Library) annotateFavourites(path index.Path, g group) group {
 	return g
 }
 
-func (l *Library) annotateChecklist(path index.Path, g group) group {
-	keyPath := make(index.Path, len(path)+1)
+func (l *Library) annotateChecklist(p index.Path, g group) group {
+	keyPath := make(index.Path, len(p)+1)
 	keyPath[0] = "Root"
-	for i, p := range path {
-		keyPath[i+1] = index.Key(p)
+	for i, k := range p {
+		keyPath[i+1] = k
 	}
 
 	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
