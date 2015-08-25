@@ -325,22 +325,22 @@ func (h *websocketHandler) setChecklist(c Command) error {
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
-	path, err := c.getPath("path")
+	p, err := c.getPath("path")
 	if err != nil {
 		return nil, err
 	}
 
-	if len(path) < 1 {
-		return nil, fmt.Errorf("invalid path: %v\n", path)
+	if len(p) < 1 {
+		return nil, fmt.Errorf("invalid path: %v\n", p)
 	}
 
-	root := h.lib.collections[string(path[0])]
+	root := h.lib.collections[string(p[0])]
 	if root == nil {
-		return nil, fmt.Errorf("unknown collection: %#v", path[0])
+		return nil, fmt.Errorf("unknown collection: %#v", p[0])
 	}
-	g, err := h.lib.Fetch(root, path[1:])
+	g, err := h.lib.Fetch(root, p[1:])
 	if err != nil {
-		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, path[1:])
+		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, p[1:])
 	}
 
 	return struct {
@@ -352,7 +352,7 @@ func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
 			Path index.Path
 			Item group
 		}{
-			path,
+			p,
 			g,
 		},
 	}, nil
