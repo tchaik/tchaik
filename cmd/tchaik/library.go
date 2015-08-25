@@ -14,8 +14,7 @@ import (
 
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
-	"tchaik.com/index/checklist"
-	"tchaik.com/index/favourite"
+
 	"tchaik.com/store"
 )
 
@@ -27,8 +26,6 @@ type Library struct {
 	filters     map[string][]index.FilterItem
 	recent      []index.Path
 	searcher    index.Searcher
-	favourites  favourite.Store
-	checklist   checklist.Store
 }
 
 type libraryFileSystem struct {
@@ -240,30 +237,7 @@ func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
 		return group{}, fmt.Errorf("could not find group")
 	}
 	g = index.FirstTrackAttr(attr.String("ID"), g)
-
-	return l.annotateChecklist(p, l.annotateFavourites(p, build(g, k))), nil
-}
-
-func (l *Library) annotateFavourites(p index.Path, g group) group {
-	fullPath := make(index.Path, len(p)+1)
-	fullPath[0] = "Root"
-	copy(fullPath[1:], p)
-
-	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
-		g.Favourite = l.favourites.Get(fullPath)
-	}
-	return g
-}
-
-func (l *Library) annotateChecklist(p index.Path, g group) group {
-	fullPath := make(index.Path, len(p)+1)
-	fullPath[0] = "Root"
-	copy(fullPath[1:], p)
-
-	if len(g.Tracks) > 0 || len(g.Groups) > 0 {
-		g.Checklist = l.checklist.Get(fullPath)
-	}
-	return g
+	return build(g, k), nil
 }
 
 // FileSystem wraps the http.FileSystem in a library lookup which will translate /ID

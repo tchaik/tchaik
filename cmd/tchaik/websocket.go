@@ -15,7 +15,6 @@ import (
 	"tchaik.com/index"
 	"tchaik.com/index/checklist"
 	"tchaik.com/index/favourite"
-	"tchaik.com/index/history"
 	"tchaik.com/player"
 )
 
@@ -138,14 +137,14 @@ const (
 )
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
-func NewWebsocketHandler(l Library, p *player.Players, s history.Store) http.Handler {
+func NewWebsocketHandler(l Library, m *Meta, p *player.Players) http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
 		h := &websocketHandler{
 			Conn:    ws,
 			lib:     l,
+			meta:    m,
 			players: p,
-			history: s,
 			searcher: &sameSearcher{
 				Searcher: l.searcher,
 			},
@@ -157,9 +156,9 @@ func NewWebsocketHandler(l Library, p *player.Players, s history.Store) http.Han
 type websocketHandler struct {
 	*websocket.Conn
 	players  *player.Players
-	history  history.Store
 	lib      Library
 	searcher *sameSearcher
+	meta     *Meta
 
 	playerKey string
 }
@@ -297,7 +296,7 @@ func (h *websocketHandler) recordPlay(c Command) error {
 	if err != nil {
 		return err
 	}
-	return h.history.Add(p)
+	return h.meta.history.Add(p)
 }
 
 func (h *websocketHandler) setFavourite(c Command) error {
@@ -309,7 +308,7 @@ func (h *websocketHandler) setFavourite(c Command) error {
 	if err != nil {
 		return err
 	}
-	return h.lib.favourites.Set(p, value)
+	return h.meta.favourites.Set(p, value)
 }
 
 func (h *websocketHandler) setChecklist(c Command) error {
@@ -321,7 +320,7 @@ func (h *websocketHandler) setChecklist(c Command) error {
 	if err != nil {
 		return err
 	}
-	return h.lib.checklist.Set(p, value)
+	return h.meta.checklist.Set(p, value)
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
@@ -342,6 +341,9 @@ func (h *websocketHandler) collectionList(c Command) (interface{}, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, p[1:])
 	}
+
+	g = h.meta.annotateFavourites(p, g)
+	g = h.meta.annotateChecklist(p, g)
 
 	return struct {
 		Action string
@@ -447,7 +449,7 @@ func (h *websocketHandler) fetchRecent(c Command) interface{} {
 
 func (h *websocketHandler) fetchFavourite(c Command) interface{} {
 	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
-	filter := favourite.RootFilter{Store: h.lib.favourites}
+	filter := favourite.RootFilter{Store: h.meta.favourites}
 
 	return struct {
 		Action string
@@ -460,7 +462,7 @@ func (h *websocketHandler) fetchFavourite(c Command) interface{} {
 
 func (h *websocketHandler) fetchChecklist(c Command) interface{} {
 	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
-	filter := checklist.RootFilter{Store: h.lib.checklist}
+	filter := checklist.RootFilter{Store: h.meta.checklist}
 
 	return struct {
 		Action string

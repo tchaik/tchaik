@@ -226,13 +226,17 @@ func main() {
 		filters: map[string][]index.FilterItem{
 			"Artist": artists,
 		},
-		recent:     recent,
-		searcher:   searcher,
+		recent:   recent,
+		searcher: searcher,
+	}
+
+	meta := &Meta{
+		history:    hs,
 		favourites: favourites,
 		checklist:  checklist,
 	}
 
-	h := NewHandler(lib, hs, mediaFileSystem, artworkFileSystem)
+	h := NewHandler(lib, meta, mediaFileSystem, artworkFileSystem)
 
 	if certFile != "" && keyFile != "" {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)

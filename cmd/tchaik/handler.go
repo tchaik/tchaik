@@ -13,7 +13,6 @@ import (
 
 	"github.com/dhowden/httpauth"
 
-	"tchaik.com/index/history"
 	"tchaik.com/player"
 	"tchaik.com/store"
 )
@@ -52,7 +51,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // NewHandler creates the root http.Handler.
-func NewHandler(l Library, hs history.Store, mediaFileSystem, artworkFileSystem store.FileSystem) http.Handler {
+func NewHandler(l Library, m *Meta, mediaFileSystem, artworkFileSystem store.FileSystem) http.Handler {
 	var c httpauth.Checker = httpauth.None{}
 	if authUser != "" {
 		c = httpauth.Creds(map[string]string{
@@ -73,7 +72,7 @@ func NewHandler(l Library, hs history.Store, mediaFileSystem, artworkFileSystem 
 	h.HandleFileSystem("/icon/", store.FaviconFileSystem(artworkFileSystem))
 
 	p := player.NewPlayers()
-	h.Handle("/socket", NewWebsocketHandler(l, p, hs))
+	h.Handle("/socket", NewWebsocketHandler(l, m, p))
 	h.Handle("/api/players/", http.StripPrefix("/api/players/", player.NewHTTPHandler(p)))
 
 	return h
