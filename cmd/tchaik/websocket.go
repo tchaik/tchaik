@@ -13,8 +13,6 @@ import (
 	"golang.org/x/net/websocket"
 
 	"tchaik.com/index"
-	"tchaik.com/index/checklist"
-	"tchaik.com/index/favourite"
 	"tchaik.com/player"
 )
 
@@ -126,12 +124,12 @@ const (
 	ActionSetChecklist = "SET_CHECKLIST"
 
 	// Library Actions
-	ActionCtrl           = "CTRL"
-	ActionFetch          = "FETCH"
-	ActionSearch         = "SEARCH"
-	ActionFilterList     = "FILTER_LIST"
-	ActionFilterPaths    = "FILTER_PATHS"
-	ActionFetchPathList  = "FETCH_PATHLIST"
+	ActionCtrl          = "CTRL"
+	ActionFetch         = "FETCH"
+	ActionSearch        = "SEARCH"
+	ActionFilterList    = "FILTER_LIST"
+	ActionFilterPaths   = "FILTER_PATHS"
+	ActionFetchPathList = "FETCH_PATHLIST"
 )
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
@@ -429,6 +427,30 @@ func (h *websocketHandler) filterPaths(c Command) (interface{}, error) {
 	}, nil
 }
 
+// Lister is an interface which defines the List method.
+type Lister interface {
+	// List returns a list of index.Paths.
+	List() []index.Path
+}
+
+// NB: matches paths based only on the first two keys.
+func filterByRootLister(l Lister, paths []index.Path) []index.Path {
+	exp := make(map[string]bool)
+	for _, p := range l.List() {
+		if len(p) > 1 {
+			exp[fmt.Sprintf("%v", p[:2])] = true
+		}
+	}
+
+	result := make([]index.Path, 0, len(paths))
+	for _, p := range paths {
+		if exp[fmt.Sprintf("%v", p)] {
+			result = append(result, p)
+		}
+	}
+	return result
+}
+
 func (h *websocketHandler) fetchPathList(c Command) (interface{}, error) {
 	name, err := c.getString("name")
 	if err != nil {
@@ -442,13 +464,11 @@ func (h *websocketHandler) fetchPathList(c Command) (interface{}, error) {
 
 	case "favourite":
 		paths = index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
-		filter := favourite.RootFilter{Store: h.meta.favourites}
-		paths = filter.Filter(paths)
+		paths = filterByRootLister(h.meta.favourites, paths)
 
 	case "checklist":
 		paths = index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
-		filter := checklist.RootFilter{Store: h.meta.checklist}
-		paths = filter.Filter(paths)
+		paths = filterByRootLister(h.meta.checklist, paths)
 	}
 
 	return struct {
@@ -460,7 +480,7 @@ func (h *websocketHandler) fetchPathList(c Command) (interface{}, error) {
 			Name string
 			Data group
 		}{
-			Name:  name,
+			Name: name,
 			Data: h.lib.ExpandPaths(paths),
 		},
 	}, nil
