@@ -45,30 +45,39 @@ export default class Container extends React.Component {
     case ContainerConstants.ARTISTS:
       content = <Filter name="Artist" />;
       break;
+
     case ContainerConstants.COMPOSERS:
       content = <Filter name="Composer" />;
       break;
+
     case ContainerConstants.SEARCH:
       content = <Search />;
       break;
+
     case ContainerConstants.COVERS:
       content = <Covers />;
       break;
+
     case ContainerConstants.RECENT:
       content = <Recent />;
       break;
+
     case ContainerConstants.FAVOURITE:
       content = <Favourite />;
       break;
+
     case ContainerConstants.CHECKLIST:
       content = <Checklist />;
       break;
+
     case ContainerConstants.SETTINGS:
       content = <Settings />;
       break;
+
     case ContainerConstants.RETRO:
       content = <Retro />;
       break;
+
     case ContainerConstants.ALL:
     default:
       content = <RootCollection />;
