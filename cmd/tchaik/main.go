@@ -160,6 +160,10 @@ func main() {
 	artists := index.Filter(root, "Artist")
 	fmt.Println("done.")
 
+	fmt.Printf("Building composers filter...")
+	composers := index.Filter(root, "Composer")
+	fmt.Println("done.")
+
 	fmt.Printf("Building recent index...")
 	recent := index.Recent(root, 150)
 	fmt.Println("done.")
@@ -224,7 +228,8 @@ func main() {
 			"Root": root,
 		},
 		filters: map[string][]index.FilterItem{
-			"Artist": artists,
+			"Artist":   artists,
+			"Composer": composers,
 		},
 		recent:   recent,
 		searcher: searcher,

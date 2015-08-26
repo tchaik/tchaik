@@ -45,6 +45,9 @@ export default class Container extends React.Component {
     case ContainerConstants.ARTISTS:
       content = <Filter name="Artist" />;
       break;
+    case ContainerConstants.COMPOSERS:
+      content = <Filter name="Composer" />;
+      break;
     case ContainerConstants.SEARCH:
       content = <Search />;
       break;

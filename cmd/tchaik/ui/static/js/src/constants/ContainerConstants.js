@@ -5,6 +5,7 @@ export default keyMirror({
 
   ALL: null,
   ARTISTS: null,
+  COMPOSERS: null,
   SEARCH: null,
   COVERS: null,
   RECENT: null,
