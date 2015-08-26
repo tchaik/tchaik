@@ -9,6 +9,12 @@ import FilterActions from "../actions/FilterActions.js";
 
 import {GroupList as GroupList} from "./Collection.js";
 
+function getFilterState(name) {
+  return {
+    items: FilterStore.getItems(name),
+    current: FilterStore.getCurrentItem(name),
+  };
+}
 
 export default class Filter extends React.Component {
   constructor(props) {
@@ -59,10 +65,7 @@ export default class Filter extends React.Component {
   }
 
   _onChange() {
-    this.setState({
-      items: FilterStore.getItems(this.props.name),
-      current: FilterStore.getCurrentItem(this.props.name),
-    });
+    this.setState(getFilterState(this.props.name));
   }
 }
 
