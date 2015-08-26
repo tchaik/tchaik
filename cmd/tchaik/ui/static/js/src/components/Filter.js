@@ -30,6 +30,10 @@ export default class Filter extends React.Component {
     FilterActions.fetchList(this.props.name);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState(getFilterState(nextProps.name));
+  }
+
   componentWillUnmount() {
     FilterStore.removeChangeListener(this._onChange);
   }
