@@ -131,9 +131,7 @@ const (
 	ActionSearch         = "SEARCH"
 	ActionFilterList     = "FILTER_LIST"
 	ActionFilterPaths    = "FILTER_PATHS"
-	ActionFetchRecent    = "FETCH_RECENT"
-	ActionFetchFavourite = "FETCH_FAVOURITE"
-	ActionFetchChecklist = "FETCH_CHECKLIST"
+	ActionFetchPathList  = "FETCH_PATHLIST"
 )
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
@@ -209,14 +207,8 @@ func (h *websocketHandler) Handle() {
 		case ActionFilterPaths:
 			resp, err = h.filterPaths(c)
 
-		case ActionFetchRecent:
-			resp = h.fetchRecent(c)
-
-		case ActionFetchFavourite:
-			resp = h.fetchFavourite(c)
-
-		case ActionFetchChecklist:
-			resp = h.fetchChecklist(c)
+		case ActionFetchPathList:
+			resp, err = h.fetchPathList(c)
 
 		default:
 			err = fmt.Errorf("unknown action: %v", c.Action)
@@ -437,40 +429,41 @@ func (h *websocketHandler) filterPaths(c Command) (interface{}, error) {
 	}, nil
 }
 
-func (h *websocketHandler) fetchRecent(c Command) interface{} {
+func (h *websocketHandler) fetchPathList(c Command) (interface{}, error) {
+	name, err := c.getString("name")
+	if err != nil {
+		return nil, err
+	}
+
+	var paths []index.Path
+	switch name {
+	case "recent":
+		paths = h.lib.recent
+
+	case "favourite":
+		paths = index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
+		filter := favourite.RootFilter{Store: h.meta.favourites}
+		paths = filter.Filter(paths)
+
+	case "checklist":
+		paths = index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
+		filter := checklist.RootFilter{Store: h.meta.checklist}
+		paths = filter.Filter(paths)
+	}
+
 	return struct {
 		Action string
 		Data   interface{}
 	}{
 		Action: c.Action,
-		Data:   h.lib.ExpandPaths(h.lib.recent),
-	}
-}
-
-func (h *websocketHandler) fetchFavourite(c Command) interface{} {
-	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
-	filter := favourite.RootFilter{Store: h.meta.favourites}
-
-	return struct {
-		Action string
-		Data   interface{}
-	}{
-		Action: c.Action,
-		Data:   h.lib.ExpandPaths(filter.Filter(paths)),
-	}
-}
-
-func (h *websocketHandler) fetchChecklist(c Command) interface{} {
-	paths := index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
-	filter := checklist.RootFilter{Store: h.meta.checklist}
-
-	return struct {
-		Action string
-		Data   interface{}
-	}{
-		Action: c.Action,
-		Data:   h.lib.ExpandPaths(filter.Filter(paths)),
-	}
+		Data: struct {
+			Name string
+			Data group
+		}{
+			Name:  name,
+			Data: h.lib.ExpandPaths(paths),
+		},
+	}, nil
 }
 
 func (h *websocketHandler) search(c Command) (interface{}, error) {

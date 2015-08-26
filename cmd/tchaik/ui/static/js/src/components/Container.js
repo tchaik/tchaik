@@ -8,9 +8,7 @@ import {RootCollection as RootCollection} from "./Collection.js";
 import {Search as Search} from "./Search.js";
 import Covers from "./Covers.js";
 import Filter from "./Filter.js";
-import Recent from "./Recent.js";
-import Favourite from "./Favourite.js";
-import Checklist from "./Checklist.js";
+import PathList from "./PathList.js";
 import Settings from "./Settings.js";
 import Retro from "./Retro.js";
 
@@ -59,15 +57,15 @@ export default class Container extends React.Component {
       break;
 
     case ContainerConstants.RECENT:
-      content = <Recent />;
+      content = <PathList name="recent" />;
       break;
 
     case ContainerConstants.FAVOURITE:
-      content = <Favourite />;
+      content = <PathList name="favourite" />;
       break;
 
     case ContainerConstants.CHECKLIST:
-      content = <Checklist />;
+      content = <PathList name="checklist" />;
       break;
 
     case ContainerConstants.SETTINGS:
