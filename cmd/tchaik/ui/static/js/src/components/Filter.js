@@ -32,6 +32,7 @@ export default class Filter extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState(getFilterState(nextProps.name));
+    FilterActions.fetchList(nextProps.name);
   }
 
   componentWillUnmount() {
