@@ -42,7 +42,7 @@ var itlXML, tchLib, walkPath string
 var playHistoryPath, favouritesPath, checklistPath string
 
 var listenAddr string
-var staticDir string
+var uiDir string
 var certFile, keyFile string
 
 var authUser, authPassword string
@@ -64,7 +64,7 @@ func init() {
 	flag.StringVar(&favouritesPath, "favourites", "favourites.json", "favourites `file`")
 	flag.StringVar(&checklistPath, "checklist", "checklist.json", "checklist `file`")
 
-	flag.StringVar(&staticDir, "static-dir", "ui/static", "static asset `directory`")
+	flag.StringVar(&uiDir, "ui-dir", "ui", "UI asset `directory`")
 
 	flag.StringVar(&authUser, "auth-user", "", "`user` to use for HTTP authentication (set to enable)")
 	flag.StringVar(&authPassword, "auth-password", "", "`password` to use for HTTP authentication")

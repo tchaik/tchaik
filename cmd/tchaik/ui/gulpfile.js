@@ -10,16 +10,16 @@ var WebpackDevServer = require("webpack-dev-server");
 
 var paths = {
   js: {
-    tests: "static/js/src/**/*-test.js",
-    entry: "./static/js/src/app.js",
+    tests: "js/src/**/*-test.js",
+    entry: "./js/src/app.js",
     bundleName: "tchaik.js",
-    dest: "static/js/build",
+    dest: "js/build",
   },
   eslint: {
     src: [
       "*.js",
-      "static/js/src/**/*.js",
-      "static/js/src/*.js",
+      "js/src/**/*.js",
+      "js/src/*.js",
     ],
   },
 };
@@ -61,7 +61,7 @@ gulp.task("serve", function() {
 
   var compiler = webpack(webpackConfig);
   var server = new WebpackDevServer(compiler, {
-    publicPath: "/static/js/build/",
+    publicPath: "/js/build/",
     hot: true,
     stats: { colors: true },
     proxy: {

@@ -47,7 +47,7 @@ func (fsm *fsServeMux) HandleFileSystem(pattern string, fs store.FileSystem) {
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("X-Clacks-Overhead", "GNU Terry Pratchett")
-	http.ServeFile(w, r, path.Join(staticDir, "index.html"))
+	http.ServeFile(w, r, path.Join(uiDir, "index.html"))
 }
 
 // NewHandler creates the root http.Handler.
@@ -63,7 +63,11 @@ func NewHandler(l Library, m *Meta, mediaFileSystem, artworkFileSystem store.Fil
 	}
 
 	h.HandleFunc("/", rootHandler)
-	h.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
+
+	// UI Assets.
+	for _, dir := range []string{"/js/", "/fonts/", "/css/"} {
+		h.Handle(dir, http.StripPrefix(dir, http.FileServer(http.Dir(uiDir+dir))))
+	}
 
 	mediaFileSystem = l.FileSystem(mediaFileSystem)
 	artworkFileSystem = l.FileSystem(artworkFileSystem)
