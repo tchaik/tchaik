@@ -203,6 +203,49 @@ func TrimEnumPrefix(g Group) Group {
 	}
 }
 
+// trimNumPrefix trims track number prefixes from field (comparing to trackNumField) on each of
+// the tracks, returning the updated tracks.
+func trimTrackNumPrefix(field, trackNumField string, tracks []Track) []Track {
+	if len(tracks) == 0 {
+		return tracks
+	}
+
+	result := make([]Track, len(tracks))
+	for i, t := range tracks {
+		name := t.GetString(field)
+		p, l := enumPrefix(name)
+		n, err := parseUInt(p)
+		if err != nil {
+			result[i] = t
+			continue
+		}
+
+		if int(n) != t.GetInt(trackNumField) {
+			result[i] = t
+			continue
+		}
+
+		result[i] = pfxTrack{
+			Track: t,
+			field: field,
+			pfx:   l,
+		}
+	}
+	return result
+}
+
+// TrimTrackNumPrefix trims track number prefixes on tracks. TODO: There could be edge cases
+// where this removes useful information, perhaps limit to situtions where entire discs have
+// track num prefixes (i.e. as the result of an import).
+func TrimTrackNumPrefix(g Group) Group {
+	nt := trimTrackNumPrefix("Name", "TrackNumber", g.Tracks())
+	return subGrpFlds{
+		Group:  g,
+		tracks: nt,
+		flds:   map[string]interface{}{},
+	}
+}
+
 // TransformFn is a type which represents a function which Transforms a Group into
 // another.
 type TransformFn func(Group) Group

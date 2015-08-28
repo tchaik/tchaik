@@ -199,6 +199,7 @@ func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
 
 	index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
 	g = index.Transform(g, index.SplitList("Artist", "AlbumArtist", "Composer"))
+	g = index.Transform(g, index.TrimTrackNumPrefix)
 	c = index.Collect(g, index.ByPrefix("Name"))
 	g = index.SubTransform(c, index.TrimEnumPrefix)
 	g = index.SumGroupIntAttr("TotalTime", g)
