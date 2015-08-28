@@ -11,7 +11,7 @@ import (
 )
 
 func stringToPath(s string) Path {
-	return stringSliceToPath(strings.Split(s, ":"))
+	return stringSliceToPath(strings.Split(s, PathSeparator))
 }
 
 func stringSliceToPath(s []string) Path {
@@ -20,6 +20,40 @@ func stringSliceToPath(s []string) Path {
 		p[i] = Key(x)
 	}
 	return p
+}
+
+func TestPathEqual(t *testing.T) {
+	tests := []struct {
+		p, q  Path
+		equal bool
+	}{
+		{
+			Path(nil), Path(nil),
+			true,
+		},
+		{
+			Path([]Key{}), Path([]Key{}),
+			true,
+		},
+		{
+			stringToPath("a"), stringToPath("a"),
+			true,
+		},
+		{
+			stringToPath("a:b"), stringToPath("a"),
+			false,
+		},
+		{
+			Path(nil), stringToPath("a"),
+			false,
+		},
+	}
+
+	for ii, tt := range tests {
+		if tt.p.Equal(tt.q) != tt.equal {
+			t.Errorf("[%d] (%#v).Equal(%#v) = %v, expected %v", ii, tt.p, tt.q, !tt.equal, tt.equal)
+		}
+	}
 }
 
 func TestOrderedIntersection(t *testing.T) {

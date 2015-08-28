@@ -39,6 +39,19 @@ func (p Path) Encode() string {
 	return strings.Join(l, PathSeparator)
 }
 
+// Equal returns true iff q is Equal to p.
+func (p Path) Equal(q Path) bool {
+	if len(p) != len(q) {
+		return false
+	}
+	for i, x := range p {
+		if x != q[i] {
+			return false
+		}
+	}
+	return true
+}
+
 // NewPath creates a Path from the string representation.
 func NewPath(x string) Path {
 	split := strings.Split(x, PathSeparator)
