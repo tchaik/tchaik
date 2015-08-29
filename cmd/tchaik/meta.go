@@ -11,6 +11,8 @@ import (
 	"tchaik.com/index/history"
 )
 
+// Meta is a container for extra metadata which wraps the central media library.
+// TODO: Refactor meta to be user-specific.
 type Meta struct {
 	history    history.Store
 	favourites favourite.Store
