@@ -137,7 +137,7 @@ func (tc traceClient) Get(ctx context.Context, path string) (*File, error) {
 	tr.LazyPrintf("%v: Get: %v", tc.name, path)
 	f, err := tc.Client.Get(ctx, path)
 	if err != nil {
-		tr.LazyPrintf("%v: error opening: %v", tc.name, path)
+		tr.LazyPrintf("%v: error opening '%v': %v", tc.name, path, err)
 		return nil, err
 	}
 	tr.LazyPrintf("%v: got file: %v", tc.name, f.Name)
