@@ -106,8 +106,6 @@ A full list of command line options is available from the `--help` flag:
         	play history file (default "history.json")
       -remote-store address
         	address for remote media store: tchstore server <host>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage
-      -static-dir directory
-        	static asset directory (default "ui/static")
       -tls-cert file
         	certificate file, must also specify -tls-key
       -tls-key file
@@ -116,6 +114,8 @@ A full list of command line options is available from the `--help` flag:
         	bind address for trace HTTP server
       -trim-path-prefix prefix
         	remove prefix from every path
+      -ui-dir directory
+        	UI asset directory (default "ui")
 
 ### -local-store
 
