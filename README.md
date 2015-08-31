@@ -75,7 +75,7 @@ To avoid rescanning your entire collection every time you restart, you can build
 A full list of command line options is available from the `--help` flag:
 
     $ tchaik --help
-    Usage of ./tchaik:
+    Usage of tchaik:
       -add-path-prefix prefix
         	add prefix to every path
       -artwork-cache path
@@ -123,7 +123,7 @@ Set `-local-store` to the local path that contains your media files.  You can us
 
 ### -remote-store
 
-Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<region>:<bucket>/path/to/root` (set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client), or Google Cloud Storage paths: `gs://<project-id>:<bucket>/path/to/root` (set the GOOGLE_APPLICATION_CREDENTIALS to point at your JSON credentials file).
+Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<region>:<bucket>/path/to/root` (set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client), or Google Cloud Storage paths: `gs://<project-id>:<bucket>/path/to/root` (set environment variable `GOOGLE_APPLICATION_CREDENTIALS` to point to the JSON credentials file).
 
 ### -media-cache
 
