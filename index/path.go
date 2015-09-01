@@ -52,6 +52,19 @@ func (p Path) Equal(q Path) bool {
 	return true
 }
 
+// Contains returns true iff q is contained within p.
+func (p Path) Contains(q Path) bool {
+	if len(p) == 0 || len(p) > len(q) {
+		return false
+	}
+	for i, x := range p {
+		if q[i] != x {
+			return false
+		}
+	}
+	return true
+}
+
 // NewPath creates a Path from the string representation.
 func NewPath(x string) Path {
 	split := strings.Split(x, PathSeparator)

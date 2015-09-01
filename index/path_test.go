@@ -56,6 +56,44 @@ func TestPathEqual(t *testing.T) {
 	}
 }
 
+func TestPathContains(t *testing.T) {
+	tests := []struct {
+		p, q     Path
+		contains bool
+	}{
+		{
+			Path(nil), Path(nil),
+			false,
+		},
+		{
+			Path([]Key{}), Path([]Key{}),
+			false,
+		},
+		{
+			NewPath("a"), NewPath("a"),
+			true,
+		},
+		{
+			NewPath("a:b"), NewPath("a"),
+			false,
+		},
+		{
+			Path(nil), NewPath("a"),
+			false,
+		},
+		{
+			NewPath("a:b"), NewPath("a:b:c"),
+			true,
+		},
+	}
+
+	for ii, tt := range tests {
+		if tt.p.Contains(tt.q) != tt.contains {
+			t.Errorf("[%d] (%#v).Contains(%#v) = %v, expected %v", ii, tt.p, tt.q, !tt.contains, tt.contains)
+		}
+	}
+}
+
 func TestOrderedIntersection(t *testing.T) {
 	tests := []struct {
 		in  [][]Path
