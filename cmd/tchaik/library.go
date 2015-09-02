@@ -183,10 +183,9 @@ func build(g index.Group, key index.Key) group {
 	return h
 }
 
-// Fetch returns a group from the collection with the given path.
-func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
+func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
 	if len(p) == 0 {
-		return build(c, index.Key("Root")), nil
+		return c, nil
 	}
 
 	var g index.Group = c
@@ -194,7 +193,7 @@ func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
 	g = c.Get(k)
 
 	if g == nil {
-		return group{}, fmt.Errorf("invalid path: near '%v'", p[0])
+		return g, fmt.Errorf("invalid path: near '%v'", p[0])
 	}
 
 	index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
@@ -219,25 +218,39 @@ func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
 		var ok bool
 		c, ok = g.(index.Collection)
 		if !ok {
-			return group{}, fmt.Errorf("retrieved Group is not a Collection")
+			return nil, fmt.Errorf("retrieved Group is not a Collection")
 		}
 
 		g = c.Get(k)
 		if g == nil {
-			return group{}, fmt.Errorf("invalid path near '%v'", p[1:][i])
+			return g, fmt.Errorf("invalid path near '%v'", p[1:][i])
 		}
 
 		if _, ok = g.(index.Collection); !ok {
 			if i == len(p[1:])-1 {
 				break
 			}
-			return group{}, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
+			return nil, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
 		}
 	}
 	if g == nil {
-		return group{}, fmt.Errorf("could not find group")
+		return g, fmt.Errorf("could not find group")
 	}
 	g = index.FirstTrackAttr(attr.String("ID"), g)
+	return g, nil
+}
+
+// Fetch returns a group from the collection with the given path.
+func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
+	if len(p) == 0 {
+		return build(c, index.Key("Root")), nil
+	}
+
+	k := index.Key(p[0])
+	g, err := l.Build(c, p)
+	if err != nil {
+		return group{}, err
+	}
 	return build(g, k), nil
 }
 
