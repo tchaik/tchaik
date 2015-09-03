@@ -183,23 +183,20 @@ func build(g index.Group, key index.Key) group {
 	return h
 }
 
-func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
-	if len(p) == 0 {
-		return c, nil
-	}
+type rootCollection struct {
+	index.Collection
+}
 
-	var g index.Group = c
-	k := index.Key(p[0])
-	g = c.Get(k)
-
+func (r *rootCollection) Get(k index.Key) index.Group {
+	g := r.Collection.Get(k)
 	if g == nil {
-		return g, fmt.Errorf("invalid path: near '%v'", p[0])
+		return g
 	}
 
 	index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
 	g = index.Transform(g, index.SplitList("Artist", "AlbumArtist", "Composer"))
 	g = index.Transform(g, index.TrimTrackNumPrefix)
-	c = index.Collect(g, index.ByPrefix("Name"))
+	c := index.Collect(g, index.ByPrefix("Name"))
 	g = index.SubTransform(c, index.TrimEnumPrefix)
 	g = index.SumGroupIntAttr("TotalTime", g)
 	commonFields := []attr.Interface{
@@ -213,6 +210,22 @@ func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
 	}
 	g = index.CommonGroupAttr(commonFields, g)
 	g = index.RemoveEmptyCollections(g)
+	return g
+}
+
+func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
+	if len(p) == 0 {
+		return c, nil
+	}
+
+	c = &rootCollection{c}
+	var g index.Group = c
+	k := index.Key(p[0])
+	g = c.Get(k)
+
+	if g == nil {
+		return g, fmt.Errorf("invalid path: near '%v'", p[0])
+	}
 
 	for i, k := range p[1:] {
 		var ok bool
