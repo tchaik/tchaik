@@ -8,6 +8,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"sort"
+	"strconv"
 
 	"tchaik.com/index/attr"
 )
@@ -219,29 +220,40 @@ func SubCollect(c Collection, r Collector) Collection {
 	return nc
 }
 
-// WalkFn is the type of the function called for each Track visited by Walk.
-type WalkFn func(Track, Path)
+// WalkFn is the type of the function called for each Track visited by Walk.  Return
+// non-nil error from Walk to stop the trasversal, and return the error from Walk.
+type WalkFn func(Track, Path) error
 
-func walkCollection(c Collection, p Path, f WalkFn) {
+func walkCollection(c Collection, p Path, f WalkFn) error {
 	for _, k := range c.Keys() {
 		g := c.Get(k)
 		np := make(Path, len(p)+1)
 		copy(np, p)
 		np[len(p)] = k
-		Walk(g, np, f)
+		err := Walk(g, np, f)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // Walk transverses the Group and calls the WalkFn on each Track.  The Path is assumed to be
 // the path of the Group.
-func Walk(g Group, p Path, f WalkFn) {
+func Walk(g Group, p Path, f WalkFn) error {
 	if gc, ok := g.(Collection); ok {
-		walkCollection(gc, p, f)
-		return
+		return walkCollection(gc, p, f)
 	}
-	for _, t := range g.Tracks() {
-		f(t, p)
+	for i, t := range g.Tracks() {
+		np := make(Path, len(p)+1)
+		copy(np, p)
+		np[len(p)] = Key(strconv.Itoa(i))
+		err := f(t, np)
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 // FilterItem is an interface which defines behaviour for creating arbitrary filters where each
@@ -278,9 +290,10 @@ func (f *filterItem) Paths() []Path { return f.paths }
 // Filter creates a slice of FilterItems, each FilterItem is a
 func Filter(c Collection, field string) []FilterItem {
 	m := make(map[string][]Path)
-	walkfn := func(t Track, p Path) {
+	walkfn := func(t Track, p Path) error {
 		f := t.GetString(field)
 		m[f] = append(m[f], p)
+		return nil
 	}
 	Walk(c, Path([]Key{"Root"}), walkfn)
 
@@ -312,8 +325,9 @@ func (tps trackPathSorter) Less(i, j int) bool { return tps.fn(tps.tp[i].t, tps.
 
 func Recent(c Collection, n int) []Path {
 	var trackPaths []trackPath
-	walkfn := func(t Track, p Path) {
+	walkfn := func(t Track, p Path) error {
 		trackPaths = append(trackPaths, trackPath{t, p})
+		return nil
 	}
 	Walk(c, Path([]Key{"Root"}), walkfn)
 
