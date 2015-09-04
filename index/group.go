@@ -61,6 +61,24 @@ func CollectionPaths(c Collection, root Path) []Path {
 	return paths
 }
 
+// GroupFromPath returns the Group which represents the given Path.
+func GroupFromPath(g Group, p Path) (Group, error) {
+	if c, ok := g.(Collection); ok {
+		ng := c.Get(p[0])
+		if ng == nil {
+			return nil, fmt.Errorf("invalid key: '%v'", p[0])
+		}
+		if len(p) > 1 {
+			return GroupFromPath(ng, p[1:])
+		}
+		return ng, nil
+	}
+	if len(p) > 1 {
+		return nil, fmt.Errorf("invalid path: reached leaf group and remaining path: %v", p)
+	}
+	return g, nil
+}
+
 // NewCollection creates a new collection from a source collection `c` which will have the groups
 // represented by the given list of paths.  All the paths are assumed to be unique, and of at least
 // length 2.
