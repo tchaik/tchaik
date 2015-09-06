@@ -60,7 +60,7 @@ func (i *Item) AddTransform(t Transformer) {
 func (i *Item) MarshalJSON() ([]byte, error) {
 	exp := struct {
 		Path       index.Path    `json:"path"`
-		Transforms []Transformer `json:"transforms",omitempty`
+		Transforms []Transformer `json:"transforms"`
 	}{
 		Path:       i.path,
 		Transforms: i.transforms,
@@ -84,7 +84,7 @@ func (i *Item) UnmarshalJSON(b []byte) error {
 		if t["action"] == "remove" {
 			p, err := index.PathFromJSONInterface(t["path"])
 			if err != nil {
-				return fmt.Errorf("invalid format for path:", t["path"])
+				return fmt.Errorf("invalid format for path: %v", t["path"])
 			}
 			transforms = append(transforms, RemovePath(p))
 		}

@@ -23,7 +23,7 @@ type RepAction struct {
 	Name   string     `json:"name"`
 	Action Action     `json:"action"`
 	Path   index.Path `json:"path"`
-	Index  int        `json:index`
+	Index  int        `json:"index"`
 }
 
 var actionToAction = map[string]Action{
