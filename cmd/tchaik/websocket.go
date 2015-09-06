@@ -13,6 +13,8 @@ import (
 	"golang.org/x/net/websocket"
 
 	"tchaik.com/index"
+	"tchaik.com/index/cursor"
+	"tchaik.com/index/playlist"
 	"tchaik.com/player"
 )
 
@@ -118,6 +120,12 @@ const (
 	ActionSetFavourite = "SET_FAVOURITE"
 	ActionSetChecklist = "SET_CHECKLIST"
 
+	// Playlist Actions
+	ActionPlaylist = "PLAYLIST"
+
+	// Cursor Actions
+	ActionCursor = "CURSOR"
+
 	// Library Actions
 	ActionCtrl          = "CTRL"
 	ActionFetch         = "FETCH"
@@ -186,6 +194,14 @@ func (h *websocketHandler) Handle() {
 
 		case ActionSetChecklist:
 			err = h.setChecklist(c)
+
+		// Playlist Actions
+		case ActionPlaylist:
+			resp, err = h.playlist(c)
+
+		// Cursor Actions
+		case ActionCursor:
+			resp, err = h.cursor(c)
 
 		// Library actions
 		case ActionFetch:
@@ -306,6 +322,84 @@ func (h *websocketHandler) setChecklist(c Command) error {
 		return err
 	}
 	return h.meta.checklist.Set(p, value)
+}
+
+func (h *websocketHandler) cursor(c Command) (interface{}, error) {
+	name, err := c.getString("name")
+	if err != nil {
+		return nil, err
+	}
+
+	action, err := c.getString("action")
+	if err != nil {
+		return nil, err
+	}
+
+	if action != "FETCH" {
+		path, _ := c.getPath("path")
+		index, _ := c.getInt("index")
+
+		ra := cursor.RepAction{
+			Name:   name,
+			Action: cursor.Action(action),
+			Path:   path,
+			Index:  index,
+		}
+
+		root := &rootCollection{h.lib.collections["Root"]}
+		err = ra.Apply(h.meta.cursors, h.meta.playlists, root)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return struct {
+		Action string
+		Data   interface{}
+	}{
+		Action: c.Action,
+		Data:   h.meta.cursors.Get(name),
+	}, nil
+}
+
+func (h *websocketHandler) playlist(c Command) (interface{}, error) {
+	name, err := c.getString("name")
+	if err != nil {
+		return nil, err
+	}
+
+	action, err := c.getString("action")
+	if err != nil {
+		return nil, err
+	}
+
+	if action != "FETCH" {
+		path, err := c.getPath("path")
+		if err != nil {
+			return nil, err
+		}
+		index, _ := c.getInt("index")
+
+		ra := playlist.RepAction{
+			Name:   name,
+			Action: playlist.Action(action),
+			Path:   path,
+			Index:  index,
+		}
+
+		err = ra.Apply(h.meta.playlists)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return struct {
+		Action string
+		Data   interface{}
+	}{
+		Action: c.Action,
+		Data:   h.meta.playlists.Get(name),
+	}, nil
 }
 
 func (h *websocketHandler) collectionList(c Command) (interface{}, error) {

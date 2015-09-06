@@ -86,6 +86,8 @@ A full list of command line options is available from the `--help` flag:
         	user to use for HTTP authentication (set to enable)
       -checklist file
         	checklist file (default "checklist.json")
+      -cursors file
+        	cursors file (default "cursors.json")
       -debug
         	print debugging information
       -favourites file
@@ -104,6 +106,8 @@ A full list of command line options is available from the `--help` flag:
         	directory containing music files
       -play-history file
         	play history file (default "history.json")
+      -playlists file
+        	playlists file (default "playlists.json")
       -remote-store address
         	address for remote media store: tchstore server <host>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage
       -tls-cert file

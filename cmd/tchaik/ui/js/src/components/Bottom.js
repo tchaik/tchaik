@@ -11,8 +11,8 @@ import NowPlaying from "./NowPlaying.js";
 import PlayProgress from "./PlayProgress.js";
 import Volume from "./Volume.js";
 
-import PlaylistStore from "../stores/PlaylistStore.js";
-import PlaylistActions from "../actions/PlaylistActions.js";
+import CursorStore from "../stores/CursorStore.js";
+import CursorActions from "../actions/CursorActions.js";
 
 import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
@@ -79,11 +79,11 @@ class Controls extends React.Component {
       playing: NowPlayingStore.getPlaying(),
       repeat: NowPlayingStore.getRepeat(),
       track: NowPlayingStore.getTrack(),
-      canNext: PlaylistStore.canNext(),
-      canPrev: PlaylistStore.canPrev(),
+      canNext: CursorStore.canNext(),
+      canPrev: CursorStore.canPrev(),
     };
 
-    this._onChangePlaylist = this._onChangePlaylist.bind(this);
+    this._onChangeCursor = this._onChangeCursor.bind(this);
     this._onChange = this._onChange.bind(this);
     this._togglePlayPause = this._togglePlayPause.bind(this);
     this._onBackward = this._onBackward.bind(this);
@@ -93,12 +93,12 @@ class Controls extends React.Component {
 
   componentDidMount() {
     NowPlayingStore.addChangeListener(this._onChange);
-    PlaylistStore.addChangeListener(this._onChangePlaylist);
+    CursorStore.addChangeListener(this._onChangeCursor);
   }
 
   componentWillUnmount() {
     NowPlayingStore.removeChangeListener(this._onChange);
-    PlaylistStore.removeChangeListener(this._onChangePlaylist);
+    CursorStore.removeChangeListener(this._onChangeCursor);
   }
 
   render() {
@@ -116,10 +116,10 @@ class Controls extends React.Component {
     );
   }
 
-  _onChangePlaylist() {
+  _onChangeCursor() {
     this.setState({
-      canNext: PlaylistStore.canNext(),
-      canPrev: PlaylistStore.canPrev(),
+      canNext: CursorStore.canNext(),
+      canPrev: CursorStore.canPrev(),
     });
   }
 
@@ -169,23 +169,23 @@ class Controls extends React.Component {
   }
 
   _prev() {
-    PlaylistActions.prev();
+    CursorActions.prev();
   }
 
   _onBackward() {
     if (this._backButtonTimerRunning()) {
-      PlaylistActions.prev();
+      CursorActions.prev();
     } else if (this.state.playing || PlayingStatusStore.getTime() > 0) {
       NowPlayingActions.setCurrentTime(0);
     } else {
-      PlaylistActions.prev();
+      CursorActions.prev();
     }
     this._backButtonTimerStart();
     return;
   }
 
   _onForward() {
-    PlaylistActions.next();
+    CursorActions.next();
   }
 
   _toggleRepeat() {

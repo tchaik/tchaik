@@ -7,8 +7,10 @@ package main
 import (
 	"tchaik.com/index"
 	"tchaik.com/index/checklist"
+	"tchaik.com/index/cursor"
 	"tchaik.com/index/favourite"
 	"tchaik.com/index/history"
+	"tchaik.com/index/playlist"
 )
 
 // Meta is a container for extra metadata which wraps the central media library.
@@ -17,6 +19,8 @@ type Meta struct {
 	history    history.Store
 	favourites favourite.Store
 	checklist  checklist.Store
+	playlists  playlist.Store
+	cursors    cursor.Store
 }
 
 func (m *Meta) annotateFavourites(p index.Path, g group) group {

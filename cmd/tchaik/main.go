@@ -28,9 +28,11 @@ import (
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
 	"tchaik.com/index/checklist"
+	"tchaik.com/index/cursor"
 	"tchaik.com/index/favourite"
 	"tchaik.com/index/history"
 	"tchaik.com/index/itl"
+	"tchaik.com/index/playlist"
 	"tchaik.com/index/walk"
 	"tchaik.com/store"
 	"tchaik.com/store/cmdflag"
@@ -39,7 +41,7 @@ import (
 var debug bool
 var itlXML, tchLib, walkPath string
 
-var playHistoryPath, favouritesPath, checklistPath string
+var playHistoryPath, favouritesPath, checklistPath, playlistPath, cursorPath string
 
 var listenAddr string
 var uiDir string
@@ -63,6 +65,8 @@ func init() {
 	flag.StringVar(&playHistoryPath, "play-history", "history.json", "play history `file`")
 	flag.StringVar(&favouritesPath, "favourites", "favourites.json", "favourites `file`")
 	flag.StringVar(&checklistPath, "checklist", "checklist.json", "checklist `file`")
+	flag.StringVar(&playlistPath, "playlists", "playlists.json", "playlists `file`")
+	flag.StringVar(&cursorPath, "cursors", "cursors.json", "cursors `file`")
 
 	flag.StringVar(&uiDir, "ui-dir", "ui", "UI asset `directory`")
 
@@ -196,13 +200,21 @@ func main() {
 	}
 	fmt.Println("done.")
 
-	// fmt.Printf("Loading playlists...")
-	// ps, err := playlist.NewStore(playListPath)
-	// if err != nil {
-	// 	fmt.Printf("\nerror loading playlists: %v", err)
-	// 	os.Exit(1)
-	// }
-	// fmt.Println("done")
+	fmt.Printf("Loading playlists...")
+	playlistStore, err := playlist.NewStore(playlistPath)
+	if err != nil {
+		fmt.Printf("\nerror loading playlists: %v", err)
+		os.Exit(1)
+	}
+	fmt.Println("done")
+
+	fmt.Printf("Loading cursors...")
+	cursorStore, err := cursor.NewStore(cursorPath)
+	if err != nil {
+		fmt.Printf("\nerror loading cursor: %v", err)
+		os.Exit(1)
+	}
+	fmt.Println("done")
 
 	mediaFileSystem, artworkFileSystem, err := cmdflag.Stores()
 	if err != nil {
@@ -239,6 +251,8 @@ func main() {
 		history:    hs,
 		favourites: favourites,
 		checklist:  checklist,
+		playlists:  playlistStore,
+		cursors:    cursorStore,
 	}
 
 	h := NewHandler(lib, meta, mediaFileSystem, artworkFileSystem)

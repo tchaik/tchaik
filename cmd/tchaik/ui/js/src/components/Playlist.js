@@ -15,6 +15,10 @@ import CollectionActions from "../actions/CollectionActions.js";
 import PlaylistStore from "../stores/PlaylistStore.js";
 import PlaylistActions from "../actions/PlaylistActions.js";
 
+import CursorStore from "../stores/CursorStore.js";
+import CursorActions from "../actions/CursorActions.js";
+
+
 import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 
@@ -28,6 +32,7 @@ export default class Playlist extends React.Component {
 
   componentDidMount() {
     PlaylistStore.addChangeListener(this._onChange);
+    PlaylistActions.fetch();
   }
 
   componentWillUnmount() {
@@ -44,13 +49,14 @@ export default class Playlist extends React.Component {
       );
     }
 
-    var rootCount = {};
+    let pathCount = {};
     items = items.map(function(item, i) {
-      if (!rootCount[item.root]) {
-        rootCount[item.root] = 0;
+      let path = item.path();
+      if (!pathCount[path]) {
+        pathCount[path] = 0;
       }
-      rootCount[item.root]++;
-      return <RootGroup path={item.root} key={item.root + rootCount[item.root]} itemIndex={i} />;
+      pathCount[path]++;
+      return <RootGroup path={path} key={path + pathCount[path]} itemIndex={i} />;
     });
 
     return (
@@ -228,11 +234,11 @@ class GroupContent extends React.Component {
       return null;
     }
 
-    var pathKeys = PlaylistStore.getItemKeys(this.props.itemIndex, this.props.path);
+    var keys = PlaylistStore.getItemKeys(this.props.itemIndex, this.props.path);
     if (item.Groups) {
-      return <GroupList path={this.props.path} list={item.Groups} itemIndex={this.props.itemIndex} keys={pathKeys.keys} />;
+      return <GroupList path={this.props.path} list={item.Groups} itemIndex={this.props.itemIndex} keys={keys} />;
     }
-    return <TrackList path={this.props.path} list={item.Tracks} listStyle={item.ListStyle} itemIndex={this.props.itemIndex} keys={pathKeys.keys} />;
+    return <TrackList path={this.props.path} list={item.Tracks} listStyle={item.ListStyle} itemIndex={this.props.itemIndex} keys={keys} />;
   }
 
   _onChange(keyPath) {
@@ -322,11 +328,11 @@ function pathsEqual(p1, p2) {
 }
 
 function isCurrent(i, p) {
-  var c = PlaylistStore.getCurrent();
+  var c = CursorStore.getCurrent();
   if (c === null) {
     return false;
   }
-  return pathsEqual(c.path, p) && (i === c.item);
+  return pathsEqual(c.path(), p) && (i === c.index());
 }
 
 function isPlaying(id) {
@@ -360,12 +366,12 @@ class Track extends React.Component {
   }
 
   componentDidMount() {
-    PlaylistStore.addChangeListener(this._onChange);
+    CursorStore.addChangeListener(this._onChange);
     NowPlayingStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
-    PlaylistStore.removeChangeListener(this._onChange);
+    CursorStore.removeChangeListener(this._onChange);
     NowPlayingStore.removeChangeListener(this._onChange);
   }
 
@@ -388,7 +394,7 @@ class Track extends React.Component {
   }
 
   _onClick() {
-    PlaylistActions.play(this.props.itemIndex, this.props.path, this.props.data);
+    CursorActions.set(this.props.itemIndex, this.props.path);
   }
 
   _onClickRemove(e) {

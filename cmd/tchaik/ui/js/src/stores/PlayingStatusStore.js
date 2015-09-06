@@ -4,6 +4,7 @@ import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 import AppDispatcher from "../dispatcher/AppDispatcher";
 
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import CursorConstants from "../constants/CursorConstants.js";
 import PlaylistConstants from "../constants/PlaylistConstants.js";
 
 import NowPlayingStore from "../stores/NowPlayingStore.js";
@@ -65,13 +66,15 @@ _playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
     switch (action.actionType) {
 
     case NowPlayingConstants.ENDED:
-      if (action.source !== "playlist") {
+      if (action.source !== "cursor") {
         break;
       }
       /* falls through */
-    case PlaylistConstants.PREV:
+    case CursorConstants.SET:
       /* falls through */
-    case PlaylistConstants.NEXT:
+    case CursorConstants.PREV:
+      /* falls through */
+    case CursorConstants.NEXT:
       /* falls through */
     case PlaylistConstants.ADD_ITEM_PLAY_NOW:
       /* falls through */

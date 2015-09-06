@@ -5,7 +5,9 @@ import AppDispatcher from "../dispatcher/AppDispatcher";
 
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
 import PlaylistConstants from "../constants/PlaylistConstants.js";
+import CursorConstants from "../constants/CursorConstants.js";
 
+import CursorStore from "./CursorStore.js";
 import PlaylistStore from "./PlaylistStore.js";
 
 import CtrlConstants from "../constants/ControlConstants.js";
@@ -119,32 +121,6 @@ class NowPlayingStore extends ChangeEmitter {
 
 var _nowPlayingStore = new NowPlayingStore();
 
-function handlePrevAction() {
-  AppDispatcher.waitFor([
-    PlaylistStore.dispatchToken,
-  ]);
-  setCurrentTrack(PlaylistStore.getCurrentTrack());
-  _nowPlayingStore.emitChange();
-}
-
-function handleNextAction() {
-  var playlistItems = PlaylistStore.getPlaylist();
-  var playlistCurrent = PlaylistStore.getCurrent();
-  AppDispatcher.waitFor([
-    PlaylistStore.dispatchToken,
-  ]);
-  setCurrentTrack(PlaylistStore.getCurrentTrack());
-
-  // if we have not reached the last item on the playlist, playback
-  // should still be active
-  if (playlistCurrent) {
-    if (!playing() && playlistCurrent.item < playlistItems.length) {
-      setPlaying(true);
-    }
-  }
-  _nowPlayingStore.emitChange();
-}
-
 _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
   var action = payload.action;
   var source = payload.source;
@@ -164,11 +140,13 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           break;
 
         case CtrlConstants.NEXT:
-          handleNextAction();
-          break;
-
+          /* fallsthrough */
         case CtrlConstants.PREV:
-          handlePrevAction();
+          AppDispatcher.waitFor([
+            CursorStore.dispatchToken,
+          ]);
+          setCurrentTrack(CursorStore.getCurrentTrack());
+          _nowPlayingStore.emitChange();
           break;
 
         case CtrlConstants.TOGGLE_PLAY_PAUSE:
@@ -195,14 +173,18 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           break;
       }
     }
+
+    if (action.actionType === CursorConstants.CURSOR) {
+      AppDispatcher.waitFor([
+        CursorStore.dispatchToken,
+      ]);
+      setCurrentTrack(CursorStore.getCurrentTrack());
+      _nowPlayingStore.emitChange();
+    }
   }
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {
-
-      case PlaylistConstants.PREV:
-        handlePrevAction();
-        break;
 
       case NowPlayingConstants.ENDED:
         if (action.repeat === true) {
@@ -213,12 +195,18 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           break;
         }
 
-        if (action.source !== "playlist") {
+        if (action.source !== "cursor") {
           break;
         }
         /* falls through */
-      case PlaylistConstants.NEXT:
-        handleNextAction();
+      case CursorConstants.PREV:
+        /* falls through */
+      case CursorConstants.NEXT:
+        AppDispatcher.waitFor([
+          CursorStore.dispatchToken,
+        ]);
+        setCurrentTrack(CursorStore.getCurrentTrack());
+        _nowPlayingStore.emitChange();
         break;
 
       case NowPlayingConstants.SET_PLAYING:
@@ -235,9 +223,21 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         _nowPlayingStore.emitControl(NowPlayingConstants.SET_CURRENT_TIME, action.currentTime);
         break;
 
+      case CursorConstants.SET:
+        AppDispatcher.waitFor([
+          CursorStore.dispatchToken,
+        ]);
+        setCurrentTrack(CursorStore.getCurrentTrack());
+        if (!playing()) {
+          setPlaying(true);
+        }
+        setCurrentTrackSource("cursor");
+        _nowPlayingStore.emitChange();
+        break;
+
       case NowPlayingConstants.SET_CURRENT_TRACK:
         setCurrentTrack(action.track);
-        setCurrentTrackSource(action.source);
+        setCurrentTrackSource("collection");
         _nowPlayingStore.emitChange();
         break;
 
@@ -245,15 +245,7 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         AppDispatcher.waitFor([
           PlaylistStore.dispatchToken,
         ]);
-        setCurrentTrack(PlaylistStore.getCurrentTrack());
-        setCurrentTrackSource("playlist");
-        _nowPlayingStore.emitChange();
-        break;
-
-      case PlaylistConstants.PLAY_ITEM:
-        if (!playing()) {
-          setPlaying(true);
-        }
+        console.warn("Not implemented.");
         _nowPlayingStore.emitChange();
         break;
 

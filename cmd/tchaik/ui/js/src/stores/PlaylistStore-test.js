@@ -1,11 +1,10 @@
 let rewire = require("rewire");
 
-import PlaylistConstants from "../constants/PlaylistConstants.js";
 import CollectionStoreMock from "./CollectionStore-mock.js";
 
 describe("PlaylistStore", () => {
   let PlaylistStore;
-  let dispatcherCallback, registerSpy, collectionStoreMock, collection;
+  let registerSpy, collectionStoreMock, collection;
 
   beforeEach(() => {
     // we have to clear localstorage, otherwise we have leaks from other tests
@@ -17,9 +16,7 @@ describe("PlaylistStore", () => {
     // only way we can mock the register function is by applying the spy on the
     // raw module using require rather than rewire.
     var AppDispatcher = require("../dispatcher/AppDispatcher.js");
-    registerSpy = sinon.spy(function(callback) {
-      dispatcherCallback = callback;
-    });
+    registerSpy = sinon.spy();
     AppDispatcher.register = registerSpy;
 
     PlaylistStore = rewire("./PlaylistStore.js");
@@ -85,76 +82,6 @@ describe("PlaylistStore", () => {
     });
   });
 
-  describe("function: getCurrent", () => {
-    describe("on initialisation", () => {
-      it("should return null", () => {
-        expect(PlaylistStore.getCurrent()).to.be.null;
-      });
-    });
-  });
-
-  describe("function: getCurrentTrack", () => {
-    describe("on initialisation", () => {
-      it("should return null", () => {
-        expect(PlaylistStore.getCurrentTrack()).to.be.null;
-      });
-    });
-  });
-
-  describe("function: canPrev", () => {
-    describe("on initialisation", () => {
-      it("should return falsy", () => {
-        expect(PlaylistStore.canPrev()).to.be.falsy;
-      });
-    });
-  });
-
-  describe("function: canNext", () => {
-    describe("on initialisation", () => {
-      it("should return falsy", () => {
-        expect(PlaylistStore.canNext()).to.be.falsy;
-      });
-    });
-  });
-
-  describe("function: getNext", () => {
-    describe("on initialisation", () => {
-      it("should return null", () => {
-        expect(PlaylistStore.getNext()).to.be.null;
-      });
-    });
-  });
-
   describe("function: getItemKeys", () => {
-  });
-
-  describe("Dispatcher callback", () => {
-    describe("View actions", () => {
-      describe("ADD_ITEM", () => {
-        beforeEach(() => {
-          dispatcherCallback({
-            source: "VIEW_ACTION",
-            action: {
-              actionType: PlaylistConstants.ADD_ITEM,
-              path: ["Root", "19sea9"],
-            },
-          });
-        });
-
-        it("adds the items to the playlist", () => {
-          expect(PlaylistStore.getPlaylist()).to.eql([{
-            data: {
-              "Root:19sea9": {
-                type: "TYPE_TRACKS",
-                keys: [0, 1],
-              },
-            },
-            paths: [[]],
-            root: ["Root", "19sea9"],
-            tracks: [[0], [1]],
-          }, ]);
-        });
-      });
-    });
   });
 });

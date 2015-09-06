@@ -78,7 +78,6 @@ describe("CollectionActions", () => {
       expect(appDispatcherMock.handleViewAction).to.have.been.calledWith({
         actionType: NowPlayingConstants.SET_CURRENT_TRACK,
         track: track,
-        source: "collection",
       });
     });
   });
