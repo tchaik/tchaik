@@ -56,6 +56,14 @@ func (c Command) getFloat(f string) (float64, error) {
 	return value, nil
 }
 
+func (c Command) getInt(f string) (int, error) {
+	raw, err := c.getFloat(f)
+	if err != nil {
+		return 0, err
+	}
+	return int(raw), nil
+}
+
 func (c Command) getBool(f string) (bool, error) {
 	raw, err := c.get(f)
 	if err != nil {
