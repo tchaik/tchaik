@@ -75,20 +75,7 @@ func (c Command) getPath(f string) (index.Path, error) {
 		return nil, err
 	}
 
-	rawSlice, ok := raw.([]interface{})
-	if !ok {
-		return nil, fmt.Errorf("expected '%s' to be a list of strings, got '%T'", f, raw)
-	}
-
-	path := make([]index.Key, len(rawSlice))
-	for i, x := range rawSlice {
-		s, ok := x.(string)
-		if !ok {
-			return nil, fmt.Errorf("expected '%s' to contain objects of type 'string', got '%T'", f, x)
-		}
-		path[i] = index.Key(s)
-	}
-	return path, nil
+	return index.PathFromJSONInterface(raw)
 }
 
 type sameSearcher struct {

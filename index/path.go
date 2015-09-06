@@ -5,7 +5,9 @@
 package index
 
 import (
+	"fmt"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -82,6 +84,28 @@ func PathFromStringSlice(s []string) Path {
 		p[i] = Key(x)
 	}
 	return p
+}
+
+// PathFromInterface reconstructs a Path from the given JSON-parsed interface{}
+func PathFromJSONInterface(raw interface{}) (Path, error) {
+	rawSlice, ok := raw.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("expected a slice of interface{}, got '%T'", raw)
+	}
+
+	path := make([]Key, len(rawSlice))
+	for i, x := range rawSlice {
+		s, ok := x.(string)
+		if !ok {
+			fl, ok := x.(float64)
+			if !ok {
+				return nil, fmt.Errorf("expected elements of type 'string' or 'float64', got '%T'", x)
+			}
+			s = strconv.Itoa(int(fl))
+		}
+		path[i] = Key(s)
+	}
+	return path, nil
 }
 
 // PathSlice is a wrapper type implementing sort.Interface (and index.Swapper).
