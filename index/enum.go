@@ -205,6 +205,7 @@ func TrimEnumPrefix(g Group) Group {
 
 // trimNumPrefix trims track number prefixes from field (comparing to trackNumField) on each of
 // the tracks, returning the updated tracks.
+// TODO: Make this only remove prefixes where they appear on all tracks in the same disc.
 func trimTrackNumPrefix(field, trackNumField string, tracks []Track) []Track {
 	if len(tracks) == 0 {
 		return tracks
