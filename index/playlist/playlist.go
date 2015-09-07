@@ -135,11 +135,7 @@ func (p *Playlist) Remove(n int, path index.Path) error {
 	}
 
 	if path.Equal(p.items[n].path) {
-		if n > 0 {
-			p.items = append(p.items[:n-1], p.items[n-1:]...)
-		} else {
-			p.items = p.items[1:]
-		}
+		p.items = append(p.items[:n], p.items[n+1:]...)
 		return nil
 	}
 	p.items[n].AddTransform(RemovePath(path))
