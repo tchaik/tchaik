@@ -218,36 +218,9 @@ func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
 		return c, nil
 	}
 
-	c = &rootCollection{c}
-	var g index.Group = c
-	k := index.Key(p[0])
-	g = c.Get(k)
-
-	if g == nil {
-		return g, fmt.Errorf("invalid path: near '%v'", p[0])
-	}
-
-	for i, k := range p[1:] {
-		var ok bool
-		c, ok = g.(index.Collection)
-		if !ok {
-			return nil, fmt.Errorf("retrieved Group is not a Collection")
-		}
-
-		g = c.Get(k)
-		if g == nil {
-			return g, fmt.Errorf("invalid path near '%v'", p[1:][i])
-		}
-
-		if _, ok = g.(index.Collection); !ok {
-			if i == len(p[1:])-1 {
-				break
-			}
-			return nil, fmt.Errorf("retrieved Group isn't a Collection: %v", p)
-		}
-	}
-	if g == nil {
-		return g, fmt.Errorf("could not find group")
+	g, err := index.GroupFromPath(&rootCollection{c}, p)
+	if err != nil {
+		return nil, err
 	}
 	g = index.FirstTrackAttr(attr.String("ID"), g)
 	return g, nil
