@@ -27,8 +27,8 @@ class Item {
       let k = CollectionStore.pathToKey(root.concat(keys[i]));
       let skip = false;
       for (let j = 0; j < this._transforms.length; j++) {
-        if (this._transforms[j].Action === "remove") {
-          if (CollectionStore.pathToKey(this._transforms[j].Path) === k) {
+        if (this._transforms[j].action === "remove") {
+          if (CollectionStore.pathToKey(this._transforms[j].path) === k) {
             skip = true;
             break;
           }
