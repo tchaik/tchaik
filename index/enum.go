@@ -6,6 +6,7 @@ package index
 
 import (
 	"errors"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -205,41 +206,61 @@ func TrimEnumPrefix(g Group) Group {
 
 // trimNumPrefix trims track number prefixes from field (comparing to trackNumField) on each of
 // the tracks, returning the updated tracks.
-// TODO: Make this only remove prefixes where they appear on all tracks in the same disc.
-func trimTrackNumPrefix(field, trackNumField string, tracks []Track) []Track {
+func trimTrackNumPrefix(field, trackNumField, discNumField string, tracks []Track) []Track {
 	if len(tracks) == 0 {
 		return tracks
 	}
 
-	result := make([]Track, len(tracks))
-	for i, t := range tracks {
-		name := t.GetString(field)
-		p, l := enumPrefix(name)
-		n, err := parseUInt(p)
-		if err != nil {
-			result[i] = t
-			continue
+	discTracks := make(map[int][]Track)
+	var discs []int
+	for _, t := range tracks {
+		d := t.GetInt(discNumField)
+		if _, ok := discTracks[d]; !ok {
+			discs = append(discs, d)
+		}
+		discTracks[d] = append(discTracks[d], t)
+	}
+
+	result := make([]Track, 0, len(tracks))
+	sort.Sort(sort.IntSlice(discs))
+	for _, d := range discs {
+		all := true
+		tracks = discTracks[d]
+		block := make([]Track, len(tracks))
+		for i, t := range tracks {
+			name := t.GetString(field)
+			p, l := enumPrefix(name)
+			n, err := parseUInt(p)
+			if err != nil {
+				all = false
+				break
+			}
+
+			if int(n) != t.GetInt(trackNumField) {
+				all = false
+				break
+			}
+
+			block[i] = pfxTrack{
+				Track: t,
+				field: field,
+				pfx:   l,
+			}
 		}
 
-		if int(n) != t.GetInt(trackNumField) {
-			result[i] = t
+		if all {
+			result = append(result, block...)
 			continue
 		}
-
-		result[i] = pfxTrack{
-			Track: t,
-			field: field,
-			pfx:   l,
-		}
+		result = append(result, tracks...)
 	}
 	return result
 }
 
-// TrimTrackNumPrefix trims track number prefixes on tracks. TODO: There could be edge cases
-// where this removes useful information, perhaps limit to situtions where entire discs have
-// track num prefixes (i.e. as the result of an import).
+// TrimTrackNumPrefix trims track number prefixes on tracks.  Is only applied when all the tracks names
+// on a disc have the track number prefix.
 func TrimTrackNumPrefix(g Group) Group {
-	nt := trimTrackNumPrefix("Name", "TrackNumber", g.Tracks())
+	nt := trimTrackNumPrefix("Name", "TrackNumber", "DiscNumber", g.Tracks())
 	return subGrpFlds{
 		Group:  g,
 		tracks: nt,
