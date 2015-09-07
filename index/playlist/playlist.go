@@ -134,11 +134,16 @@ func (p *Playlist) Remove(n int, path index.Path) error {
 		return fmt.Errorf("invalid item index (items: %d): %d", len(p.items), n)
 	}
 
-	if path.Equal(p.items[n].path) {
+	item := p.items[n]
+	if !item.path.Contains(path) {
+		return fmt.Errorf("path '%v' is not contained in item '%v'", path, item.path)
+	}
+
+	if path.Equal(item.path) {
 		p.items = append(p.items[:n], p.items[n+1:]...)
 		return nil
 	}
-	p.items[n].AddTransform(RemovePath(path))
+	item.AddTransform(RemovePath(path))
 	return nil
 }
 
