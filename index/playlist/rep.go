@@ -6,7 +6,6 @@ package playlist
 
 import (
 	"fmt"
-	"log"
 
 	"tchaik.com/index"
 )
@@ -27,11 +26,6 @@ var actionToAction = map[string]Action{
 	"REMOVE":   ActionRemoveItem,
 }
 
-// Playlist Actions
-// Remove item (name, item index, path) - partial or full
-// Comes in Playlist(name).RemoveItem(index, path) ~> Playlist
-// Add item (name, path)
-
 type RepAction struct {
 	Name   string     `json:"name"`
 	Action Action     `json:"action"`
@@ -40,8 +34,6 @@ type RepAction struct {
 }
 
 func (a RepAction) Apply(s Store) error {
-	log.Println("Apply")
-	log.Println(a)
 	if a.Action == ActionCreate {
 		s.Set(a.Name, &Playlist{})
 		return nil
