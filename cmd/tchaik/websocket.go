@@ -246,8 +246,8 @@ func (h *websocketHandler) Handle() {
 }
 
 type Response struct {
-	Action string
-	Data   interface{}
+	Action string      `json:"action"`
+	Data   interface{} `json:"data"`
 }
 
 func (h *websocketHandler) player(c Command) (*Response, error) {

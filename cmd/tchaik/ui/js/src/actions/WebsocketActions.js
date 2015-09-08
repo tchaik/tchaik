@@ -7,8 +7,8 @@ var WebsocketActions = {
 
   dispatch: function(data) {
     AppDispatcher.handleServerAction({
-      actionType: data.Action,
-      data: data.Data,
+      actionType: data.action,
+      data: data.data,
     });
   },
 
