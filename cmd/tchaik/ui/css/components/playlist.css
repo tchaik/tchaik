@@ -187,7 +187,7 @@ div.playlist {
             content: '\e050';
             font-size: 20px;
             line-height: 20px;
-            vertical-align: -31%;
+            vertical-align: -35%;
           }
         }
 
@@ -211,7 +211,7 @@ div.playlist {
             content: '\e037';
             font-size: 20px;
             line-height: 20px;
-            vertical-align: -31%;
+            vertical-align: -35%;
           }
 
           span.icon {
