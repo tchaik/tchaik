@@ -423,8 +423,8 @@ func (h *websocketHandler) collectionList(c Command) (*Response, error) {
 	return &Response{
 		Action: c.Action,
 		Data: struct {
-			Path index.Path
-			Item group
+			Path index.Path `json:"path"`
+			Item group      `json:"item"`
 		}{
 			p,
 			g,
@@ -450,8 +450,8 @@ func (h *websocketHandler) filterList(c Command) (*Response, error) {
 	return &Response{
 		Action: c.Action,
 		Data: struct {
-			Name  string
-			Items []string
+			Name  string   `json:"name"`
+			Items []string `json:"items"`
 		}{
 			Name:  filterName,
 			Items: filterNames,
@@ -494,8 +494,8 @@ func (h *websocketHandler) filterPaths(c Command) (*Response, error) {
 	return &Response{
 		Action: c.Action,
 		Data: struct {
-			Path  index.Path
-			Paths group
+			Path  index.Path `json:"path"`
+			Paths group      `json:"paths"`
 		}{
 			Path:  index.PathFromStringSlice([]string{filterName, name}),
 			Paths: h.lib.ExpandPaths(item.Paths()),
@@ -550,8 +550,8 @@ func (h *websocketHandler) fetchPathList(c Command) (*Response, error) {
 	return &Response{
 		Action: c.Action,
 		Data: struct {
-			Name string
-			Data group
+			Name string `json:"name"`
+			Data group  `json:"data"`
 		}{
 			Name: name,
 			Data: h.lib.ExpandPaths(paths),

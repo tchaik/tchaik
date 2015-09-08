@@ -35,7 +35,7 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
   if (source === "SERVER_ACTION") {
     switch (action.actionType) {
       case PathListConstants.FETCH_PATHLIST:
-        setPathList(action.data.Name, action.data.Data);
+        setPathList(action.data.name, action.data.data);
         _store.emitChange();
         break;
     }

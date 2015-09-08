@@ -59,8 +59,8 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
   if (source === "SERVER_ACTION") {
     switch (action.actionType) {
       case CollectionConstants.FETCH:
-        addItem(action.data.Path, action.data.Item);
-        _store.emitChange(action.data.Path);
+        addItem(action.data.path, action.data.item);
+        _store.emitChange(action.data.path);
         break;
     }
   }
