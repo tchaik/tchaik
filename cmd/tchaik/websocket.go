@@ -180,20 +180,20 @@ func (h *websocketHandler) Handle() {
 		switch c.Action {
 		// Player actions
 		case ActionKey:
-			err = h.key(c)
+			_, err = h.key(c)
 
 		case ActionPlayer:
 			resp, err = h.player(c)
 
 		// Path Actions
 		case ActionRecordPlay:
-			err = h.recordPlay(c)
+			_, err = h.recordPlay(c)
 
 		case ActionSetFavourite:
-			err = h.setFavourite(c)
+			_, err = h.setFavourite(c)
 
 		case ActionSetChecklist:
-			err = h.setChecklist(c)
+			_, err = h.setChecklist(c)
 
 		// Playlist Actions
 		case ActionPlaylist:
@@ -280,10 +280,10 @@ func (h *websocketHandler) player(c Command) (*Response, error) {
 	return nil, r.Apply(p)
 }
 
-func (h *websocketHandler) key(c Command) error {
+func (h *websocketHandler) key(c Command) (*Response, error) {
 	key, err := c.getString("key")
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	h.players.Remove(h.playerKey)
@@ -291,39 +291,39 @@ func (h *websocketHandler) key(c Command) error {
 		h.players.Add(player.Validated(WebsocketPlayer(key, h.Conn)))
 	}
 	h.playerKey = key
-	return nil
+	return nil, nil
 }
 
-func (h *websocketHandler) recordPlay(c Command) error {
+func (h *websocketHandler) recordPlay(c Command) (*Response, error) {
 	p, err := c.getPath("path")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return h.meta.history.Add(p)
+	return nil, h.meta.history.Add(p)
 }
 
-func (h *websocketHandler) setFavourite(c Command) error {
+func (h *websocketHandler) setFavourite(c Command) (*Response, error) {
 	p, err := c.getPath("path")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	value, err := c.getBool("value")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return h.meta.favourites.Set(p, value)
+	return nil, h.meta.favourites.Set(p, value)
 }
 
-func (h *websocketHandler) setChecklist(c Command) error {
+func (h *websocketHandler) setChecklist(c Command) (*Response, error) {
 	p, err := c.getPath("path")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	value, err := c.getBool("value")
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return h.meta.checklist.Set(p, value)
+	return nil, h.meta.checklist.Set(p, value)
 }
 
 func (h *websocketHandler) cursor(c Command) (*Response, error) {
