@@ -80,12 +80,16 @@ func GroupFromPath(g Group, p Path) (Group, error) {
 }
 
 // NewCollection creates a new collection from a source collection `c` which will have the groups
-// represented by the given list of paths.  All the paths are assumed to be unique, and of at least
-// length 2.
+// represented by the given list of paths.
 func NewPathsCollection(src Collection, paths []Path) Collection {
-	keys := make([]Key, len(paths))
-	for i, path := range paths {
-		keys[i] = path[1]
+	done := make(map[Key]bool)
+	keys := make([]Key, 0, len(paths))
+	for _, path := range paths {
+		k := path[1]
+		if !done[k] {
+			keys = append(keys, path[1])
+			done[k] = true
+		}
 	}
 
 	return pathsCollection{
