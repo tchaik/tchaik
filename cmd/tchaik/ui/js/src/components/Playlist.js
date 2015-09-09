@@ -145,17 +145,17 @@ class Group extends React.Component {
     };
 
     var image = null;
-    if (this.props.root && this.state.common.ID) {
-      image = <ArtworkImage path={`/artwork/${this.state.common.ID}`} />;
+    if (this.props.root && this.state.common.id) {
+      image = <ArtworkImage path={`/artwork/${this.state.common.id}`} />;
     }
 
     var duration = null;
-    if (this.state.common.TotalTime) {
-      duration = <TimeFormatter className="duration" time={parseInt(this.state.common.TotalTime / 1000)} />;
+    if (this.state.common.totalTime) {
+      duration = <TimeFormatter className="duration" time={parseInt(this.state.common.totalTime / 1000)} />;
     }
 
     var common = this.state.common;
-    var fields = ["Artist", "Composer", "Year"];
+    var fields = ["artist", "composer", "year"];
     var attributeArr = [];
     fields.forEach(function(f) {
       if (common[f]) {
@@ -179,7 +179,7 @@ class Group extends React.Component {
           {image}
           <div className="group-info">
             <div className="group-details">
-              <div className="name">{this.props.item.Name}</div>
+              <div className="name">{this.props.item.name}</div>
               {attributes}
               <div className="attributes duration">{duration}</div>
             </div>
@@ -235,10 +235,10 @@ class GroupContent extends React.Component {
     }
 
     var keys = PlaylistStore.getItemKeys(this.props.itemIndex, this.props.path);
-    if (item.Groups) {
-      return <GroupList path={this.props.path} list={item.Groups} itemIndex={this.props.itemIndex} keys={keys} />;
+    if (item.groups) {
+      return <GroupList path={this.props.path} list={item.groups} itemIndex={this.props.itemIndex} keys={keys} />;
     }
-    return <TrackList path={this.props.path} list={item.Tracks} listStyle={item.ListStyle} itemIndex={this.props.itemIndex} keys={keys} />;
+    return <TrackList path={this.props.path} list={item.tracks} listStyle={item.listStyle} itemIndex={this.props.itemIndex} keys={keys} />;
   }
 
   _onChange(keyPath) {
@@ -246,7 +246,7 @@ class GroupContent extends React.Component {
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var fields = ["TotalTime", "Artist", "Composer", "ID", "Year"];
+      var fields = ["totalTime", "artist", "composer", "id", "year"];
       fields.forEach(function(f) {
         if (item[f]) {
           common[f] = item[f];
@@ -274,7 +274,7 @@ class GroupList extends React.Component {
 
     var itemByKey = {};
     list.forEach(function(item) {
-      itemByKey[item.Key] = item;
+      itemByKey[item.key] = item;
     });
 
     var groups = keys.map(function(key) {
@@ -301,7 +301,7 @@ class TrackList extends React.Component {
     var list = this.props.list;
     var keys = this.props.keys;
     var tracks = keys.map(function(i) {
-      return <Track key={list[i].ID} data={list[i]} path={this.props.path.concat([i])} itemIndex={this.props.itemIndex} index={i} />;
+      return <Track key={list[i].id} data={list[i]} path={this.props.path.concat([i])} itemIndex={this.props.itemIndex} index={i} />;
     }.bind(this));
 
     return (
@@ -343,7 +343,7 @@ function isPlaying(id) {
 
   var t = NowPlayingStore.getTrack();
   if (t) {
-    return t.ID === id;
+    return t.id === id;
   }
   return false;
 }
@@ -351,7 +351,7 @@ function isPlaying(id) {
 function getTrackState(props) {
   return {
     isCurrent: isCurrent(props.itemIndex, props.path),
-    isPlaying: isPlaying(props.data.ID),
+    isPlaying: isPlaying(props.data.id),
   };
 }
 
@@ -376,7 +376,7 @@ class Track extends React.Component {
   }
 
   render() {
-    var durationSecs = parseInt(this.props.data.TotalTime / 1000);
+    var durationSecs = parseInt(this.props.data.totalTime / 1000);
     var style = {
       current: this.state.isCurrent,
       "is-playing": this.state.isPlaying,
@@ -384,7 +384,7 @@ class Track extends React.Component {
 
     return (
       <li onClick={this._onClick} style={{"counterReset": "li " + (this.props.index + 1)}} className={classNames(style)}>
-        <span id={"track_" + this.props.data.ID} className="name">{this.props.data.Name}</span>
+        <span id={"track_" + this.props.data.id} className="name">{this.props.data.name}</span>
         <span className="info">
           <Icon icon="clear"onClick={this._onClickRemove} />
           <TimeFormatter className="duration" time={durationSecs} />

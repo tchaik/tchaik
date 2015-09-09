@@ -10,8 +10,8 @@ import PathListConstants from "../constants/PathListConstants.js";
 var _pathLists = {};
 
 function setPathList(name, list) {
-  if (list !== null && list.Groups) {
-    _pathLists[name] = list.Groups;
+  if (list !== null && list.groups) {
+    _pathLists[name] = list.groups;
     return;
   }
   delete _pathLists[name];

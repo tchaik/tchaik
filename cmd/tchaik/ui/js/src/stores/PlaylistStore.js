@@ -75,15 +75,15 @@ function getKeys(path) {
     return keys;
   }
 
-  if (c.Tracks) {
-    keys = c.Tracks.map(function(k, i) {
+  if (c.tracks) {
+    keys = c.tracks.map(function(k, i) {
       return i;
     });
   }
 
-  if (c.Groups) {
-    keys = c.Groups.map(function(g) {
-      return g.Key;
+  if (c.groups) {
+    keys = c.groups.map(function(g) {
+      return g.key;
     });
   }
   return keys;

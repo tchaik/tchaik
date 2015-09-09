@@ -18,13 +18,13 @@ function trackForPath(path) {
     console.log("Could not find collection with path:" + path);
   }
 
-  if (t.Tracks) {
-    var track = t.Tracks[i];
+  if (t.tracks) {
+    var track = t.tracks[i];
     if (track) {
       return track;
     }
     console.log("No track found for index: " + i);
-    console.log(t.Tracks);
+    console.log(t.tracks);
     return null;
   }
 

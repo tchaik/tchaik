@@ -50,36 +50,36 @@ func (l *libraryFileSystem) Open(ctx context.Context, path string) (http.File, e
 }
 
 type group struct {
-	Name        string
-	Key         index.Key
-	TotalTime   interface{} `json:",omitempty"`
-	Artist      interface{} `json:",omitempty"`
-	AlbumArtist interface{} `json:",omitempty"`
-	Composer    interface{} `json:",omitempty"`
-	BitRate     interface{} `json:",omitempty"`
-	DiscNumber  interface{} `json:",omitempty"`
-	ListStyle   interface{} `json:",omitempty"`
-	ID          interface{} `json:",omitempty"`
-	Year        interface{} `json:",omitempty"`
-	Groups      []group     `json:",omitempty"`
-	Tracks      []track     `json:",omitempty"`
-	Favourite   bool        `json:",omitempty"`
-	Checklist   bool        `json:",omitempty"`
+	Name        string      `json:"name"`
+	Key         index.Key   `json:"key"`
+	TotalTime   interface{} `json:"totalTime,omitempty"`
+	Artist      interface{} `json:"artist,omitempty"`
+	AlbumArtist interface{} `json:"albumArtist,omitempty"`
+	Composer    interface{} `json:"composer,omitempty"`
+	BitRate     interface{} `json:"bitRate,omitempty"`
+	DiscNumber  interface{} `json:"discNumber,omitempty"`
+	ListStyle   interface{} `json:"listStyle,omitempty"`
+	ID          interface{} `json:"id,omitempty"`
+	Year        interface{} `json:"year,omitempty"`
+	Groups      []group     `json:"groups,omitempty"`
+	Tracks      []track     `json:"tracks,omitempty"`
+	Favourite   bool        `json:"favourite,omitempty"`
+	Checklist   bool        `json:"checklist,omitempty"`
 }
 
 type track struct {
-	ID          string   `json:",omitempty"`
-	Name        string   `json:",omitempty"`
-	Album       string   `json:",omitempty"`
-	Artist      []string `json:",omitempty"`
-	AlbumArtist []string `json:",omitempty"`
-	Composer    []string `json:",omitempty"`
-	Year        int      `json:",omitempty"`
-	DiscNumber  int      `json:",omitempty"`
-	TotalTime   int      `json:",omitempty"`
-	BitRate     int      `json:",omitempty"`
-	Favourite   bool     `json:",omitempty"`
-	Checklist   bool     `json:",omitempty"`
+	ID          string   `json:"id,omitempty"`
+	Name        string   `json:"name,omitempty"`
+	Album       string   `json:"album,omitempty"`
+	Artist      []string `json:"artist,omitempty"`
+	AlbumArtist []string `json:"albumArtist,omitempty"`
+	Composer    []string `json:"composer,omitempty"`
+	Year        int      `json:"year,omitempty"`
+	DiscNumber  int      `json:"discNumber,omitempty"`
+	TotalTime   int      `json:"totalTime,omitempty"`
+	BitRate     int      `json:"bitRate,omitempty"`
+	Favourite   bool     `json:"favourite,omitempty"`
+	Checklist   bool     `json:"checklist,omitempty"`
 }
 
 // StringSliceEqual is a function used to compare two interface{} types which are assumed

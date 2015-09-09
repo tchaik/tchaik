@@ -136,8 +136,8 @@ class Controls extends React.Component {
       document.title = "tchaik";
       return;
     }
-    document.title = currentTrack.Name;
-    var faviconUrl = `/icon/${currentTrack.ID}`;
+    document.title = currentTrack.name;
+    var faviconUrl = `/icon/${currentTrack.id}`;
     if (!favicon.href.endsWith(faviconUrl)) {
       favicon.href = faviconUrl;
     }

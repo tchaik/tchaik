@@ -53,7 +53,7 @@ export default class NowPlaying extends React.Component {
     var attributes = [];
     var attributesElement = null;
 
-    for (var attribute of ["Artist", "GroupName", "Composer"]) {
+    for (var attribute of ["artist", "groupName", "composer"]) {
       if (track[attribute]) {
         attributes.push(track[attribute]);
       }
@@ -70,14 +70,14 @@ export default class NowPlaying extends React.Component {
 
     return (
       <div className={className}>
-        <ArtworkImage path={`/artwork/${track.ID}`} onClick={this._onClickArtwork}/>
+        <ArtworkImage path={`/artwork/${track.id}`} onClick={this._onClickArtwork}/>
         <div className="track-info">
           <div className="container">
             <div className="title">
-              {track.Name}
+              {track.name}
               <span className="hover-show">
                 <BitRate track={track} />
-                <a className="goto" href={`#track_${track.ID}`}>
+                <a className="goto" href={`#track_${track.id}`}>
                   <Icon icon="reply" />
                 </a>
               </span>
@@ -116,7 +116,7 @@ class BitRate extends React.Component {
     var bitRate = null;
     if (this.state.expanded) {
       bitRate = (
-        <span className="value">{this.props.track.BitRate} kbps</span>
+        <span className="value">{this.props.track.bitRate} kbps</span>
       );
     }
 

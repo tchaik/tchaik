@@ -30,7 +30,7 @@ export default class Covers extends React.Component {
 
   render() {
     var covers = this.state.list.map(function(item) {
-      return <Cover path={["Root"].concat(item.Key)} key={item.Key} item={item} />;
+      return <Cover path={["Root"].concat(item.key)} key={item.key} item={item} />;
     });
 
     return (
@@ -43,7 +43,7 @@ export default class Covers extends React.Component {
   _onChange(path) {
     if (path === CollectionStore.pathToKey(["Root"])) {
       this.setState({
-        list: CollectionStore.getCollection(["Root"]).Groups.slice(0, 30),
+        list: CollectionStore.getCollection(["Root"]).groups.slice(0, 30),
       });
     }
   }
@@ -72,7 +72,7 @@ class Cover extends React.Component {
   render() {
     return (
       <div className="cover">
-        <ArtworkImage path={`/artwork/${this.state.item.ID}`} />
+        <ArtworkImage path={`/artwork/${this.state.item.id}`} />
         <span className="controls">
           <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />

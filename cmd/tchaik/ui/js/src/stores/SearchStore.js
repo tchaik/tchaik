@@ -13,8 +13,8 @@ import ContainerConstants from "../constants/ContainerConstants.js";
 var _results = [];
 
 function setResults(results) {
-  if (results !== null && results.Groups) {
-    _results = results.Groups;
+  if (results !== null && results.groups) {
+    _results = results.groups;
     return;
   }
   _results = [];

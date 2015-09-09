@@ -6,7 +6,7 @@ var AppDispatcher = require("../dispatcher/AppDispatcher");
 
 var CollectionConstants = require("../constants/CollectionConstants.js");
 
-var _commonFields = ["Album", "AlbumArtist", "Artist", "Composer", "Year", "BitRate", "DiscNumber"];
+var _commonFields = ["album", "albumArtist", "artist", "composer", "year", "bitRate", "discNumber"];
 
 var _collections = {};
 
@@ -22,14 +22,14 @@ function pathToKey(path) {
 }
 
 function addItem(path, item) {
-  if (item.Tracks) { // fill in common fields if they are set
-    item.Tracks.forEach(function(track) {
+  if (item.tracks) { // fill in common fields if they are set
+    item.tracks.forEach(function(track) {
       _commonFields.forEach(function(fld) {
         if (item[fld]) {
           track[fld] = item[fld];
         }
       });
-      track.GroupName = item.Name;
+      track.groupName = item.name;
     });
   }
   _collections[pathToKey(path)] = item;

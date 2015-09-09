@@ -50,7 +50,7 @@ var NowPlayingActions = {
   },
 
   ended: function(source, repeat) {
-    WebsocketAPI.send(NowPlayingConstants.RECORD_PLAY, {path: ["T", NowPlayingStore.getTrack().ID]});
+    WebsocketAPI.send(NowPlayingConstants.RECORD_PLAY, {path: ["T", NowPlayingStore.getTrack().id]});
 
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.ENDED,

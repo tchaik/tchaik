@@ -145,7 +145,7 @@ class AudioAPI {
   update() {
     var track = NowPlayingStore.getTrack();
     if (track) {
-      var source = `/track/${track.ID}`;
+      var source = `/track/${track.id}`;
       var orig = this.src();
       if (orig !== source) {
         this.setSrc(source);
