@@ -135,12 +135,35 @@ const (
 	ActionFetchPathList = "FETCH_PATHLIST"
 )
 
+type websocketHandlerFunc func(c Command) (*Response, error)
+
+type websocketMux struct {
+	m map[string]websocketHandlerFunc
+}
+
+func (w *websocketMux) HandleFunc(a string, fn websocketHandlerFunc) {
+	w.m[a] = fn
+}
+
+func (w *websocketMux) Handle(c Command) (*Response, error) {
+	fn, ok := w.m[c.Action]
+	if !ok {
+		return nil, fmt.Errorf("unknown action: %v", c.Action)
+	}
+	return fn(c)
+}
+
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
 func NewWebsocketHandler(l Library, m *Meta, p *player.Players) http.Handler {
 	return websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
+		mux := &websocketMux{
+			m: make(map[string]websocketHandlerFunc),
+		}
+
 		h := &websocketHandler{
 			Conn:    ws,
+			mux:     mux,
 			lib:     l,
 			meta:    m,
 			players: p,
@@ -148,12 +171,27 @@ func NewWebsocketHandler(l Library, m *Meta, p *player.Players) http.Handler {
 				Searcher: l.searcher,
 			},
 		}
-		h.Handle()
+
+		mux.HandleFunc(ActionKey, h.key)
+		mux.HandleFunc(ActionPlayer, h.player)
+		mux.HandleFunc(ActionRecordPlay, h.recordPlay)
+		mux.HandleFunc(ActionSetFavourite, h.setFavourite)
+		mux.HandleFunc(ActionSetChecklist, h.setChecklist)
+		mux.HandleFunc(ActionPlaylist, h.playlist)
+		mux.HandleFunc(ActionCursor, h.cursor)
+		mux.HandleFunc(ActionFetch, h.collectionList)
+		mux.HandleFunc(ActionSearch, h.search)
+		mux.HandleFunc(ActionFilterList, h.filterList)
+		mux.HandleFunc(ActionFilterPaths, h.filterPaths)
+		mux.HandleFunc(ActionFetchPathList, h.fetchPathList)
+
+		h.handle()
 	})
 }
 
 type websocketHandler struct {
 	*websocket.Conn
+	mux      *websocketMux
 	players  *player.Players
 	lib      Library
 	searcher *sameSearcher
@@ -162,7 +200,7 @@ type websocketHandler struct {
 	playerKey string
 }
 
-func (h *websocketHandler) Handle() {
+func (h *websocketHandler) handle() {
 	defer h.players.Remove(h.playerKey)
 
 	var err error
@@ -176,57 +214,10 @@ func (h *websocketHandler) Handle() {
 			break
 		}
 
-		var resp *Response
-		switch c.Action {
-		// Player actions
-		case ActionKey:
-			_, err = h.key(c)
-
-		case ActionPlayer:
-			resp, err = h.player(c)
-
-		// Path Actions
-		case ActionRecordPlay:
-			_, err = h.recordPlay(c)
-
-		case ActionSetFavourite:
-			_, err = h.setFavourite(c)
-
-		case ActionSetChecklist:
-			_, err = h.setChecklist(c)
-
-		// Playlist Actions
-		case ActionPlaylist:
-			resp, err = h.playlist(c)
-
-		// Cursor Actions
-		case ActionCursor:
-			resp, err = h.cursor(c)
-
-		// Library actions
-		case ActionFetch:
-			resp, err = h.collectionList(c)
-
-		case ActionSearch:
-			resp, err = h.search(c)
-
-		case ActionFilterList:
-			resp, err = h.filterList(c)
-
-		case ActionFilterPaths:
-			resp, err = h.filterPaths(c)
-
-		case ActionFetchPathList:
-			resp, err = h.fetchPathList(c)
-
-		default:
-			err = fmt.Errorf("unknown action: %v", c.Action)
-		}
-
+		resp, err := h.mux.Handle(c)
 		if err != nil {
 			break
 		}
-
 		if resp == nil {
 			continue
 		}
