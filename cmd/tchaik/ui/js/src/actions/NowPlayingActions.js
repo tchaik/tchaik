@@ -4,6 +4,7 @@ import WebsocketAPI from "../utils/WebsocketAPI.js";
 
 import NowPlayingStore from "../stores/NowPlayingStore.js";
 import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import CursorConstants from "../constants/CursorConstants.js";
 
 
 var NowPlayingActions = {
@@ -51,6 +52,13 @@ var NowPlayingActions = {
 
   ended: function(source, repeat) {
     WebsocketAPI.send(NowPlayingConstants.RECORD_PLAY, {path: ["T", NowPlayingStore.getTrack().id]});
+
+    if (source === "cursor") {
+      WebsocketAPI.send(CursorConstants.CURSOR, {
+        action: CursorConstants.NEXT,
+        name: "Default",
+      });
+    }
 
     AppDispatcher.handleViewAction({
       actionType: NowPlayingConstants.ENDED,
