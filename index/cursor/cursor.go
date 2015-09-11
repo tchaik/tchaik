@@ -66,17 +66,7 @@ func (c *Cursor) paths(n int) ([]index.Path, error) {
 	items := c.p.Items()
 	item := items[n]
 	return playlist.Paths(item, c.c)
-}
 
-func indexOfPath(paths []index.Path, p index.Path) int {
-	n := -1
-	for i, x := range paths {
-		if p.Equal(x) {
-			n = i
-			break
-		}
-	}
-	return n
 }
 
 func (c *Cursor) pathIndex(p Position) ([]index.Path, int, error) {
@@ -84,7 +74,7 @@ func (c *Cursor) pathIndex(p Position) ([]index.Path, int, error) {
 	if err != nil {
 		return nil, 0, err
 	}
-	return paths, indexOfPath(paths, p.Path), nil
+	return paths, index.IndexOfPath(paths, p.Path), nil
 }
 
 func (c *Cursor) next(p Position) (Position, error) {

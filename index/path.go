@@ -67,6 +67,19 @@ func (p Path) Contains(q Path) bool {
 	return true
 }
 
+// IndexOfPath returns the index of the path within the slice of paths, or -1 if the path
+// isn't present.
+func IndexOfPath(paths []Path, p Path) int {
+	n := -1
+	for i, x := range paths {
+		if p.Equal(x) {
+			n = i
+			break
+		}
+	}
+	return n
+}
+
 // NewPath creates a Path from the string representation.
 func NewPath(x string) Path {
 	split := strings.Split(x, PathSeparator)
