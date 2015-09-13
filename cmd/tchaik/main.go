@@ -161,11 +161,11 @@ func main() {
 	fmt.Println("done.")
 
 	fmt.Printf("Building artists filter...")
-	artists := index.Filter(root, "Artist")
+	artists := index.Filter(root, attr.Strings("Artist"))
 	fmt.Println("done.")
 
 	fmt.Printf("Building composers filter...")
-	composers := index.Filter(root, "Composer")
+	composers := index.Filter(root, attr.Strings("Composer"))
 	fmt.Println("done.")
 
 	fmt.Printf("Building recent index...")

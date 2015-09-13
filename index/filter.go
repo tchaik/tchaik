@@ -4,7 +4,11 @@
 
 package index
 
-import "sort"
+import (
+	"sort"
+
+	"tchaik.com/index/attr"
+)
 
 // FilterItem is an interface which defines behaviour for creating arbitrary filters where each
 // filtered item is a list of Paths.
@@ -38,11 +42,18 @@ func (f *filterItem) Fields() map[string]interface{} { return f.fields }
 func (f *filterItem) Paths() []Path { return f.paths }
 
 // Filter creates a slice of FilterItems, each FilterItem is a
-func Filter(c Collection, field string) []FilterItem {
+func Filter(c Collection, field attr.Interface) []FilterItem {
 	m := make(map[string][]Path)
 	walkfn := func(t Track, p Path) error {
-		f := t.GetString(field)
-		m[f] = append(m[f], p)
+		f := field.Value(t)
+		switch f := f.(type) {
+		case string:
+			m[f] = append(m[f], p)
+		case []string:
+			for _, x := range f {
+				m[x] = append(m[x], p)
+			}
+		}
 		return nil
 	}
 	Walk(c, Path([]Key{"Root"}), walkfn)
