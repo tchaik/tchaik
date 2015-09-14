@@ -295,7 +295,7 @@ func (tps trackPathSorter) Less(i, j int) bool { return tps.fn(tps.tp[i].t, tps.
 func Recent(c Collection, n int) []Path {
 	var trackPaths []trackPath
 	walkfn := func(t Track, p Path) error {
-		trackPaths = append(trackPaths, trackPath{t, p})
+		trackPaths = append(trackPaths, trackPath{t, p[:2]})
 		return nil
 	}
 	Walk(c, Path([]Key{"Root"}), walkfn)
