@@ -204,6 +204,7 @@ func (h *websocketHandler) handle() {
 	defer h.players.Remove(h.playerKey)
 
 	var err error
+	var resp *Response
 	for {
 		var c Command
 		err = websocket.JSON.Receive(h.Conn, &c)
@@ -214,7 +215,7 @@ func (h *websocketHandler) handle() {
 			break
 		}
 
-		resp, err := h.mux.Handle(c)
+		resp, err = h.mux.Handle(c)
 		if err != nil {
 			break
 		}
