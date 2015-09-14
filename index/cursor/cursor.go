@@ -18,6 +18,11 @@ type Position struct {
 	Index int        `json:"index"`
 }
 
+// Empty returns true iff the Position is empty.
+func (p Position) Empty() bool {
+	return len(p.Path) == 0
+}
+
 // Cursor is a moveable marker on a playlist.
 type Cursor struct {
 	Current  Position `json:"current"`
@@ -47,6 +52,9 @@ func (c *Cursor) Set(i int, p index.Path) {
 // Forward moves the cursor forwards.  Returns an error if the next track could not be found,
 // and sets the Next item to be empty.
 func (c *Cursor) Forward() (err error) {
+	if c.Next.Empty() {
+		return nil
+	}
 	c.Previous = c.Current
 	c.Current = c.Next
 	c.Next, err = c.next(c.Current)
@@ -56,6 +64,9 @@ func (c *Cursor) Forward() (err error) {
 // Backward moves the cursor backwards.  Returns an error if the previous track could not be found,
 // and sets the Previous item to be empty.
 func (c *Cursor) Backward() (err error) {
+	if c.Previous.Empty() {
+		return nil
+	}
 	c.Next = c.Current
 	c.Current = c.Previous
 	c.Previous, err = c.prev(c.Current)
@@ -66,7 +77,6 @@ func (c *Cursor) paths(n int) ([]index.Path, error) {
 	items := c.p.Items()
 	item := items[n]
 	return playlist.Paths(item, c.c)
-
 }
 
 func (c *Cursor) pathIndex(p Position) ([]index.Path, int, error) {
