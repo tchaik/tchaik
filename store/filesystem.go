@@ -53,22 +53,22 @@ type traceFileSystem struct {
 }
 
 // Open implements FileSystem.
-func (tfs traceFileSystem) Open(ctx context.Context, path string) (http.File, error) {
-	tr, ok := trace.FromContext(ctx)
-	if !ok {
-		return tfs.fs.Open(ctx, path)
+func (tfs traceFileSystem) Open(ctx context.Context, path string) (f http.File, err error) {
+	if tr, ok := trace.FromContext(ctx); ok {
+		tr.LazyPrintf("%v: open: %v", tfs.name, path)
+		defer func() {
+			if err != nil {
+				tr.LazyPrintf("%v: error: %v", tfs.name, err)
+				return
+			}
+			if stat, err := f.Stat(); err == nil {
+				tr.LazyPrintf("%v: got file: %v", tfs.name, stat.Name())
+			} else {
+				tr.LazyPrintf("%v: error in stat: %v", tfs.name, err)
+			}
+		}()
 	}
-
-	tr.LazyPrintf("%v: open: %v", tfs.name, path)
-	f, err := tfs.fs.Open(ctx, path)
-	if err != nil {
-		tr.LazyPrintf("%v: error: %v", tfs.name, err)
-		return nil, err
-	}
-	if stat, err := f.Stat(); err == nil {
-		tr.LazyPrintf("%v: got file: %v", tfs.name, stat.Name())
-	}
-	return f, err
+	return tfs.fs.Open(ctx, path)
 }
 
 // RemoteFileSystem is an extension of the http.FileSystem interface
