@@ -160,12 +160,16 @@ func main() {
 	root := buildRootCollection(l)
 	fmt.Println("done.")
 
+	fmt.Printf("Processing artist names and composers...")
+	rootSplit := index.SubTransform(root, index.SplitList("Artist", "Composer"))
+	fmt.Println("done.")
+
 	fmt.Printf("Building artists filter...")
-	artists := index.Filter(root, attr.Strings("Artist"))
+	artists := index.Filter(rootSplit, attr.Strings("Artist"))
 	fmt.Println("done.")
 
 	fmt.Printf("Building composers filter...")
-	composers := index.Filter(root, attr.Strings("Composer"))
+	composers := index.Filter(rootSplit, attr.Strings("Composer"))
 	fmt.Println("done.")
 
 	fmt.Printf("Building recent index...")
