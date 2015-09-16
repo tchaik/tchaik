@@ -206,6 +206,10 @@ func main() {
 		fmt.Printf("\nerror loading playlists: %v", err)
 		os.Exit(1)
 	}
+	// TODO(dhowden): remove this once we can better intialise the "Default" playlist
+	if p := playlistStore.Get("Default"); p == nil {
+		playlistStore.Set("Default", &playlist.Playlist{})
+	}
 	fmt.Println("done")
 
 	fmt.Printf("Loading cursors...")
