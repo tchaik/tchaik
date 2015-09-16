@@ -177,7 +177,7 @@ func main() {
 	fmt.Println("done.")
 
 	fmt.Printf("Loading play history...")
-	hs, err := history.NewStore(playHistoryPath)
+	playHistoryStore, err := history.NewStore(playHistoryPath)
 	if err != nil {
 		fmt.Printf("\nerror loading play history: %v", err)
 		os.Exit(1)
@@ -185,7 +185,7 @@ func main() {
 	fmt.Println("done.")
 
 	fmt.Printf("Loading favourites...")
-	favourites, err := favourite.NewStore(favouritesPath)
+	favouriteStore, err := favourite.NewStore(favouritesPath)
 	if err != nil {
 		fmt.Printf("\nerror loading favourites: %v", err)
 		os.Exit(1)
@@ -193,7 +193,7 @@ func main() {
 	fmt.Println("done.")
 
 	fmt.Printf("Loading checklist...")
-	checklist, err := checklist.NewStore(checklistPath)
+	checklistStore, err := checklist.NewStore(checklistPath)
 	if err != nil {
 		fmt.Printf("\nerror loading checklist: %v", err)
 		os.Exit(1)
@@ -252,9 +252,9 @@ func main() {
 	}
 
 	meta := &Meta{
-		history:    hs,
-		favourites: favourites,
-		checklist:  checklist,
+		history:    playHistoryStore,
+		favourites: favouriteStore,
+		checklist:  checklistStore,
 		playlists:  playlistStore,
 		cursors:    cursorStore,
 	}
