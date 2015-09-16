@@ -54,8 +54,7 @@ type readCloser struct {
 
 // Get implements Client.
 func (c *client) Get(ctx context.Context, path string) (f *File, err error) {
-	tr, ok := trace.FromContext(ctx)
-	if ok {
+	if tr, ok := trace.FromContext(ctx); ok {
 		tr.LazyPrintf("(%v, %#v) get '%v'", c.addr, c.label, path)
 		defer func() {
 			if err != nil {
