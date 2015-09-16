@@ -128,18 +128,16 @@ type traceClient struct {
 }
 
 // Open implements Client.
-func (tc traceClient) Get(ctx context.Context, path string) (*File, error) {
-	tr, ok := trace.FromContext(ctx)
-	if !ok {
-		return tc.Client.Get(ctx, path)
+func (tc traceClient) Get(ctx context.Context, path string) (f *File, err error) {
+	if tr, ok := trace.FromContext(ctx); ok {
+		tr.LazyPrintf("%v: Get: %v", tc.name, path)
+		defer func() {
+			if err != nil {
+				tr.LazyPrintf("%v: error opening '%v': %v", tc.name, path, err)
+				return
+			}
+			tr.LazyPrintf("%v: got file: %v", tc.name, f.Name)
+		}()
 	}
-
-	tr.LazyPrintf("%v: Get: %v", tc.name, path)
-	f, err := tc.Client.Get(ctx, path)
-	if err != nil {
-		tr.LazyPrintf("%v: error opening '%v': %v", tc.name, path, err)
-		return nil, err
-	}
-	tr.LazyPrintf("%v: got file: %v", tc.name, f.Name)
-	return f, err
+	return tc.Client.Get(ctx, path)
 }
