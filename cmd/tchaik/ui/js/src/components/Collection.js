@@ -88,7 +88,7 @@ export class Group extends React.Component {
         duration = (
           <span>
             <Icon icon="schedule" extraClasses={{duration: true}}/>
-            <TimeFormatter className="time" time={parseInt(common.TotalTime / 1000)} />
+            <TimeFormatter className="time" time={parseInt(common.totalTime / 1000)} />
           </span>
         );
       }
