@@ -4,6 +4,7 @@ require("../../css/screen.css");
 require("../../css/material-icons.css");
 
 var React = require("react");
+var ReactDOM = require("react-dom");
 
 require("babel-core/polyfill");
 
@@ -31,27 +32,27 @@ WebsocketAPI.init(websocketUrl);
 
 AudioAPI.init();
 
-React.render(
+ReactDOM.render(
   React.createFactory(LeftColumn)(),
   document.getElementById("left-column")
 );
 
-React.render(
+ReactDOM.render(
   React.createFactory(RightColumn)(),
   document.getElementById("right-column")
 );
 
-React.render(
+ReactDOM.render(
   React.createFactory(Bottom)(),
   document.getElementById("bottom")
 );
 
-React.render(
+ReactDOM.render(
   React.createFactory(Top)(),
   document.getElementById("top")
 );
 
-React.render(
+ReactDOM.render(
   React.createFactory(Container)(),
   document.getElementById("container")
 );
