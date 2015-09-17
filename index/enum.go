@@ -222,7 +222,7 @@ func trimTrackNumPrefix(field, trackNumField, discNumField string, tracks []Trac
 	}
 
 	result := make([]Track, 0, len(tracks))
-	sort.Sort(sort.IntSlice(discs))
+	sort.Ints(discs)
 	for _, d := range discs {
 		all := true
 		tracks = discTracks[d]
