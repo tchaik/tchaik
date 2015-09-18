@@ -94,6 +94,8 @@ class Controls extends React.Component {
   componentDidMount() {
     NowPlayingStore.addChangeListener(this._onChange);
     CursorStore.addChangeListener(this._onChangeCursor);
+
+    CursorActions.fetch();
   }
 
   componentWillUnmount() {
