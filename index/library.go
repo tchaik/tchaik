@@ -147,6 +147,7 @@ type track struct {
 	Composer    string `json:"composer,omitempty"`
 	Genre       string `json:"genre,omitempty"`
 	Location    string `json:"location,omitempty"`
+	Kind        string `json:"kind"`
 
 	TotalTime   int `json:"totalTime,omitempty"`
 	Year        int `json:"year,omitempty"`
@@ -179,6 +180,8 @@ func (t *track) GetString(name string) string {
 		return t.Genre
 	case "Location":
 		return t.Location
+	case "Kind":
+		return t.Kind
 	}
 	panic(fmt.Sprintf("unknown string field '%v'", name))
 }
