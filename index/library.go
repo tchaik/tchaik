@@ -63,6 +63,7 @@ func Convert(l Library, id string) *library {
 			Composer:    t.GetString("Composer"),
 			Genre:       t.GetString("Genre"),
 			Location:    t.GetString("Location"),
+			Kind:        t.GetString("Kind"),
 
 			// integer fields
 			TotalTime:   t.GetInt("TotalTime"),
