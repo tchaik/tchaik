@@ -193,7 +193,7 @@ func (r *rootCollection) Get(k index.Key) index.Group {
 		return g
 	}
 
-	index.Sort(g.Tracks(), index.MultiSort(index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
+	index.Sort(g.Tracks(), index.MultiSort(index.SortByString("Kind"), index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
 	g = index.Transform(g, index.SplitList("Artist", "AlbumArtist", "Composer"))
 	g = index.Transform(g, index.TrimTrackNumPrefix)
 	c := index.Collect(g, index.ByPrefix("Name"))
