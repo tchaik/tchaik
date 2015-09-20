@@ -143,9 +143,29 @@ func (m *track) GetString(name string) string {
 		return m.Genre()
 	case "Location":
 		return m.Location
+	case "Kind":
+		return kind(m.FileType()).String()
 	case "ID":
 		sum := sha1.Sum([]byte(m.Location))
 		return string(fmt.Sprintf("%x", sum))
+	}
+	return ""
+}
+
+type kind tag.FileType
+
+func (k kind) String() string {
+	switch k {
+	case tag.MP3:
+		return "MPEG audio file"
+	case tag.AAC:
+		return "AAC audio file"
+	case tag.ALAC: // FIXME: tag doesn't actually detect this at the moment.
+		return "Apple Lossless audio file"
+	case tag.FLAC:
+		return "FLAC audio file"
+	case tag.OGG:
+		return "OGG audio file"
 	}
 	return ""
 }
