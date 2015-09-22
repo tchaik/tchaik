@@ -61,6 +61,7 @@ type group struct {
 	ListStyle   interface{} `json:"listStyle,omitempty"`
 	ID          interface{} `json:"id,omitempty"`
 	Year        interface{} `json:"year,omitempty"`
+	Kind        interface{} `json:"kind,omitempty"`
 	Groups      []group     `json:"groups,omitempty"`
 	Tracks      []track     `json:"tracks,omitempty"`
 	Favourite   bool        `json:"favourite,omitempty"`
@@ -74,6 +75,7 @@ type track struct {
 	Artist      []string `json:"artist,omitempty"`
 	AlbumArtist []string `json:"albumArtist,omitempty"`
 	Composer    []string `json:"composer,omitempty"`
+	Kind        string   `json:"kind,omitempty"`
 	Year        int      `json:"year,omitempty"`
 	DiscNumber  int      `json:"discNumber,omitempty"`
 	TotalTime   int      `json:"totalTime,omitempty"`
@@ -137,6 +139,7 @@ func build(g index.Group, key index.Key) group {
 		BitRate:     g.Field("BitRate"),
 		DiscNumber:  g.Field("DiscNumber"),
 		ListStyle:   g.Field("ListStyle"),
+		Kind:        g.Field("Kind"),
 		ID:          g.Field("ID"),
 	}
 
@@ -175,6 +178,7 @@ func build(g index.Group, key index.Key) group {
 			AlbumArtist: getStrings(t, "AlbumArtist"),
 			Composer:    getStrings(t, "Composer"),
 			Album:       getString(t, "Album"),
+			Kind:        getString(t, "Kind"),
 			Year:        getInt(t, "Year"),
 			DiscNumber:  getInt(t, "DiscNumber"),
 			BitRate:     getInt(t, "BitRate"),
@@ -204,6 +208,7 @@ func (r *rootCollection) Get(k index.Key) index.Group {
 		attr.Strings("Artist"),
 		attr.Strings("AlbumArtist"),
 		attr.Strings("Composer"),
+		attr.String("Kind"),
 		attr.Int("Year"),
 		attr.Int("BitRate"),
 		attr.Int("DiscNumber"),
