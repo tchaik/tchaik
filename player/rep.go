@@ -119,6 +119,9 @@ var RepActions = map[Action]string{
 	ActionSetTime:   "SET_TIME",
 }
 
+// RepActionToAction takes a string and returns an Action and true if the
+// string represents a valid action, or Action("") and false otherwise.
+// TODO(dhowden): This seems quite clunky??
 func RepActionToAction(a string) (Action, bool) {
 	for k, v := range RepActions {
 		if v == a {
@@ -128,6 +131,8 @@ func RepActionToAction(a string) (Action, bool) {
 	return Action(""), false
 }
 
+// InvalidActionError is an error returned when an invalid action has been
+// received.
 type InvalidActionError string
 
 func (i InvalidActionError) Error() string {
