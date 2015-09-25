@@ -269,8 +269,14 @@ func main() {
 		fmt.Printf("Web server is running on https://%v\n", listenAddr)
 		fmt.Println("Quit the server with CTRL-C.")
 
-		tlsConfig := &tls.Config{MinVersion: tls.VersionTLS10}
-		server := &http.Server{Addr: listenAddr, Handler: h, TLSConfig: tlsConfig}
+		tlsConfig := &tls.Config{
+			MinVersion: tls.VersionTLS10,
+		}
+		server := &http.Server{
+			Addr:      listenAddr,
+			Handler:   h,
+			TLSConfig: tlsConfig,
+		}
 		log.Fatal(server.ListenAndServeTLS(certFile, keyFile))
 	}
 
