@@ -396,7 +396,7 @@ func (h *websocketHandler) collectionList(c Command) (*Response, error) {
 		return nil, err
 	}
 
-	if len(p) < 1 {
+	if len(p) == 0 {
 		return nil, fmt.Errorf("invalid path: %v\n", p)
 	}
 
@@ -412,11 +412,20 @@ func (h *websocketHandler) collectionList(c Command) (*Response, error) {
 	g = h.meta.annotateFavourites(p, g)
 	g = h.meta.annotateChecklist(p, g)
 
+	i := 1
+	if len(p) == 1 {
+		i = 0
+	}
+	g = &Group{
+		Group: g,
+		Key:   index.Key(p[i]),
+	}
+
 	return &Response{
 		Action: c.Action,
 		Data: struct {
-			Path index.Path `json:"path"`
-			Item group      `json:"item"`
+			Path index.Path  `json:"path"`
+			Item index.Group `json:"item"`
 		}{
 			p,
 			g,
@@ -486,8 +495,8 @@ func (h *websocketHandler) filterPaths(c Command) (*Response, error) {
 	return &Response{
 		Action: c.Action,
 		Data: struct {
-			Path  index.Path `json:"path"`
-			Paths group      `json:"paths"`
+			Path  index.Path  `json:"path"`
+			Paths index.Group `json:"paths"`
 		}{
 			Path:  index.PathFromStringSlice([]string{filterName, name}),
 			Paths: h.lib.ExpandPaths(item.Paths()),
@@ -542,8 +551,8 @@ func (h *websocketHandler) fetchPathList(c Command) (*Response, error) {
 	return &Response{
 		Action: c.Action,
 		Data: struct {
-			Name string `json:"name"`
-			Data group  `json:"data"`
+			Name string      `json:"name"`
+			Data index.Group `json:"data"`
 		}{
 			Name: name,
 			Data: h.lib.ExpandPaths(paths),

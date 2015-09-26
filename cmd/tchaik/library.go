@@ -14,7 +14,6 @@ import (
 
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
-
 	"tchaik.com/store"
 )
 
@@ -49,41 +48,6 @@ func (l *libraryFileSystem) Open(ctx context.Context, path string) (http.File, e
 	return l.FileSystem.Open(ctx, loc)
 }
 
-type group struct {
-	Name        string      `json:"name"`
-	Key         index.Key   `json:"key"`
-	TotalTime   interface{} `json:"totalTime,omitempty"`
-	Artist      interface{} `json:"artist,omitempty"`
-	AlbumArtist interface{} `json:"albumArtist,omitempty"`
-	Composer    interface{} `json:"composer,omitempty"`
-	BitRate     interface{} `json:"bitRate,omitempty"`
-	DiscNumber  interface{} `json:"discNumber,omitempty"`
-	ListStyle   interface{} `json:"listStyle,omitempty"`
-	ID          interface{} `json:"id,omitempty"`
-	Year        interface{} `json:"year,omitempty"`
-	Kind        interface{} `json:"kind,omitempty"`
-	Groups      []group     `json:"groups,omitempty"`
-	Tracks      []track     `json:"tracks,omitempty"`
-	Favourite   bool        `json:"favourite,omitempty"`
-	Checklist   bool        `json:"checklist,omitempty"`
-}
-
-type track struct {
-	ID          string   `json:"id,omitempty"`
-	Name        string   `json:"name,omitempty"`
-	Album       string   `json:"album,omitempty"`
-	Artist      []string `json:"artist,omitempty"`
-	AlbumArtist []string `json:"albumArtist,omitempty"`
-	Composer    []string `json:"composer,omitempty"`
-	Kind        string   `json:"kind,omitempty"`
-	Year        int      `json:"year,omitempty"`
-	DiscNumber  int      `json:"discNumber,omitempty"`
-	TotalTime   int      `json:"totalTime,omitempty"`
-	BitRate     int      `json:"bitRate,omitempty"`
-	Favourite   bool     `json:"favourite,omitempty"`
-	Checklist   bool     `json:"checklist,omitempty"`
-}
-
 // StringSliceEqual is a function used to compare two interface{} types which are assumed
 // to be of type []string (or interface{}(nil)).
 func StringSliceEqual(x, y interface{}) bool {
@@ -105,119 +69,7 @@ func StringSliceEqual(x, y interface{}) bool {
 	return true
 }
 
-func buildCollection(h group, c index.Collection) group {
-	getField := func(f string, g index.Group, c index.Collection) interface{} {
-		if StringSliceEqual(g.Field(f), c.Field(f)) {
-			return nil
-		}
-		return g.Field(f)
-	}
-
-	for _, k := range c.Keys() {
-		g := c.Get(k)
-		g = index.FirstTrackAttr(attr.Strings("AlbumArtist"), g)
-		g = index.CommonGroupAttr([]attr.Interface{attr.Strings("Artist")}, g)
-		h.Groups = append(h.Groups, group{
-			Name:        g.Name(),
-			Key:         k,
-			AlbumArtist: getField("AlbumArtist", g, c),
-			Artist:      getField("Artist", g, c),
-		})
-	}
-	return h
-}
-
-func build(g index.Group, key index.Key) group {
-	h := group{
-		Name:        g.Name(),
-		Key:         key,
-		TotalTime:   g.Field("TotalTime"),
-		Artist:      g.Field("Artist"),
-		AlbumArtist: g.Field("AlbumArtist"),
-		Composer:    g.Field("Composer"),
-		Year:        g.Field("Year"),
-		BitRate:     g.Field("BitRate"),
-		DiscNumber:  g.Field("DiscNumber"),
-		ListStyle:   g.Field("ListStyle"),
-		Kind:        g.Field("Kind"),
-		ID:          g.Field("ID"),
-	}
-
-	if c, ok := g.(index.Collection); ok {
-		return buildCollection(h, c)
-	}
-
-	getString := func(t index.Track, field string) string {
-		if g.Field(field) != nil {
-			return ""
-		}
-		return t.GetString(field)
-	}
-
-	getStrings := func(t index.Track, field string) []string {
-		if g.Field(field) != nil {
-			return nil
-		}
-		return t.GetStrings(field)
-	}
-
-	getInt := func(t index.Track, field string) int {
-		if g.Field(field) != nil {
-			return 0
-		}
-		return t.GetInt(field)
-	}
-
-	for _, t := range g.Tracks() {
-		h.Tracks = append(h.Tracks, track{
-			ID:        t.GetString("ID"),
-			Name:      t.GetString("Name"),
-			TotalTime: t.GetInt("TotalTime"),
-			// Potentially common fields (don't want to re-transmit everything)
-			Artist:      getStrings(t, "Artist"),
-			AlbumArtist: getStrings(t, "AlbumArtist"),
-			Composer:    getStrings(t, "Composer"),
-			Album:       getString(t, "Album"),
-			Kind:        getString(t, "Kind"),
-			Year:        getInt(t, "Year"),
-			DiscNumber:  getInt(t, "DiscNumber"),
-			BitRate:     getInt(t, "BitRate"),
-		})
-	}
-	return h
-}
-
-type rootCollection struct {
-	index.Collection
-}
-
-func (r *rootCollection) Get(k index.Key) index.Group {
-	g := r.Collection.Get(k)
-	if g == nil {
-		return g
-	}
-
-	index.Sort(g.Tracks(), index.MultiSort(index.SortByString("Kind"), index.SortByInt("DiscNumber"), index.SortByInt("TrackNumber")))
-	g = index.Transform(g, index.SplitList("Artist", "AlbumArtist", "Composer"))
-	g = index.Transform(g, index.TrimTrackNumPrefix)
-	c := index.Collect(g, index.ByPrefix("Name"))
-	g = index.SubTransform(c, index.TrimEnumPrefix)
-	g = index.SumGroupIntAttr("TotalTime", g)
-	commonFields := []attr.Interface{
-		attr.String("Album"),
-		attr.Strings("Artist"),
-		attr.Strings("AlbumArtist"),
-		attr.Strings("Composer"),
-		attr.String("Kind"),
-		attr.Int("Year"),
-		attr.Int("BitRate"),
-		attr.Int("DiscNumber"),
-	}
-	g = index.CommonGroupAttr(commonFields, g)
-	g = index.RemoveEmptyCollections(g)
-	return g
-}
-
+// Build fetches a Group from the index.Collection given by the Path.
 func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
 	if len(p) == 0 {
 		return c, nil
@@ -232,17 +84,12 @@ func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
 }
 
 // Fetch returns a group from the collection with the given path.
-func (l *Library) Fetch(c index.Collection, p index.Path) (group, error) {
+func (l *Library) Fetch(c index.Collection, p index.Path) (index.Group, error) {
 	if len(p) == 0 {
-		return build(c, index.Key("Root")), nil
+		return c, nil
 	}
 
-	k := index.Key(p[0])
-	g, err := l.Build(c, p)
-	if err != nil {
-		return group{}, err
-	}
-	return build(g, k), nil
+	return l.Build(c, p)
 }
 
 // FileSystem wraps the http.FileSystem in a library lookup which will translate /ID
@@ -253,6 +100,9 @@ func (l *Library) FileSystem(fs store.FileSystem) store.FileSystem {
 
 // ExpandPaths constructs a collection (group) whose sub-groups are taken from the "Root"
 // collection.
-func (l *Library) ExpandPaths(paths []index.Path) group {
-	return build(index.NewPathsCollection(l.collections["Root"], paths), index.Key("Root"))
+func (l *Library) ExpandPaths(paths []index.Path) index.Group {
+	return &Group{
+		Group: index.NewPathsCollection(l.collections["Root"], paths),
+		Key:   index.Key("Root"),
+	}
 }
