@@ -40,6 +40,58 @@ func buildCollection(h group, c index.Collection) group {
 	return h
 }
 
+type Track struct {
+	index.Track
+
+	group index.Group
+}
+
+func (t *Track) getString(field string) string {
+	// Always return the default value for these fields.
+	if field == "ID" || field == "Name" {
+		return t.Track.GetString(field)
+	}
+
+	if t.group.Field(field) != nil {
+		return ""
+	}
+	return t.Track.GetString(field)
+}
+
+func (t *Track) getStrings(field string) []string {
+	if t.group.Field(field) != nil {
+		return nil
+	}
+	return t.Track.GetStrings(field)
+}
+
+func (t *Track) getInt(field string) int {
+	if field == "TotalTime" {
+		return t.Track.GetInt(field)
+	}
+
+	if t.group.Field(field) != nil {
+		return 0
+	}
+	return t.Track.GetInt(field)
+}
+
+func (t *Track) MarshalJSON() ([]byte, error) {
+	return json.Marshal(track{
+		ID:          t.GetString("ID"),
+		Name:        t.GetString("Name"),
+		TotalTime:   t.GetInt("TotalTime"),
+		Artist:      t.getStrings("Artist"),
+		AlbumArtist: t.getStrings("AlbumArtist"),
+		Composer:    t.getStrings("Composer"),
+		Album:       t.getString("Album"),
+		Kind:        t.getString("Kind"),
+		Year:        t.getInt("Year"),
+		DiscNumber:  t.getInt("DiscNumber"),
+		BitRate:     t.getInt("BitRate"),
+	})
+}
+
 func (g *Group) build() group {
 	h := group{
 		Name:        g.Name(),
@@ -62,41 +114,10 @@ func (g *Group) build() group {
 		return buildCollection(h, c)
 	}
 
-	getString := func(t index.Track, field string) string {
-		if g.Field(field) != nil {
-			return ""
-		}
-		return t.GetString(field)
-	}
-
-	getStrings := func(t index.Track, field string) []string {
-		if g.Field(field) != nil {
-			return nil
-		}
-		return t.GetStrings(field)
-	}
-
-	getInt := func(t index.Track, field string) int {
-		if g.Field(field) != nil {
-			return 0
-		}
-		return t.GetInt(field)
-	}
-
 	for _, t := range g.Tracks() {
-		h.Tracks = append(h.Tracks, track{
-			ID:        t.GetString("ID"),
-			Name:      t.GetString("Name"),
-			TotalTime: t.GetInt("TotalTime"),
-			// Potentially common fields (don't want to re-transmit everything)
-			Artist:      getStrings(t, "Artist"),
-			AlbumArtist: getStrings(t, "AlbumArtist"),
-			Composer:    getStrings(t, "Composer"),
-			Album:       getString(t, "Album"),
-			Kind:        getString(t, "Kind"),
-			Year:        getInt(t, "Year"),
-			DiscNumber:  getInt(t, "DiscNumber"),
-			BitRate:     getInt(t, "BitRate"),
+		h.Tracks = append(h.Tracks, &Track{
+			Track: t,
+			group: g,
 		})
 	}
 	return h
@@ -138,22 +159,22 @@ func (g *Group) MarshalJSON() ([]byte, error) {
 }
 
 type group struct {
-	Name        string      `json:"name"`
-	Key         index.Key   `json:"key"`
-	TotalTime   interface{} `json:"totalTime,omitempty"`
-	Artist      interface{} `json:"artist,omitempty"`
-	AlbumArtist interface{} `json:"albumArtist,omitempty"`
-	Composer    interface{} `json:"composer,omitempty"`
-	BitRate     interface{} `json:"bitRate,omitempty"`
-	DiscNumber  interface{} `json:"discNumber,omitempty"`
-	ListStyle   interface{} `json:"listStyle,omitempty"`
-	ID          interface{} `json:"id,omitempty"`
-	Year        interface{} `json:"year,omitempty"`
-	Kind        interface{} `json:"kind,omitempty"`
-	Favourite   interface{} `json:"favourite,omitempty"`
-	Checklist   interface{} `json:"checklist,omitempty"`
-	Groups      []group     `json:"groups,omitempty"`
-	Tracks      []track     `json:"tracks,omitempty"`
+	Name        string        `json:"name"`
+	Key         index.Key     `json:"key"`
+	TotalTime   interface{}   `json:"totalTime,omitempty"`
+	Artist      interface{}   `json:"artist,omitempty"`
+	AlbumArtist interface{}   `json:"albumArtist,omitempty"`
+	Composer    interface{}   `json:"composer,omitempty"`
+	BitRate     interface{}   `json:"bitRate,omitempty"`
+	DiscNumber  interface{}   `json:"discNumber,omitempty"`
+	ListStyle   interface{}   `json:"listStyle,omitempty"`
+	ID          interface{}   `json:"id,omitempty"`
+	Year        interface{}   `json:"year,omitempty"`
+	Kind        interface{}   `json:"kind,omitempty"`
+	Favourite   interface{}   `json:"favourite,omitempty"`
+	Checklist   interface{}   `json:"checklist,omitempty"`
+	Groups      []group       `json:"groups,omitempty"`
+	Tracks      []index.Track `json:"tracks,omitempty"`
 }
 
 type track struct {
