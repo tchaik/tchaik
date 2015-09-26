@@ -396,30 +396,11 @@ func (h *websocketHandler) collectionList(c Command) (*Response, error) {
 		return nil, err
 	}
 
-	if len(p) == 0 {
-		return nil, fmt.Errorf("invalid path: %v\n", p)
-	}
-
-	root := h.lib.collections[string(p[0])]
-	if root == nil {
-		return nil, fmt.Errorf("unknown collection: %#v", p[0])
-	}
-	g, err := h.lib.Build(root, p[1:])
+	g, k, err := h.lib.Fetch(p)
 	if err != nil {
-		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, p[1:])
+		return nil, err
 	}
-
-	g = h.meta.annotateFavourites(p, g)
-	g = h.meta.annotateChecklist(p, g)
-
-	i := 1
-	if len(p) == 1 {
-		i = 0
-	}
-	g = &Group{
-		Group: g,
-		Key:   index.Key(p[i]),
-	}
+	g = h.meta.Annotate(p, g)
 
 	return &Response{
 		Action: c.Action,
@@ -428,7 +409,10 @@ func (h *websocketHandler) collectionList(c Command) (*Response, error) {
 			Item index.Group `json:"item"`
 		}{
 			p,
-			g,
+			&Group{
+				Group: g,
+				Key:   k,
+			},
 		},
 	}, nil
 }

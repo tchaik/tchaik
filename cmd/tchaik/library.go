@@ -69,6 +69,29 @@ func StringSliceEqual(x, y interface{}) bool {
 	return true
 }
 
+// Fetch fetches a Group and its corresponding Key given a path.  Returns an error if the path
+// is invalid.
+func (l *Library) Fetch(p index.Path) (index.Group, index.Key, error) {
+	if len(p) == 0 {
+		return nil, "", fmt.Errorf("invalid path: %v\n", p)
+	}
+
+	root := l.collections[string(p[0])]
+	if root == nil {
+		return nil, "", fmt.Errorf("unknown collection: %#v", p[0])
+	}
+
+	if len(p) == 1 {
+		return root, p[0], nil
+	}
+
+	g, err := l.Build(root, p[1:])
+	if err != nil {
+		return nil, "", fmt.Errorf("error in Fetch: %v (path: %#v)", err, p[1:])
+	}
+	return g, p[1], nil
+}
+
 // Build fetches a Group from the index.Collection given by the Path.
 func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
 	if len(p) == 0 {
