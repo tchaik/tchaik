@@ -83,15 +83,6 @@ func (l *Library) Build(c index.Collection, p index.Path) (index.Group, error) {
 	return g, nil
 }
 
-// Fetch returns a group from the collection with the given path.
-func (l *Library) Fetch(c index.Collection, p index.Path) (index.Group, error) {
-	if len(p) == 0 {
-		return c, nil
-	}
-
-	return l.Build(c, p)
-}
-
 // FileSystem wraps the http.FileSystem in a library lookup which will translate /ID
 // requests into their corresponding track paths.
 func (l *Library) FileSystem(fs store.FileSystem) store.FileSystem {

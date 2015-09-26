@@ -404,7 +404,7 @@ func (h *websocketHandler) collectionList(c Command) (*Response, error) {
 	if root == nil {
 		return nil, fmt.Errorf("unknown collection: %#v", p[0])
 	}
-	g, err := h.lib.Fetch(root, p[1:])
+	g, err := h.lib.Build(root, p[1:])
 	if err != nil {
 		return nil, fmt.Errorf("error in Fetch: %v (path: %#v)", err, p[1:])
 	}
