@@ -111,6 +111,7 @@ export class Group extends React.Component {
 
       play = (
         <span className="controls">
+          <Kind kind={this.state.common.kind} />
           {duration}
           <Icon icon="play_arrow"title="Play Now" onClick={this._onPlayNow} />
           <Icon icon="playlist_add"title="Queue" onClick={this._onQueue} />
@@ -207,6 +208,18 @@ Group.propTypes = {
   depth: React.PropTypes.number.isRequired,
 };
 
+class Kind extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    if (this.props.kind === "Apple Lossless audio file") {
+      return <span className="alac">ALAC</span>;
+    }
+    return null;
+  }
+}
 
 class GroupContent extends React.Component {
   constructor(props) {
@@ -242,7 +255,7 @@ class GroupContent extends React.Component {
       var item = CollectionStore.getCollection(this.props.path);
 
       var common = {};
-      var fields = ["totalTime", "albumArtist", "artist", "id", "composer", "year"];
+      var fields = ["totalTime", "albumArtist", "artist", "id", "composer", "year", "kind"];
       fields.forEach(function(f) {
         if (item[f]) {
           common[f] = item[f];

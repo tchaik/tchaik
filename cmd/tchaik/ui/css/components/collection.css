@@ -158,6 +158,12 @@ div.collection {
         vertical-align: 6px;
       }
 
+      span.alac {
+        color: #888;
+        font-weight: bold;
+        vertical-align: 6px;
+      }
+
       div.attributes {
         color: #888;
         font-size: 13px;
