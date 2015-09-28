@@ -71,6 +71,7 @@ func newMetaField(g index.Group, field string, value bool) index.Group {
 	}
 }
 
+// Annotate adds any meta information to the Group (identified by Path).
 func (m *Meta) Annotate(p index.Path, g index.Group) index.Group {
 	g = newMetaField(g, "Favourite", m.favourites.Get(p))
 	return newMetaField(g, "Checklist", m.checklist.Get(p))
