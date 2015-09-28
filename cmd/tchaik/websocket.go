@@ -135,7 +135,7 @@ const (
 	ActionFetchPathList = "FETCH_PATHLIST"
 )
 
-type websocketHandlerFunc func(c Command) (*Response, error)
+type websocketHandlerFunc func(c Command, r *Response) error
 
 type websocketMux struct {
 	m map[string]websocketHandlerFunc
@@ -145,12 +145,12 @@ func (w *websocketMux) HandleFunc(a string, fn websocketHandlerFunc) {
 	w.m[a] = fn
 }
 
-func (w *websocketMux) Handle(c Command) (*Response, error) {
+func (w *websocketMux) Handle(c Command, r *Response) error {
 	fn, ok := w.m[c.Action]
 	if !ok {
-		return nil, fmt.Errorf("unknown action: %v", c.Action)
+		return fmt.Errorf("unknown action: %v", c.Action)
 	}
-	return fn(c)
+	return fn(c, r)
 }
 
 // NewWebsocketHandler creates a websocket handler for the library, players and history.
@@ -204,7 +204,6 @@ func (h *websocketHandler) handle() {
 	defer h.players.Remove(h.playerKey)
 
 	var err error
-	var resp *Response
 	for {
 		var c Command
 		err = websocket.JSON.Receive(h.Conn, &c)
@@ -215,11 +214,14 @@ func (h *websocketHandler) handle() {
 			break
 		}
 
-		resp, err = h.mux.Handle(c)
+		resp := &Response{
+			Action: c.Action,
+		}
+		err = h.mux.Handle(c, resp)
 		if err != nil {
 			break
 		}
-		if resp == nil {
+		if resp.Data == nil {
 			continue
 		}
 
@@ -237,45 +239,44 @@ func (h *websocketHandler) handle() {
 	}
 }
 
+// Response is a type which represnets a response to a Websocket Command.
 type Response struct {
 	Action string      `json:"action"`
 	Data   interface{} `json:"data"`
 }
 
-func (h *websocketHandler) player(c Command) (*Response, error) {
+func (h *websocketHandler) player(c Command, resp *Response) error {
 	action, err := c.getString("action")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if action == "LIST" {
-		return &Response{
-			Action: c.Action,
-			Data:   h.players.List(),
-		}, nil
+		resp.Data = h.players.List()
+		return nil
 	}
 
 	key, err := c.getString("key")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	p := h.players.Get(key)
 	if p == nil {
-		return nil, fmt.Errorf("invalid player key: %v", key)
+		return fmt.Errorf("invalid player key: %v", key)
 	}
 
 	r := player.RepAction{
 		Action: action,
 		Value:  c.Data["value"],
 	}
-	return nil, r.Apply(p)
+	return r.Apply(p)
 }
 
-func (h *websocketHandler) key(c Command) (*Response, error) {
+func (h *websocketHandler) key(c Command, resp *Response) error {
 	key, err := c.getString("key")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	h.players.Remove(h.playerKey)
@@ -283,50 +284,50 @@ func (h *websocketHandler) key(c Command) (*Response, error) {
 		h.players.Add(player.Validated(WebsocketPlayer(key, h.Conn)))
 	}
 	h.playerKey = key
-	return nil, nil
+	return nil
 }
 
-func (h *websocketHandler) recordPlay(c Command) (*Response, error) {
+func (h *websocketHandler) recordPlay(c Command, resp *Response) error {
 	p, err := c.getPath("path")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return nil, h.meta.history.Add(p)
+	return h.meta.history.Add(p)
 }
 
-func (h *websocketHandler) setFavourite(c Command) (*Response, error) {
+func (h *websocketHandler) setFavourite(c Command, resp *Response) error {
 	p, err := c.getPath("path")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	value, err := c.getBool("value")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return nil, h.meta.favourites.Set(p, value)
+	return h.meta.favourites.Set(p, value)
 }
 
-func (h *websocketHandler) setChecklist(c Command) (*Response, error) {
+func (h *websocketHandler) setChecklist(c Command, resp *Response) error {
 	p, err := c.getPath("path")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	value, err := c.getBool("value")
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return nil, h.meta.checklist.Set(p, value)
+	return h.meta.checklist.Set(p, value)
 }
 
-func (h *websocketHandler) cursor(c Command) (*Response, error) {
+func (h *websocketHandler) cursor(c Command, resp *Response) error {
 	name, err := c.getString("name")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	action, err := c.getString("action")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if action != "FETCH" {
@@ -343,31 +344,29 @@ func (h *websocketHandler) cursor(c Command) (*Response, error) {
 		root := &rootCollection{h.lib.collections["Root"]}
 		err = ra.Apply(h.meta.cursors, h.meta.playlists, root)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
-	return &Response{
-		Action: c.Action,
-		Data:   h.meta.cursors.Get(name),
-	}, nil
+	resp.Data = h.meta.cursors.Get(name)
+	return nil
 }
 
-func (h *websocketHandler) playlist(c Command) (*Response, error) {
+func (h *websocketHandler) playlist(c Command, resp *Response) error {
 	name, err := c.getString("name")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	action, err := c.getString("action")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if action != "FETCH" {
 		path, err := c.getPath("path")
 		if err != nil {
-			return nil, err
+			return err
 		}
 		index, _ := c.getInt("index")
 
@@ -380,88 +379,83 @@ func (h *websocketHandler) playlist(c Command) (*Response, error) {
 
 		err = ra.Apply(h.meta.playlists)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
 
-	return &Response{
-		Action: c.Action,
-		Data:   h.meta.playlists.Get(name),
-	}, nil
+	resp.Data = h.meta.playlists.Get(name)
+	return nil
 }
 
-func (h *websocketHandler) collectionList(c Command) (*Response, error) {
+func (h *websocketHandler) collectionList(c Command, resp *Response) error {
 	p, err := c.getPath("path")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	g, k, err := h.lib.Fetch(p)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	g = h.meta.Annotate(p, g)
 
-	return &Response{
-		Action: c.Action,
-		Data: struct {
-			Path index.Path  `json:"path"`
-			Item index.Group `json:"item"`
-		}{
-			p,
-			&Group{
-				Group: g,
-				Key:   k,
-			},
+	resp.Data = struct {
+		Path index.Path  `json:"path"`
+		Item index.Group `json:"item"`
+	}{
+		p,
+		&Group{
+			Group: g,
+			Key:   k,
 		},
-	}, nil
+	}
+	return nil
 }
 
-func (h *websocketHandler) filterList(c Command) (*Response, error) {
+func (h *websocketHandler) filterList(c Command, resp *Response) error {
 	filterName, err := c.getString("name")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	filterItems, ok := h.lib.filters[filterName]
 	if !ok {
-		return nil, fmt.Errorf("invalid filter name: %#v", filterName)
+		return fmt.Errorf("invalid filter name: %#v", filterName)
 	}
 
 	filterNames := make([]string, len(filterItems))
 	for i, x := range filterItems {
 		filterNames[i] = x.Name()
 	}
-	return &Response{
-		Action: c.Action,
-		Data: struct {
-			Name  string   `json:"name"`
-			Items []string `json:"items"`
-		}{
-			Name:  filterName,
-			Items: filterNames,
-		},
-	}, nil
+
+	resp.Data = struct {
+		Name  string   `json:"name"`
+		Items []string `json:"items"`
+	}{
+		Name:  filterName,
+		Items: filterNames,
+	}
+	return nil
 }
 
-func (h *websocketHandler) filterPaths(c Command) (*Response, error) {
+func (h *websocketHandler) filterPaths(c Command, resp *Response) error {
 	path, err := c.getPath("path")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	filterName, err := c.getString("name")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	filterItems, ok := h.lib.filters[filterName]
 	if !ok {
-		return nil, fmt.Errorf("invalid filter name: %#v", filterName)
+		return fmt.Errorf("invalid filter name: %#v", filterName)
 	}
 
 	if len(path) != 1 {
-		return nil, fmt.Errorf("invalid path: %#v", path)
+		return fmt.Errorf("invalid path: %#v", path)
 	}
 	name := string(path[0])
 
@@ -473,19 +467,17 @@ func (h *websocketHandler) filterPaths(c Command) (*Response, error) {
 		}
 	}
 	if item == nil {
-		return nil, fmt.Errorf("invalid filter item: %#v", name)
+		return fmt.Errorf("invalid filter item: %#v", name)
 	}
 
-	return &Response{
-		Action: c.Action,
-		Data: struct {
-			Path  index.Path  `json:"path"`
-			Paths index.Group `json:"paths"`
-		}{
-			Path:  index.PathFromStringSlice([]string{filterName, name}),
-			Paths: h.lib.ExpandPaths(item.Paths()),
-		},
-	}, nil
+	resp.Data = struct {
+		Path  index.Path  `json:"path"`
+		Paths index.Group `json:"paths"`
+	}{
+		Path:  index.PathFromStringSlice([]string{filterName, name}),
+		Paths: h.lib.ExpandPaths(item.Paths()),
+	}
+	return nil
 }
 
 // Lister is an interface which defines the List method.
@@ -512,10 +504,10 @@ func filterByRootLister(l Lister, paths []index.Path) []index.Path {
 	return result
 }
 
-func (h *websocketHandler) fetchPathList(c Command) (*Response, error) {
+func (h *websocketHandler) fetchPathList(c Command, resp *Response) error {
 	name, err := c.getString("name")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	var paths []index.Path
@@ -532,33 +524,29 @@ func (h *websocketHandler) fetchPathList(c Command) (*Response, error) {
 		paths = filterByRootLister(h.meta.checklist, paths)
 	}
 
-	return &Response{
-		Action: c.Action,
-		Data: struct {
-			Name string      `json:"name"`
-			Data index.Group `json:"data"`
-		}{
-			Name: name,
-			Data: h.lib.ExpandPaths(paths),
-		},
-	}, nil
+	resp.Data = struct {
+		Name string      `json:"name"`
+		Data index.Group `json:"data"`
+	}{
+		Name: name,
+		Data: h.lib.ExpandPaths(paths),
+	}
+	return nil
 }
 
-func (h *websocketHandler) search(c Command) (*Response, error) {
+func (h *websocketHandler) search(c Command, resp *Response) error {
 	input, err := c.getString("input")
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	paths := h.searcher.Search(input)
 	if h.searcher.same {
-		return nil, nil
+		return nil
 	}
 
-	return &Response{
-		Action: c.Action,
-		Data:   h.lib.ExpandPaths(paths),
-	}, nil
+	resp.Data = h.lib.ExpandPaths(paths)
+	return nil
 }
 
 // WebsocketPlayer creates a player.Player which sends commands down the websocket.Conn when
