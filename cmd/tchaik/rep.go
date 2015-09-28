@@ -107,7 +107,19 @@ func (t *Track) GetInt(field string) int {
 }
 
 func (t *Track) MarshalJSON() ([]byte, error) {
-	return json.Marshal(track{
+	return json.Marshal(struct {
+		ID          string   `json:"id,omitempty"`
+		Name        string   `json:"name,omitempty"`
+		Album       string   `json:"album,omitempty"`
+		Artist      []string `json:"artist,omitempty"`
+		AlbumArtist []string `json:"albumArtist,omitempty"`
+		Composer    []string `json:"composer,omitempty"`
+		Kind        string   `json:"kind,omitempty"`
+		Year        int      `json:"year,omitempty"`
+		DiscNumber  int      `json:"discNumber,omitempty"`
+		TotalTime   int      `json:"totalTime,omitempty"`
+		BitRate     int      `json:"bitRate,omitempty"`
+	}{
 		ID:          t.GetString("ID"),
 		Name:        t.GetString("Name"),
 		TotalTime:   t.GetInt("TotalTime"),
@@ -120,6 +132,25 @@ func (t *Track) MarshalJSON() ([]byte, error) {
 		DiscNumber:  t.GetInt("DiscNumber"),
 		BitRate:     t.GetInt("BitRate"),
 	})
+}
+
+type group struct {
+	Name        string        `json:"name"`
+	Key         index.Key     `json:"key"`
+	TotalTime   interface{}   `json:"totalTime,omitempty"`
+	Artist      interface{}   `json:"artist,omitempty"`
+	AlbumArtist interface{}   `json:"albumArtist,omitempty"`
+	Composer    interface{}   `json:"composer,omitempty"`
+	BitRate     interface{}   `json:"bitRate,omitempty"`
+	DiscNumber  interface{}   `json:"discNumber,omitempty"`
+	ListStyle   interface{}   `json:"listStyle,omitempty"`
+	ID          interface{}   `json:"id,omitempty"`
+	Year        interface{}   `json:"year,omitempty"`
+	Kind        interface{}   `json:"kind,omitempty"`
+	Favourite   interface{}   `json:"favourite,omitempty"`
+	Checklist   interface{}   `json:"checklist,omitempty"`
+	Groups      []group       `json:"groups,omitempty"`
+	Tracks      []index.Track `json:"tracks,omitempty"`
 }
 
 func (g *Group) build() group {
@@ -182,37 +213,4 @@ func (r *rootCollection) Get(k index.Key) index.Group {
 	g = index.CommonGroupAttr(commonFields, g)
 	g = index.RemoveEmptyCollections(g)
 	return g
-}
-
-type group struct {
-	Name        string        `json:"name"`
-	Key         index.Key     `json:"key"`
-	TotalTime   interface{}   `json:"totalTime,omitempty"`
-	Artist      interface{}   `json:"artist,omitempty"`
-	AlbumArtist interface{}   `json:"albumArtist,omitempty"`
-	Composer    interface{}   `json:"composer,omitempty"`
-	BitRate     interface{}   `json:"bitRate,omitempty"`
-	DiscNumber  interface{}   `json:"discNumber,omitempty"`
-	ListStyle   interface{}   `json:"listStyle,omitempty"`
-	ID          interface{}   `json:"id,omitempty"`
-	Year        interface{}   `json:"year,omitempty"`
-	Kind        interface{}   `json:"kind,omitempty"`
-	Favourite   interface{}   `json:"favourite,omitempty"`
-	Checklist   interface{}   `json:"checklist,omitempty"`
-	Groups      []group       `json:"groups,omitempty"`
-	Tracks      []index.Track `json:"tracks,omitempty"`
-}
-
-type track struct {
-	ID          string   `json:"id,omitempty"`
-	Name        string   `json:"name,omitempty"`
-	Album       string   `json:"album,omitempty"`
-	Artist      []string `json:"artist,omitempty"`
-	AlbumArtist []string `json:"albumArtist,omitempty"`
-	Composer    []string `json:"composer,omitempty"`
-	Kind        string   `json:"kind,omitempty"`
-	Year        int      `json:"year,omitempty"`
-	DiscNumber  int      `json:"discNumber,omitempty"`
-	TotalTime   int      `json:"totalTime,omitempty"`
-	BitRate     int      `json:"bitRate,omitempty"`
 }
