@@ -67,7 +67,7 @@ type Track struct {
 	group index.Group
 }
 
-func (t *Track) getString(field string) string {
+func (t *Track) GetString(field string) string {
 	// Always return the default value for these fields.
 	if field == "ID" || field == "Name" {
 		return t.Track.GetString(field)
@@ -79,14 +79,14 @@ func (t *Track) getString(field string) string {
 	return t.Track.GetString(field)
 }
 
-func (t *Track) getStrings(field string) []string {
+func (t *Track) GetStrings(field string) []string {
 	if t.group.Field(field) != nil {
 		return nil
 	}
 	return t.Track.GetStrings(field)
 }
 
-func (t *Track) getInt(field string) int {
+func (t *Track) GetInt(field string) int {
 	if field == "TotalTime" {
 		return t.Track.GetInt(field)
 	}
@@ -102,14 +102,14 @@ func (t *Track) MarshalJSON() ([]byte, error) {
 		ID:          t.GetString("ID"),
 		Name:        t.GetString("Name"),
 		TotalTime:   t.GetInt("TotalTime"),
-		Artist:      t.getStrings("Artist"),
-		AlbumArtist: t.getStrings("AlbumArtist"),
-		Composer:    t.getStrings("Composer"),
-		Album:       t.getString("Album"),
-		Kind:        t.getString("Kind"),
-		Year:        t.getInt("Year"),
-		DiscNumber:  t.getInt("DiscNumber"),
-		BitRate:     t.getInt("BitRate"),
+		Artist:      t.GetStrings("Artist"),
+		AlbumArtist: t.GetStrings("AlbumArtist"),
+		Composer:    t.GetStrings("Composer"),
+		Album:       t.GetString("Album"),
+		Kind:        t.GetString("Kind"),
+		Year:        t.GetInt("Year"),
+		DiscNumber:  t.GetInt("DiscNumber"),
+		BitRate:     t.GetInt("BitRate"),
 	})
 }
 
