@@ -18,6 +18,11 @@ type Group struct {
 	Key index.Key
 }
 
+// MarshalJSON implements json.Marshaler.
+func (g *Group) MarshalJSON() ([]byte, error) {
+	return json.Marshal(g.build())
+}
+
 // StringSliceEqual is a function used to compare two interface{} types which are assumed
 // to be of type []string (or interface{}(nil)).
 func StringSliceEqual(x, y interface{}) bool {
@@ -61,12 +66,14 @@ func buildCollection(h group, c index.Collection) group {
 	return h
 }
 
+// Track is a simple wrapper for an index.Track.
 type Track struct {
 	index.Track
 
 	group index.Group
 }
 
+// GetString implements index.Track.
 func (t *Track) GetString(field string) string {
 	// Always return the default value for these fields.
 	if field == "ID" || field == "Name" {
@@ -79,6 +86,7 @@ func (t *Track) GetString(field string) string {
 	return t.Track.GetString(field)
 }
 
+// GetStrings implements index.Track.
 func (t *Track) GetStrings(field string) []string {
 	if t.group.Field(field) != nil {
 		return nil
@@ -86,6 +94,7 @@ func (t *Track) GetStrings(field string) []string {
 	return t.Track.GetStrings(field)
 }
 
+// GetInt implements index.Track.
 func (t *Track) GetInt(field string) int {
 	if field == "TotalTime" {
 		return t.Track.GetInt(field)
@@ -173,10 +182,6 @@ func (r *rootCollection) Get(k index.Key) index.Group {
 	g = index.CommonGroupAttr(commonFields, g)
 	g = index.RemoveEmptyCollections(g)
 	return g
-}
-
-func (g *Group) MarshalJSON() ([]byte, error) {
-	return json.Marshal(g.build())
 }
 
 type group struct {
