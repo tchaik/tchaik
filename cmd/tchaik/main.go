@@ -27,12 +27,8 @@ import (
 
 	"tchaik.com/index"
 	"tchaik.com/index/attr"
-	"tchaik.com/index/checklist"
-	"tchaik.com/index/cursor"
-	"tchaik.com/index/favourite"
-	"tchaik.com/index/history"
+
 	"tchaik.com/index/itl"
-	"tchaik.com/index/playlist"
 	"tchaik.com/index/walk"
 	"tchaik.com/store"
 	"tchaik.com/store/cmdflag"
@@ -180,49 +176,11 @@ func main() {
 	searcher := buildSearchIndex(root)
 	fmt.Println("done.")
 
-	fmt.Printf("Loading play history...")
-	playHistoryStore, err := history.NewStore(playHistoryPath)
+	meta, err := loadLocalMeta()
 	if err != nil {
-		fmt.Printf("\nerror loading play history: %v", err)
+		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println("done.")
-
-	fmt.Printf("Loading favourites...")
-	favouriteStore, err := favourite.NewStore(favouritesPath)
-	if err != nil {
-		fmt.Printf("\nerror loading favourites: %v", err)
-		os.Exit(1)
-	}
-	fmt.Println("done.")
-
-	fmt.Printf("Loading checklist...")
-	checklistStore, err := checklist.NewStore(checklistPath)
-	if err != nil {
-		fmt.Printf("\nerror loading checklist: %v", err)
-		os.Exit(1)
-	}
-	fmt.Println("done.")
-
-	fmt.Printf("Loading playlists...")
-	playlistStore, err := playlist.NewStore(playlistPath)
-	if err != nil {
-		fmt.Printf("\nerror loading playlists: %v", err)
-		os.Exit(1)
-	}
-	// TODO(dhowden): remove this once we can better intialise the "Default" playlist
-	if p := playlistStore.Get("Default"); p == nil {
-		playlistStore.Set("Default", &playlist.Playlist{})
-	}
-	fmt.Println("done")
-
-	fmt.Printf("Loading cursors...")
-	cursorStore, err := cursor.NewStore(cursorPath)
-	if err != nil {
-		fmt.Printf("\nerror loading cursor: %v", err)
-		os.Exit(1)
-	}
-	fmt.Println("done")
 
 	mediaFileSystem, artworkFileSystem, err := cmdflag.Stores()
 	if err != nil {
@@ -253,14 +211,6 @@ func main() {
 		},
 		recent:   recent,
 		searcher: searcher,
-	}
-
-	meta := &Meta{
-		history:    playHistoryStore,
-		favourites: favouriteStore,
-		checklist:  checklistStore,
-		playlists:  playlistStore,
-		cursors:    cursorStore,
 	}
 
 	h := NewHandler(lib, meta, mediaFileSystem, artworkFileSystem)
