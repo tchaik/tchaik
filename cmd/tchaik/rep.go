@@ -44,23 +44,37 @@ func StringSliceEqual(x, y interface{}) bool {
 	return true
 }
 
-func buildCollection(h group, c index.Collection) group {
-	getField := func(f string, g index.Group, c index.Collection) interface{} {
-		if StringSliceEqual(g.Field(f), c.Field(f)) {
+type groupField struct {
+	index.Group
+
+	collection index.Collection
+}
+
+func (g groupField) Field(field string) interface{} {
+	if field == "AlbumArtist" || field == "Artist" {
+		if StringSliceEqual(g.Group.Field(field), g.collection.Field(field)) {
 			return nil
 		}
-		return g.Field(f)
 	}
+	return g.Group.Field(field)
+}
 
+func buildCollection(h group, c index.Collection) group {
 	for _, k := range c.Keys() {
 		g := c.Get(k)
 		g = index.FirstTrackAttr(attr.Strings("AlbumArtist"), g)
 		g = index.CommonGroupAttr([]attr.Interface{attr.Strings("Artist")}, g)
+
+		g = groupField{
+			Group:      g,
+			collection: c,
+		}
+
 		h.Groups = append(h.Groups, group{
 			Name:        g.Name(),
 			Key:         k,
-			AlbumArtist: getField("AlbumArtist", g, c),
-			Artist:      getField("Artist", g, c),
+			AlbumArtist: g.Field("AlbumArtist"),
+			Artist:      g.Field("Artist"),
 		})
 	}
 	return h
