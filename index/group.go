@@ -47,7 +47,7 @@ func Collect(t Tracker, c Collector) Collection {
 }
 
 // CollectionPaths creates a slice of Paths which contains the path for each immediate Group
-// in the Ccollection.
+// in the Collection.
 func CollectionPaths(c Collection, root Path) []Path {
 	keys := c.Keys()
 	paths := make([]Path, len(keys))
