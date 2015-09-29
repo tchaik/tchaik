@@ -23,9 +23,9 @@ func (g *Group) MarshalJSON() ([]byte, error) {
 	return json.Marshal(g.build())
 }
 
-// StringSliceEqual is a function used to compare two interface{} types which are assumed
+// stringSliceEqual is a function used to compare two interface{} types which are assumed
 // to be of type []string (or interface{}(nil)).
-func StringSliceEqual(x, y interface{}) bool {
+func stringSliceEqual(x, y interface{}) bool {
 	// Annoyingly we have to cater for zero values from map[string]interface{}
 	// which don't have the correct type wrapping the nil.
 	if x == nil || y == nil {
@@ -52,7 +52,7 @@ type groupField struct {
 
 func (g groupField) Field(field string) interface{} {
 	if field == "AlbumArtist" || field == "Artist" {
-		if StringSliceEqual(g.Group.Field(field), g.collection.Field(field)) {
+		if stringSliceEqual(g.Group.Field(field), g.collection.Field(field)) {
 			return nil
 		}
 	}
