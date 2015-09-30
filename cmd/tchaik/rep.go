@@ -20,7 +20,34 @@ type Group struct {
 
 // MarshalJSON implements json.Marshaler.
 func (g *Group) MarshalJSON() ([]byte, error) {
-	return json.Marshal(g.build())
+	h := group{
+		Name:        g.Name(),
+		Key:         g.Key,
+		TotalTime:   g.Field("TotalTime"),
+		Artist:      g.Field("Artist"),
+		AlbumArtist: g.Field("AlbumArtist"),
+		Composer:    g.Field("Composer"),
+		Year:        g.Field("Year"),
+		BitRate:     g.Field("BitRate"),
+		DiscNumber:  g.Field("DiscNumber"),
+		ListStyle:   g.Field("ListStyle"),
+		Kind:        g.Field("Kind"),
+		ID:          g.Field("ID"),
+		Favourite:   g.Field("Favourite"),
+		Checklist:   g.Field("Checklist"),
+	}
+
+	if c, ok := g.Group.(index.Collection); ok {
+		return json.Marshal(buildCollection(h, c))
+	}
+
+	for _, t := range g.Tracks() {
+		h.Tracks = append(h.Tracks, &Track{
+			Track: t,
+			group: g,
+		})
+	}
+	return json.Marshal(h)
 }
 
 // stringSliceEqual is a function used to compare two interface{} types which are assumed
@@ -165,37 +192,6 @@ type group struct {
 	Checklist   interface{}   `json:"checklist,omitempty"`
 	Groups      []group       `json:"groups,omitempty"`
 	Tracks      []index.Track `json:"tracks,omitempty"`
-}
-
-func (g *Group) build() group {
-	h := group{
-		Name:        g.Name(),
-		Key:         g.Key,
-		TotalTime:   g.Field("TotalTime"),
-		Artist:      g.Field("Artist"),
-		AlbumArtist: g.Field("AlbumArtist"),
-		Composer:    g.Field("Composer"),
-		Year:        g.Field("Year"),
-		BitRate:     g.Field("BitRate"),
-		DiscNumber:  g.Field("DiscNumber"),
-		ListStyle:   g.Field("ListStyle"),
-		Kind:        g.Field("Kind"),
-		ID:          g.Field("ID"),
-		Favourite:   g.Field("Favourite"),
-		Checklist:   g.Field("Checklist"),
-	}
-
-	if c, ok := g.Group.(index.Collection); ok {
-		return buildCollection(h, c)
-	}
-
-	for _, t := range g.Tracks() {
-		h.Tracks = append(h.Tracks, &Track{
-			Track: t,
-			group: g,
-		})
-	}
-	return h
 }
 
 type rootCollection struct {
