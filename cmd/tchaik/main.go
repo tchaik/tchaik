@@ -72,21 +72,24 @@ func init() {
 	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind `address` for trace HTTP server")
 }
 
-func readLibrary() (index.Library, error) {
-	var count int
-	check := func(x string) {
+type emptyCount int
+
+func (e *emptyCount) check(list ...string) {
+	for _, x := range list {
 		if x != "" {
-			count++
+			*e++
 		}
 	}
-	check(itlXML)
-	check(tchLib)
-	check(walkPath)
+}
+
+func readLibrary() (index.Library, error) {
+	e := emptyCount(0)
+	e.check(itlXML, tchLib, walkPath)
 
 	switch {
-	case count == 0:
+	case e == 0:
 		return nil, fmt.Errorf("must specify one library file or a path to build one from (-itlXML, -lib or -path)")
-	case count > 1:
+	case e > 1:
 		return nil, fmt.Errorf("must only specify one library file or a path to build one from (-itlXML, -lib or -path)")
 	}
 
