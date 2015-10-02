@@ -99,7 +99,7 @@ func PathFromStringSlice(s []string) Path {
 	return p
 }
 
-// PathFromInterface reconstructs a Path from the given JSON-parsed interface{}
+// PathFromJSONInterface reconstructs a Path from the given JSON-parsed interface{}
 func PathFromJSONInterface(raw interface{}) (Path, error) {
 	rawSlice, ok := raw.([]interface{})
 	if !ok {
@@ -155,7 +155,7 @@ func (c stringFreqSlice) Less(i, j int) bool {
 	return c[i].k < c[j].k
 }
 
-// Compute the intersection of the given lists of paths.
+// OrderedIntersection computes the intersection of the given lists of paths.
 func OrderedIntersection(paths ...[]Path) []Path {
 	if len(paths) == 0 {
 		return []Path{}
@@ -212,7 +212,7 @@ func Union(l ...[]Path) []Path {
 	}
 
 	done := make(map[string]bool)
-	res := make([]Path, 0)
+	var res []Path
 	for _, paths := range l {
 		for _, path := range paths {
 			e := path.Encode()

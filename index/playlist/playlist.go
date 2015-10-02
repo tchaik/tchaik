@@ -19,7 +19,7 @@ type Transformer interface {
 	Transform() string
 }
 
-// RemoveItem is a type which defines a RemovePath action for a specific index.Path, which
+// RemovePath is a type which defines a RemovePath action for a specific index.Path, which
 // removes a path from a playlist item.
 type RemovePath index.Path
 
@@ -28,6 +28,7 @@ func (RemovePath) Transform() string {
 	return "remove"
 }
 
+// Implements json.Marshaler.
 func (r RemovePath) MarshalJSON() ([]byte, error) {
 	exp := struct {
 		Action string     `json:"action"`

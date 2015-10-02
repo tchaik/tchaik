@@ -79,7 +79,7 @@ func GroupFromPath(g Group, p Path) (Group, error) {
 	return g, nil
 }
 
-// NewCollection creates a new collection from a source collection `c` which will have the groups
+// NewPathsCollection creates a new collection from a source collection `c` which will contain the groups
 // represented by the given list of paths.
 func NewPathsCollection(src Collection, paths []Path) Collection {
 	done := make(map[Key]bool)
@@ -292,6 +292,7 @@ func (tps trackPathSorter) Len() int           { return len(tps.tp) }
 func (tps trackPathSorter) Swap(i, j int)      { tps.tp[i], tps.tp[j] = tps.tp[j], tps.tp[i] }
 func (tps trackPathSorter) Less(i, j int) bool { return tps.fn(tps.tp[i].t, tps.tp[j].t) }
 
+// Recent returns a list of paths which are the n most recently added paths.
 func Recent(c Collection, n int) []Path {
 	var trackPaths []trackPath
 	walkfn := func(t Track, p Path) error {
