@@ -72,9 +72,9 @@ func init() {
 	flag.StringVar(&traceListenAddr, "trace-listen", "", "bind `address` for trace HTTP server")
 }
 
-type emptyCount int
+type assignedCount int
 
-func (e *emptyCount) check(list ...string) {
+func (e *assignedCount) check(list ...string) {
 	for _, x := range list {
 		if x != "" {
 			*e++
@@ -83,7 +83,7 @@ func (e *emptyCount) check(list ...string) {
 }
 
 func readLibrary() (index.Library, error) {
-	e := emptyCount(0)
+	e := assignedCount(0)
 	e.check(itlXML, tchLib, walkPath)
 
 	switch {
