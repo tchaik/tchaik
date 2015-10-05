@@ -236,7 +236,7 @@ func (s *wordSearchIntersect) Search(x string) []Path {
 
 // WordsSearchIntersect calls Search on the Searcher for each word in the input string
 // and then returns the ordered intersection (Paths are ordered by the number of times
-// they appear.
+// they appear).
 func WordsIntersectSearcher(s Searcher) Searcher {
 	return &wordSearchIntersect{
 		Searcher: s,
