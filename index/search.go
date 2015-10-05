@@ -87,9 +87,8 @@ func (s *wordIndex) AddString(x string, p Path) {
 
 // Expander is an interface which implements the Expand method.
 type Expander interface {
-	// Expand the given string, returning the result and true if successful, or false
-	// otherwise.
-	Expand(string) ([]string, bool)
+	// Expand the given string into a list of alternatives.
+	Expand(string) []string
 }
 
 // MinPrefix is the minimum number of characters that can be used in a prefix.
@@ -128,15 +127,15 @@ func BuildPrefixMultiExpander(words []string, n int) PrefixMultiExpand {
 }
 
 // Expand uses the prefix mapping to return a list of words which can be expanded from s.
-func (p PrefixMultiExpand) Expand(s string) ([]string, bool) {
+func (p PrefixMultiExpand) Expand(s string) []string {
 	if len(s) < MinPrefix {
-		return nil, false
+		return []string{s}
 	}
 	if len(s) > p.size {
 		// TODO: filter this with edit distance
-		return p.words[s[:p.size]], true
+		return p.words[s[:p.size]]
 	}
-	return p.words[s], true
+	return p.words[s]
 }
 
 // expandSearcher is an implementation of Searcher which applies the Expander to search
@@ -151,10 +150,7 @@ type expandSearcher struct {
 // in the search expression and unions the results (deduping). Returns nil when
 // the search term isn't above the MinPrefix.
 func (es *expandSearcher) Search(s string) []Path {
-	e, ok := es.Expander.Expand(s)
-	if !ok {
-		return nil
-	}
+	e := es.Expander.Expand(s)
 	ps := make([][]Path, len(e))
 	for i, w := range e {
 		ps[i] = es.Searcher.Search(w)

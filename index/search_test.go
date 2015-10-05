@@ -44,14 +44,14 @@ func TestPrefixMultiExpander(t *testing.T) {
 			[]string{"hello"},
 			3,
 			"he",
-			nil,
+			[]string{"he"},
 		},
 
 		{
 			[]string{"hello"},
 			3,
 			"x",
-			nil,
+			[]string{"x"},
 		},
 
 		{
@@ -98,7 +98,7 @@ func TestPrefixMultiExpander(t *testing.T) {
 
 	for ii, tt := range tests {
 		pm := BuildPrefixMultiExpander(tt.words, tt.n)
-		got, _ := pm.Expand(tt.in)
+		got := pm.Expand(tt.in)
 		if !reflect.DeepEqual(stringSet(tt.out), stringSet(got)) {
 			t.Errorf("[%d] Expand(%#v) = %#v expected: %#v (compared unordered)", ii, tt.in, got, tt.out)
 		}
