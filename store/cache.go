@@ -121,7 +121,7 @@ func (c CachedErrorFileSystem) Open(ctx context.Context, path string) (http.File
 	err, ok := c.getError(path)
 	if ok {
 		return nil, &CachedError{
-			Err:err,
+			Err: err,
 		}
 	}
 
