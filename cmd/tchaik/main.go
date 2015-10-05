@@ -142,27 +142,10 @@ func buildRootCollection(l index.Library) index.Collection {
 
 func main() {
 	flag.Parse()
+
 	l, err := readLibrary()
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
-		os.Exit(1)
-	}
-
-	fmt.Printf("Building root collection...")
-	root := buildRootCollection(l)
-	fmt.Println("done.")
-
-	fmt.Printf("Processing artist names and composers...")
-	rootSplit := index.SubTransform(root, index.SplitList("Artist", "Composer"))
-	fmt.Println("done.")
-
-	fmt.Printf("Building recent index...")
-	recent := index.Recent(root, 150)
-	fmt.Println("done.")
-
-	meta, err := loadLocalMeta()
-	if err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 
@@ -184,19 +167,12 @@ func main() {
 		}()
 	}
 
-	lib := Library{
-		Library: l,
-		collections: map[string]index.Collection{
-			"Root": root,
-		},
-		filters: map[string]index.Filter{
-			"Artist":   newBootstrapFilter(rootSplit, attr.Strings("Artist")),
-			"Composer": newBootstrapFilter(rootSplit, attr.Strings("Composer")),
-		},
-		recent:   recent,
-		searcher: newBootstrapSearcher(root),
+	lib := NewLibrary(l)
+	meta, err := loadLocalMeta()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
-
 	h := NewHandler(lib, meta, mediaFileSystem, artworkFileSystem)
 
 	if certFile != "" && keyFile != "" {

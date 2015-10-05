@@ -27,6 +27,33 @@ type Library struct {
 	searcher    index.Searcher
 }
 
+func NewLibrary(l index.Library) Library {
+	fmt.Printf("Building root collection...")
+	root := buildRootCollection(l)
+	fmt.Println("done.")
+
+	fmt.Printf("Processing artist names and composers...")
+	rootSplit := index.SubTransform(root, index.SplitList("Artist", "Composer"))
+	fmt.Println("done.")
+
+	fmt.Printf("Building recent index...")
+	recent := index.Recent(root, 150)
+	fmt.Println("done.")
+
+	return Library{
+		Library: l,
+		collections: map[string]index.Collection{
+			"Root": root,
+		},
+		filters: map[string]index.Filter{
+			"Artist":   newBootstrapFilter(rootSplit, attr.Strings("Artist")),
+			"Composer": newBootstrapFilter(rootSplit, attr.Strings("Composer")),
+		},
+		recent:   recent,
+		searcher: newBootstrapSearcher(root),
+	}
+}
+
 type libraryFileSystem struct {
 	store.FileSystem
 	index.Library
