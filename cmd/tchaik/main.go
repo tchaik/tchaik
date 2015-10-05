@@ -140,13 +140,6 @@ func buildRootCollection(l index.Library) index.Collection {
 	return root
 }
 
-func buildSearchIndex(c index.Collection) index.Searcher {
-	wi := index.BuildCollectionWordIndex(c, []string{"Composer", "Artist", "Album", "Name"})
-	return index.FlatSearcher{
-		Searcher: index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10)),
-	}
-}
-
 func main() {
 	flag.Parse()
 	l, err := readLibrary()
@@ -173,10 +166,6 @@ func main() {
 
 	fmt.Printf("Building recent index...")
 	recent := index.Recent(root, 150)
-	fmt.Println("done.")
-
-	fmt.Printf("Building search index...")
-	searcher := buildSearchIndex(root)
 	fmt.Println("done.")
 
 	meta, err := loadLocalMeta()
@@ -213,7 +202,7 @@ func main() {
 			"Composer": composers,
 		},
 		recent:   recent,
-		searcher: searcher,
+		searcher: newBootstrapSearcher(root),
 	}
 
 	h := NewHandler(lib, meta, mediaFileSystem, artworkFileSystem)
