@@ -444,13 +444,13 @@ func (h *websocketHandler) filterList(c Command, resp *Response) error {
 		return err
 	}
 
-	filterItems, ok := h.lib.filters[filterName]
+	filter, ok := h.lib.filters[filterName]
 	if !ok {
 		return fmt.Errorf("invalid filter name: %#v", filterName)
 	}
 
-	filterNames := make([]string, len(filterItems))
-	for i, x := range filterItems {
+	filterNames := make([]string, len(filter.Items()))
+	for i, x := range filter.Items() {
 		filterNames[i] = x.Name()
 	}
 
@@ -475,7 +475,7 @@ func (h *websocketHandler) filterPaths(c Command, resp *Response) error {
 		return err
 	}
 
-	filterItems, ok := h.lib.filters[filterName]
+	filter, ok := h.lib.filters[filterName]
 	if !ok {
 		return fmt.Errorf("invalid filter name: %#v", filterName)
 	}
@@ -486,7 +486,7 @@ func (h *websocketHandler) filterPaths(c Command, resp *Response) error {
 	name := string(path[0])
 
 	var item index.FilterItem
-	for _, x := range filterItems {
+	for _, x := range filter.Items() {
 		if x.Name() == name {
 			item = x
 			break

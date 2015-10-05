@@ -41,8 +41,23 @@ func (f *filterItem) Fields() map[string]interface{} { return f.fields }
 // Paths implements FilterItem.
 func (f *filterItem) Paths() []Path { return f.paths }
 
-// Filter creates a slice of FilterItems, each FilterItem is a
-func Filter(c Collection, field attr.Interface) []FilterItem {
+// Filter is an iterface which defines the Items method.
+type Filter interface {
+	// Items returns a list of FilterItems.
+	Items() []FilterItem
+}
+
+type filter struct {
+	items []FilterItem
+}
+
+func (f filter) Items() []FilterItem {
+	return f.items
+}
+
+// FilterCollection creates Filter of the Collection using fields to partition
+// Tracks in a collection.
+func FilterCollection(c Collection, field attr.Interface) Filter {
 	m := make(map[string][]Path)
 	walkfn := func(t Track, p Path) error {
 		f := field.Value(t)
@@ -58,14 +73,14 @@ func Filter(c Collection, field attr.Interface) []FilterItem {
 	}
 	Walk(c, Path([]Key{"Root"}), walkfn)
 
-	result := make([]FilterItem, 0, len(m))
+	items := make([]FilterItem, 0, len(m))
 	for k, v := range m {
-		result = append(result, &filterItem{
+		items = append(items, &filterItem{
 			name:   k,
 			fields: make(map[string]interface{}),
 			paths:  Union(v),
 		})
 	}
-	sort.Sort(FilterItemSlice(result))
-	return result
+	sort.Sort(FilterItemSlice(items))
+	return filter{items}
 }

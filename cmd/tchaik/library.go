@@ -22,7 +22,7 @@ type Library struct {
 	index.Library
 
 	collections map[string]index.Collection
-	filters     map[string][]index.FilterItem
+	filters     map[string]index.Filter
 	recent      []index.Path
 	searcher    index.Searcher
 }

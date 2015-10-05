@@ -157,11 +157,11 @@ func main() {
 	fmt.Println("done.")
 
 	fmt.Printf("Building artists filter...")
-	artists := index.Filter(rootSplit, attr.Strings("Artist"))
+	artists := index.FilterCollection(rootSplit, attr.Strings("Artist"))
 	fmt.Println("done.")
 
 	fmt.Printf("Building composers filter...")
-	composers := index.Filter(rootSplit, attr.Strings("Composer"))
+	composers := index.FilterCollection(rootSplit, attr.Strings("Composer"))
 	fmt.Println("done.")
 
 	fmt.Printf("Building recent index...")
@@ -197,7 +197,7 @@ func main() {
 		collections: map[string]index.Collection{
 			"Root": root,
 		},
-		filters: map[string][]index.FilterItem{
+		filters: map[string]index.Filter{
 			"Artist":   artists,
 			"Composer": composers,
 		},
