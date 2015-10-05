@@ -224,7 +224,7 @@ func (s *wordSearchIntersect) Search(x string) []Path {
 	if len(x) < s.min {
 		return make([]Path, 0)
 	}
-	words := strings.Fields(strings.ToLower(x))
+	words := strings.Fields(x)
 	paths := make([][]Path, 0, len(words))
 	for _, w := range words {
 		if len(w) >= s.min {
