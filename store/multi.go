@@ -11,15 +11,13 @@ import (
 )
 
 // multiFileSystem implements FileSystem wrapping a list of FileSystems.
-type multiFileSystem struct {
-	fileSystems []FileSystem
-}
+type multiFileSystem []FileSystem
 
 // Open implements FileSystem
-func (mfs *multiFileSystem) Open(ctx context.Context, name string) (http.File, error) {
+func (mfs multiFileSystem) Open(ctx context.Context, name string) (http.File, error) {
 	var err error
 	var f http.File
-	for _, fs := range mfs.fileSystems {
+	for _, fs := range mfs {
 		f, err = fs.Open(ctx, name)
 		if err == nil {
 			return f, err
@@ -33,7 +31,5 @@ func (mfs *multiFileSystem) Open(ctx context.Context, name string) (http.File, e
 // one returns without error. If all return errors, then we pass the result back to
 // the caller.
 func MultiFileSystem(fs ...FileSystem) FileSystem {
-	return &multiFileSystem{
-		fileSystems: fs,
-	}
+	return multiFileSystem(fs)
 }
