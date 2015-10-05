@@ -14,6 +14,7 @@ import (
 	"golang.org/x/net/websocket"
 
 	"tchaik.com/index"
+	"tchaik.com/index/attr"
 	"tchaik.com/index/cursor"
 	"tchaik.com/index/playlist"
 	"tchaik.com/player"
@@ -112,6 +113,30 @@ func (b *bootstrapSearcher) bootstrap() {
 func (b *bootstrapSearcher) Search(input string) []index.Path {
 	b.once.Do(b.bootstrap)
 	return b.Searcher.Search(input)
+}
+
+func newBootstrapFilter(root index.Collection, field attr.Interface) index.Filter {
+	return &bootstrapFilter{
+		root:  root,
+		field: field,
+	}
+}
+
+type bootstrapFilter struct {
+	once  sync.Once
+	root  index.Collection
+	field attr.Interface
+
+	index.Filter
+}
+
+func (b *bootstrapFilter) bootstrap() {
+	b.Filter = index.FilterCollection(b.root, b.field)
+}
+
+func (b *bootstrapFilter) Items() []index.FilterItem {
+	b.once.Do(b.bootstrap)
+	return b.Filter.Items()
 }
 
 type sameSearcher struct {
