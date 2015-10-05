@@ -117,7 +117,7 @@ func (c *CachedErrorFileSystem) getError(path string) (error, bool) {
 // Open implements FileSystem, and caches errors from the underlying FileSystem.  The first time
 // an error is encountered it is returned unchanged. Subsequent calls with an erroring path
 // return a CachedError-wrapped version of the original error.
-func (c CachedErrorFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+func (c *CachedErrorFileSystem) Open(ctx context.Context, path string) (http.File, error) {
 	err, ok := c.getError(path)
 	if ok {
 		return nil, &CachedError{
