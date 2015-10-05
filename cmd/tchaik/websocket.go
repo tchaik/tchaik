@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"sync"
 
 	"golang.org/x/net/websocket"
 
@@ -86,6 +87,31 @@ func (c Command) getPath(f string) (index.Path, error) {
 	}
 
 	return index.PathFromJSONInterface(raw)
+}
+
+func newBootstrapSearcher(root index.Collection) index.Searcher {
+	return &bootstrapSearcher{
+		root: root,
+	}
+}
+
+type bootstrapSearcher struct {
+	once sync.Once
+	root index.Collection
+
+	index.Searcher
+}
+
+func (b *bootstrapSearcher) bootstrap() {
+	wi := index.BuildCollectionWordIndex(b.root, []string{"Composer", "Artist", "Album", "Name"})
+	b.Searcher = index.FlatSearcher{
+		Searcher: index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10)),
+	}
+}
+
+func (b *bootstrapSearcher) Search(input string) []index.Path {
+	b.once.Do(b.bootstrap)
+	return b.Searcher.Search(input)
 }
 
 type sameSearcher struct {
