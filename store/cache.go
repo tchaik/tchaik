@@ -79,45 +79,74 @@ func (d *dir) Create(ctx context.Context, path string) (io.WriteCloser, error) {
 // Wait implements RWFileSystem.
 func (d *dir) Wait() error { return nil }
 
+// CachedError is an error returned by CachedErrorFileSystems when Open errors are cached
+// rather than live.
+type CachedError struct {
+	Err error
+}
+
+// Error implements error.
+func (c *CachedError) Error() string {
+	return fmt.Sprintf("cached error: %v", c.Err)
+}
+
+// CachedErrorFileSystem provides an error cache to prevent erroring FileSystem requests
+// from being repeated. See open for more details.
+type CachedErrorFileSystem struct {
+	FileSystem
+
+	sync.RWMutex
+	m map[string]error
+}
+
+func (c *CachedErrorFileSystem) setError(path string, err error) {
+	c.Lock()
+	defer c.Unlock()
+
+	c.m[path] = err
+}
+
+func (c *CachedErrorFileSystem) getError(path string) (error, bool) {
+	c.RLock()
+	defer c.RUnlock()
+
+	err, ok := c.m[path]
+	return err, ok
+}
+
+// Open implements FileSystem, and caches errors from the underlying FileSystem.  The first time
+// an error is encountered it is returned unchanged. Subsequent calls with an erroring path
+// return a CachedError-wrapped version of the original error.
+func (c CachedErrorFileSystem) Open(ctx context.Context, path string) (http.File, error) {
+	err, ok := c.getError(path)
+	if ok {
+		return nil, &CachedError{
+			Err:err,
+		}
+	}
+
+	f, err := c.FileSystem.Open(ctx, path)
+	if err != nil {
+		c.setError(path, err)
+		return nil, err
+	}
+	return f, nil
+}
+
 // CachedFileSystem is an implemetation of http.FileServer which caches the results of
 // calls to src in a RWFileSystem.
 type CachedFileSystem struct {
 	src   FileSystem
 	cache RWFileSystem
 
-	mu       sync.RWMutex // protects errCache
-	errCache map[string]error
-
 	errCh chan<- error
 	wg    sync.WaitGroup
-}
-
-// setError sets an error for a path.  This is intended to prevent the src being continually
-// queried after returning a non-temporary failure to retrieve a path.
-// TODO: Better handle temporary errors!
-func (c *CachedFileSystem) setError(path string, err error) {
-	c.mu.Lock()
-	defer c.mu.Unlock()
-
-	c.errCache[path] = err
-}
-
-func (c *CachedFileSystem) error(path string) (err error, exists bool) {
-	c.mu.RLock()
-	defer c.mu.RUnlock()
-
-	err, ok := c.errCache[path]
-	return err, ok
 }
 
 // Open implements FileSystem.  If the required file isn't in the cache
 // then the file is opened from the src, and then concurrently copied into the
 // cache (with errors passed back on the filesystem error channel).
 func (c *CachedFileSystem) Open(ctx context.Context, path string) (http.File, error) {
-	if err, ok := c.error(path); ok {
-		return nil, fmt.Errorf("cached error: %v", err)
-	}
-
 	f, err := c.cache.Open(ctx, path)
 	if err == nil {
 		return f, nil
@@ -125,7 +154,6 @@ func (c *CachedFileSystem) Open(ctx context.Context, path string) (http.File, er
 
 	f, err = c.src.Open(ctx, path)
 	if err != nil {
-		c.setError(path, err)
 		return nil, err
 	}
 
@@ -178,9 +206,8 @@ func (c *CachedFileSystem) Wait() error {
 func NewCachedFileSystem(src FileSystem, cache RWFileSystem) (*CachedFileSystem, <-chan error) {
 	errCh := make(chan error)
 	return &CachedFileSystem{
-		src:      src,
-		cache:    cache,
-		errCh:    errCh,
-		errCache: make(map[string]error),
+		src:   src,
+		cache: cache,
+		errCh: errCh,
 	}, errCh
 }
