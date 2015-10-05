@@ -156,14 +156,6 @@ func main() {
 	rootSplit := index.SubTransform(root, index.SplitList("Artist", "Composer"))
 	fmt.Println("done.")
 
-	fmt.Printf("Building artists filter...")
-	artists := index.FilterCollection(rootSplit, attr.Strings("Artist"))
-	fmt.Println("done.")
-
-	fmt.Printf("Building composers filter...")
-	composers := index.FilterCollection(rootSplit, attr.Strings("Composer"))
-	fmt.Println("done.")
-
 	fmt.Printf("Building recent index...")
 	recent := index.Recent(root, 150)
 	fmt.Println("done.")
@@ -198,8 +190,8 @@ func main() {
 			"Root": root,
 		},
 		filters: map[string]index.Filter{
-			"Artist":   artists,
-			"Composer": composers,
+			"Artist":   newBootstrapFilter(rootSplit, attr.Strings("Artist")),
+			"Composer": newBootstrapFilter(rootSplit, attr.Strings("Composer")),
 		},
 		recent:   recent,
 		searcher: newBootstrapSearcher(root),
