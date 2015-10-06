@@ -23,7 +23,7 @@ type Library struct {
 
 	collections map[string]index.Collection
 	filters     map[string]index.Filter
-	recent      []index.Path
+	recent      Lister
 	searcher    index.Searcher
 }
 
@@ -36,10 +36,6 @@ func NewLibrary(l index.Library) Library {
 	rootSplit := index.SubTransform(root, index.SplitList("Artist", "Composer"))
 	fmt.Println("done.")
 
-	fmt.Printf("Building recent index...")
-	recent := index.Recent(root, 150)
-	fmt.Println("done.")
-
 	return Library{
 		Library: l,
 		collections: map[string]index.Collection{
@@ -49,7 +45,7 @@ func NewLibrary(l index.Library) Library {
 			"Artist":   newBootstrapFilter(rootSplit, attr.Strings("Artist")),
 			"Composer": newBootstrapFilter(rootSplit, attr.Strings("Composer")),
 		},
-		recent:   recent,
+		recent:   &bootstrapRecent{root: root, n: 150},
 		searcher: newBootstrapSearcher(root),
 	}
 }

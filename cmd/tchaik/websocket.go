@@ -139,6 +139,23 @@ func (b *bootstrapFilter) Items() []index.FilterItem {
 	return b.Filter.Items()
 }
 
+type bootstrapRecent struct {
+	once sync.Once
+	root index.Collection
+	n    int
+
+	list []index.Path
+}
+
+func (b *bootstrapRecent) bootstrap() {
+	b.list = index.Recent(b.root, b.n)
+}
+
+func (b *bootstrapRecent) List() []index.Path {
+	b.once.Do(b.bootstrap)
+	return b.list
+}
+
 type sameSearcher struct {
 	index.Searcher
 	paths []index.Path
@@ -564,7 +581,7 @@ func (h *websocketHandler) fetchPathList(c Command, resp *Response) error {
 	var paths []index.Path
 	switch name {
 	case "recent":
-		paths = h.lib.recent
+		paths = h.lib.recent.List()
 
 	case "favourite":
 		paths = index.CollectionPaths(h.lib.collections["Root"], []index.Key{"Root"})
