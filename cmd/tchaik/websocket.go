@@ -156,12 +156,16 @@ func (b *bootstrapRecent) List() []index.Path {
 	return b.list
 }
 
+// sameSearcher is a light wrapper around a index.Searher which caches the path
+// slice returned by Search and sets the attribute `same` to true when subsequent
+// searches return the same result (and hence does not need to be re-transmitted).
 type sameSearcher struct {
 	index.Searcher
 	paths []index.Path
 	same  bool
 }
 
+// Search implements index.Searcher.
 func (r *sameSearcher) Search(input string) []index.Path {
 	paths := r.Searcher.Search(input)
 	r.same = false
