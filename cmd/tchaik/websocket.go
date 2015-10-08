@@ -9,12 +9,10 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"sync"
 
 	"golang.org/x/net/websocket"
 
 	"tchaik.com/index"
-	"tchaik.com/index/attr"
 	"tchaik.com/index/cursor"
 	"tchaik.com/index/playlist"
 	"tchaik.com/player"
@@ -88,72 +86,6 @@ func (c Command) getPath(f string) (index.Path, error) {
 	}
 
 	return index.PathFromJSONInterface(raw)
-}
-
-func newBootstrapSearcher(root index.Collection) index.Searcher {
-	return &bootstrapSearcher{
-		root: root,
-	}
-}
-
-type bootstrapSearcher struct {
-	once sync.Once
-	root index.Collection
-
-	index.Searcher
-}
-
-func (b *bootstrapSearcher) bootstrap() {
-	wi := index.BuildCollectionWordIndex(b.root, []string{"Composer", "Artist", "Album", "Name"})
-	b.Searcher = index.FlatSearcher{
-		Searcher: index.WordsIntersectSearcher(index.BuildPrefixExpandSearcher(wi, wi, 10)),
-	}
-}
-
-func (b *bootstrapSearcher) Search(input string) []index.Path {
-	b.once.Do(b.bootstrap)
-	return b.Searcher.Search(input)
-}
-
-func newBootstrapFilter(root index.Collection, field attr.Interface) index.Filter {
-	return &bootstrapFilter{
-		root:  root,
-		field: field,
-	}
-}
-
-type bootstrapFilter struct {
-	once  sync.Once
-	root  index.Collection
-	field attr.Interface
-
-	index.Filter
-}
-
-func (b *bootstrapFilter) bootstrap() {
-	b.Filter = index.FilterCollection(b.root, b.field)
-}
-
-func (b *bootstrapFilter) Items() []index.FilterItem {
-	b.once.Do(b.bootstrap)
-	return b.Filter.Items()
-}
-
-type bootstrapRecent struct {
-	once sync.Once
-	root index.Collection
-	n    int
-
-	list []index.Path
-}
-
-func (b *bootstrapRecent) bootstrap() {
-	b.list = index.Recent(b.root, b.n)
-}
-
-func (b *bootstrapRecent) List() []index.Path {
-	b.once.Do(b.bootstrap)
-	return b.list
 }
 
 // sameSearcher is a light wrapper around a index.Searher which caches the path
