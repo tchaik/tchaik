@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+// Package itl defines types and methods for creating a Tchaik library representation of
+// an iTunes Library.
 package itl
 
 import (
