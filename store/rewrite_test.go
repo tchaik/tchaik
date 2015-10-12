@@ -19,7 +19,7 @@ func (r *pathRecordFS) Open(ctx context.Context, path string) (http.File, error)
 func TestPathRewrite(t *testing.T) {
 	tests := []struct {
 		trimPrefix, addPrefix string
-		in, out                  string
+		in, out               string
 	}{
 		{
 			"", "", "test", "test",
