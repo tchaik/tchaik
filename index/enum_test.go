@@ -303,3 +303,37 @@ func TestStripEnumPrefix(t *testing.T) {
 		}
 	}
 }
+
+type tracks []Track
+
+func (t tracks) Tracks() []Track {
+	return t
+}
+
+func TestTrimTrackNumPrefix(t *testing.T) {
+	tests := []struct {
+		tracks []testTrack
+		titles []string
+	}{
+		{
+			[]testTrack{
+				testTrack{
+					Name:        "01 One",
+					TrackNumber: 1,
+					DiscNumber:  1,
+				},
+			},
+			[]string{
+				"One",
+			},
+		},
+	}
+
+	for ii, tt := range tests {
+		out := trimTrackNumPrefix("Name", "TrackNumber", "DiscNumber", testTracker(tt.tracks).Tracks())
+		got := trackStrings(tracks(out), "Name")
+		if !reflect.DeepEqual(got, tt.titles) {
+			t.Errorf("[%d] got %#v, expected %#v", ii, got, tt.titles)
+		}
+	}
+}

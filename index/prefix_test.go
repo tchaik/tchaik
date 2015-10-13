@@ -545,15 +545,15 @@ func tracksLen(g Collection) []int {
 func collectionTrackStrings(c Collection, field string) [][]string {
 	result := make([][]string, len(c.Keys()))
 	for i, k := range c.Keys() {
-		result[i] = groupTrackStrings(c.Get(k), field)
+		result[i] = trackStrings(c.Get(k), field)
 	}
 	return result
 }
 
-func groupTrackStrings(g Group, field string) []string {
-	result := make([]string, len(g.Tracks()))
-	for i, t := range g.Tracks() {
-		result[i] = t.GetString(field)
+func trackStrings(t Tracker, field string) []string {
+	result := make([]string, len(t.Tracks()))
+	for i, tr := range t.Tracks() {
+		result[i] = tr.GetString(field)
 	}
 	return result
 }
