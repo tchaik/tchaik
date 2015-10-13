@@ -315,6 +315,13 @@ func TestTrimTrackNumPrefix(t *testing.T) {
 		tracks []testTrack
 		titles []string
 	}{
+		// Empty input
+		{
+			[]testTrack{},
+			[]string{},
+		},
+
+		// One track on one disc.
 		{
 			[]testTrack{
 				testTrack{
@@ -325,6 +332,63 @@ func TestTrimTrackNumPrefix(t *testing.T) {
 			},
 			[]string{
 				"One",
+			},
+		},
+
+		// Two tracks, incorrect prefix on second one.
+		{
+			[]testTrack{
+				testTrack{
+					Name:        "01 One",
+					TrackNumber: 1,
+					DiscNumber:  1,
+				},
+				testTrack{
+					Name:        "03 Two",
+					TrackNumber: 2,
+					DiscNumber:  1,
+				},
+			},
+			[]string{
+				"01 One", "03 Two",
+			},
+		},
+
+		// Two tracks, not consistent on the disc.
+		{
+			[]testTrack{
+				testTrack{
+					Name:        "01 One",
+					TrackNumber: 1,
+					DiscNumber:  1,
+				},
+				testTrack{
+					Name:        "Two",
+					TrackNumber: 2,
+					DiscNumber:  1,
+				},
+			},
+			[]string{
+				"01 One", "Two",
+			},
+		},
+
+		// Two tracks, inconsistent together, but consistent on the discs.
+		{
+			[]testTrack{
+				testTrack{
+					Name:        "01 One",
+					TrackNumber: 1,
+					DiscNumber:  1,
+				},
+				testTrack{
+					Name:        "Two",
+					TrackNumber: 2,
+					DiscNumber:  2,
+				},
+			},
+			[]string{
+				"One", "Two",
 			},
 		},
 	}
