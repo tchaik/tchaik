@@ -22,6 +22,11 @@ func TestSplitMultiple(t *testing.T) {
 		},
 		{
 			"One",
+			nil,
+			[]string{"One"},
+		},
+		{
+			"One",
 			[]string{","},
 			[]string{"One"},
 		},
