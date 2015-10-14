@@ -131,6 +131,27 @@ func TestWordIndex(t *testing.T) {
 				},
 			},
 		},
+		{
+			map[string][]Path{
+				"gustav - mahler": []Path{
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "0"},
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "1"},
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "2"},
+				},
+			},
+			map[string][]Path{
+				"gustav": []Path{
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "0"},
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "1"},
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "2"},
+				},
+				"mahler": []Path{
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "0"},
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "1"},
+					Path{"Root", "Gustav Mahler", "Symphony No 1", "2"},
+				},
+			},
+		},
 	}
 
 	for ii, tt := range tests {
