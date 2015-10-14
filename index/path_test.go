@@ -145,3 +145,37 @@ func TestOrderedIntersection(t *testing.T) {
 		}
 	}
 }
+
+func TestIndexOfPath(t *testing.T) {
+	tests := []struct {
+		haystack []Path
+		needle   Path
+		idx      int
+	}{
+		{
+			[]Path{},
+			Path{},
+			-1,
+		},
+		{
+			[]Path{
+				Path{"Root"},
+			},
+			Path{"Root"},
+			0,
+		}, {
+			[]Path{
+				Path{"Root"}, Path{"Root", "One"},
+			},
+			Path{"Root", "One"},
+			1,
+		},
+	}
+
+	for ii, tt := range tests {
+		i := IndexOfPath(tt.haystack, tt.needle)
+		if i != tt.idx {
+			t.Errorf("[%d] IndexOfPath(%v, %v) = %d, expected %d", ii, tt.haystack, tt.needle, i, tt.idx)
+		}
+	}
+}
