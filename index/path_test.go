@@ -179,3 +179,32 @@ func TestIndexOfPath(t *testing.T) {
 		}
 	}
 }
+
+func TestPathFromJSONInterface(t *testing.T) {
+	tests := []struct {
+		in  interface{}
+		out Path
+	}{
+		{
+			interface{}(nil),
+			Path(nil),
+		},
+
+		{
+			[]interface{}{nil},
+			Path(nil),
+		},
+
+		{
+			[]interface{}{""},
+			Path{""},
+		},
+	}
+
+	for ii, tt := range tests {
+		got, _ := PathFromJSONInterface(tt.in)
+		if !reflect.DeepEqual(got, tt.out) {
+			t.Errorf("[%d] got: %#v, expected %#v", ii, got, tt.out)
+		}
+	}
+}
