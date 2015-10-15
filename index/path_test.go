@@ -146,6 +146,58 @@ func TestOrderedIntersection(t *testing.T) {
 	}
 }
 
+func TestUnion(t *testing.T) {
+	tests := []struct {
+		in  [][]Path
+		out []Path
+	}{
+		{
+			in:  nil,
+			out: []Path{},
+		},
+
+		{
+			in: [][]Path{
+				{stringToPath("A")},
+			},
+			out: []Path{stringToPath("A")},
+		},
+
+		{
+			in: [][]Path{
+				{stringToPath("A")},
+				{stringToPath("B")},
+			},
+			out: []Path{stringToPath("A"), stringToPath("B")},
+		},
+
+		{
+			in: [][]Path{
+				{stringToPath("A")},
+				{stringToPath("B"), stringToPath("A")},
+			},
+			out: []Path{stringToPath("A"), stringToPath("B")},
+		},
+
+		{
+			in: [][]Path{
+				{stringToPath("A"), stringToPath("B")},
+				{stringToPath("B"), stringToPath("A")},
+				{stringToPath("A"), stringToPath("B"), stringToPath("C")},
+				{stringToPath("C"), stringToPath("A"), stringToPath("B"), stringToPath("B")},
+			},
+			out: []Path{stringToPath("A"), stringToPath("B"), stringToPath("C")},
+		},
+	}
+
+	for ii, tt := range tests {
+		got := Union(tt.in...)
+		if !reflect.DeepEqual(got, tt.out) {
+			t.Errorf("[%d] got %#v, expected: %#v", ii, got, tt.out)
+		}
+	}
+}
+
 func TestIndexOfPath(t *testing.T) {
 	tests := []struct {
 		haystack []Path
