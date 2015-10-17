@@ -259,6 +259,11 @@ func TestPathFromJSONInterface(t *testing.T) {
 			[]interface{}{""},
 			Path{""},
 		},
+
+		{
+			[]interface{}{"", 123.},
+			Path{"", "123"},
+		},
 	}
 
 	for ii, tt := range tests {
