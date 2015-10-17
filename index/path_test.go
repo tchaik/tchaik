@@ -44,6 +44,10 @@ func TestPathEqual(t *testing.T) {
 			false,
 		},
 		{
+			stringToPath("a:b"), stringToPath("a:c"),
+			false,
+		},
+		{
 			Path(nil), stringToPath("a"),
 			false,
 		},
@@ -75,6 +79,10 @@ func TestPathContains(t *testing.T) {
 		},
 		{
 			NewPath("a:b"), NewPath("a"),
+			false,
+		},
+		{
+			NewPath("a:b"), NewPath("a:c"),
 			false,
 		},
 		{
