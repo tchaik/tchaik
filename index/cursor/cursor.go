@@ -7,6 +7,7 @@ package cursor
 
 import (
 	"fmt"
+	"sync"
 
 	"tchaik.com/index"
 	"tchaik.com/index/playlist"
@@ -25,6 +26,8 @@ func (p Position) Empty() bool {
 
 // Cursor is a moveable marker on a playlist.
 type Cursor struct {
+	sync.Mutex // protects Current, Next and Previous
+
 	Current  Position `json:"current"`
 	Next     Position `json:"next"`
 	Previous Position `json:"previous"`
@@ -44,14 +47,19 @@ func NewCursor(p *playlist.Playlist, c index.Collection) *Cursor {
 
 // Set sets the value of the playlist cursor to the current position and index.Path.
 func (c *Cursor) Set(i int, p index.Path) {
+	c.Lock()
 	c.Current = Position{Index: i, Path: p}
 	c.Next, _ = c.next(c.Current)
 	c.Previous, _ = c.prev(c.Current)
+	c.Unlock()
 }
 
 // Forward moves the cursor forwards.  Returns an error if the next track could not be found,
 // and sets the Next item to be empty.
 func (c *Cursor) Forward() (err error) {
+	c.Lock()
+	defer c.Unlock()
+
 	if c.Next.Empty() {
 		return nil
 	}
@@ -64,6 +72,9 @@ func (c *Cursor) Forward() (err error) {
 // Backward moves the cursor backwards.  Returns an error if the previous track could not be found,
 // and sets the Previous item to be empty.
 func (c *Cursor) Backward() (err error) {
+	c.Lock()
+	defer c.Unlock()
+
 	if c.Previous.Empty() {
 		return nil
 	}
