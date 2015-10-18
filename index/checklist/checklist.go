@@ -11,13 +11,13 @@ import (
 // Store is an interface which defines methods necessary for setting and getting checklist items for
 // index paths.
 type Store interface {
-	// Set the rating for the path.
+	// Set whether the path should be in the checklist.
 	Set(index.Path, bool) error
 
-	// Get the rating for the path.
+	// Get whether the path is in the checklist.
 	Get(index.Path) bool
 
-	// List retuns a list of paths in the favourite Store.
+	// List retuns a list of paths in the checklist.
 	List() []index.Path
 }
 
