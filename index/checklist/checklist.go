@@ -68,6 +68,9 @@ func (s *store) Get(p index.Path) bool {
 
 // List implements Store.
 func (s *store) List() []index.Path {
+	s.RLock()
+	defer s.RUnlock()
+
 	result := make([]index.Path, 0, len(s.m))
 	for k := range s.m {
 		result = append(result, index.NewPath(k))
