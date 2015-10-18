@@ -6,21 +6,8 @@ package index
 
 import (
 	"reflect"
-	"strings"
 	"testing"
 )
-
-func stringToPath(s string) Path {
-	return stringSliceToPath(strings.Split(s, PathSeparator))
-}
-
-func stringSliceToPath(s []string) Path {
-	p := make(Path, len(s))
-	for i, x := range s {
-		p[i] = Key(x)
-	}
-	return p
-}
 
 func TestPathEqual(t *testing.T) {
 	tests := []struct {
@@ -36,19 +23,19 @@ func TestPathEqual(t *testing.T) {
 			true,
 		},
 		{
-			stringToPath("a"), stringToPath("a"),
+			NewPath("a"), NewPath("a"),
 			true,
 		},
 		{
-			stringToPath("a:b"), stringToPath("a"),
+			NewPath("a:b"), NewPath("a"),
 			false,
 		},
 		{
-			stringToPath("a:b"), stringToPath("a:c"),
+			NewPath("a:b"), NewPath("a:c"),
 			false,
 		},
 		{
-			Path(nil), stringToPath("a"),
+			Path(nil), NewPath("a"),
 			false,
 		},
 	}
@@ -114,35 +101,35 @@ func TestOrderedIntersection(t *testing.T) {
 
 		{
 			in: [][]Path{
-				{stringToPath("A")},
+				{NewPath("A")},
 			},
-			out: []Path{stringToPath("A")},
+			out: []Path{NewPath("A")},
 		},
 
 		{
 			in: [][]Path{
-				{stringToPath("A")},
-				{stringToPath("B")},
+				{NewPath("A")},
+				{NewPath("B")},
 			},
 			out: []Path{},
 		},
 
 		{
 			in: [][]Path{
-				{stringToPath("A")},
-				{stringToPath("B"), stringToPath("A")},
+				{NewPath("A")},
+				{NewPath("B"), NewPath("A")},
 			},
-			out: []Path{stringToPath("A")},
+			out: []Path{NewPath("A")},
 		},
 
 		{
 			in: [][]Path{
-				{stringToPath("A"), stringToPath("B")},
-				{stringToPath("B"), stringToPath("A")},
-				{stringToPath("A"), stringToPath("B"), stringToPath("C")},
-				{stringToPath("C"), stringToPath("A"), stringToPath("B"), stringToPath("B")},
+				{NewPath("A"), NewPath("B")},
+				{NewPath("B"), NewPath("A")},
+				{NewPath("A"), NewPath("B"), NewPath("C")},
+				{NewPath("C"), NewPath("A"), NewPath("B"), NewPath("B")},
 			},
-			out: []Path{stringToPath("B"), stringToPath("A")},
+			out: []Path{NewPath("B"), NewPath("A")},
 		},
 	}
 
@@ -166,35 +153,35 @@ func TestUnion(t *testing.T) {
 
 		{
 			in: [][]Path{
-				{stringToPath("A")},
+				{NewPath("A")},
 			},
-			out: []Path{stringToPath("A")},
+			out: []Path{NewPath("A")},
 		},
 
 		{
 			in: [][]Path{
-				{stringToPath("A")},
-				{stringToPath("B")},
+				{NewPath("A")},
+				{NewPath("B")},
 			},
-			out: []Path{stringToPath("A"), stringToPath("B")},
+			out: []Path{NewPath("A"), NewPath("B")},
 		},
 
 		{
 			in: [][]Path{
-				{stringToPath("A")},
-				{stringToPath("B"), stringToPath("A")},
+				{NewPath("A")},
+				{NewPath("B"), NewPath("A")},
 			},
-			out: []Path{stringToPath("A"), stringToPath("B")},
+			out: []Path{NewPath("A"), NewPath("B")},
 		},
 
 		{
 			in: [][]Path{
-				{stringToPath("A"), stringToPath("B")},
-				{stringToPath("B"), stringToPath("A")},
-				{stringToPath("A"), stringToPath("B"), stringToPath("C")},
-				{stringToPath("C"), stringToPath("A"), stringToPath("B"), stringToPath("B")},
+				{NewPath("A"), NewPath("B")},
+				{NewPath("B"), NewPath("A")},
+				{NewPath("A"), NewPath("B"), NewPath("C")},
+				{NewPath("C"), NewPath("A"), NewPath("B"), NewPath("B")},
 			},
-			out: []Path{stringToPath("A"), stringToPath("B"), stringToPath("C")},
+			out: []Path{NewPath("A"), NewPath("B"), NewPath("C")},
 		},
 	}
 

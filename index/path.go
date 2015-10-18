@@ -83,11 +83,7 @@ func IndexOfPath(paths []Path, p Path) int {
 // NewPath creates a Path from the string representation.
 func NewPath(x string) Path {
 	split := strings.Split(x, PathSeparator)
-	p := make([]Key, len(split))
-	for i, s := range split {
-		p[i] = Key(s)
-	}
-	return Path(p)
+	return PathFromStringSlice(split)
 }
 
 // PathFromStringSlice creates a path from the given []string.
