@@ -1,6 +1,7 @@
 package index
 
 import (
+	"reflect"
 	"testing"
 	"time"
 )
@@ -29,7 +30,6 @@ var tr = track{
 }
 
 func TestTrack(t *testing.T) {
-
 	stringFields := []string{"ID", "Name", "Album", "AlbumArtist", "Artist", "Composer", "Genre", "Location", "Kind"}
 	for _, f := range stringFields {
 		got := tr.GetString(f)
@@ -45,5 +45,39 @@ func TestTrack(t *testing.T) {
 		if got != expected {
 			t.Errorf("tr.GetInt(%#v) = %d, expected %d", f, got, expected)
 		}
+	}
+}
+
+type testLibrary struct {
+	tr *track
+}
+
+func (t testLibrary) Tracks() []Track {
+	return []Track{t.tr}
+}
+
+func (t testLibrary) Track(identifier string) (Track, bool) {
+	return t.tr, true
+}
+
+func TestConvert(t *testing.T) {
+	tl := testLibrary{
+		tr: &tr,
+	}
+
+	l := Convert(tl, "ID")
+
+	got := l.Tracks()
+	expected := tl.Tracks()
+
+	if !reflect.DeepEqual(got, expected) {
+		t.Errorf("l.Tracks() = %v, expected: %v", got, expected)
+	}
+
+	id := "ID"
+	gotTrack, _ := l.Track(id)
+	expectedTrack, _ := tl.Track(id)
+	if !reflect.DeepEqual(gotTrack, expectedTrack) {
+		t.Errorf("l.Track(%#v) = %#v, expected: %#v", id, gotTrack, expectedTrack)
 	}
 }
