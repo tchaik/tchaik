@@ -1,6 +1,8 @@
 package index
 
 import (
+	"bytes"
+	"log"
 	"reflect"
 	"testing"
 	"time"
@@ -25,8 +27,8 @@ var tr = track{
 	DiscCount:   6,
 	BitRate:     7,
 
-	DateAdded:    time.Time{},
-	DateModified: time.Time{},
+	DateAdded:    time.Now(),
+	DateModified: time.Now(),
 }
 
 func TestTrack(t *testing.T) {
@@ -79,5 +81,30 @@ func TestConvert(t *testing.T) {
 	expectedTrack, _ := tl.Track(id)
 	if !reflect.DeepEqual(gotTrack, expectedTrack) {
 		t.Errorf("l.Track(%#v) = %#v, expected: %#v", id, gotTrack, expectedTrack)
+	}
+}
+
+func TestLibraryEncodeDecode(t *testing.T) {
+	tl := testLibrary{
+		tr: &tr,
+	}
+
+	l := Convert(tl, "ID")
+	buf := &bytes.Buffer{}
+	err := WriteTo(l, buf)
+	if err != nil {
+		t.Errorf("unexpected error in WriteTo: %v", err)
+	}
+
+	got, err := ReadFrom(buf)
+	if err != nil {
+		t.Errorf("unexpected error in ReadFrom: %v", err)
+	}
+
+	gotTracks := got.Tracks()
+	expectedTracks := l.Tracks()
+
+	if !reflect.DeepEqual(expectedTracks, gotTracks) {
+		t.Errorf("Encode -> Decode inconsistent, got: %#v, expected: %#v", gotTracks, expectedTracks)
 	}
 }
