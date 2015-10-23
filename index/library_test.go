@@ -2,7 +2,6 @@ package index
 
 import (
 	"bytes"
-	"log"
 	"reflect"
 	"testing"
 	"time"
