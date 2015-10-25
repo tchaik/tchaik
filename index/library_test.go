@@ -103,7 +103,17 @@ func TestLibraryEncodeDecode(t *testing.T) {
 	gotTracks := got.Tracks()
 	expectedTracks := l.Tracks()
 
-	if !reflect.DeepEqual(expectedTracks, gotTracks) {
-		t.Errorf("Encode -> Decode inconsistent, got: %#v, expected: %#v", gotTracks, expectedTracks)
+	if len(gotTracks) != len(expectedTracks) {
+		t.Errorf("expected %d tracks, got: %d", len(expectedTracks), len(gotTracks))
+	}
+
+	// TODO(dhowden): Remove this mess!
+	gotTrack := gotTracks[0].(*track)
+	expectedTrack := expectedTracks[0].(*track)
+
+	gotTrack.DateAdded = gotTrack.DateAdded.Local()
+
+	if !reflect.DeepEqual(expectedTrack, gotTrack) {
+		t.Errorf("Encode -> Decode inconsistent, got: %#v, expected: %#v", gotTrack, expectedTrack)
 	}
 }
