@@ -39,6 +39,17 @@ func TestTrack(t *testing.T) {
 		}
 	}
 
+	func() {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Errorf("expected panic from invalid field")
+			}
+		}()
+
+		y := tr.GetString("Year")
+		t.Errorf("expected panic from GetString, got: %v", y)
+	}()
+
 	stringsFields := []string{"AlbumArtist", "Artist", "Composer"}
 	for _, f := range stringsFields {
 		got := tr.GetStrings(f)
@@ -48,6 +59,17 @@ func TestTrack(t *testing.T) {
 		}
 	}
 
+	func() {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Errorf("expected panic from invalid field")
+			}
+		}()
+
+		y := tr.GetStrings("Name")
+		t.Errorf("expected panic from GetStrings, got: %v", y)
+	}()
+
 	intFields := []string{"TotalTime", "Year", "DiscNumber", "TrackNumber", "TrackCount", "DiscCount", "BitRate"}
 	for i, f := range intFields {
 		got := tr.GetInt(f)
@@ -56,6 +78,17 @@ func TestTrack(t *testing.T) {
 			t.Errorf("tr.GetInt(%#v) = %d, expected %d", f, got, expected)
 		}
 	}
+
+	func() {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Errorf("expected panic from invalid field")
+			}
+		}()
+
+		y := tr.GetInt("Name")
+		t.Errorf("expected panic from GetInt, got: %v", y)
+	}()
 }
 
 type testLibrary struct {
