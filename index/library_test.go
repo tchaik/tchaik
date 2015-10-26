@@ -39,6 +39,15 @@ func TestTrack(t *testing.T) {
 		}
 	}
 
+	stringsFields := []string{"AlbumArtist", "Artist", "Composer"}
+	for _, f := range stringsFields {
+		got := tr.GetStrings(f)
+		expected := []string{f}
+		if !reflect.DeepEqual(got, expected) {
+			t.Errorf("tr.GetStrings(%#v) = %#v, expected %#v", f, got, expected)
+		}
+	}
+
 	intFields := []string{"TotalTime", "Year", "DiscNumber", "TrackNumber", "TrackCount", "DiscCount", "BitRate"}
 	for i, f := range intFields {
 		got := tr.GetInt(f)
