@@ -6,6 +6,7 @@ package index
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -107,8 +108,9 @@ func TestPrefixMultiExpander(t *testing.T) {
 
 func TestWordIndex(t *testing.T) {
 	tests := []struct {
-		in  map[string][]Path
-		out map[string][]Path
+		in    map[string][]Path
+		out   map[string][]Path
+		words []string
 	}{
 		{
 			map[string][]Path{
@@ -130,6 +132,7 @@ func TestWordIndex(t *testing.T) {
 					Path{"Root", "Gustav Mahler", "Symphony No 1", "2"},
 				},
 			},
+			[]string{"gustav", "mahler"},
 		},
 		{
 			map[string][]Path{
@@ -151,6 +154,7 @@ func TestWordIndex(t *testing.T) {
 					Path{"Root", "Gustav Mahler", "Symphony No 1", "2"},
 				},
 			},
+			[]string{"gustav", "mahler"},
 		},
 	}
 
@@ -171,6 +175,12 @@ func TestWordIndex(t *testing.T) {
 			if !reflect.DeepEqual(ps, v) {
 				t.Errorf("[%d] does't match: %#v, %#v", ii, ps, v)
 			}
+		}
+
+		got := w.Words()
+		sort.Strings(got)
+		if !reflect.DeepEqual(got, tt.words) {
+			t.Errorf("[%d] words don't match:\n%#v\n%#v\n", ii, got, tt.words)
 		}
 	}
 }
