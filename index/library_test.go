@@ -89,6 +89,17 @@ func TestTrack(t *testing.T) {
 		y := tr.GetInt("Name")
 		t.Errorf("expected panic from GetInt, got: %v", y)
 	}()
+
+	func() {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Errorf("expected panic from invalid field")
+			}
+		}()
+
+		y := tr.GetTime("Name")
+		t.Errorf("expected panic from GetTime, got: %v", y)
+	}()
 }
 
 type testLibrary struct {
