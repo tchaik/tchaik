@@ -106,6 +106,36 @@ func TestPrefixMultiExpander(t *testing.T) {
 	}
 }
 
+func TestFlattenSearch(t *testing.T) {
+	tests := []struct {
+		in, out string
+	}{
+		{
+			"",
+			"",
+		},
+		{
+			"Ravel",
+			"ravel",
+		},
+		{
+			"Dvorák",
+			"dvorak",
+		},
+		{
+			"Saint-Saëns",
+			"saint saens",
+		},
+	}
+
+	for ii, tt := range tests {
+		got := removeNonAlphaNumeric(tt.in)
+		if got != tt.out {
+			t.Errorf("[%d] removeNonAlphaNumeric(%#v) = %#v, expected %#v", ii, tt.in, got, tt.out)
+		}
+	}
+}
+
 func TestWordIndex(t *testing.T) {
 	tests := []struct {
 		in    map[string][]Path
