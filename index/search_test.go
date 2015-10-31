@@ -106,7 +106,7 @@ func TestPrefixMultiExpander(t *testing.T) {
 	}
 }
 
-func TestFlattenSearch(t *testing.T) {
+func TestRemoveNonAlphaNumeric(t *testing.T) {
 	tests := []struct {
 		in, out string
 	}{
