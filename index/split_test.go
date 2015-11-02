@@ -54,3 +54,12 @@ func TestSplitMultiple(t *testing.T) {
 		}
 	}
 }
+
+func TestSplitNameList(t *testing.T) {
+	tracks := []Track{&tr}
+	out := splitNameList([]string{"Album", "Artist", "AlbumArtist"}, tracks)
+	if len(out) != 1 {
+		t.Errorf("expected at least one track in output")
+	}
+	// TODO(dhowden): Fill out this test!
+}
