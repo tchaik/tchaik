@@ -2,6 +2,7 @@ package player
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -9,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestCreatePlayer(t *testing.T) {
+func TestCreatePlayerEmptyRequest(t *testing.T) {
 	ps := NewPlayers()
 	h := NewHTTPHandler(ps)
 
@@ -27,5 +28,36 @@ func TestCreatePlayer(t *testing.T) {
 
 	if !bytes.HasPrefix(w.Body.Bytes(), []byte("error parsing JSON")) {
 		t.Errorf("w.Body = %#v, expected %#v", string(w.Body.Bytes()), "error parsing JSON...")
+	}
+}
+
+func TestCreatePlayer(t *testing.T) {
+	ps := NewPlayers()
+	ps.Add(testPlayer("1"))
+
+	h := NewHTTPHandler(ps)
+
+	in := struct {
+		Key        string   `json:"key"`
+		PlayerKeys []string `json:"playerKeys"`
+	}{
+		Key:        "2",
+		PlayerKeys: []string{"1"},
+	}
+
+	b, err := json.Marshal(in)
+	if err != nil {
+		t.Errorf("unexpected error in json.Marshal(): %v", err)
+	}
+
+	w := httptest.NewRecorder()
+	r, err := http.NewRequest("POST", "", bytes.NewReader(b))
+	if err != nil {
+		t.Errorf("unexpected error creating request: %v", err)
+	}
+
+	h.ServeHTTP(w, r)
+	if w.Code != http.StatusCreated {
+		t.Errorf("w.Code = %d, expected %d", w.Code, http.StatusCreated)
 	}
 }
