@@ -61,3 +61,26 @@ func TestCreatePlayer(t *testing.T) {
 		t.Errorf("w.Code = %d, expected %d", w.Code, http.StatusCreated)
 	}
 }
+
+func TestRemovePlayer(t *testing.T) {
+	ps := NewPlayers()
+	ps.Add(testPlayer("1"))
+
+	h := NewHTTPHandler(ps)
+
+	w := httptest.NewRecorder()
+	r, err := http.NewRequest("DELETE", "1", nil)
+	if err != nil {
+		t.Errorf("unexpected error creating request: %v", err)
+	}
+
+	h.ServeHTTP(w, r)
+	if w.Code != http.StatusNoContent {
+		t.Errorf("w.Code = %d, expected %d", w.Code, http.StatusNoContent)
+	}
+
+	n := len(ps.List())
+	if n != 0 {
+		t.Errorf("len(ps.List()) = %d, expected %d", n, 0)
+	}
+}
