@@ -1,10 +1,6 @@
 package player
 
-import (
-	"encoding/json"
-	"fmt"
-	"testing"
-)
+import "testing"
 
 type testPlayer string
 
@@ -31,11 +27,6 @@ func TestPlayers(t *testing.T) {
 	p := ps.Get(oneKey)
 	if p != onePl {
 		t.Errorf("Get(%#v) = %#v, expected: %#v", oneKey, p, onePl)
-	}
-
-	b, err := json.Marshal(p)
-	if err != nil {
-		t.Errorf("json.Marshal(p) returned an unexpected error: %v", err)
 	}
 
 	list = ps.List()
