@@ -1,6 +1,10 @@
 package player
 
-import "testing"
+import (
+	"encoding/json"
+	"reflect"
+	"testing"
+)
 
 type testPlayer string
 
@@ -34,8 +38,16 @@ func TestPlayers(t *testing.T) {
 		t.Errorf("len(ps.List()) = %d, expected: %d", len(list), 1)
 	}
 
-	ps.Remove(oneKey)
+	jsonExpected := []byte("{\"keys\":[\"one\"]}")
+	jsonGot, err := json.Marshal(ps)
+	if err != nil {
+		t.Errorf("unexpected error marshalling Playlists: %v", err)
+	}
+	if !reflect.DeepEqual(jsonExpected, jsonGot) {
+		t.Errorf("json.Marshal(...) = %#v, expected: %#v", string(jsonGot), string(jsonExpected))
+	}
 
+	ps.Remove(oneKey)
 	p = ps.Get(oneKey)
 	if p != nil {
 		t.Errorf("Get(%#v) = %#v, expected: %#v", oneKey, p, nil)
