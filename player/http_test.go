@@ -60,6 +60,11 @@ func TestCreatePlayer(t *testing.T) {
 	if w.Code != http.StatusCreated {
 		t.Errorf("w.Code = %d, expected %d", w.Code, http.StatusCreated)
 	}
+
+	gotLen := len(ps.List())
+	if gotLen != 2 {
+		t.Errorf("len(ps.List()) = %d, expected 2", gotLen)
+	}
 }
 
 func TestRemovePlayer(t *testing.T) {
