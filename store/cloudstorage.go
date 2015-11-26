@@ -31,29 +31,33 @@ func NewCloudStorageClient(projID, bucket string) *CloudStorageClient {
 }
 
 func (c *CloudStorageClient) Get(ctx context.Context, path string) (*File, error) {
-	client, err := google.DefaultClient(ctx, storage.ScopeReadOnly)
+	ts, err := google.DefaultTokenSource(ctx, storage.ScopeReadOnly)
+	if err != nil {
+		return nil, fmt.Errorf("could not retrieve default token source: %v", err)
+	}
+
+	client, err := storage.NewClient(ctx, cloud.WithTokenSource(ts))
 	if err != nil {
 		return nil, fmt.Errorf("unable to get default client: %v", err)
 	}
 
-	// TODO(dhowden): This will panic if c.projID is empty, though a wrapper just for
-	// this seems over the top...
-	ctx = cloud.WithContext(ctx, c.projID, client)
+	bh := client.Bucket(c.bucket)
+	obj := bh.Object(path)
 
-	obj, err := storage.StatObject(ctx, c.bucket, path)
+	attrs, err := obj.Attrs(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("unable to stat object: %v", err)
+		return nil, fmt.Errorf("unable to fetch object attributes: %v", err)
 	}
 
-	r, err := storage.NewReader(ctx, c.bucket, path)
+	r, err := obj.NewReader(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("error fetching '%v' from '%v': %v", path, c.bucket, err)
 	}
 
 	return &File{
 		ReadCloser: r,
-		Name:       obj.Name,
-		ModTime:    obj.Updated,
-		Size:       int64(obj.Size),
+		Name:       attrs.Name,
+		ModTime:    attrs.Updated,
+		Size:       attrs.Size,
 	}, nil
 }
