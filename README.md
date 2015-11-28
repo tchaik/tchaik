@@ -109,7 +109,7 @@ A full list of command line options is available from the `--help` flag:
       -playlists file
         	playlists file (default "playlists.json")
       -remote-store address
-        	address for remote media store: tchstore server <host>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<project-id>:<bucket>/path/to/root for Google Cloud Storage
+        	address for remote media store: tchstore server <host>:<port>, s3://<region>:<bucket>/path/to/root for S3, or gs://<bucket>/path/to/root for Google Cloud Storage
       -tls-cert file
         	certificate file, must also specify -tls-key
       -tls-key file
@@ -127,7 +127,7 @@ Set `-local-store` to the local path that contains your media files.  You can us
 
 ### -remote-store
 
-Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<region>:<bucket>/path/to/root` (set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client), or Google Cloud Storage paths: `gs://<project-id>:<bucket>/path/to/root` (set environment variable `GOOGLE_APPLICATION_CREDENTIALS` to point to the JSON credentials file).
+Set `-remote-store` to the URI of a running [tchstore](http://godoc.org/tchaik.com/cmd/tchstore) server  (`hostname:port`).  Instead, S3 paths can be used: `s3://<region>:<bucket>/path/to/root` (set the environment variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` to pass credentials to the S3 client), or Google Cloud Storage paths: `gs://<bucket>/path/to/root` (set environment variable `GOOGLE_APPLICATION_CREDENTIALS` to point to the JSON credentials file).
 
 ### -media-cache
 

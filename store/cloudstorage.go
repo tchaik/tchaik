@@ -17,15 +17,13 @@ import (
 // CloudStorageClient implements Client and handles fetching Files from Google
 // Cloud Storage buckets.
 type CloudStorageClient struct {
-	projID string
 	bucket string
 }
 
 // NewCloudStorageClient creates a new Client implementation which will proxy filesystem calls to
-// Google Cloud Storage bucket.  NB: If projID is empty, then Get will panic on every call.
-func NewCloudStorageClient(projID, bucket string) *CloudStorageClient {
+// Google Cloud Storage bucket.
+func NewCloudStorageClient(bucket string) *CloudStorageClient {
 	return &CloudStorageClient{
-		projID: projID,
 		bucket: bucket,
 	}
 }
