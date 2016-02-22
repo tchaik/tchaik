@@ -158,7 +158,7 @@ func (k kind) String() string {
 	switch k {
 	case tag.MP3:
 		return "MPEG audio file"
-	case tag.AAC:
+	case tag.M4A:
 		return "AAC audio file"
 	case tag.ALAC: // FIXME: tag doesn't actually detect this at the moment.
 		return "Apple Lossless audio file"
