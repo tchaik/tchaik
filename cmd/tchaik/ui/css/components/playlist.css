@@ -139,9 +139,6 @@ div.playlist {
         padding: 6px;
         border-bottom: 1px solid #232323;
         color: #bbb;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
 
         &:last-of-type {
           border-bottom: 0;
