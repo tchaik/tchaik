@@ -134,7 +134,7 @@ func TestSubCollect(t *testing.T) {
 	albNames := names(albums)
 
 	if !reflect.DeepEqual(albNames, expectedAlbums) {
-		t.Errorf("albums.Names() = %v, expected %#v", names, expectedAlbums)
+		t.Errorf("albums.Names() = %v, expected %#v", albNames, expectedAlbums)
 	}
 
 	albPfx := SubCollect(albums, ByPrefix("Name"))
