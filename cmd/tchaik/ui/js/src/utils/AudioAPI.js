@@ -1,12 +1,12 @@
 "use strict";
 
-var NowPlayingConstants = require("../constants/NowPlayingConstants.js");
-var NowPlayingActions = require("../actions/NowPlayingActions.js");
-var NowPlayingStore = require("../stores/NowPlayingStore.js");
+import NowPlayingConstants from "../constants/NowPlayingConstants.js";
+import NowPlayingActions from "../actions/NowPlayingActions.js";
+import NowPlayingStore from "../stores/NowPlayingStore.js";
 
-var PlayingStatusStore = require("../stores/PlayingStatusStore.js");
+import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
-var VolumeStore = require("../stores/VolumeStore.js");
+import VolumeStore from "../stores/VolumeStore.js";
 
 
 class AudioAPI {
