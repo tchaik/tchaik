@@ -3,14 +3,12 @@ var gulp = require("gulp");
 var _ = require("lodash");
 var eslint = require("gulp-eslint");
 var gutil = require("gulp-util");
-var karma = require("gulp-karma");
 var uglify = require("gulp-uglify");
 var webpack = require("webpack");
 var WebpackDevServer = require("webpack-dev-server");
 
 var paths = {
   js: {
-    tests: "js/src/**/*-test.js",
     entry: "./js/src/app.js",
     bundleName: "tchaik.js",
     dest: "js/build",
@@ -72,33 +70,6 @@ gulp.task("serve", function() {
   server.listen(3000);
 });
 
-
-function setupKarma(options) {
-  return gulp.src([
-    // Polyfill so we can use react in phantomjs
-    "./node_modules/phantomjs-polyfill/bind-polyfill.js",
-    "./node_modules/babel-core/browser-polyfill.js",
-    // Test files
-    paths.js.tests,
-  ])
-  .pipe(karma(_.assign({
-    configFile: "karma.conf.js",
-    browsers: ["PhantomJS"],
-  }, options)));
-}
-
-gulp.task("karma:ci", function() {
-  return setupKarma({
-    action: "run",
-  });
-});
-
-gulp.task("karma:dev", function() {
-  return setupKarma({
-    action: "watch",
-  });
-});
-
 gulp.task("compress", function() {
   return gulp.src(paths.js.dest + "/" + paths.js.bundleName)
     .pipe(uglify())
@@ -107,4 +78,3 @@ gulp.task("compress", function() {
 
 gulp.task("default", ["webpack", "eslint"]);
 gulp.task("lint", ["eslint"]);
-gulp.task("test", ["karma:ci"]);
