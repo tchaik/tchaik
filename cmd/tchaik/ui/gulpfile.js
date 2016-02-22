@@ -1,6 +1,5 @@
 var gulp = require("gulp");
 
-var _ = require("lodash");
 var eslint = require("gulp-eslint");
 var gutil = require("gulp-util");
 var uglify = require("gulp-uglify");
