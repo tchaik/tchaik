@@ -18,6 +18,8 @@ function getPlayerState() {
   };
 }
 
+const audioEvents = ["error", "progress", "play", "pause", "ended", "timeupdate", "loadedmetadata", "loadstart"];
+
 export default class Player extends React.Component {
   constructor(props) {
     super(props);
@@ -31,28 +33,19 @@ export default class Player extends React.Component {
 
   componentDidMount() {
     this._audio = new Audio();
-    this._audio.addEventListener("error", this._onPlayerEvent);
-    this._audio.addEventListener("progress", this._onPlayerEvent);
-    this._audio.addEventListener("play", this._onPlayerEvent);
-    this._audio.addEventListener("pause", this._onPlayerEvent);
-    this._audio.addEventListener("ended", this._onPlayerEvent);
-    this._audio.addEventListener("timeupdate", this._onPlayerEvent);
-    this._audio.addEventListener("loadedmetadata", this._onPlayerEvent);
-    this._audio.addEventListener("loadstart", this._onPlayerEvent);
+
+    for (let e of audioEvents) {
+      this._audio.addEventListener(e, this._onPlayerEvent);
+    }
 
     NowPlayingStore.addChangeListener(this._onChange);
     NowPlayingStore.addControlListener(this._onNowPlayingControl);
   }
 
   componentWillUnmount() {
-    this._audio.removeEventListener("error", this._onPlayerEvent);
-    this._audio.removeEventListener("progress", this._onPlayerEvent);
-    this._audio.removeEventListener("play", this._onPlayerEvent);
-    this._audio.removeEventListener("pause", this._onPlayerEvent);
-    this._audio.removeEventListener("ended", this._onPlayerEvent);
-    this._audio.removeEventListener("timeupdate", this._onPlayerEvent);
-    this._audio.removeEventListener("loadedmetadata", this._onPlayerEvent);
-    this._audio.removeEventListener("loadstart", this._onPlayerEvent);
+    for (let e of audioEvents) {
+      this._audio.removeEventListener(e, this._onPlayerEvent);
+    }
 
     NowPlayingStore.removeChangeListener(this._onChange);
     NowPlayingStore.removeControlListener(this._onNowPlayingControl);
