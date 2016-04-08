@@ -28,6 +28,15 @@ class AudioPlayer extends React.Component {
       this._audio.addEventListener(e, this._onPlayerEvent);
     }
     NowPlayingStore.addControlListener(this._onNowPlayingControl);
+
+    if (this.props.source) {
+      this.setSrc(this.props.source);
+      this.load();
+    }
+
+    if (this.props.playing) {
+      this.play();
+    }
   }
 
   componentWillUnmount() {
