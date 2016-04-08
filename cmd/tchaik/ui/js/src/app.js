@@ -9,7 +9,6 @@ var ReactDOM = require("react-dom");
 require("babel-core/polyfill");
 
 var WebsocketAPI = require("./utils/WebsocketAPI.js");
-var AudioAPI = require("./utils/AudioAPI.js");
 
 var LeftColumn = require("./components/LeftColumn.js");
 var RightColumn = require("./components/RightColumn.js");
@@ -29,8 +28,6 @@ if (process.env.WS_URL) {
   websocketUrl = process.env.WS_URL;
 }
 WebsocketAPI.init(websocketUrl);
-
-AudioAPI.init();
 
 ReactDOM.render(
   React.createFactory(LeftColumn)(),
