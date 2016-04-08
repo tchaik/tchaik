@@ -10,24 +10,14 @@ import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
 import VolumeStore from "../stores/VolumeStore.js";
 
-function getPlayerState() {
-  return {
-    source: `/track/${NowPlayingStore.getTrack().id}`,
-    playing: NowPlayingStore.getPlaying(),
-    volume: VolumeStore.getVolume(),
-  };
-}
 
 const audioEvents = ["error", "progress", "play", "pause", "ended", "timeupdate", "loadedmetadata", "loadstart"];
 
-export default class Player extends React.Component {
+class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getPlayerState();
-
     this._onPlayerEvent = this._onPlayerEvent.bind(this);
-    this._onChange = this._onChange.bind(this);
     this._onNowPlayingControl = this._onNowPlayingControl.bind(this);
   }
 
@@ -37,8 +27,6 @@ export default class Player extends React.Component {
     for (let e of audioEvents) {
       this._audio.addEventListener(e, this._onPlayerEvent);
     }
-
-    NowPlayingStore.addChangeListener(this._onChange);
     NowPlayingStore.addControlListener(this._onNowPlayingControl);
   }
 
@@ -46,9 +34,27 @@ export default class Player extends React.Component {
     for (let e of audioEvents) {
       this._audio.removeEventListener(e, this._onPlayerEvent);
     }
-
-    NowPlayingStore.removeChangeListener(this._onChange);
     NowPlayingStore.removeControlListener(this._onNowPlayingControl);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.playing !== this.props.playing) {
+      if (this.props.playing) {
+        this.play();
+      } else {
+        this.pause();
+      }
+    }
+
+    if (prevProps.source !== this.props.source) {
+      this.setSrc(this.props.source);
+      this.load();
+      this.play();
+    }
+
+    if (prevProps.volume !== this.props.volume) {
+      this.setVolume(this.props.volume);
+    }
   }
 
   buffered() {
@@ -89,6 +95,10 @@ export default class Player extends React.Component {
 
   duration() {
     return this._audio.duration;
+  }
+
+  render() {
+    return null;
   }
 
   _onPlayerEvent(evt) {
@@ -142,33 +152,45 @@ export default class Player extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.playing !== this.state.playing) {
-      if (this.state.playing) {
-        this.play();
-      } else {
-        this.pause();
-      }
-    }
-
-    if (prevState.source !== this.state.source) {
-      this.setSrc(this.state.source);
-      this.load();
-      this.play();
-    }
-  }
-
-  render() {
-    return null;
-  }
-
-  _onChange() {
-    this.setState(getPlayerState());
-  }
-
   _onNowPlayingControl(type, value) {
     if (type === NowPlayingConstants.SET_CURRENT_TIME) {
       this.setCurrentTime(value);
     }
+  }
+}
+
+function getPlayerState() {
+  return {
+    source: `/track/${NowPlayingStore.getTrack().id}`,
+    playing: NowPlayingStore.getPlaying(),
+    volume: VolumeStore.getVolume(),
+  };
+}
+
+export default class Player extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = getPlayerState();
+
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
+    VolumeStore.addChangeListener(this._onChange);
+    NowPlayingStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    VolumeStore.removeChangeListener(this._onChange);
+    NowPlayingStore.removeChangeListener(this._onChange);
+  }
+
+  render() {
+    return <AudioPlayer {...this.state} />;
+  }
+
+  _onChange() {
+    this.setState(getPlayerState());
   }
 }
