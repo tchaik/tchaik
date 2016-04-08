@@ -136,7 +136,7 @@ class AudioPlayer extends React.Component {
       NowPlayingActions.setDuration(this.duration());
 
       this.setCurrentTime(PlayingStatusStore.getTime());
-      if (this._playing) {
+      if (this.props.playing) {
         this.play();
       }
       break;
