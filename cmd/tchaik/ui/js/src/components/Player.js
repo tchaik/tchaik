@@ -40,6 +40,8 @@ class AudioPlayer extends React.Component {
   }
 
   componentWillUnmount() {
+    this._audio.pause();
+
     for (let e of audioEvents) {
       this._audio.removeEventListener(e, this._onPlayerEvent);
     }
