@@ -126,11 +126,15 @@ class AudioPlayer extends React.Component {
       break;
 
     case "play":
-      NowPlayingActions.playing(true);
+      if (this.props.playing !== true) {
+        NowPlayingActions.playing(true);
+      }
       break;
 
     case "pause":
-      NowPlayingActions.playing(false);
+      if (this.props.playing !== false) {
+        NowPlayingActions.playing(false);
+      }
       break;
 
     case "ended":
