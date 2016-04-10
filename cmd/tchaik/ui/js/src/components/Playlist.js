@@ -296,12 +296,67 @@ GroupList.propTypes = {
 };
 
 
+function pathsEqual(p1, p2) {
+  return CollectionStore.pathToKey(p1) === CollectionStore.pathToKey(p2);
+}
+
+function pathsPrefix(p, prefix) {
+  return CollectionStore.pathToKey(p).indexOf(CollectionStore.pathToKey(prefix)) === 0;
+}
+
+function hasCurrent(i, p) {
+  var c = CursorStore.getCurrent();
+  if (c === null) {
+    return false;
+  }
+  return (i === c.index()) && pathsPrefix(c.path(), p);
+}
+
+function getTrackListState(props) {
+  return {
+    hasCurrent: hasCurrent(props.itemIndex, props.path),
+  };
+}
+
 class TrackList extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = getTrackListState(this.props);
+    this._onChange = this._onChange.bind(this);
+  }
+
+  componentDidMount() {
+    CursorStore.addChangeListener(this._onChange);
+  }
+
+  componentWillUnmount() {
+    CursorStore.removeChangeListener(this._onChange);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.hasCurrent || this.state.hasCurrent !== nextState.hasCurrent) {
+      return true;
+    }
+    if (this.props.list.length !== nextProps.list.length) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
+    let currentPath = null;
+    if (this.state.hasCurrent) {
+      currentPath = CursorStore.getCurrent().path();
+    }
+
     var list = this.props.list;
     var keys = this.props.keys;
     var tracks = keys.map(function(i) {
-      return <Track key={list[i].id} data={list[i]} path={this.props.path.concat([i])} itemIndex={this.props.itemIndex} index={i} />;
+      const path = this.props.path.concat([i]);
+      let isCurrent = this.state.hasCurrent && pathsEqual(path, currentPath);
+
+      return <Track key={list[i].id} data={list[i]} path={path} isCurrent={isCurrent} itemIndex={this.props.itemIndex} index={i} />;
     }.bind(this));
 
     return (
@@ -312,6 +367,10 @@ class TrackList extends React.Component {
       </div>
     );
   }
+
+  _onChange() {
+    this.setState(getTrackListState(this.props));
+  }
 }
 
 TrackList.propTypes = {
@@ -321,19 +380,6 @@ TrackList.propTypes = {
   keys: React.PropTypes.array.isRequired,
   listStyle: React.PropTypes.string.isRequired,
 };
-
-
-function pathsEqual(p1, p2) {
-  return CollectionStore.pathToKey(p1) === CollectionStore.pathToKey(p2);
-}
-
-function isCurrent(i, p) {
-  var c = CursorStore.getCurrent();
-  if (c === null) {
-    return false;
-  }
-  return pathsEqual(c.path(), p) && (i === c.index());
-}
 
 function isPlaying(id) {
   var playing = NowPlayingStore.getPlaying();
@@ -350,7 +396,6 @@ function isPlaying(id) {
 
 function getTrackState(props) {
   return {
-    isCurrent: isCurrent(props.itemIndex, props.path),
     isPlaying: isPlaying(props.data.id),
   };
 }
@@ -366,19 +411,27 @@ class Track extends React.Component {
   }
 
   componentDidMount() {
-    CursorStore.addChangeListener(this._onChange);
     NowPlayingStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
-    CursorStore.removeChangeListener(this._onChange);
     NowPlayingStore.removeChangeListener(this._onChange);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.playing !== this.state.isPlaying) {
+      return true;
+    }
+    if (nextProps.isCurrent !== this.props.isCurrent) {
+      return true;
+    }
+    return false;
   }
 
   render() {
     var durationSecs = parseInt(this.props.data.totalTime / 1000);
     var style = {
-      current: this.state.isCurrent,
+      current: this.props.isCurrent,
       "is-playing": this.state.isPlaying,
     };
 
