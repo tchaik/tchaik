@@ -73,10 +73,10 @@ div#bottom {
         }
 
         &.enabled {
-          color: white;
+          color: #ccc;
 
           &:hover {
-            color: color($light-blue l(+10%));
+            color: white;
             cursor: pointer;
           }
         }
