@@ -32,8 +32,13 @@ function currentTrackSource() {
 }
 
 function setCurrentTrack(track) {
+  let change = true;
+  if (_currentTrack !== null) {
+    change = (_currentTrack.id !== track.id);
+  }
   localStorage.setItem("currentTrack", JSON.stringify(track));
   _currentTrack = track;
+  return change;
 }
 
 function _playing() {
@@ -150,8 +155,9 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
           AppDispatcher.waitFor([
             CursorStore.dispatchToken,
           ]);
-          setCurrentTrack(CursorStore.getCurrentTrack());
-          _nowPlayingStore.emitChange();
+          if (setCurrentTrack(CursorStore.getCurrentTrack())) {
+            _nowPlayingStore.emitChange();
+          }
           break;
 
         case CtrlConstants.TOGGLE_PLAY_PAUSE:
@@ -183,8 +189,10 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
       AppDispatcher.waitFor([
         CursorStore.dispatchToken,
       ]);
-      setCurrentTrack(CursorStore.getCurrentTrack());
-      _nowPlayingStore.emitChange();
+      setCurrentTrackSource("cursor");
+      if (setCurrentTrack(CursorStore.getCurrentTrack())) {
+        _nowPlayingStore.emitChange();
+      }
     }
   }
 
@@ -232,12 +240,15 @@ _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
         AppDispatcher.waitFor([
           CursorStore.dispatchToken,
         ]);
-        setCurrentTrack(CursorStore.getCurrentTrack());
+        setCurrentTrackSource("cursor");
+        let change = setCurrentTrack(CursorStore.getCurrentTrack());
         if (!playing()) {
+          change = true;
           setPlaying(true);
         }
-        setCurrentTrackSource("cursor");
-        _nowPlayingStore.emitChange();
+        if (change) {
+          _nowPlayingStore.emitChange();
+        }
         break;
 
       case NowPlayingConstants.SET_CURRENT_TRACK:
