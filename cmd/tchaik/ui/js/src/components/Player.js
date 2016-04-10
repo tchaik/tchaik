@@ -114,56 +114,56 @@ class AudioPlayer extends React.Component {
 
   _onPlayerEvent(evt) {
     switch (evt.type) {
-    case "error":
-      NowPlayingActions.setError(evt.srcElement.error);
-      console.log("Error received from Audio component:");
-      console.error(evt);
-      break;
+      case "error":
+        NowPlayingActions.setError(evt.srcElement.error);
+        console.log("Error received from Audio component:");
+        console.error(evt);
+        break;
 
-    case "progress":
-      var range = this.buffered();
-      if (range.length > 0) {
-        NowPlayingActions.setBuffered(range.end(range.length - 1));
-      }
-      break;
+      case "progress":
+        var range = this.buffered();
+        if (range.length > 0) {
+          NowPlayingActions.setBuffered(range.end(range.length - 1));
+        }
+        break;
 
-    case "play":
-      if (this.props.playing !== true) {
-        NowPlayingActions.playing(true);
-      }
-      break;
+      case "play":
+        if (this.props.playing !== true) {
+          NowPlayingActions.playing(true);
+        }
+        break;
 
-    case "pause":
-      if (this.props.playing !== false) {
-        NowPlayingActions.playing(false);
-      }
-      break;
+      case "pause":
+        if (this.props.playing !== false) {
+          NowPlayingActions.playing(false);
+        }
+        break;
 
-    case "ended":
-      NowPlayingActions.ended(NowPlayingStore.getSource(), NowPlayingStore.getRepeat());
-      break;
+      case "ended":
+        NowPlayingActions.ended(NowPlayingStore.getSource(), NowPlayingStore.getRepeat());
+        break;
 
-    case "timeupdate":
-      NowPlayingActions.currentTime(this.currentTime());
-      break;
+      case "timeupdate":
+        NowPlayingActions.currentTime(this.currentTime());
+        break;
 
-    case "loadedmetadata":
-      NowPlayingActions.setDuration(this.duration());
+      case "loadedmetadata":
+        NowPlayingActions.setDuration(this.duration());
 
-      this.setCurrentTime(PlayingStatusStore.getTime());
-      if (this.props.playing) {
-        this.play();
-      }
-      break;
+        this.setCurrentTime(PlayingStatusStore.getTime());
+        if (this.props.playing) {
+          this.play();
+        }
+        break;
 
-    case "loadstart":
-      NowPlayingActions.reset();
-      break;
+      case "loadstart":
+        NowPlayingActions.reset();
+        break;
 
-    default:
-      console.warn("unhandled player event:");
-      console.warn(evt);
-      break;
+      default:
+        console.warn("unhandled player event:");
+        console.warn(evt);
+        break;
     }
   }
 

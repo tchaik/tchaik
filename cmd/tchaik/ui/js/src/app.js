@@ -6,7 +6,7 @@ require("../../css/material-icons.css");
 var React = require("react");
 var ReactDOM = require("react-dom");
 
-require("babel-core/polyfill");
+require("babel-polyfill");
 
 var WebsocketAPI = require("./utils/WebsocketAPI.js");
 

@@ -64,21 +64,20 @@ _playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {
-
-    case NowPlayingConstants.ENDED:
-      if (action.source !== "cursor") {
-        break;
-      }
-      /* falls through */
-    case CursorConstants.SET:
-      /* falls through */
-    case CursorConstants.PREV:
-      /* falls through */
-    case CursorConstants.NEXT:
-      /* falls through */
-    case PlaylistConstants.ADD_ITEM_PLAY_NOW:
-      /* falls through */
-    case NowPlayingConstants.SET_CURRENT_TRACK:
+      case NowPlayingConstants.ENDED:
+        if (action.source !== "cursor") {
+          break;
+        }
+        /* falls through */
+      case CursorConstants.SET:
+        /* falls through */
+      case CursorConstants.PREV:
+        /* falls through */
+      case CursorConstants.NEXT:
+        /* falls through */
+      case PlaylistConstants.ADD_ITEM_PLAY_NOW:
+        /* falls through */
+      case NowPlayingConstants.SET_CURRENT_TRACK:
         AppDispatcher.waitFor([
           NowPlayingStore.dispatchToken,
         ]);
@@ -86,37 +85,37 @@ _playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
         _playingStatusStore.emitChange();
         break;
 
-    case NowPlayingConstants.RESET:
-      _trackState = {
-        buffered: 0,
-        duration: 0,
-        error: null,
-      };
-      _playingStatusStore.emitChange();
-      break;
+      case NowPlayingConstants.RESET:
+        _trackState = {
+          buffered: 0,
+          duration: 0,
+          error: null,
+        };
+        _playingStatusStore.emitChange();
+        break;
 
-    case NowPlayingConstants.SET_ERROR:
-      _trackState.error = action.error;
-      _playingStatusStore.emitChange();
-      break;
+      case NowPlayingConstants.SET_ERROR:
+        _trackState.error = action.error;
+        _playingStatusStore.emitChange();
+        break;
 
-    case NowPlayingConstants.SET_DURATION:
-      _trackState.duration = action.duration;
-      _playingStatusStore.emitChange();
-      break;
+      case NowPlayingConstants.SET_DURATION:
+        _trackState.duration = action.duration;
+        _playingStatusStore.emitChange();
+        break;
 
-    case NowPlayingConstants.SET_BUFFERED:
-      _trackState.buffered = action.buffered;
-      _playingStatusStore.emitChange();
-      break;
+      case NowPlayingConstants.SET_BUFFERED:
+        _trackState.buffered = action.buffered;
+        _playingStatusStore.emitChange();
+        break;
 
-    case NowPlayingConstants.STORE_CURRENT_TIME:
-      setCurrentTime(action.currentTime);
-      _playingStatusStore.emitChange();
-      break;
+      case NowPlayingConstants.STORE_CURRENT_TIME:
+        setCurrentTime(action.currentTime);
+        _playingStatusStore.emitChange();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 

@@ -40,46 +40,46 @@ export default class Container extends React.Component {
   render() {
     var content = null;
     switch (this.state.mode) {
-    case ContainerConstants.ARTISTS:
-      content = <Filter name="Artist" />;
-      break;
+      case ContainerConstants.ARTISTS:
+        content = <Filter name="Artist" />;
+        break;
 
-    case ContainerConstants.COMPOSERS:
-      content = <Filter name="Composer" />;
-      break;
+      case ContainerConstants.COMPOSERS:
+        content = <Filter name="Composer" />;
+        break;
 
-    case ContainerConstants.SEARCH:
-      content = <Search />;
-      break;
+      case ContainerConstants.SEARCH:
+        content = <Search />;
+        break;
 
-    case ContainerConstants.COVERS:
-      content = <Covers />;
-      break;
+      case ContainerConstants.COVERS:
+        content = <Covers />;
+        break;
 
-    case ContainerConstants.RECENT:
-      content = <PathList name="recent" />;
-      break;
+      case ContainerConstants.RECENT:
+        content = <PathList name="recent" />;
+        break;
 
-    case ContainerConstants.FAVOURITE:
-      content = <PathList name="favourite" />;
-      break;
+      case ContainerConstants.FAVOURITE:
+        content = <PathList name="favourite" />;
+        break;
 
-    case ContainerConstants.CHECKLIST:
-      content = <PathList name="checklist" />;
-      break;
+      case ContainerConstants.CHECKLIST:
+        content = <PathList name="checklist" />;
+        break;
 
-    case ContainerConstants.SETTINGS:
-      content = <Settings />;
-      break;
+      case ContainerConstants.SETTINGS:
+        content = <Settings />;
+        break;
 
-    case ContainerConstants.RETRO:
-      content = <Retro />;
-      break;
+      case ContainerConstants.RETRO:
+        content = <Retro />;
+        break;
 
-    case ContainerConstants.ALL:
-    default:
-      content = <RootCollection />;
-      break;
+      case ContainerConstants.ALL:
+      default:
+        content = <RootCollection />;
+        break;
     }
 
     return (

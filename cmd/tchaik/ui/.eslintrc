@@ -10,7 +10,7 @@
         "quotes": [2, "double"],
         "comma-dangle": [2, "always-multiline"],
         "no-underscore-dangle": [0], // Rewire uses this style
-        "indent": [2, 2], // 2 space indentation
+        "indent": [2, 2, {"SwitchCase": 1}], // 2 space indentation, switch case indented
         "no-unused-expressions": 0,
     },
     "ecmaFeatures": {
