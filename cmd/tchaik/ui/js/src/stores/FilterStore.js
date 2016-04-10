@@ -7,13 +7,13 @@ import AppDispatcher from "../dispatcher/AppDispatcher";
 import FilterConstants from "../constants/FilterConstants.js";
 
 
-var _currentItems = null;
-var _filters = {};
-var _filterPaths = {};
+let _currentItems = null;
+const _filters = {};
+const _filterPaths = {};
 
 function _getCurrentItem(name) {
   if (_currentItems === null) {
-    var fi = localStorage.getItem("filterCurrentItems");
+    const fi = localStorage.getItem("filterCurrentItems");
     if (fi) {
       _currentItems = JSON.parse(fi);
     }
@@ -33,7 +33,7 @@ function _setCurrentItem(name, itemName) {
 }
 
 function _addFilterPaths(name, itemName, paths) {
-  var filterPaths = _filterPaths[name];
+  let filterPaths = _filterPaths[name];
   if (!filterPaths) {
     filterPaths = {};
   }
@@ -48,7 +48,7 @@ class FilterStore extends ChangeEmitter {
   }
 
   getItems(name) {
-    var x = _filters[name];
+    let x = _filters[name];
     if (!x) {
       x = [];
     }
@@ -56,11 +56,11 @@ class FilterStore extends ChangeEmitter {
   }
 
   getPaths(name, itemName) {
-    var x = _filterPaths[name];
+    const x = _filterPaths[name];
     if (!x) {
       return [];
     }
-    var paths = x[itemName];
+    let paths = x[itemName];
     if (!paths) {
       paths = [];
     }
@@ -68,11 +68,11 @@ class FilterStore extends ChangeEmitter {
   }
 }
 
-var _filterStore = new FilterStore();
+const _filterStore = new FilterStore();
 
 _filterStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     switch (action.actionType) {
@@ -81,7 +81,7 @@ _filterStore.dispatchToken = AppDispatcher.register(function(payload) {
         _filterStore.emitChange();
         break;
       case FilterConstants.FILTER_PATHS:
-        var path = action.data.path; // [name, item]
+        const path = action.data.path; // [name, item]
         _addFilterPaths(path[0], path[1], action.data.paths.groups);
         _filterStore.emitChange();
         break;

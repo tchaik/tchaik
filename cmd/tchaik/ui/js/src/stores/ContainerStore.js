@@ -5,7 +5,7 @@ import ContainerConstants from "../constants/ContainerConstants.js";
 import SearchConstants from "../constants/SearchConstants.js";
 
 
-var _defaultMode = ContainerConstants.ALL;
+const _defaultMode = ContainerConstants.ALL;
 
 function setMode(m) {
   if (m === null) {
@@ -15,14 +15,14 @@ function setMode(m) {
 }
 
 function mode() {
-  var m = localStorage.getItem("mode");
+  let m = localStorage.getItem("mode");
   if (m === null) {
     m = _defaultMode;
   }
   return m;
 }
 
-var _titles = {};
+const _titles = {};
 _titles[ContainerConstants.ALL] = "Library";
 _titles[ContainerConstants.RECENT] = "Recently Added";
 _titles[ContainerConstants.RETRO] = "";
@@ -33,7 +33,7 @@ class ContainerStore extends ChangeEmitter {
   }
 
   getTitle() {
-    var m = mode();
+    const m = mode();
     if (_titles.hasOwnProperty(m)) {
       return _titles[m];
     }
@@ -41,11 +41,11 @@ class ContainerStore extends ChangeEmitter {
   }
 }
 
-var _containerStore = new ContainerStore();
+const _containerStore = new ContainerStore();
 
 _containerStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {

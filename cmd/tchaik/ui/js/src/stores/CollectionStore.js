@@ -2,13 +2,14 @@
 
 import {ChangeEmitter, CHANGE_EVENT} from "../utils/ChangeEmitter.js";
 
-var AppDispatcher = require("../dispatcher/AppDispatcher");
+import AppDispatcher from "../dispatcher/AppDispatcher";
 
-var CollectionConstants = require("../constants/CollectionConstants.js");
+import CollectionConstants from "../constants/CollectionConstants.js";
 
-var _commonFields = ["album", "albumArtist", "artist", "composer", "year", "bitRate", "discNumber"];
 
-var _collections = {};
+const _commonFields = ["album", "albumArtist", "artist", "composer", "year", "bitRate", "discNumber"];
+
+const _collections = {};
 
 // pathSeparator is a string used to separate path components.
 const pathSeparator = ":";
@@ -41,7 +42,7 @@ class CollectionStore extends ChangeEmitter {
   }
 
   getCollection(path) {
-    var key = pathToKey(path);
+    const key = pathToKey(path);
     return _collections[key];
   }
 
@@ -50,11 +51,11 @@ class CollectionStore extends ChangeEmitter {
   }
 }
 
-var _store = new CollectionStore();
+const _store = new CollectionStore();
 
 _store.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     switch (action.actionType) {

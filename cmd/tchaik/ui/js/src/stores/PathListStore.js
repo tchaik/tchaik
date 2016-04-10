@@ -7,7 +7,7 @@ import {ChangeEmitter} from "../utils/ChangeEmitter.js";
 import PathListConstants from "../constants/PathListConstants.js";
 
 
-var _pathLists = {};
+const _pathLists = {};
 
 function setPathList(name, list) {
   if (list !== null && list.groups) {
@@ -26,11 +26,11 @@ class PathListStore extends ChangeEmitter {
   }
 }
 
-var _store = new PathListStore();
+const _store = new PathListStore();
 
 _store.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     switch (action.actionType) {

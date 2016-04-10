@@ -12,14 +12,14 @@ import ControlConstants from "../constants/ControlConstants.js";
 
 function trackForPath(path) {
   path = path.slice(0);
-  var i = path.pop();
-  var t = CollectionStore.getCollection(path);
+  const i = path.pop();
+  const t = CollectionStore.getCollection(path);
   if (t === null) {
     console.log("Could not find collection with path:" + path);
   }
 
   if (t.tracks) {
-    var track = t.tracks[i];
+    const track = t.tracks[i];
     if (track) {
       return track;
     }
@@ -103,7 +103,7 @@ class Cursor {
 }
 
 
-var _cursor = new Cursor();
+let _cursor = new Cursor();
 
 class CursorStore extends ChangeEmitter {
 
@@ -133,11 +133,11 @@ function positionFromData(position) {
   return new Position(position.index, position.path);
 }
 
-var _store = new CursorStore();
+const _store = new CursorStore();
 
 _store.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     if (action.actionType === ControlConstants.CTRL) {
@@ -153,9 +153,9 @@ _store.dispatchToken = AppDispatcher.register(function(payload) {
     }
 
     if (action.actionType === CursorConstants.CURSOR) {
-      let current = positionFromData(action.data.current);
-      let previous = positionFromData(action.data.previous);
-      let next = positionFromData(action.data.next);
+      const current = positionFromData(action.data.current);
+      const previous = positionFromData(action.data.previous);
+      const next = positionFromData(action.data.next);
 
       _cursor = new Cursor(current, previous, next);
       _store.emitChange();

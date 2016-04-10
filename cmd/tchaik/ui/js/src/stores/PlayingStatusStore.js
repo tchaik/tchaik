@@ -10,14 +10,14 @@ import PlaylistConstants from "../constants/PlaylistConstants.js";
 import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 
-var _defaultTrackState = {
+const _defaultTrackState = {
   buffered: 0.0,
   duration: 0.0,
   error: null,
 };
-var _trackState = _defaultTrackState;
+let _trackState = _defaultTrackState;
 
-var _currentTime = null;
+let _currentTime = null;
 
 function setCurrentTime(time) {
   _currentTime = time;
@@ -30,7 +30,7 @@ function currentTime() {
   }
 
   _currentTime = 0;
-  var t = localStorage.getItem("currentTime");
+  const t = localStorage.getItem("currentTime");
   if (t !== null) {
     _currentTime = parseFloat(t);
   }
@@ -56,11 +56,11 @@ class PlayingStatusStore extends ChangeEmitter {
   }
 }
 
-var _playingStatusStore = new PlayingStatusStore();
+const _playingStatusStore = new PlayingStatusStore();
 
 _playingStatusStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {

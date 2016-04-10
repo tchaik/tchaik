@@ -43,27 +43,26 @@ export default class NowPlaying extends React.Component {
   }
 
   render() {
-    var track = this.state.track;
+    const track = this.state.track;
     if (track === null) {
       return <div className="now-playing-track" />;
     }
 
-    var remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
+    const remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
 
-    var attributes = [];
-    var attributesElement = null;
-
-    for (var attribute of ["artist", "groupName", "composer"]) {
+    const attributes = [];
+    for (const attribute of ["artist", "groupName", "composer"]) {
       if (track[attribute]) {
         attributes.push(track[attribute]);
       }
     }
 
+    let attributesElement = null;
     if (attributes) {
       attributesElement = <GroupAttributes list={attributes} />;
     }
 
-    var className = classNames({
+    const className = classNames({
       "now-playing-track": true,
       "error": (this.state.error !== null),
     });
@@ -113,14 +112,14 @@ class BitRate extends React.Component {
   }
 
   render() {
-    var bitRate = null;
+    let bitRate = null;
     if (this.state.expanded) {
       bitRate = (
         <span className="value">{this.props.track.bitRate} kbps</span>
       );
     }
 
-    var className = classNames({
+    const className = classNames({
       "bitrate": true,
       "expanded": this.state.expanded,
     });

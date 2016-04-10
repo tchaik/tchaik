@@ -7,7 +7,7 @@ import AppDispatcher from "../dispatcher/AppDispatcher";
 import RightColumnConstants from "../constants/RightColumnConstants.js";
 
 
-var _defaultHidden = true;
+const _defaultHidden = true;
 
 function setHidden(h) {
   if (h === null) {
@@ -17,7 +17,7 @@ function setHidden(h) {
 }
 
 function isHidden() {
-  var h = localStorage.getItem("rightColumnHidden");
+  let h = localStorage.getItem("rightColumnHidden");
   if (h === null) {
     h = _defaultHidden;
   } else {
@@ -33,16 +33,16 @@ class RightColumnStore extends ChangeEmitter {
   }
 }
 
-var _store = new RightColumnStore();
+const _store = new RightColumnStore();
 
 _store.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {
       case RightColumnConstants.TOGGLE_RIGHTCOLUMN:
-        var current = isHidden();
+        const current = isHidden();
         setHidden(!current);
         _store.emitChange();
         break;

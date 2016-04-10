@@ -10,7 +10,7 @@ import SearchConstants from "../constants/SearchConstants.js";
 import ContainerConstants from "../constants/ContainerConstants.js";
 
 
-var _results = [];
+let _results = [];
 
 function setResults(results) {
   if (results !== null && results.groups) {
@@ -25,7 +25,7 @@ function setInput(searchTerms) {
 }
 
 function input() {
-  var s = localStorage.getItem("searchInput");
+  const s = localStorage.getItem("searchInput");
   if (s === null) {
     return "";
   }
@@ -43,11 +43,11 @@ class SearchResultStore extends ChangeEmitter {
   }
 }
 
-var _searchResultStore = new SearchResultStore();
+const _searchResultStore = new SearchResultStore();
 
 _searchResultStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     switch (action.actionType) {

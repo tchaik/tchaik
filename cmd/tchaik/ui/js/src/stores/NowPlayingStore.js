@@ -13,18 +13,18 @@ import PlaylistStore from "./PlaylistStore.js";
 import CtrlConstants from "../constants/ControlConstants.js";
 
 
-var CONTROL_EVENT = "control";
+let CONTROL_EVENT = "control";
 
-var currentPlaying = null;
-var currentRepeat = null;
-var _currentTrack = null;
+let currentPlaying = null;
+let currentRepeat = null;
+let _currentTrack = null;
 
 function setCurrentTrackSource(source) {
   localStorage.setItem("currentTrackSource", source);
 }
 
 function currentTrackSource() {
-  var s = localStorage.getItem("currentTrackSource");
+  const s = localStorage.getItem("currentTrackSource");
   if (s === null) {
     return null;
   }
@@ -42,7 +42,7 @@ function setCurrentTrack(track) {
 }
 
 function _playing() {
-  var v = localStorage.getItem("playing");
+  const v = localStorage.getItem("playing");
   if (v === null) {
     return false;
   }
@@ -50,7 +50,7 @@ function _playing() {
 }
 
 function _repeat() {
-  var v = localStorage.getItem("repeat");
+  const v = localStorage.getItem("repeat");
   if (v === null) {
     return false;
   }
@@ -83,7 +83,7 @@ function setRepeat(v) {
 
 function currentTrack() {
   if (_currentTrack === null) {
-    var c = localStorage.getItem("currentTrack");
+    const c = localStorage.getItem("currentTrack");
     if (c === null) {
       return null;
     }
@@ -129,11 +129,11 @@ class NowPlayingStore extends ChangeEmitter {
   }
 }
 
-var _nowPlayingStore = new NowPlayingStore();
+const _nowPlayingStore = new NowPlayingStore();
 
 _nowPlayingStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     if (action.actionType === CtrlConstants.CTRL) {

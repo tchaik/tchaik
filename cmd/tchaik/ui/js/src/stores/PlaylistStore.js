@@ -65,7 +65,7 @@ class Playlist {
   }
 }
 
-var _playlist = new Playlist();
+const _playlist = new Playlist();
 
 function getKeys(path) {
   let c = CollectionStore.getCollection(path);
@@ -98,26 +98,26 @@ class PlaylistStore extends ChangeEmitter {
 
   getItemKeys(index, path) {
     let keys = getKeys(path);
-    let item = _playlist.items()[index];
+    const item = _playlist.items()[index];
     keys = item.transform(path, keys);
     return keys;
   }
 
 }
 
-var _store = new PlaylistStore();
+const _store = new PlaylistStore();
 
 _store.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     if (action.actionType === PlaylistConstants.PLAYLIST) {
       _playlist.clear();
-      let items = action.data.items || [];
-      items.forEach(function(item) {
+      const items = action.data.items || [];
+      for (const item of items) {
         _playlist.addItem(new Item(item.path, item.transforms));
-      });
+      }
       _store.emitChange();
     }
   }

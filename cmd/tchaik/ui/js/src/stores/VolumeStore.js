@@ -8,15 +8,15 @@ import CtrlConstants from "../constants/ControlConstants.js";
 import VolumeConstants from "../constants/VolumeConstants.js";
 
 
-var defaultVolume = 0.75;
-var defaultVolumeMute = false;
+const defaultVolume = 0.75;
+const defaultVolumeMute = false;
 
 function _setVolume(v) {
   localStorage.setItem("volume", v);
 }
 
 function volume() {
-  var v = localStorage.getItem("volume");
+  const v = localStorage.getItem("volume");
   if (v === null) {
     setVolume(defaultVolume);
     return defaultVolume;
@@ -29,7 +29,7 @@ function setVolumeMute(v) {
 }
 
 function volumeMute() {
-  var v = localStorage.getItem("volumeMute");
+  const v = localStorage.getItem("volumeMute");
   if (v === null) {
     setVolumeMute(defaultVolumeMute);
     return defaultVolumeMute;
@@ -55,11 +55,11 @@ class VolumeStore extends ChangeEmitter {
   }
 }
 
-var _volumeStore = new VolumeStore();
+const _volumeStore = new VolumeStore();
 
 _volumeStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "SERVER_ACTION") {
     if (action.actionType === CtrlConstants.CTRL) {

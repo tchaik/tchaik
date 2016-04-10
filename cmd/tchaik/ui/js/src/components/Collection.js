@@ -19,7 +19,7 @@ import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 export class RootCollection extends React.Component {
   render() {
-    var path = ["Root"];
+    let path = ["Root"];
     if (this.props.path) {
       path = this.props.path;
     }
@@ -65,11 +65,11 @@ export class Group extends React.Component {
   }
 
   render() {
-    var content = null;
-    var play = null;
-    var attributes = null;
-    var headerDiv = null;
-    var image = null;
+    let content = null;
+    let play = null;
+    let attributes = null;
+    let headerDiv = null;
+    let image = null;
 
     if (this.state.expanded) {
       content = [
@@ -82,9 +82,9 @@ export class Group extends React.Component {
         );
       }
 
-      var common = this.state.common;
-      var duration = null;
-      if (this.state.common.totalTime) {
+      const common = this.state.common;
+      let duration = null;
+      if (common.totalTime) {
         duration = (
           <span>
             <Icon icon="schedule" extraClasses={{duration: true}}/>
@@ -93,21 +93,20 @@ export class Group extends React.Component {
         );
       }
 
-      var attributeArr = [];
-      var fields = ["albumArtist", "artist", "composer", "year"];
-      fields.forEach(function(f) {
+      const attributeArr = [];
+      for (let f of ["albumArtist", "artist", "composer", "year"]) {
         if (common[f]) {
           attributeArr.push(common[f]);
         }
-      });
+      }
 
       if (attributeArr.length > 0) {
         attributes = <GroupAttributes list={attributeArr} />;
       }
 
-      var favouriteIcon = this.state.favourite ? "favorite" : "favorite_border";
-      var checklistIcon = this.state.checklist ? "check_circle" : "check";
-      var checklistTitle = this.state.checklist ? "Remove from Checklist" : "Add to Checklist";
+      const favouriteIcon = this.state.favourite ? "favorite" : "favorite_border";
+      const checklistIcon = this.state.checklist ? "check_circle" : "check";
+      const checklistTitle = this.state.checklist ? "Remove from Checklist" : "Add to Checklist";
 
       play = (
         <span className="controls">
@@ -127,14 +126,14 @@ export class Group extends React.Component {
 
     // FIXME: this is to get around the "everything else" group which has no name
     // (and can"t be closed)
-    var itemName = this.props.item.name;
+    let itemName = this.props.item.name;
     if (this.props.depth === 1 && itemName === "") {
       itemName = "Misc";
     }
 
-    var albumArtist = null;
+    let albumArtist = null;
     if (this.props.depth === 1 && (this.props.item.albumArtist || this.props.item.artist)) {
-      var artist = this.props.item.albumArtist || this.props.item.artist;
+      const artist = this.props.item.albumArtist || this.props.item.artist;
       albumArtist = <span className="group-album-artist">{artist.join(", ")}</span>;
     }
 
@@ -150,7 +149,7 @@ export class Group extends React.Component {
       );
     }
 
-    var groupClasses = {
+    const groupClasses = {
       "group": true,
       "expanded": this.state.expanded,
     };
@@ -239,7 +238,7 @@ class GroupContent extends React.Component {
   }
 
   render() {
-    var item = this.state.item;
+    const item = this.state.item;
     if (item === null) {
       return null;
     }
@@ -252,15 +251,14 @@ class GroupContent extends React.Component {
 
   _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
-      var item = CollectionStore.getCollection(this.props.path);
+      const item = CollectionStore.getCollection(this.props.path);
 
-      var common = {};
-      var fields = ["totalTime", "albumArtist", "artist", "id", "composer", "year", "kind"];
-      fields.forEach(function(f) {
+      const common = {};
+      for (const f of ["totalTime", "albumArtist", "artist", "id", "composer", "year", "kind"]) {
         if (item[f]) {
           common[f] = item[f];
         }
-      });
+      }
 
       if (Object.keys(common).length > 0 && this.props.setCommon) {
         this.props.setCommon(common);
@@ -284,7 +282,7 @@ GroupContent.propTypes = {
 
 export class GroupList extends React.Component {
   render() {
-    var list = this.props.list.map(function(item) {
+    const list = this.props.list.map(function(item) {
       return <Group path={this.props.path.concat([item.key])} depth={this.props.depth + 1} item={item} key={item.key} />;
     }.bind(this));
 
@@ -305,11 +303,11 @@ GroupList.propTypes = {
 
 class TrackList extends React.Component {
   render() {
-    var discs = {};
-    var discIndices = [];
-    var trackNumber = 0;
+    const discs = {};
+    const discIndices = [];
+    let trackNumber = 0;
     this.props.list.forEach(function(track) {
-      var discNumber = track.discNumber;
+      const discNumber = track.discNumber;
       if (!discs[discNumber]) {
         discs[discNumber] = [];
         discIndices.push(discNumber);
@@ -318,15 +316,15 @@ class TrackList extends React.Component {
       discs[discNumber].push(track);
     });
 
-    var ols = [];
-    var buildTrack = function(track) {
+    const ols = [];
+    const buildTrack = function(track) {
       return <Track key={track.id} data={track} path={this.props.path.concat([track.key])} />;
     }.bind(this);
 
-    for (var i = 0; i < discIndices.length; i++) {
-      var disc = discs[discIndices[i]];
+    for (const discIndex of discIndices) {
+      const disc = discs[discIndex];
       ols.push(
-        <ol key={`disc${discIndices[i]}`} className={this.props.listStyle}>
+        <ol key={`disc${discIndex}`} className={this.props.listStyle}>
           {disc.map(buildTrack)}
         </ol>
       );
@@ -348,7 +346,7 @@ TrackList.propTypes = {
 
 
 function isCurrent(id) {
-  var t = NowPlayingStore.getTrack();
+  const t = NowPlayingStore.getTrack();
   if (t) {
     return t.id === id;
   }
@@ -381,24 +379,23 @@ class Track extends React.Component {
   }
 
   render() {
-    var durationSecs = parseInt(this.props.data.totalTime / 1000);
-    var liClasses = {
+    const durationSecs = parseInt(this.props.data.totalTime / 1000);
+    const liClasses = {
       "current": this.state.current,
       "playing": this.state.current && this.state.playing,
     };
 
-    var expanded = null;
+    let expanded = null;
     if (this.state.expanded) {
-      var data = this.props.data;
-      var attributeArr = [];
-      var fields = ["albumArtist", "artist", "composer", "year"];
-      fields.forEach(function(f) {
+      const data = this.props.data;
+      const attributeArr = [];
+      for (const f of ["albumArtist", "artist", "composer", "year"]) {
         if (data[f]) {
           attributeArr.push(data[f]);
         }
-      });
+      }
 
-      var attributes = null;
+      let attributes = null;
       if (attributeArr.length > 0) {
         attributes = <GroupAttributes list={attributeArr} />;
       }

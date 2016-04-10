@@ -9,8 +9,8 @@ import WebsocketAPI from "../utils/WebsocketAPI.js";
 import ControlConstants from "../constants/ControlConstants.js";
 
 
-var _playerKey = null;
-var _pushKey = null;
+let _playerKey = null;
+let _pushKey = null;
 
 function setKey(k) {
   _playerKey = k;
@@ -21,7 +21,7 @@ function key() {
   if (_playerKey !== null) {
     return _playerKey;
   }
-  var k = localStorage.getItem("playerKey");
+  const k = localStorage.getItem("playerKey");
   _playerKey = (k) ? k : "";
   return _playerKey;
 }
@@ -39,7 +39,7 @@ function pushKey() {
   if (_pushKey !== null) {
     return _pushKey;
   }
-  var k = localStorage.getItem("pushKey");
+  const k = localStorage.getItem("pushKey");
   _pushKey = (k) ? k : "";
   return _pushKey;
 }
@@ -47,7 +47,7 @@ function pushKey() {
 
 class PlayerKeyStore extends ChangeEmitter {
   isKeySet() {
-    var k = key();
+    const k = key();
     if (k === null || k === "") {
       return false;
     }
@@ -59,7 +59,7 @@ class PlayerKeyStore extends ChangeEmitter {
   }
 
   isPushKeySet() {
-    var k = pushKey();
+    const k = pushKey();
     if (k === null || k === "") {
       return false;
     }
@@ -71,11 +71,11 @@ class PlayerKeyStore extends ChangeEmitter {
   }
 }
 
-var _playerKeyStore = new PlayerKeyStore();
+const _playerKeyStore = new PlayerKeyStore();
 
 _playerKeyStore.dispatchToken = AppDispatcher.register(function(payload) {
-  var action = payload.action;
-  var source = payload.source;
+  const action = payload.action;
+  const source = payload.source;
 
   if (source === "VIEW_ACTION") {
     switch (action.actionType) {

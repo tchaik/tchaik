@@ -40,7 +40,7 @@ export default class Playlist extends React.Component {
   }
 
   render() {
-    var items = this.state.list;
+    let items = this.state.list;
     if (items.length === 0) {
       return (
         <div className="playlist">
@@ -49,9 +49,9 @@ export default class Playlist extends React.Component {
       );
     }
 
-    let pathCount = {};
+    const pathCount = {};
     items = items.map(function(item, i) {
-      let path = item.path();
+      const path = item.path();
       if (!pathCount[path]) {
         pathCount[path] = 0;
       }
@@ -73,7 +73,7 @@ export default class Playlist extends React.Component {
 
 
 function getItem(path) {
-  var c = CollectionStore.getCollection(path);
+  const c = CollectionStore.getCollection(path);
   if (c === undefined) {
     return null;
   }
@@ -139,36 +139,36 @@ class Group extends React.Component {
   }
 
   render() {
-    var groupClasses = {
+    const groupClasses = {
       "group": true,
       "expanded": this.state.expanded,
     };
 
-    var image = null;
+    let image = null;
     if (this.props.root && this.state.common.id) {
       image = <ArtworkImage path={`/artwork/${this.state.common.id}`} />;
     }
 
-    var duration = null;
+    let duration = null;
     if (this.state.common.totalTime) {
       duration = <TimeFormatter className="duration" time={parseInt(this.state.common.totalTime / 1000)} />;
     }
 
-    var common = this.state.common;
-    var fields = ["artist", "composer", "year"];
-    var attributeArr = [];
-    fields.forEach(function(f) {
+    const common = this.state.common;
+    const fields = ["artist", "composer", "year"];
+    let attributeArr = [];
+    for (let f of fields) {
       if (common[f]) {
         attributeArr.push(common[f]);
       }
-    });
+    }
 
-    var attributes = null;
+    let attributes = null;
     if (attributeArr.length > 0) {
       attributes = <GroupAttributes list={attributeArr} />;
     }
 
-    var content = null;
+    let content = null;
     if (this.state.expanded) {
       content = <GroupContent path={this.props.path} setCommon={this.setCommon} itemIndex={this.props.itemIndex} />;
     }
@@ -229,12 +229,12 @@ class GroupContent extends React.Component {
   }
 
   render() {
-    var item = this.state.item;
+    const item = this.state.item;
     if (item === null) {
       return null;
     }
 
-    var keys = PlaylistStore.getItemKeys(this.props.itemIndex, this.props.path);
+    const keys = PlaylistStore.getItemKeys(this.props.itemIndex, this.props.path);
     if (item.groups) {
       return <GroupList path={this.props.path} list={item.groups} itemIndex={this.props.itemIndex} keys={keys} />;
     }
@@ -243,15 +243,15 @@ class GroupContent extends React.Component {
 
   _onChange(keyPath) {
     if (CollectionStore.pathToKey(this.props.path) === keyPath) {
-      var item = CollectionStore.getCollection(this.props.path);
+      const item = CollectionStore.getCollection(this.props.path);
 
-      var common = {};
-      var fields = ["totalTime", "artist", "composer", "id", "year"];
-      fields.forEach(function(f) {
+      const common = {};
+      const fields = ["totalTime", "artist", "composer", "id", "year"];
+      for (let f of fields) {
         if (item[f]) {
           common[f] = item[f];
         }
-      });
+      }
 
       if (Object.keys(common).length > 0) {
         this.props.setCommon(common);
@@ -269,15 +269,13 @@ GroupContent.propTypes = {
 
 class GroupList extends React.Component {
   render() {
-    var keys = this.props.keys;
-    var list = this.props.list;
-
-    var itemByKey = {};
-    list.forEach(function(item) {
+    const itemByKey = {};
+    for (const item of this.props.list) {
       itemByKey[item.key] = item;
-    });
+    }
 
-    var groups = keys.map(function(key) {
+    const keys = this.props.keys;
+    let groups = keys.map(function(key) {
       return <Group path={this.props.path.concat([key])} key={key} item={itemByKey[key]} itemIndex={this.props.itemIndex} />;
     }.bind(this));
 
@@ -305,7 +303,7 @@ function pathsPrefix(p, prefix) {
 }
 
 function hasCurrent(i, p) {
-  var c = CursorStore.getCurrent();
+  const c = CursorStore.getCurrent();
   if (c === null) {
     return false;
   }
@@ -350,9 +348,8 @@ class TrackList extends React.Component {
       currentPath = CursorStore.getCurrent().path();
     }
 
-    var list = this.props.list;
-    var keys = this.props.keys;
-    var tracks = keys.map(function(i) {
+    const list = this.props.list;
+    let tracks = this.props.keys.map(function(i) {
       const path = this.props.path.concat([i]);
       let isCurrent = this.state.hasCurrent && pathsEqual(path, currentPath);
 
@@ -382,12 +379,11 @@ TrackList.propTypes = {
 };
 
 function isPlaying(id) {
-  var playing = NowPlayingStore.getPlaying();
-  if (!playing) {
+  if (!NowPlayingStore.getPlaying()) {
     return false;
   }
 
-  var t = NowPlayingStore.getTrack();
+  const t = NowPlayingStore.getTrack();
   if (t) {
     return t.id === id;
   }
@@ -429,8 +425,8 @@ class Track extends React.Component {
   }
 
   render() {
-    var durationSecs = parseInt(this.props.data.totalTime / 1000);
-    var style = {
+    const durationSecs = parseInt(this.props.data.totalTime / 1000);
+    const style = {
       current: this.props.isCurrent,
       "is-playing": this.state.isPlaying,
     };
