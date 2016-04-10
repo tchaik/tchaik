@@ -439,7 +439,7 @@ class Track extends React.Component {
       <li onClick={this._onClick} style={{"counterReset": "li " + (this.props.index + 1)}} className={classNames(style)}>
         <span id={"track_" + this.props.data.id} className="name">{this.props.data.name}</span>
         <span className="info">
-          <Icon icon="clear"onClick={this._onClickRemove} />
+          <Icon icon="clear" onClick={this._onClickRemove} />
           <TimeFormatter className="duration" time={durationSecs} />
         </span>
       </li>
