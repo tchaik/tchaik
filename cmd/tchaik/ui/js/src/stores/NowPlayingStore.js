@@ -17,6 +17,7 @@ var CONTROL_EVENT = "control";
 
 var currentPlaying = null;
 var currentRepeat = null;
+var _currentTrack = null;
 
 function setCurrentTrackSource(source) {
   localStorage.setItem("currentTrackSource", source);
@@ -32,6 +33,7 @@ function currentTrackSource() {
 
 function setCurrentTrack(track) {
   localStorage.setItem("currentTrack", JSON.stringify(track));
+  _currentTrack = track;
 }
 
 function _playing() {
@@ -75,11 +77,14 @@ function setRepeat(v) {
 }
 
 function currentTrack() {
-  var c = localStorage.getItem("currentTrack");
-  if (c === null) {
-    return null;
+  if (_currentTrack === null) {
+    var c = localStorage.getItem("currentTrack");
+    if (c === null) {
+      return null;
+    }
+    _currentTrack = JSON.parse(c);
   }
-  return JSON.parse(c);
+  return _currentTrack;
 }
 
 
