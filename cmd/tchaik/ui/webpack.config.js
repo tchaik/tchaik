@@ -3,7 +3,7 @@ var config = require("./webpack.common.config.js");
 
 module.exports = assign({}, config, {
   entry: {
-    app: ["./js/src/app.js"],
+    app: ["babel-polyfill", "./js/src/app.js"],
   },
 
   output: {

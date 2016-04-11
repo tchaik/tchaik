@@ -1,32 +1,31 @@
 "use strict";
 
-require("../../css/screen.css");
-require("../../css/material-icons.css");
+import "../../css/screen.css";
+import "../../css/material-icons.css";
 
-var React = require("react");
-var ReactDOM = require("react-dom");
+import React from "react";
+import ReactDOM from "react-dom";
 
-require("babel-polyfill");
+import WebsocketAPI from "./utils/WebsocketAPI.js";
 
-var WebsocketAPI = require("./utils/WebsocketAPI.js");
+import LeftColumn from "./components/LeftColumn.js";
+import RightColumn from "./components/RightColumn.js";
+import Bottom from "./components/Bottom.js";
+import Top from "./components/Top.js";
+import Container from "./components/Container.js";
 
-var LeftColumn = require("./components/LeftColumn.js");
-var RightColumn = require("./components/RightColumn.js");
-var Bottom = require("./components/Bottom.js");
-var Top = require("./components/Top.js");
-var Container = require("./components/Container.js");
+const socketAddr = document.location.host;
 
-var socketAddr = document.location.host;
-
-var protocol = "ws://";
+let protocol = "ws://";
 if (window.location.protocol === "https:") {
   protocol = "wss://";
 }
 
-var websocketUrl = `${protocol}${socketAddr}/socket`;
+let websocketUrl = `${protocol}${socketAddr}/socket`;
 if (process.env.WS_URL) {
   websocketUrl = process.env.WS_URL;
 }
+
 WebsocketAPI.init(websocketUrl);
 
 ReactDOM.render(
