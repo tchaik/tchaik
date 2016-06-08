@@ -175,8 +175,14 @@ class AudioPlayer extends React.Component {
 }
 
 function getPlayerState() {
+  let src = null;
+  let track = NowPlayingStore.getTrack();
+  if (track) {
+    src = `/track/${track.id}`;
+  }
+
   return {
-    source: `/track/${NowPlayingStore.getTrack().id}`,
+    source: src,
     playing: NowPlayingStore.getPlaying(),
     volume: VolumeStore.getVolume(),
   };
