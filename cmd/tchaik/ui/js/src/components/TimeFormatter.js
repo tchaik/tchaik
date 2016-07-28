@@ -11,6 +11,10 @@ function zeroPad(n, width) {
 }
 
 export default class TimeFormatter extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.time !== nextProps.time;
+  }
+
   render() {
     var {time, ...others} = this.props;
     if (isNaN(time)) {

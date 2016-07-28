@@ -111,6 +111,16 @@ class BitRate extends React.Component {
     this._onClick = this._onClick.bind(this);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.track.bitRate != nextProps.track.bitRate) {
+      return true;
+    }
+    if (this.state.expanded != nextState.expanded) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     let bitRate = null;
     if (this.state.expanded) {

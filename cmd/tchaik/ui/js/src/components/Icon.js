@@ -6,6 +6,10 @@ import classNames from "classnames";
 
 
 export default class Icon extends React.Component {
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.icon != nextProps.icon;
+  }
+
   render() {
     var {icon, extraClasses, ...others} = this.props;
     var classes = {
