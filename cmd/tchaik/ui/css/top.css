@@ -8,7 +8,7 @@ div#top {
   color: white;
   z-index: 1;
   height: $top-row-height;
-  background-color: black;
+  background-color: #212121;
   box-shadow: 0 0 5px 0 black;
 
   div.top-container {

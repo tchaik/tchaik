@@ -7,120 +7,24 @@ div.retro {
   height: 100%;
 
   div.blur {
-    position: fixed;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    background-size: cover;
-    z-index: -100;
-    transform-origin: top left;
-    -webkit-filter: blur(40px);
-    @include fade-in(background-image);
-  }
-
-  div.content {
-    position: relative;
-    display: flex;
-    align-items: left;
-    justify-content: left;
-    z-index: 1;
-
-    .playlist {
-      margin-left: 100px;
-      max-width: 600px;
-      background-color: $transparent-bar-dark-background;
-
-      .group {
-        padding-left: 0;
-
-        .group-info-container {
-          border: 0;
-        }
-
-        .group-details {
-          .name {
-            font-size: 18px;
-            font-weight: 400;
-          }
-        }
-
-        span.bull {
-          padding: 0 6px;
-        }
-
-        .tracks {
-          margin-top: 10px;
-          margin-bottom: 10px;
-
-          li {
-            border: 0;
-            font-size: 12px;
-
-            &:hover {
-              background-color: $transparent-bar-dark-background-highlight;
-            }
-
-            &:hover::before {
-              background-color: $transparent;
-            }
-
-            &.current {
-              color: $light-blue;
-              background-color: $transparent;
-
-              &::before {
-                color: $light-blue;
-                background-color: $transparent;
-              }
-
-              span.info span.duration, span.info span.glyphicon-remove {
-                color: $light-blue;
-              }
-
-              &:hover {
-                background-color: $transparent-bar-dark-background-highlight;
-              }
-            }
-
-            span.info span.duration {
-              color: #bbb;
-            }
-          }
-        }
-
-        img {
-          max-height: 100px;
-        }
-
-        .group {
-          img {
-            display: none;
-          }
-
-          .group-info-container {
-            border: 0;
-
-            .group-info {
-              margin-top: 10px;
-              margin-bottom: 0;
-            }
-          }
-
-          .group-details {
-            .name {
-              font-size: 15px;
-            }
-          }
-        }
-      }
-    }
-  }
+     position: absolute;
+     left: 0;
+     top: 0;
+     height: 100%;
+     width: 100%;
+     background-size: cover;
+     height: 20%; width: 20%; /* Using Glen Maddern's trick /via @mente */
+     transform: scale(5);
+     transform-origin: top left;
+     -webkit-filter: blur(10px);
+     @include fade-in(background-image);
+   }
 
   .current-artwork {
-    position: fixed;
     top: 100px;
     right: 100px;
+    position: relative;
+    text-align: right;
 
     img {
       box-shadow: 5px 5px 5px rgba(17, 17, 17, 0.3);

@@ -7,7 +7,7 @@ div.control-bar {
   flex-direction: column;
   justify-content: center;
   width: $left-column-width;
-  background-color: $transparent-bar-light-background;
+  background-color: #1e1e1e;
   color: #999;
   margin-left: 0px;
   transition: margin-left .25s ease-in-out;

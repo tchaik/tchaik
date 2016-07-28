@@ -5,14 +5,13 @@ import classNames from "classnames";
 
 import Playlist from "./Playlist.js";
 
-import ContainerConstants from "../constants/ContainerConstants.js";
 import ContainerStore from "../stores/ContainerStore.js";
 
 import RightColumnStore from "../stores/RightColumnStore.js";
 
 function getState() {
   return {
-    showPlaylist: ContainerStore.getMode() !== ContainerConstants.RETRO,
+    showPlaylist: true,
     hidden: RightColumnStore.getIsHidden(),
   };
 }
@@ -36,16 +35,15 @@ export default class RightColumn extends React.Component {
   }
 
   render() {
-    var playlist = null;
+    let playlist = null;
     if (this.state.showPlaylist) {
-      var classes = classNames("now-playing", { hidden: this.state.hidden });
+      const classes = classNames("now-playing", { hidden: this.state.hidden });
       playlist = (
         <div className={classes}>
           <Playlist />
         </div>
       );
     }
-
     return playlist;
   }
 
