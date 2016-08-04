@@ -10,8 +10,9 @@ import (
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 
-	"google.golang.org/cloud"
-	"google.golang.org/cloud/storage"
+	"google.golang.org/api/option"
+
+	"cloud.google.com/go/storage"
 )
 
 // CloudStorageClient implements Client and handles fetching Files from Google
@@ -34,7 +35,7 @@ func (c *CloudStorageClient) Get(ctx context.Context, path string) (*File, error
 		return nil, fmt.Errorf("could not retrieve default token source: %v", err)
 	}
 
-	client, err := storage.NewClient(ctx, cloud.WithTokenSource(ts))
+	client, err := storage.NewClient(ctx, option.WithTokenSource(ts))
 	if err != nil {
 		return nil, fmt.Errorf("unable to get default client: %v", err)
 	}
