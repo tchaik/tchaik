@@ -299,7 +299,11 @@ function pathsEqual(p1, p2) {
 }
 
 function pathsPrefix(p, prefix) {
-  return CollectionStore.pathToKey(p).indexOf(CollectionStore.pathToKey(prefix)) === 0;
+  const k = CollectionStore.pathToKey(p);
+  if (k == null) {
+    return false;
+  }
+  return k.indexOf(CollectionStore.pathToKey(prefix)) === 0;
 }
 
 function hasCurrent(i, p) {
