@@ -45,7 +45,7 @@ export default class NowPlaying extends React.Component {
   render() {
     const track = this.state.track;
     if (track === null) {
-      return <div className="now-playing-track" />;
+      return <div className="track" />;
     }
 
     const remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
@@ -63,14 +63,14 @@ export default class NowPlaying extends React.Component {
     }
 
     const className = classNames({
-      "now-playing-track": true,
+      "track": true,
       "error": (this.state.error !== null),
     });
 
     return (
       <div className={className}>
         <ArtworkImage path={`/artwork/${track.id}`} onClick={this._onClickArtwork}/>
-        <div className="track-info">
+        <div className="info">
           <div className="container">
             <div className="title">
               {track.name}

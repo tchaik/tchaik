@@ -82,7 +82,13 @@ div#bottom {
         }
 
         &.play-pause {
-          font-size: 60px;
+          font-size: 58px;
+
+          &:hover {
+            font-size: 62px;
+            margin-left: 6px;
+            margin-right: 6px;
+          }
         }
       }
     }
@@ -93,7 +99,7 @@ div#bottom {
       flex: 1;
     }
 
-    div.now-playing-track {
+    div.track {
       display: flex;
       vertical-align: top;
       margin-right: 5px;
@@ -112,7 +118,7 @@ div#bottom {
         }
       }
 
-      div.track-info {
+      div.info {
         display: flex;
         flex: 1 auto;
         align-items: center;
@@ -186,6 +192,7 @@ div#bottom {
         color: #999;
         line-height: 16px;
         padding: 4px;
+        line-height: 18px;
 
         &:hover {
           overflow-x: visible;
@@ -273,7 +280,8 @@ div#bottom {
       .current {
         height: $progressbar-height;
         float: left;
-        background-color: $light-blue;
+        background-color: #666;
+        border-radius: 5px;
       }
 
       .buffered {
@@ -299,10 +307,13 @@ div#bottom {
         margin-top:-3px;
         width: 10px;
         z-index: 10;
-        @include fade-in(opacity);
       }
 
       &:hover {
+        .current {
+          background-color: $light-blue;
+        }
+
         .marker {
           opacity: 1;
         }
