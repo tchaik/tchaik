@@ -37,8 +37,7 @@ func splitMultiple(x string, s []string) []string {
 	}
 	res := make([]string, 0, len(r))
 	for _, x := range r {
-		y := strings.TrimSpace(x)
-		if y != "" {
+		if y := strings.TrimSpace(x); y != "" {
 			res = append(res, y)
 		}
 	}
