@@ -64,6 +64,7 @@ div.collection {
           div.header {
             span.name {
               font-size: 16px;
+              line-height: 22px;
             }
           }
         }
@@ -168,7 +169,8 @@ div.collection {
         color: #888;
         font-size: 13px;
         font-weight: 300;
-        margin-top: 4px;
+        margin-top: 6px;
+        line-height: 18px;
 
         a:hover {
           color: #ccc;
@@ -195,7 +197,7 @@ div.collection {
 
     div.tracks {
       ol {
-        margin: 5px 0;
+        margin: 8px 0;
         padding: 0;
         color: #777;
         display: block;
@@ -295,7 +297,7 @@ div.collection {
           }
 
           &:hover {
-            background-color: #292929;
+            background-color: #323232;
 
             &.current {
               span.name, span.duration {
