@@ -175,13 +175,13 @@ class Group extends React.Component {
 
     return (
       <div className={classNames(groupClasses)}>
-        <div className="group-info-container" onClick={this._onClick}>
+        <div className="info-container" onClick={this._onClick}>
           {image}
-          <div className="group-info">
-            <div className="group-details">
+          <div className="info">
+            <div className="details">
               <div className="name">{this.props.item.name}</div>
               {attributes}
-              <div className="attributes duration">{duration}</div>
+              <div className="attributes duration"><Icon icon="schedule" />{duration}</div>
             </div>
             <div className="controls">
               <Icon icon="clear"onClick={this._onClickRemove} />

@@ -6,7 +6,6 @@ div.playlist {
   background-color: $darker-background;
 
   span.icon {
-    float: right;
     margin-left: 5px;
     color: #333;
     cursor: pointer;
@@ -40,28 +39,28 @@ div.playlist {
   div.group {
     font-size: 12px;
 
-    div.group-info-container {
+    div.info-container {
       display: flex;
       border-top: 1px solid #333;
 
-      div.group-info {
+      div.info {
         display: flex;
         flex: 1;
 
-        margin-top: 5px;
-        margin-left: 15px;
+        margin-top: 10px;
         margin-bottom: 5px;
+        margin-left: 12px;
 
-        .group-details {
+        div.details {
           display: flex;
           flex-direction: column;
           justify-content: center;
           flex: 1;
         }
 
-        .controls {
+        div.controls {
           display: flex;
-          justify-content: center;
+          justify-content: flex-start;
           align-items: center;
           flex-direction: column;
           margin-right: 9px;
@@ -72,6 +71,24 @@ div.playlist {
           font-weight: 300;
           font-size: 14px;
         }
+
+        .attributes.duration {
+          span.icon {
+            font-size: 16px;
+            float: none;
+            margin-right: 5px;
+            margin-left: 0px;
+            cursor: auto;
+
+            &:hover {
+              color: #666;
+            }
+          }
+
+          span.duration {
+            vertical-align: 3px;
+          }
+        }
       }
 
       img {
@@ -81,12 +98,14 @@ div.playlist {
           max-height: 80px;
           float: left;
           display: block;
+          padding: 10px 0 10px 10px;
         }
       }
 
       .attributes {
-        margin-top: 2px;
+        margin-top: 4px;
         color: #888;
+        line-height: 18px;
 
         a:hover {
           color: #ccc;
@@ -110,7 +129,7 @@ div.playlist {
     }
 
     span.icon {
-      color: #666;;
+      color: #666;
 
       &:hover {
         color: #ddd;
@@ -137,8 +156,12 @@ div.playlist {
         font-size: 11px;
         line-height: 20px;
         padding: 6px;
-        border-bottom: 1px solid #232323;
+        border-bottom: 1px solid #242424;
         color: #bbb;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 337px;
+        white-space: nowrap;
 
         &:last-of-type {
           border-bottom: 0;
@@ -151,7 +174,7 @@ div.playlist {
           text-align: right;
           width: 25px;
           display: inline-block;
-          color: #888;
+          color: #666;
         }
 
         &.current {
@@ -183,18 +206,20 @@ div.playlist {
             font-family: 'Material Icons';
             content: '\e050';
             font-size: 20px;
-            line-height: 20px;
+            line-height: 18px;
             vertical-align: -35%;
           }
         }
 
         span.duration {
           margin-left: 2px;
-          color: #999;
+          color: #888;
+          font-size: 10px;
         }
 
         span.icon {
           font-size: 16px;
+          margin-top: 2px;
           float: right;
         }
 
@@ -207,7 +232,7 @@ div.playlist {
             font-family: 'Material Icons';
             content: '\e037';
             font-size: 20px;
-            line-height: 20px;
+            line-height: 18px;
             vertical-align: -35%;
           }
 
@@ -217,6 +242,10 @@ div.playlist {
 
           span.icon {
             color: #ddd;
+          }
+
+          span.duration {
+            color: #aaa;
           }
         }
 
