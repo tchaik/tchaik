@@ -50,18 +50,6 @@ export default class NowPlaying extends React.Component {
 
     const remainingTime = parseInt(this.state.duration) - parseInt(this.state.currentTime);
 
-    const attributes = [];
-    for (const attribute of ["artist", "groupName", "composer"]) {
-      if (track[attribute]) {
-        attributes.push(track[attribute]);
-      }
-    }
-
-    let attributesElement = null;
-    if (attributes) {
-      attributesElement = <GroupAttributes list={attributes} />;
-    }
-
     const className = classNames({
       "track": true,
       "error": (this.state.error !== null),
@@ -81,7 +69,7 @@ export default class NowPlaying extends React.Component {
                 </a>
               </span>
             </div>
-            {attributesElement}
+            <GroupAttributes data={track} attributes={["artist", "groupName", "composer"]} />;
 
             <div className="times">
               <TimeFormatter className="current-time" time={this.state.currentTime} />

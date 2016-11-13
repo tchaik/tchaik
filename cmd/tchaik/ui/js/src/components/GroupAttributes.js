@@ -36,8 +36,23 @@ function attributeLink(_this, x) {
 
 export default class GroupAttributes extends React.Component {
   render() {
+    if (this.props.attributes.length === 0) {
+      return null;
+    }
+
+    const attr = [];
+    for (const a of this.props.attributes) {
+      if (this.props.data[a]) {
+        attr.push(this.props.data[a]);
+      }
+    }
+
+    if (attr.length === 0) {
+      return null;
+    }
+
     var _this = this;
-    var list = dedupArray(this.props.list);
+    var list = dedupArray(attr);
     list = list.map(function(attr) {
       return attributeLink(_this, attr);
     });
@@ -58,3 +73,8 @@ export default class GroupAttributes extends React.Component {
     SearchActions.search(attributeValue);
   }
 }
+
+GroupAttributes.propTypes = {
+  attributes: React.PropTypes.array.isRequired,
+  data: React.PropTypes.object.isRequired,
+};

@@ -154,20 +154,6 @@ class Group extends React.Component {
       duration = <TimeFormatter className="duration" time={parseInt(this.state.common.totalTime / 1000)} />;
     }
 
-    const common = this.state.common;
-    const fields = ["artist", "composer", "year"];
-    let attributeArr = [];
-    for (let f of fields) {
-      if (common[f]) {
-        attributeArr.push(common[f]);
-      }
-    }
-
-    let attributes = null;
-    if (attributeArr.length > 0) {
-      attributes = <GroupAttributes list={attributeArr} />;
-    }
-
     let content = null;
     if (this.state.expanded) {
       content = <GroupContent path={this.props.path} setCommon={this.setCommon} itemIndex={this.props.itemIndex} />;
@@ -180,7 +166,7 @@ class Group extends React.Component {
           <div className="info">
             <div className="details">
               <div className="name">{this.props.item.name}</div>
-              {attributes}
+              <GroupAttributes data={this.state.common} attributes={["artist", "composer", "year"]} />
               <div className="attributes duration"><Icon icon="schedule" />{duration}</div>
             </div>
             <div className="controls">

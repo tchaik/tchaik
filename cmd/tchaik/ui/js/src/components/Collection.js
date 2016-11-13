@@ -93,16 +93,7 @@ export class Group extends React.Component {
         );
       }
 
-      const attributeArr = [];
-      for (let f of ["albumArtist", "artist", "composer", "year"]) {
-        if (common[f]) {
-          attributeArr.push(common[f]);
-        }
-      }
-
-      if (attributeArr.length > 0) {
-        attributes = <GroupAttributes list={attributeArr} />;
-      }
+      attributes = <GroupAttributes data={common} attributes={["albumArtist", "artist", "composer", "year"]} />;
 
       const favouriteIcon = this.state.favourite ? "favorite" : "favorite_border";
       const checklistIcon = this.state.checklist ? "check_circle" : "check";
@@ -387,19 +378,11 @@ class Track extends React.Component {
 
     let expanded = null;
     if (this.state.expanded) {
-      const data = this.props.data;
-      const attributeArr = [];
-      for (const f of ["albumArtist", "artist", "composer", "year"]) {
-        if (data[f]) {
-          attributeArr.push(data[f]);
-        }
-      }
-
-      let attributes = null;
-      if (attributeArr.length > 0) {
-        attributes = <GroupAttributes list={attributeArr} />;
-      }
-      expanded = <span className="expanded">{attributes}</span>;
+      expanded = (
+        <span className="expanded">
+          <GroupAttributes data={this.props.data} attributes={["albumArtist", "artist", "composer", "year"]} />
+        </span>
+      );
     }
 
     return (
