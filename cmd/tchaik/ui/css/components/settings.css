@@ -29,7 +29,6 @@ div.settings {
     color: #eee;
     font-size: 16px;
     font-weight: 300;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 5px;
 
     &:active, &:focus {
@@ -46,7 +45,6 @@ div.settings {
     text-transform: uppercase;
     font-size: 16px;
     font-weight: 400;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     padding: 5px 20px;
     margin: 0 10px;
 
