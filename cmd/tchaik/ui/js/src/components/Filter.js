@@ -75,20 +75,11 @@ export default class Filter extends React.Component {
 }
 
 
-class Item extends React.Component {
-  constructor(props) {
-    super(props);
+const Item = ({current, item, setCurrent}) => {
+  const onClick = () =>
+    setCurrent(item);
 
-    this._onClick = this._onClick.bind(this);
-  }
-
-  render() {
-    return <li onClick={this._onClick} className={classNames({"selected": this.props.current})}>{this.props.item}</li>;
-  }
-
-  _onClick() {
-    this.props.setCurrent(this.props.item);
-  }
+  return <li onClick={onClick} className={classNames({"selected": current})}>{item}</li>;
 }
 
 

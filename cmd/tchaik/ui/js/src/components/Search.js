@@ -8,15 +8,13 @@ import {GroupList as GroupList} from "./Collection.js";
 
 import Icon from "./Icon.js";
 
-export class Search extends React.Component {
-  render() {
-    return (
-      <div className="collection">
-        <Results />
-      </div>
-    );
-  }
-}
+const Search = () => (
+  <div className="collection">
+    <Results />
+  </div>
+);
+
+export default Search;
 
 
 function getResultsState() {

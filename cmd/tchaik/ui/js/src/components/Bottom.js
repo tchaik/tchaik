@@ -24,55 +24,33 @@ import RightColumnActions from "../actions/RightColumnActions.js";
 
 var BACKWARD_TIMEOUT = 2000;
 
-export default class Bottom extends React.Component {
-  render() {
-    return (
-      <div className="bottom-container">
-        <PlayProgress/>
-        <div className="now-playing">
-          <Player />
-          <NowPlaying />
-          <Controls />
-          <div className="right">
-            <Volume />
-            <RightColumnToggle />
-          </div>
-        </div>
+const Bottom = () => (
+  <div className="bottom-container">
+    <PlayProgress/>
+    <div className="now-playing">
+      <Player />
+      <NowPlaying />
+      <Controls />
+      <div className="right">
+        <Volume />
+        <RightColumnToggle />
       </div>
-    );
-  }
-}
+    </div>
+  </div>
+);
 
-class RightColumnToggle extends React.Component {
-  constructor(props) {
-    super(props);
+export default Bottom;
 
-    this._onClick = this._onClick.bind(this);
-  }
-
-  componentDidMount() {
-    RightColumnStore.addChangeListener(this._onChange);
-  }
-
-  componentWillUnmount() {
-    RightColumnStore.removeChangeListener(this._onChange);
-  }
-
-  render() {
-    return (
-      <div className="right-column-toggle">
-        <Icon icon="queue_music"onClick={this._onClick} />
-      </div>
-    );
-  }
-
-  _onChange() {
-  }
-
-  _onClick() {
+const RightColumnToggle = () => {
+  const onClick = () =>
     RightColumnActions.toggle();
-  }
-}
+
+  return (
+    <div className="right-column-toggle">
+      <Icon icon="queue_music"onClick={onClick} />
+    </div>
+  );
+};
 
 class Controls extends React.Component {
   constructor(props) {

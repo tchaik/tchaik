@@ -3,41 +3,36 @@
 import React from "react";
 
 function zeroPad(n, width) {
-  var s = "" + n;
+  let s = "" + n;
   while (s.length < width) {
     s = "0" + s;
   }
   return s;
 }
 
-export default class TimeFormatter extends React.Component {
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props.time !== nextProps.time;
+function timeText(time) {
+  let text = "";
+  let minsPad = 0;
+  let totalSeconds = parseInt(time);
+
+  const hours = parseInt(totalSeconds / 3600);
+  if (hours > 0) {
+    text += hours + ":";
+    totalSeconds %= 3600;
+    minsPad = 2;
   }
 
-  render() {
-    var {time, ...others} = this.props;
-    if (isNaN(time)) {
-      return null;
-    }
-
-    var timeText = "";
-    var minsPad = 0;
-
-    var totalSeconds = parseInt(time);
-    var hours = parseInt(totalSeconds / 3600);
-    if (hours > 0) {
-      timeText += hours + ":";
-      totalSeconds %= 3600;
-      minsPad = 2;
-    }
-
-    var mins = parseInt(totalSeconds / 60);
-    var secs = parseInt(totalSeconds % 60);
-    timeText += zeroPad(mins, minsPad) + ":" + zeroPad(secs, 2);
-
-    return (
-      <span {...others}>{timeText}</span>
-    );
-  }
+  const mins = parseInt(totalSeconds / 60);
+  const secs = parseInt(totalSeconds % 60);
+  text += zeroPad(mins, minsPad) + ":" + zeroPad(secs, 2);
+  return text
 }
+
+const TimeFormatter = ({time, ...others}) => {
+  if (isNaN(time)) {
+    return null;
+  }
+  return <span {...others}>{timeText(time)}</span>;
+}
+
+export default TimeFormatter;
