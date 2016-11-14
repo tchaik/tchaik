@@ -125,7 +125,7 @@ export class Group extends React.Component {
     let albumArtist = null;
     if (this.props.depth === 1 && (this.props.item.albumArtist || this.props.item.artist)) {
       const artist = this.props.item.albumArtist || this.props.item.artist;
-      albumArtist = <span className="group-album-artist">{artist.join(", ")}</span>;
+      albumArtist = <span className="album-artist">{artist.join(", ")}</span>;
     }
 
     if (itemName !== "") {
