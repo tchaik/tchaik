@@ -27,54 +27,49 @@ function dedupArray(arr) {
   return result;
 }
 
-function attributeLink(_this, x) {
-  return [
-    <a onClick={_this._onClickAttribute.bind(_this, x)}>{x}</a>,
-    <span className="bull">&bull;</span>,
-  ];
-}
-
-export default class GroupAttributes extends React.Component {
-  render() {
-    if (this.props.attributes.length === 0) {
-      return null;
-    }
-
-    const attr = [];
-    for (const a of this.props.attributes) {
-      if (this.props.data[a]) {
-        attr.push(this.props.data[a]);
-      }
-    }
-
-    if (attr.length === 0) {
-      return null;
-    }
-
-    var _this = this;
-    var list = dedupArray(attr);
-    list = list.map(function(attr) {
-      return attributeLink(_this, attr);
-    });
-
-    if (list.length > 0) {
-      list[list.length - 1].pop();
-    }
-
-    return (
-      <div className="attributes">
-        {list}
-      </div>
-    );
+const GroupAttributes = ({data, attributes}) => {
+  if (attributes.length === 0) {
+    return null;
   }
 
-  _onClickAttribute(attributeValue, evt) {
+  const attr = [];
+  for (const a of attributes) {
+    if (data[a]) {
+      attr.push(data[a]);
+    }
+  }
+
+  if (attr.length === 0) {
+    return null;
+  }
+
+  const onClick = (value, evt) => {
     evt.stopPropagation();
-    SearchActions.search(attributeValue);
+    SearchActions.search(value);
   }
+
+  let list = dedupArray(attr);
+  list = list.map(function(attr) {
+    return [
+      <a onClick={onClick.bind(null, attr)}>{attr}</a>,
+      <span className="bull">&bull;</span>,
+    ];
+  });
+
+  if (list.length > 0) {
+    list[list.length - 1].pop();
+  }
+
+  return (
+    <div className="attributes">
+      {list}
+    </div>
+  );
 }
 
 GroupAttributes.propTypes = {
   attributes: React.PropTypes.array.isRequired,
   data: React.PropTypes.object.isRequired,
 };
+
+export default GroupAttributes;
