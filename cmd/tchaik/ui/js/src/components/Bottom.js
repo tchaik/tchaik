@@ -85,10 +85,10 @@ class Controls extends React.Component {
   }
 
   render() {
-    var prevClasses = {"skip": true, "enabled": this.state.canPrev};
-    var nextClasses = {"skip": true, "enabled": this.state.canNext};
-    var repeatClasses = {"skip": true, "enabled": (this.state.track !== null)};
-    var repeatName = (this.state.repeat) ? "repeat_one" : "repeat";
+    const prevClasses = {"skip": true, "enabled": this.state.canPrev};
+    const nextClasses = {"skip": true, "enabled": this.state.canNext};
+    const repeatClasses = {"skip": true, "enabled": (this.state.track !== null)};
+    const repeatName = (this.state.repeat) ? "repeat_one" : "repeat";
     return (
       <div className="controls">
         <Icon icon="skip_previous" extraClasses={prevClasses} onClick={this._onBackward} />
@@ -113,14 +113,14 @@ class Controls extends React.Component {
       track: NowPlayingStore.getTrack(),
     });
 
-    var favicon = document.querySelector("head link[rel=\"shortcut icon\"]");
-    var currentTrack = NowPlayingStore.getTrack();
+    const favicon = document.querySelector("head link[rel=\"shortcut icon\"]");
+    const currentTrack = NowPlayingStore.getTrack();
     if (currentTrack === null) {
       document.title = "tchaik";
       return;
     }
     document.title = currentTrack.name;
-    var faviconUrl = `/icon/${currentTrack.id}`;
+    const faviconUrl = `/icon/${currentTrack.id}`;
     if (!favicon.href.endsWith(faviconUrl)) {
       favicon.href = faviconUrl;
     }

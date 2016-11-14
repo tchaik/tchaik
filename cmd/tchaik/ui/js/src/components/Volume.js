@@ -60,7 +60,7 @@ export default class Volume extends React.Component {
           <div className="marker" />
           <div className="rest" style={{width: rest}} />
         </div>
-        <Icon icon={"volume_" + classSuffix}onClick={this._toggleMute} />
+        <Icon icon={"volume_" + classSuffix} onClick={this._toggleMute} />
       </div>
     );
   }

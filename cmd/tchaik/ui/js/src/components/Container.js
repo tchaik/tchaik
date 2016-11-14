@@ -82,11 +82,7 @@ export default class Container extends React.Component {
         break;
     }
 
-    return (
-      <div>
-        {content}
-      </div>
-    );
+    return <div>{content}</div>;
   }
 
   _onChange() {

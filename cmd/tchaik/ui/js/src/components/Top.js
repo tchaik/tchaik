@@ -3,10 +3,11 @@
 import React from "react";
 
 import Icon from "./Icon.js";
-import MenuToggleButton from "./MenuToggleButton.js";
 
 import SearchStore from "../stores/SearchStore.js";
 import SearchActions from "../actions/SearchActions.js";
+
+import LeftColumnActions from "../actions/LeftColumnActions.js";
 
 import ContainerStore from "../stores/ContainerStore.js";
 
@@ -67,4 +68,17 @@ export default class Top extends React.Component {
   _onClick(e) {
     e.currentTarget.select();
   }
+}
+
+const MenuToggleButton = () => {
+  const onClick = (evt) => {
+    evt.stopPropagation();
+    LeftColumnActions.toggle();
+  }
+
+  return (
+    <div className="menu-button" onClick={onClick}>
+      <Icon icon="menu" />
+    </div>
+  );
 }
