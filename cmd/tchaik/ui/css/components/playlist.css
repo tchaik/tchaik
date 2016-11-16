@@ -180,6 +180,10 @@ div.playlist {
         &.current {
           color: $light-blue;
 
+          span.icon {
+            color: $light-blue;
+          }
+
           span.duration {
             color: $light-blue;
           }
@@ -192,6 +196,10 @@ div.playlist {
             }
 
             .icon {
+              color: $light-blue;
+            }
+
+            span.duration {
               color: $light-blue;
             }
           }
