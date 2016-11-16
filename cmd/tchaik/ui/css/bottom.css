@@ -21,7 +21,7 @@ div#bottom {
     }
   }
 
-  div.bottom-container {
+  div.container {
     height: 100%;
 
     /* This is required so that the play progress doesn't overflow when it's at
@@ -124,7 +124,7 @@ div#bottom {
         align-items: center;
         margin-left: 5px;
 
-        div.container {
+        div.wrapper {
           margin-top: -7px;
         }
       }

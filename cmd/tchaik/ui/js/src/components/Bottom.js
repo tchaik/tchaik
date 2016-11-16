@@ -25,7 +25,7 @@ import RightColumnActions from "../actions/RightColumnActions.js";
 var BACKWARD_TIMEOUT = 2000;
 
 const Bottom = () => (
-  <div className="bottom-container">
+  <div className="container">
     <PlayProgress/>
     <div className="now-playing">
       <Player />
@@ -47,7 +47,7 @@ const RightColumnToggle = () => {
 
   return (
     <div className="right-column-toggle">
-      <Icon icon="queue_music"onClick={onClick} />
+      <Icon icon="queue_music" onClick={onClick} />
     </div>
   );
 };
@@ -88,13 +88,15 @@ class Controls extends React.Component {
     const prevClasses = {"skip": true, "enabled": this.state.canPrev};
     const nextClasses = {"skip": true, "enabled": this.state.canNext};
     const repeatClasses = {"skip": true, "enabled": (this.state.track !== null)};
-    const repeatName = (this.state.repeat) ? "repeat_one" : "repeat";
+    const repeatIcon = (this.state.repeat) ? "repeat_one" : "repeat";
+    const playIcon = (this.state.playing) ? "pause_circle_filled" : "play_circle_filled";
+    const playClasses = {"play-pause": true, "enabled": (this.state.track !== null)};
     return (
       <div className="controls">
         <Icon icon="skip_previous" extraClasses={prevClasses} onClick={this._onBackward} />
-        <span><Icon icon={this.state.playing ? "pause_circle_filled" : "play_circle_filled"}extraClasses={{"play-pause": true, "enabled": (this.state.track !== null)}} onClick={this._togglePlayPause} /></span>
+        <span><Icon icon={playIcon} extraClasses={playClasses} onClick={this._togglePlayPause} /></span>
         <Icon icon="skip_next" extraClasses={nextClasses} onClick={this._onForward} />
-        <Icon icon={repeatName} extraClasses={repeatClasses} onClick={this._toggleRepeat} />
+        <Icon icon={repeatIcon} extraClasses={repeatClasses} onClick={this._toggleRepeat} />
       </div>
     );
   }
