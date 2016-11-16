@@ -5,7 +5,7 @@ import ContainerStore from "../stores/ContainerStore.js";
 import SearchStore from "../stores/SearchStore.js";
 
 import {RootCollection as RootCollection} from "./Collection.js";
-import {Search as Search} from "./Search.js";
+import Search from "./Search.js";
 import Covers from "./Covers.js";
 import Filter from "./Filter.js";
 import PathList from "./PathList.js";

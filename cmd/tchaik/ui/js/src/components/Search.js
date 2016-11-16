@@ -8,11 +8,13 @@ import {GroupList as GroupList} from "./Collection.js";
 
 import Icon from "./Icon.js";
 
-const Search = () => (
-  <div className="collection">
-    <Results />
-  </div>
-);
+const Search = () => {
+  return (
+    <div className="collection">
+      <Results />
+    </div>
+  );
+}
 
 export default Search;
 
@@ -40,11 +42,7 @@ class Results extends React.Component {
   render() {
     var list = this.state.results;
     if (list.length === 0) {
-      return (
-        <div className="collection">
-          <div className="no-results"><Icon icon="audiotrack" />No results found</div>
-        </div>
-      );
+      return <div className="no-results"><Icon icon="audiotrack" />No results found</div>;
     }
     return <GroupList path={["Root"]} list={list} depth={0} />;
   }
