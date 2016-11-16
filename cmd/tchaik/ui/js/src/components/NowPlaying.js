@@ -59,18 +59,16 @@ export default class NowPlaying extends React.Component {
       <div className={className}>
         <ArtworkImage path={`/artwork/${track.id}`} onClick={this._onClickArtwork}/>
         <div className="info">
-          <div className="container">
+          <div className="wrapper">
             <div className="title">
               {track.name}
               <span className="hover-show">
-                <BitRate track={track} />
                 <a className="goto" href={`#track_${track.id}`}>
                   <Icon icon="reply" />
                 </a>
               </span>
             </div>
-            <GroupAttributes data={track} attributes={["artist", "groupName", "composer"]} />;
-
+            <GroupAttributes data={track} attributes={["artist", "groupName", "composer"]} />
             <div className="times">
               <TimeFormatter className="current-time" time={this.state.currentTime} />
               <TimeFormatter className="track-length" time={this.state.duration} />
