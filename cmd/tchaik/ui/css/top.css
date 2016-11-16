@@ -11,7 +11,7 @@ div#top {
   background-color: #212121;
   box-shadow: 0 0 5px 0 black;
 
-  div.top-container {
+  div.container {
     width: 100%;
     display: flex;
   }

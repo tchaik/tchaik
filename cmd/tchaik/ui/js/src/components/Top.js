@@ -44,7 +44,7 @@ export default class Top extends React.Component {
 
   render() {
     return (
-      <div className="top-container">
+      <div className="container">
         <MenuToggleButton />
         <span className="title">{this.state.title}</span>
         <div className="search">
