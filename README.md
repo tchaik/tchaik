@@ -2,8 +2,8 @@
 
 Tchaik is an open source music organisation and streaming system.  The backend is written in [Go](http://golang.org), the frontend is built using [React](https://facebook.github.io/react/), [Flux](https://facebook.github.io/flux/) and [PostCSS](https://github.com/postcss/postcss).
 
-![Tchaik UI](https://s3-ap-southeast-2.amazonaws.com/dhowden-pictures/tchaik-may.jpg "Tchaik UI")
-![Tchaik UI (Classical Music)](https://s3-ap-southeast-2.amazonaws.com/dhowden-pictures/tchaik-july.png "Tchaik UI (Classical Music)")
+![Tchaik UI](https://storage.googleapis.com/tchaik-1.appspot.com/cover-view.png "Tchaik UI")
+![Tchaik UI (Classical Music)](https://storage.googleapis.com/tchaik-1.appspot.com/classical-org.png "Tchaik UI (Classical Music)")
 
 # Features
 
