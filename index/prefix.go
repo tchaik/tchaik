@@ -105,7 +105,11 @@ func (p ByPrefix) Collect(t Tracker) Collection {
 	}
 
 	gg := pfxCol{col: newCol(newName), field: field}
-	if len(tracks) == 1 {
+	switch len(tracks) {
+	case 0:
+		return gg
+
+	case 1:
 		gg.add("", tracks[0])
 		return gg
 	}
