@@ -24,18 +24,18 @@ func removeNonAlphaNumeric(s string) string {
 	res := make([]rune, len(in))
 	i := 0
 	for _, x := range s {
-		if x == '-' {
+		switch {
+		case x == '-':
 			res[i] = ' '
 			i++
-			continue
-		}
-		if unicode.IsLetter(x) || unicode.IsDigit(x) || unicode.IsSpace(x) {
+
+		case unicode.IsLetter(x), unicode.IsDigit(x), unicode.IsSpace(x):
 			res[i] = unicode.ToLower(x)
 			i++
 		}
 	}
-	result, _, _ := transform.Bytes(transformer, []byte(string(res[:i])))
-	return string(result)
+	result, _, _ := transform.String(transformer, string(res[:i]))
+	return result
 }
 
 // Searcher is an interface which defines the Search method.
