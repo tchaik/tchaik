@@ -73,24 +73,7 @@ func (i *isNext) IsNext(s string) bool {
 
 // enumFieldSuffixes is a list of string suffixes which will be trimmed from "enumeration
 // fields"
-var enumFieldSuffixes = []string{".", ":", "-"}
-
-// trimFieldEnumSuffix removes all enumSuffixes from the given string and returns the result.
-func trimEnumFieldSuffixes(s string) string {
-	for {
-		done := true
-		for _, x := range enumFieldSuffixes {
-			if strings.HasSuffix(s, x) {
-				s = s[:len(s)-len(x)]
-				done = false
-				break
-			}
-		}
-		if done {
-			return s
-		}
-	}
-}
+const enumFieldSuffixes = ".:-"
 
 // enumWordSuffixes is a list of strings which should be removed from string resulting
 // from the prefix removal.
@@ -103,8 +86,9 @@ var enumWordPrefixes = []string{"No."}
 // the result.
 func trimPrefix(s string, prefixes []string) (string, int) {
 	n := len(s)
+	l := strings.ToLower(s)
 	for _, x := range prefixes {
-		if strings.HasPrefix(strings.ToLower(s), strings.ToLower(x)) {
+		if strings.HasPrefix(l, strings.ToLower(x)) {
 			s = strings.TrimSpace(s[len(x):])
 			return s, n - len(s)
 		}
@@ -126,10 +110,10 @@ func enumPrefix(s string) (string, int) {
 	w := words[0]
 	r += len(w)
 
-	w = trimEnumFieldSuffixes(w)
 	if r == len(s) {
 		return s, 0
 	}
+	w = strings.TrimRight(w, enumFieldSuffixes)
 	return w, r
 }
 

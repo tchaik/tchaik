@@ -116,25 +116,6 @@ func TestEnumIsNext(t *testing.T) {
 	}
 }
 
-func TestTrimEnumSuffixes(t *testing.T) {
-	table := []struct {
-		in, out string
-	}{
-		{"1", "1"},
-		{"1.", "1"},
-		{"1..", "1"},
-		{"1:", "1"},
-		{"1-", "1"},
-	}
-
-	for ii, tt := range table {
-		got := trimEnumFieldSuffixes(tt.in)
-		if got != tt.out {
-			t.Errorf("[%d] trimEnumSuffixes(%#v) = %#v, expected: %#v", ii, tt.in, got, tt.out)
-		}
-	}
-}
-
 func TestTrimPrefix(t *testing.T) {
 	table := []struct {
 		in, out string
