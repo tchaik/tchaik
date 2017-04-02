@@ -210,17 +210,14 @@ func RemoveEmptyCollections(g Group) Group {
 }
 
 func firstTrack(g Group) Track {
-	c, ok := g.(Collection)
-	if ok {
-		keys := c.Keys()
-		if len(keys) > 0 {
+	if c, ok := g.(Collection); ok {
+		if keys := c.Keys(); len(keys) > 0 {
 			return firstTrack(c.Get(keys[0]))
 		}
 		return nil
 	}
 
-	ts := g.Tracks()
-	if len(ts) > 0 {
+	if ts := g.Tracks(); len(ts) > 0 {
 		return ts[0]
 	}
 	return nil

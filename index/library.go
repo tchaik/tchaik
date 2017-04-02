@@ -192,8 +192,7 @@ func (t *track) GetString(name string) string {
 // the case where an empty 'GetString' attribute would be "", whereas the corresponding
 // 'GetStrings' method should return 'nil' and not '[]string{""}'.
 func DefaultGetStrings(t Track, f string) []string {
-	v := t.GetString(f)
-	if v != "" {
+	if v := t.GetString(f); v != "" {
 		return []string{v}
 	}
 	return nil
