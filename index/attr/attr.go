@@ -122,7 +122,7 @@ func Strings(f string) Interface {
 // stringSliceIntersect computes the intersection of two string slices (ignoring ordering).
 func stringSliceIntersect(s, t []string) []string {
 	var res []string
-	m := make(map[string]bool)
+	m := make(map[string]bool, len(s))
 	for _, x := range s {
 		m[x] = true
 	}

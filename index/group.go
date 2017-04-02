@@ -303,7 +303,7 @@ func Recent(c Collection, n int) []Path {
 
 	sort.Sort(sort.Reverse(trackPathSorter{trackPaths, SortByTime("DateAdded")}))
 
-	dedup := make(map[string]bool)
+	dedup := make(map[string]bool, len(trackPaths))
 	result := make([]Path, 0, n)
 	for _, tp := range trackPaths {
 		e := tp.p.Encode()
