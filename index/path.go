@@ -70,14 +70,12 @@ func (p Path) Contains(q Path) bool {
 // IndexOfPath returns the index of the path within the slice of paths, or -1 if the path
 // isn't present.
 func IndexOfPath(paths []Path, p Path) int {
-	n := -1
 	for i, x := range paths {
 		if p.Equal(x) {
-			n = i
-			break
+			return i
 		}
 	}
-	return n
+	return -1
 }
 
 // NewPath creates a Path from the string representation.
@@ -104,13 +102,16 @@ func PathFromJSONInterface(raw interface{}) (Path, error) {
 
 	path := make([]Key, len(rawSlice))
 	for i, x := range rawSlice {
-		s, ok := x.(string)
-		if !ok {
-			fl, ok := x.(float64)
-			if !ok {
-				return nil, fmt.Errorf("expected elements of type 'string' or 'float64', got '%T'", x)
-			}
-			s = strconv.Itoa(int(fl))
+		var s string
+		switch x := x.(type) {
+		case string:
+			s = x
+
+		case float64:
+			s = strconv.Itoa(int(x))
+
+		default:
+			return nil, fmt.Errorf("expected elements of type 'string' or 'float64', got '%T'", x)
 		}
 		path[i] = Key(s)
 	}
@@ -170,7 +171,7 @@ func OrderedIntersection(paths ...[]Path) []Path {
 
 	if len(paths) > 1 {
 		for _, list := range paths[1:] {
-			miss := make(map[string]bool)
+			miss := make(map[string]bool, len(set))
 			for k := range set {
 				miss[k] = true
 			}
