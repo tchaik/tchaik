@@ -4,9 +4,8 @@ import React from "react";
 
 import Icon from "./Icon.js";
 
-import VolumeStore from "../stores/VolumeStore.js";
-import VolumeActions from "../actions/VolumeActions.js";
-
+import { connect, Provider } from "react-redux";
+import { setVolume, setMute } from "../redux/Volume.js";
 
 function _getOffsetLeft(elem) {
   var offsetLeft = 0;
@@ -18,31 +17,22 @@ function _getOffsetLeft(elem) {
   return offsetLeft;
 }
 
-function getVolumeState() {
-  return {volume: VolumeStore.getVolume()};
-}
-
-
-export default class Volume extends React.Component {
+class volumeBar extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getVolumeState();
-    this._onChange = this._onChange.bind(this);
+    this._onClick = this._onClick.bind(this);
     this._onWheel = this._onWheel.bind(this);
-  }
-
-  componentDidMount() {
-    VolumeStore.addChangeListener(this._onChange);
-  }
-
-  componentWillUnmount() {
-    VolumeStore.removeChangeListener(this._onChange);
+    this._toggleMute = this._toggleMute.bind(this);
   }
 
   render() {
-    var volume = this.state.volume;
-    var classSuffix;
+    let { volume, mute } = this.props;
+    if (mute) {
+      volume = 0.00;
+    }
+
+    let classSuffix = "";
     if (volume === 0.00) {
       classSuffix = "mute";
     } else if (volume < 0.5) {
@@ -51,8 +41,8 @@ export default class Volume extends React.Component {
       classSuffix = "up";
     }
 
-    var w = `${Math.min(volume * 100.0, 100.0)}%`;
-    var rest = `${100 - Math.min(volume * 100.0, 100.0)}%`;
+    const w = `${Math.min(volume * 100.0, 100.0)}%`;
+    const rest = `${100 - Math.min(volume * 100.0, 100.0)}%`;
     return (
       <div className="volume" onWheel={this._onWheel}>
         <div className="bar" onClick={this._onClick}>
@@ -67,27 +57,33 @@ export default class Volume extends React.Component {
 
   _toggleMute(evt) {
     evt.stopPropagation();
-    VolumeActions.toggleVolumeMute();
+    this.props.setMute(!this.props.mute)
   }
 
   _onWheel(evt) {
     evt.stopPropagation();
-    var v = this.state.volume + 0.05 * evt.deltaY;
+    let v = this.props.volume + 0.05 * evt.deltaY;
     if (v > 1.0) {
       v = 1.0;
     } else if (v < 0.00) {
       v = 0.0;
     }
-    VolumeActions.volume(v);
+    this.props.setVolume(v);
   }
 
   _onClick(evt) {
-    var pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
-    var width = evt.currentTarget.offsetWidth;
-    VolumeActions.volume(pos / width);
-  }
-
-  _onChange() {
-    this.setState(getVolumeState());
+    const pos = evt.pageX - _getOffsetLeft(evt.currentTarget);
+    const width = evt.currentTarget.offsetWidth;
+    this.props.setVolume(pos / width);
   }
 }
+
+const Volume = connect(
+  state => (state),
+  dispatch => ({
+    setVolume: volume => dispatch(setVolume(volume)),
+    setMute: mute => dispatch(setMute(mute)),
+  })
+)(volumeBar)
+
+export default Volume

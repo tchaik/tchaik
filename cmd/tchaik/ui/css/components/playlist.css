@@ -18,7 +18,7 @@ div.playlist {
   div.no-items {
     padding: 20px;
     font-size: 24px;
-    font-weight: 300;
+    font-weight: 400;
     color: #fff;
     text-align: center;
 
@@ -68,7 +68,7 @@ div.playlist {
 
         .name {
           color: white;
-          font-weight: 300;
+          font-weight: 400;
           font-size: 14px;
         }
 

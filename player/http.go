@@ -124,8 +124,7 @@ func (h *httpHandler) playerAction(p Player, w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	err = data.Apply(p)
-	if err != nil {
+	if err = data.Apply(p); err != nil {
 		if err, ok := err.(InvalidActionError); ok {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

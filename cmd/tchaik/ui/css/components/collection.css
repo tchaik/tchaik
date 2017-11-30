@@ -8,7 +8,7 @@ div.collection {
   div.no-results {
     padding: 20px;
     font-size: 24px;
-    font-weight: 300;
+    font-weight: 400;
     color: #fff;
     text-align: center;
 
@@ -84,7 +84,7 @@ div.collection {
 
       div.header {
         span.name {
-          font-weight: 300;
+          font-weight: 400;
           font-size: 20px;
           color: white;
         }

@@ -71,7 +71,7 @@ export class Group extends React.Component {
     let headerDiv = null;
     let image = null;
 
-    if (this.state.expanded) {
+    if (this.state.expanded || this.props.depth > 1) {
       content = [
         <GroupContent path={this.props.path} depth={this.props.depth} setCommon={this.setCommon} setFavourite={this.setFavourite} setChecklist={this.setChecklist} key="GroupContent0" />,
       ];
@@ -142,7 +142,7 @@ export class Group extends React.Component {
 
     const groupClasses = {
       "group": true,
-      "expanded": this.state.expanded,
+      "expanded": this.state.expanded || this.props.depth > 1,
     };
 
     return (
@@ -189,6 +189,10 @@ export class Group extends React.Component {
     e.stopPropagation();
     this.setState({checklist: !this.state.checklist});
   }
+
+}
+
+class FavouriteIcon extends React.Component {
 
 }
 

@@ -42,7 +42,7 @@ div#top {
     margin-top: 13px;
     margin-left: 15px;
     font-size: 20px;
-    font-weight: 300;
+    font-weight: 500;
     text-transform: capitalize;
   }
 
@@ -62,6 +62,7 @@ div#top {
       outline: none;
       background-color: $search-box-background;
       border: 0;
+      border-radius: 3px;
       color: #eee;
       font-size: 16px;
       font-weight: 300;

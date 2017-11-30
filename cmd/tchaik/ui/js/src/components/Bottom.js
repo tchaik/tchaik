@@ -21,7 +21,6 @@ import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 import RightColumnStore from "../stores/RightColumnStore.js";
 import RightColumnActions from "../actions/RightColumnActions.js";
 
-
 var BACKWARD_TIMEOUT = 2000;
 
 const Bottom = () => (

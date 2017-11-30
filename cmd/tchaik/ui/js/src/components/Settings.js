@@ -25,6 +25,7 @@ export default class Settings extends React.Component {
       <div className="settings">
         <PlayerKeyForm />
         <PushToPlayerKeyForm />
+        <ChromeCastForm />
       </div>
     );
   }
@@ -182,5 +183,40 @@ class PushToPlayerKeyForm extends React.Component {
   _onSetSubmit(e) {
     e.preventDefault();
     PlayerKeyActions.setPushKey(this.state.key);
+  }
+}
+
+class ChromeCastForm extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      receiverName: "Miceli1",
+    };
+    this._onDisconnect = this._onDisconnect.bind(this);
+  }
+
+  _onDisconnect() {
+    this.setState({receiverName: null});
+  }
+
+  render() {
+    let form = null;
+    if (this.state.receiverName !== null) {
+      form = (
+        <form onSubmit={this._onDisconnect}>
+          <input type="text" size="50" value={this.state.receiverName} disabled />
+          <button className="reset">Disconnect</button>
+        </form>
+      );
+    }
+
+    return (
+      <div>
+        <h3>ChromeCast Settings</h3>
+        <span>Configure settings for an attached ChromeCast</span>
+        {form}
+      </div>
+    );
   }
 }

@@ -21,14 +21,15 @@ module.exports = {
     new ExtractTextPlugin("styles.css"),
   ],
 
-  devtool: "inline-source-map",
+  // devtool: "inline-source-map",
+  devtool: "cheap-module-source-map",
 
   module: {
     loaders: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loaders: ["react-hot", "babel"],
+        loaders: ["babel"],
       },
       {
         test: /\.css$/,

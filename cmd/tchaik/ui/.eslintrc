@@ -23,6 +23,7 @@
     "globals": {
         "sinon": false,
         "expect": false,
+        "chrome": false,
     },
     "plugins": [
         "react",

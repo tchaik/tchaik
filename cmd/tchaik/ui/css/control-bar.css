@@ -61,6 +61,7 @@ div.control-bar {
     background-color: $transparent;
     text-decoration: none;
     cursor: pointer;
+    border-radius: 3px;
 
     &.selected {
       background-color: color(white a(0.05));

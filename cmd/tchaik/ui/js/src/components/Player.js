@@ -8,8 +8,7 @@ import NowPlayingStore from "../stores/NowPlayingStore.js";
 
 import PlayingStatusStore from "../stores/PlayingStatusStore.js";
 
-import VolumeStore from "../stores/VolumeStore.js";
-
+import { connect } from "react-redux";
 
 const audioEvents = ["error", "progress", "play", "pause", "ended", "timeupdate", "loadedmetadata", "loadstart"];
 
@@ -63,8 +62,8 @@ class AudioPlayer extends React.Component {
       this.play();
     }
 
-    if (prevProps.volume !== this.props.volume) {
-      this.setVolume(this.props.volume);
+    if (prevProps.volume !== this.props.volume || prevProps.mute !== this.props.mute) {
+      this.setVolume(this.props.volume, this.props.mute);
     }
   }
 
@@ -96,8 +95,11 @@ class AudioPlayer extends React.Component {
     return this._audio.currentTime;
   }
 
-  setVolume(v) {
-    this._audio.volume = v;
+  setVolume(volume, mute) {
+    if (mute) {
+      volume = 0.00
+    }
+    this._audio.volume = volume;
   }
 
   volume() {
@@ -184,11 +186,10 @@ function getPlayerState() {
   return {
     source: src,
     playing: NowPlayingStore.getPlaying(),
-    volume: VolumeStore.getVolume(),
   };
 }
 
-export default class Player extends React.Component {
+class player extends React.Component {
   constructor(props) {
     super(props);
 
@@ -198,20 +199,24 @@ export default class Player extends React.Component {
   }
 
   componentDidMount() {
-    VolumeStore.addChangeListener(this._onChange);
     NowPlayingStore.addChangeListener(this._onChange);
   }
 
   componentWillUnmount() {
-    VolumeStore.removeChangeListener(this._onChange);
     NowPlayingStore.removeChangeListener(this._onChange);
   }
 
   render() {
-    return <AudioPlayer {...this.state} />;
+    return <AudioPlayer {...this.props} {...this.state} />;
   }
 
   _onChange() {
     this.setState(getPlayerState());
   }
 }
+
+const Player = connect(
+  state => (state)
+)(player)
+
+export default Player
