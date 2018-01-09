@@ -156,15 +156,15 @@ type kind tag.FileType
 
 func (k kind) String() string {
 	switch k {
-	case tag.MP3:
+	case kind(tag.MP3):
 		return "MPEG audio file"
-	case tag.M4A:
+	case kind(tag.M4A):
 		return "AAC audio file"
-	case tag.ALAC: // FIXME: tag doesn't actually detect this at the moment.
+	case kind(tag.ALAC): // FIXME: tag doesn't actually detect this at the moment.
 		return "Apple Lossless audio file"
-	case tag.FLAC:
+	case kind(tag.FLAC):
 		return "FLAC audio file"
-	case tag.OGG:
+	case kind(tag.OGG):
 		return "OGG audio file"
 	}
 	return ""
