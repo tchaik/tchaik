@@ -116,8 +116,8 @@ func (r *sameSearcher) Search(input string) []index.Path {
 
 const (
 	// Player Actions
-	ActionKey    string = "KEY"
-	ActionPlayer        = "PLAYER"
+	ActionKey    = "KEY"
+	ActionPlayer = "PLAYER"
 
 	// Path Actions
 	ActionRecordPlay   = "RECORD_PLAY"
