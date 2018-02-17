@@ -155,7 +155,7 @@ func (m *track) GetString(name string) string {
 type kind tag.FileType
 
 func (k kind) String() string {
-	switch k {
+	switch tag.FileType(k) {
 	case tag.MP3:
 		return "MPEG audio file"
 	case tag.M4A:
