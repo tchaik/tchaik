@@ -52,7 +52,7 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 // NewHandler creates the root http.Handler.
 func NewHandler(l Library, m *Meta, mediaFileSystem, artworkFileSystem store.FileSystem) http.Handler {
-	var c httpauth.Checker = httpauth.None{}
+	c := httpauth.Skip
 	if authUser != "" {
 		c = httpauth.Creds(map[string]string{
 			authUser: authPassword,
