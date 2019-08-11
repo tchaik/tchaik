@@ -5,6 +5,8 @@ import (
 	"reflect"
 	"testing"
 	"time"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 var tr = track{
@@ -167,7 +169,7 @@ func TestLibraryEncodeDecode(t *testing.T) {
 	gotTrack.DateAdded = gotTrack.DateAdded.Local()
 	gotTrack.DateModified = gotTrack.DateModified.Local()
 
-	if !reflect.DeepEqual(expectedTrack, gotTrack) {
-		t.Errorf("Encode -> Decode inconsistent, got: %#v, expected: %#v", gotTrack, expectedTrack)
+	if diff := cmp.Diff(expectedTrack, gotTrack); diff != "" {
+		t.Errorf("Encode -> Decode inconsistent; diff\n%s", diff)
 	}
 }
